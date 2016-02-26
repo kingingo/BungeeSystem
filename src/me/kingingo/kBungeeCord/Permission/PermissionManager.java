@@ -101,7 +101,9 @@ public class PermissionManager implements Listener {
 	
 	@EventHandler
 	public void a(PluginMessageEvent e){
-		
+		if(e.getTag().equalsIgnoreCase("Bungeecord")){
+			
+		}
 	}
 	
 	public static void main(String[] args) {

@@ -22,6 +22,8 @@ public class Language {
 	}
 
 	public static void updateLanguage(ProxiedPlayer player, LanguageType type) {
+		if(player == null)
+			return;
 		languages.remove(player.getUniqueId());
 		languages.put(player.getUniqueId(), type);
 	}
