@@ -2,11 +2,12 @@ package dev.wolveringer.bs.client;
 
 import java.util.UUID;
 
+import dev.wolveringer.bs.Main;
 import dev.wolveringer.bs.client.event.ServerMessageEvent;
 import dev.wolveringer.client.LanguageType;
 import dev.wolveringer.client.external.BungeeCordActionListener;
-import dev.wolveringer.dataclient.protocoll.DataBuffer;
-import dev.wolveringer.dataclient.protocoll.packets.PacketOutChangePlayerSettings.Setting;
+import dev.wolveringer.dataserver.player.Setting;
+import dev.wolveringer.dataserver.protocoll.DataBuffer;
 import me.kingingo.kBungeeCord.Language.Language;
 import me.kingingo.kBungeeCord.Permission.PermissionManager;
 import net.md_5.bungee.BungeeCord;
@@ -41,6 +42,24 @@ public class ClientExternalHandler implements BungeeCordActionListener{
 	@Override
 	public void disconnected() {
 		System.err.println("Client disconnected!");
+		System.out.println("Try to reconnect.");
+		while (!Main.getDatenServer().isActive()) {
+			System.out.println("Try to connect to dataserver");
+			try{
+				Main.getDatenServer().start(Main.getInstance().getDatenPassword());
+			}catch(Exception e){
+				if(e.getMessage().equalsIgnoreCase("Connection refused")){
+					System.out.println("Cant connect to DatenServer. Try again in 5 seconds.");
+					try {
+						Thread.sleep(5000);
+					} catch (InterruptedException e1) {
+						e1.printStackTrace();
+					}
+					continue;
+				}
+				e.printStackTrace();
+			}
+		};
 	}
 
 	@Override

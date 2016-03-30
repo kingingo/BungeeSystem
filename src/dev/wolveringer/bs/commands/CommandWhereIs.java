@@ -5,7 +5,7 @@ import java.util.UUID;
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.bs.client.event.ServerMessageEvent;
 import dev.wolveringer.client.connection.ClientType;
-import dev.wolveringer.dataclient.protocoll.DataBuffer;
+import dev.wolveringer.dataserver.protocoll.DataBuffer;
 import me.kingingo.kBungeeCord.Language.Language;
 import me.kingingo.kBungeeCord.Permission.PermissionManager;
 import me.kingingo.kBungeeCord.Permission.PermissionType;

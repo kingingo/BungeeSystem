@@ -3,6 +3,7 @@ package me.kingingo.kBungeeCord.Language;
 import java.util.HashMap;
 import java.util.UUID;
 
+import dev.wolveringer.bs.Main;
 import dev.wolveringer.client.LanguageType;
 import lombok.Getter;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -33,7 +34,9 @@ public class Language {
 			System.out.println("[Language] Spieler == null");
 			return LanguageType.ENGLISH;
 		} else if (!languages.containsKey(player.getUniqueId())) {
-			return LanguageType.ENGLISH;
+			LanguageType lang = Main.getDatenServer().getClient().getPlayer(player.getUniqueId()).getLanguageSync();
+			languages.put(player.getUniqueId(), lang);
+			return lang;
 		} else if (!list.containsKey(languages.get(player.getUniqueId()))) {
 			addALL(languages.get(player.getUniqueId()));
 			System.out.println("[Language] Die Sprache " + languages.get(player.getUniqueId()).getDef() + " wurde nicht gefunden.");
@@ -113,7 +116,7 @@ public class Language {
 		if (type == LanguageType.GERMAN) {
 			if (!list.containsKey(LanguageType.GERMAN))
 				list.put(LanguageType.GERMAN, new HashMap<String, String>());
-			add(type, "PREFIX", "§6EpicPvP §8» §7");
+			add(type, "PREFIX", "§6EpicPvP §8§ §7");
 			add(type, "BG_ADD_SERVER", "§aDer Server§e {INPUT0}§a wurde hinzugefuegt!");
 			add(type, "BG_NO_MSG", "§cDu musst eine Nachricht Schreiben!");
 			add(type, "BG_YOU_ARE_NOW_ON", "§cDu bist bereits auf dem §e{INPUT0} §cServer!");
@@ -165,7 +168,7 @@ public class Language {
 			add(type, "BG_TEST_SERVER_INVITE1", "§aUm anzunehmen: §e/testserver");
 			add(type, "BG_TEST_SEND_INVITES", "§aDie Spieler wurde eingeladen!");
 			add(type, "BG_TICKET_NOT_FOUND", "§cEs wurde kein Ticket gefunden!");
-			add(type, "BG_TICKET_PREFIX", "§eTicket §8» §7");
+			add(type, "BG_TICKET_PREFIX", "§eTicket §8§ §7");
 			add(type, "BG_NO_TICKETS_OPEN", "§cIm moment sind keine Tickets offen!");
 			add(type, "BG_TICKET_CREATE", "§aDas Ticket wurde gestellt!");
 			add(type, "BG_TICKET_LAST_TICKET", "§cDein letztes Ticket ist noch in Bearbeitung!");
@@ -187,9 +190,9 @@ public class Language {
 			add(type, "BG_TIME_BAN_CHAT", "§cDer Spieler §e{INPUT0}§c wurde von §e{INPUT1}§c fuer {INPUT2} {INPUT3} Gesperrt Grund: §e{INPUT4}");
 			add(type, "BG_TIME_BAN_KICK", "§cDu wurdest fuer §e{INPUT0} {INPUT1} §cvom Netzwerk gebannt! \n§3Grund: §c{INPUT2} \n§aDu kannst auf §ewww.EpicPvP.org §aeinen Entbannungsantrag stellen.");
 			add(type, "TWITTER_NOT_FOLLOW", "§cDu musst @EpicPvPMC auf Twitter folgen um deinen Account hinzuzufuegen!");
-			add(type, "TWITTER_CHECK", "Twitter Account wird überprüft...");
-			add(type, "TWITTER_ADD", "§aDein Twitter Account wurde hinzugefügt!");
-			add(type, "TWITTER_IS_ADDED", "Du hast diesen Twitter Account bereits hinzugefügt!");
+			add(type, "TWITTER_CHECK", "Twitter Account wird §berpr§ft...");
+			add(type, "TWITTER_ADD", "§aDein Twitter Account wurde hinzugef§gt!");
+			add(type, "TWITTER_IS_ADDED", "Du hast diesen Twitter Account bereits hinzugef§gt!");
 			add(type, "TWITTER_IS_USED", "§cDieser Twitter Account hat bereits ein andere Spieler benutzt!");
 			add(type, "TWITTER_FAIL", "§cBitte kontaktiere KingIngo und schreibe ihn diese Daten: §b{INPUT0}");
 			add(type, "TWITTER_ACC", "Dein Twitter Account: §a{INPUT0}");
@@ -204,7 +207,7 @@ public class Language {
 		if (type == LanguageType.ENGLISH) {
 			if (!list.containsKey(LanguageType.ENGLISH))
 				list.put(LanguageType.ENGLISH, new HashMap<String, String>());
-			add(type, "PREFIX", "§6EpicPvP §8» §7");
+			add(type, "PREFIX", "§6EpicPvP §8§ §7");
 			add(type, "BG_DATEN_SERVER_DISCONNECT", "§cThe Data Server is not contactable!");
 			add(type, "BG_DATEN_SERVER_CONNECT", "§aThe Data Server connected!");
 			add(type, "BG_ADD_SERVER", "§aServer§e {INPUT0}§a was added!");
@@ -258,7 +261,7 @@ public class Language {
 			add(type, "BG_TEST_SERVER_INVITE1", "§aTo accept: §e/testserver");
 			add(type, "BG_TEST_SEND_INVITES", "§aPlayer invited!");
 			add(type, "BG_TICKET_NOT_FOUND", "§cNo ticket found!");
-			add(type, "BG_TICKET_PREFIX", "§eTicket §8» §7");
+			add(type, "BG_TICKET_PREFIX", "§eTicket §8§ §7");
 			add(type, "BG_NO_TICKETS_OPEN", "§cThere are not any open tickets at the moment!");
 			add(type, "BG_TICKET_CREATE", "§aTicket created!");
 			add(type, "BG_TICKET_LAST_TICKET", "§cYour last ticket is still pending!");

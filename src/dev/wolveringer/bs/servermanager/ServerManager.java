@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.bs.client.event.ServerMessageEvent;
 import dev.wolveringer.client.connection.ClientType;
-import dev.wolveringer.dataclient.protocoll.DataBuffer;
+import dev.wolveringer.dataserver.protocoll.DataBuffer;
 import dev.wolveringer.mysql.MySQL;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.BungeeServerInfo;
@@ -80,8 +80,11 @@ public class ServerManager implements Listener{
 	
 	public void loadServers() {
 		ArrayList<String[]> server = MySQL.getInstance().querySync("SELECT name,adress,port FROM `BG_Server`", -1);
-		for(String[] s : server)
-			this.server.add(new BungeecordServerInfo(s[0], new InetSocketAddress(s[1], Integer.parseInt(s[2]))));
+		for(String[] s : server){
+			BungeecordServerInfo info;
+			this.server.add(info = new BungeecordServerInfo(s[0], new InetSocketAddress(s[1], Integer.parseInt(s[2]))));
+			BungeeCord.getInstance().getServers().put(s[0], info);
+		}
 		recalculateLobbies();
 		System.out.println("Loaded Servers: "+this.server.size()+" Lobbies: "+lobbies.length);
 	}
@@ -91,6 +94,7 @@ public class ServerManager implements Listener{
 		if(server.contains(server))
 			return false;
 		server.add(info);
+		BungeeCord.getInstance().getServers().put(name, info);
 		if(name.startsWith("lobby") || name.startsWith("hub")){
 			recalculateLobbies();
 		}
@@ -108,6 +112,7 @@ public class ServerManager implements Listener{
 		if(info == null)
 			return false;
 		server.remove(info);
+		BungeeCord.getInstance().getServers().remove(info.getName());
 		if(name.startsWith("lobby") || name.startsWith("hub")){
 			recalculateLobbies();
 		}
@@ -136,6 +141,9 @@ public class ServerManager implements Listener{
 	}
 	
 	public ServerInfo nextLobby(){
+		if(lobbies.length == 0){
+			System.out.println("No lobbies found");
+		}
 		if(lobbyWitch>=lobbies.length)
 			lobbyWitch = 0;
 		return lobbies[lobbyWitch++%lobbies.length];

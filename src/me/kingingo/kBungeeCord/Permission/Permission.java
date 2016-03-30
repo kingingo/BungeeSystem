@@ -1,15 +1,18 @@
 package me.kingingo.kBungeeCord.Permission;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@AllArgsConstructor
 @Getter
 public class Permission {
 	private String permission;
 	private GroupTyp group;
+	private int starIndex = -1;
+	
 	
 	public boolean acceptPermission(String perm){
+		if(starIndex != -1){
+			return permission.substring(0,Math.min(starIndex, perm.length())).equalsIgnoreCase(perm.substring(0,starIndex));
+		}
 		return permission.equalsIgnoreCase(perm);
 	}
 	
@@ -38,5 +41,11 @@ public class Permission {
 		} else if (!permission.equals(other.permission))
 			return false;
 		return true;
+	}
+
+	public Permission(String permission, GroupTyp group) {
+		this.permission = permission;
+		this.group = group;
+		starIndex = permission.indexOf("*");
 	}
 }

@@ -7,7 +7,7 @@ import dev.wolveringer.arrays.CachedArrayList;
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.bs.client.event.ServerMessageEvent;
 import dev.wolveringer.client.connection.ClientType;
-import dev.wolveringer.dataclient.protocoll.DataBuffer;
+import dev.wolveringer.dataserver.protocoll.DataBuffer;
 import me.kingingo.kBungeeCord.Language.Language;
 import me.kingingo.kBungeeCord.Permission.PermissionManager;
 import me.kingingo.kBungeeCord.Permission.PermissionType;
@@ -49,10 +49,10 @@ public class CommandEvent extends Command implements Listener {
 	    }else if(args[0].equalsIgnoreCase("toggle")&& PermissionManager.getManager().hasPermission(p, PermissionType.ALL_PERMISSION,true)){
 	    	if(active){
 	    		active=false;
-	    		p.sendMessage(Language.getText(p, "PREFIX")+"§6Event:§a "+active);
+	    		p.sendMessage(Language.getText(p, "PREFIX")+"§6Event:§c "+active);
 	    	}else{
 	    		active=true;
-	    		p.sendMessage(Language.getText(p, "PREFIX")+"§6Event:§c "+active);
+	    		p.sendMessage(Language.getText(p, "PREFIX")+"§6Event:§a "+active);
 	    	}
 	    	Main.getDatenServer().getClient().sendServerMessage(ClientType.BUNGEECORD, "eventServer", new DataBuffer().writeByte(1).writeBoolean(active));
 	    }else if(args[0].equalsIgnoreCase("set")&& PermissionManager.getManager().hasPermission(p, PermissionType.ALL_PERMISSION,true)){

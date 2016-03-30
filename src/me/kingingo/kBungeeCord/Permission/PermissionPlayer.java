@@ -26,7 +26,7 @@ public class PermissionPlayer {
 		for(String[] var : query){
 			if(!var[0].equalsIgnoreCase("none")){
 				Group g = manager.getGroup(var[0]);
-				if(!groups.contains(g))
+				if(!groups.contains(g) && g != null)
 					groups.add(g);
 			}else
 				permissions.add(new Permission(var[1], GroupTyp.get(var[2])));
@@ -38,17 +38,19 @@ public class PermissionPlayer {
 			if(g.getName().equalsIgnoreCase(group))
 				return;
 		groups.add(manager.getGroup(group));
-		MySQL.getInstance().command("INSERT INTO `game_perm`(`prefix`, `permission`, `pgroup`, `grouptyp`, `uuid`) VALUES ('none','none','"+group+"','none','"+uuid.toString()+"')");
+		MySQL.getInstance().command("INSERT INTO `game_perm`(`prefix`, `permission`, `pgroup`, `grouptyp`, `uuid`) VALUES ('none','none','"+group+"','all','"+uuid.toString()+"')");
 	}
 	
 	public void removeGroup(String group){
 		Group gg = null;
 		for(Group g : groups)
-			if(g.getName().equalsIgnoreCase(group))
-				gg = g;
+			if(g != null)
+				if(g.getName().equalsIgnoreCase(group))
+					gg = g;
 		if(gg == null)
 			return;
 		groups.remove(gg);
+		System.out.println("[MySQL] -> "+"DELETE FROM `game_perm` WHERE `uuid`='"+uuid.toString()+"' AND `pgroup`='"+group+"'");
 		MySQL.getInstance().command("DELETE FROM `game_perm` WHERE `uuid`='"+uuid.toString()+"' AND `pgroup`='"+group+"'");
 	}
 	
@@ -68,6 +70,7 @@ public class PermissionPlayer {
 		for(Permission p : new ArrayList<>(permissions))
 			if(p.acceptPermission(permission) && (type == GroupTyp.ALL || p.getGroup() == type)){
 				permissions.remove(p);
+				System.out.println("[MySQL] -> "+"DELETE FROM `game_perm` WHERE `uuid`='"+uuid.toString()+"' AND `permission`='"+p.getPermission()+"' AND `grouptype`='"+p.getGroup().getName()+"'");
 				MySQL.getInstance().command("DELETE FROM `game_perm` WHERE `uuid`='"+uuid.toString()+"' AND `permission`='"+p.getPermission()+"' AND `grouptype`='"+p.getGroup().getName()+"'");
 			}
 	}

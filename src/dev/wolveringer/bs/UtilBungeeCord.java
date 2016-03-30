@@ -58,8 +58,10 @@ public class UtilBungeeCord {
 			};
 			hook.setDaemon(true);
 			Runtime.getRuntime().addShutdownHook(hook);
-			BungeeCord.getInstance().stop();
 		}
+		else
+			BungeeCord.getInstance().getConsole().sendMessage("§cDid not found the restart file... cant restart");
+		BungeeCord.getInstance().stop();
 	}
 	
 }

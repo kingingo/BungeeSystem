@@ -63,20 +63,22 @@ public class MySQL {
 		dbPassword = Password;
 	}
 	
+	public void connect(){
+		getConnectionInstance();
+	}
+	
 	public Connection getConnectionInstance() {
 		try {
 			if (conn == null || conn.isClosed() || !conn.isValid(500)) {
 				try {
 					Class.forName("com.mysql.jdbc.Driver");
 					conn = DriverManager.getConnection("jdbc:mysql://" + dbHost + ":" + dbPort + "/" + database + "?" + "user=" + dbUser + "&" + "password=" + dbPassword + "&autoReconnect=true");
-					System.out.println("Connect true!");
 					connect = true;
 				}
 				catch (ClassNotFoundException e) {
 					System.out.println("Treiber nicht gefunden");
 				}
 				catch (SQLException e) {
-					System.out.println("Connect nicht moeglich");
 					connect = false;
 				}
 			}

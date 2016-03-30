@@ -5,7 +5,7 @@ import java.util.UUID;
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.bs.client.event.ServerMessageEvent;
 import dev.wolveringer.client.connection.ClientType;
-import dev.wolveringer.dataclient.protocoll.DataBuffer;
+import dev.wolveringer.dataserver.protocoll.DataBuffer;
 import me.kingingo.kBungeeCord.Language.Language;
 import me.kingingo.kBungeeCord.Permission.PermissionManager;
 import me.kingingo.kBungeeCord.Permission.PermissionType;
@@ -46,7 +46,8 @@ public class CommandPerformance extends Command implements Listener {
 			if (PermissionManager.getManager().hasPermission(p, PermissionType.LAG, true)) {
 				if (args.length == 0) {
 					Runtime run = Runtime.getRuntime();
-					p.sendMessage(Language.getText(p, "PREFIX") + Language.getText(p, "BG_PERFORMANCE", new String[] { Main.getInstance().getServerId(), "-1", String.valueOf(BungeeCord.getInstance().getOnlineCount()), getAvgPing(), "undef", String.valueOf(run.maxMemory() / 1048576L) }));
+					//"§7BG: §b{INPUT0}§7 Online:§b{INPUT2} §7Player-Online:§b{INPUT3}§7 Avg-Ping:§b{INPUT4} §7TPS:§b{INPUT5} §7Ram:§b{INPUT6} MB"
+					p.sendMessage(Language.getText(p, "PREFIX") + Language.getText(p, "BG_PERFORMANCE", new String[] { Main.getInstance().getServerId(),"§cundef", "-1", String.valueOf(BungeeCord.getInstance().getOnlineCount()), getAvgPing(), "undef", String.valueOf(run.maxMemory() / 1048576L) }));
 					Main.getDatenServer().getClient().sendServerMessage(ClientType.BUNGEECORD, "performance", new DataBuffer().writeUUID(p.getUniqueId()));
 				}
 			}
@@ -58,7 +59,7 @@ public class CommandPerformance extends Command implements Listener {
 		if (e.getChannel().equalsIgnoreCase("performance")) {
 			UUID sender = e.getBuffer().readUUID();
 			Runtime run = Runtime.getRuntime();
-			Main.getDatenServer().getClient().sendMessage(sender, Language.getText("PREFIX") + Language.getText("BG_PERFORMANCE", new String[] { Main.getInstance().getServerId(), "-1", String.valueOf(BungeeCord.getInstance().getOnlineCount()), getAvgPing(), "undef", String.valueOf(run.maxMemory() / 1048576L) }));
+			Main.getDatenServer().getClient().sendMessage(sender, Language.getText("PREFIX") + Language.getText("BG_PERFORMANCE", new String[] { Main.getInstance().getServerId(),"§cundef", "-1", String.valueOf(BungeeCord.getInstance().getOnlineCount()), getAvgPing(), "undef", String.valueOf(run.maxMemory() / 1048576L) }));
 		}
 	}
 }

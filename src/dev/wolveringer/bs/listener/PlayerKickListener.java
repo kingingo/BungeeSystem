@@ -14,7 +14,7 @@ import net.md_5.bungee.event.EventHandler;
 public class PlayerKickListener implements Listener{
 	@EventHandler
 	public void onServerKickEvent(ServerKickEvent ev) {
-		if (ev.getKickReason().contains("Es joinen grad zu viele Spieler bitte versuch es später erneut")) {
+		if (ev.getKickReason().contains("Es joinen grad zu viele Spieler bitte versuch es später erneut") || ev.getKickedFrom().getName().startsWith("login")) {
 			ev.getPlayer().disconnect(ev.getKickReason());
 			return;
 		}
@@ -38,7 +38,7 @@ public class PlayerKickListener implements Listener{
 
 		ev.setCancelled(true);
 
-		if (LoginManager.getManager().isLoggedIn(ev.getPlayer())) {
+		if (!LoginManager.getManager().isLoggedIn(ev.getPlayer())) {
 			ev.setCancelServer(ServerManager.getManager().nextLoginLobby());
 			ev.getPlayer().sendMessage("§c[Login-Fallback] Server: " + ev.getCancelServer().getName());
 			ev.getPlayer().sendMessage("§c[Login-Fallback] " + BaseComponent.toLegacyText(ev.getKickReasonComponent()));

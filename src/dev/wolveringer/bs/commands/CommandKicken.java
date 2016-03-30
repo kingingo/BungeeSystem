@@ -15,7 +15,7 @@ import net.md_5.bungee.event.EventHandler;
 public class CommandKicken extends Command implements Listener{
 
 	public CommandKicken(String name) {
-		super(name);
+		super("bkick",null,name,"kick");
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), this);
 	}
 	

@@ -4,7 +4,7 @@ import dev.wolveringer.bs.Main;
 import dev.wolveringer.bs.UtilBungeeCord;
 import dev.wolveringer.bs.client.event.ServerMessageEvent;
 import dev.wolveringer.client.connection.ClientType;
-import dev.wolveringer.dataclient.protocoll.DataBuffer;
+import dev.wolveringer.dataserver.protocoll.DataBuffer;
 import me.kingingo.kBungeeCord.Permission.PermissionManager;
 import me.kingingo.kBungeeCord.Permission.PermissionType;
 import net.md_5.bungee.BungeeCord;

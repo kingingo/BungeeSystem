@@ -7,8 +7,8 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
 public class CommandVersus extends Command {
-	public CommandVersus(String name) {
-		super(name);
+	public CommandVersus(String... name) {
+		super("versus",null,name);
 	}
 
 	@Override

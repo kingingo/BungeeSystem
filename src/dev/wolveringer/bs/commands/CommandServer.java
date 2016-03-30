@@ -68,9 +68,9 @@ public class CommandServer extends PlayerCommand implements TabExecutor {
 				for (;serverss.hasNext();) {
 					String s = serverss.next();
 					if (!serverss.hasNext()) {
-						currunt.append("§9" + s).color(ChatColor.BLUE).underlined(false).event(new ClickEvent(Action.RUN_COMMAND, "/server " + s)).event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§9Klicke hier um auf §e" + s + " §9Zu Connecten!").create())).create();
+						currunt.append("§9" + s).color(ChatColor.BLUE).underlined(false).event(new ClickEvent(Action.RUN_COMMAND, "/server " + s)).event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§9Klicke hier um auf §e" + s + " §9Zu Connecten!").create()));
 					} else {
-						currunt.append("§9" + s + "§7,").color(ChatColor.BLUE).underlined(false).event(new ClickEvent(Action.RUN_COMMAND, "/server " + s)).event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§9Klicke hier um auf §e" + s + " §9Zu Connecten!").create())).create();
+						currunt.append("§9" + s + "§7,").color(ChatColor.BLUE).underlined(false).event(new ClickEvent(Action.RUN_COMMAND, "/server " + s)).event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§9Klicke hier um auf §e" + s + " §9Zu Connecten!").create()));
 					}
 					count++;
 					if(count>5){

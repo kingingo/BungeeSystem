@@ -13,20 +13,21 @@ public class Group {
 	@Getter
 	private String name = "undefined";
 	private ArrayList<Permission> perms = new ArrayList<>();
-
-	public Group(String name) {
+	private ArrayList<Group> instances = new ArrayList<>();
+	
+	private PermissionManager handle;
+	
+	public Group(PermissionManager handle,String name) {
 		System.out.println("Load group: "+name);
 		this.name = name;
-		ArrayList<String[]> query = MySQL.getInstance().querySync("SELECT `prefix`,`permission`,`grouptyp` FROM `game_perm` WHERE `pgroup`='"+name+"' AND `uuid`='none'", -1);
-		for(String[] var : query){
-			if(var[1].equalsIgnoreCase("none"))
-				prefix = var[0];
-			else
-				perms.add(new Permission(var[1], GroupTyp.get(var[2])));
-		}
-		
+		this.handle = handle;
+		init();
 	}
 
+	private void init(){
+		perms.clear();
+	}
+	
 	public void addPermission(String permission){
 		addPermission(permission, GroupTyp.ALL);
 	}
@@ -43,17 +44,17 @@ public class Group {
 		for(Permission p : new ArrayList<>(perms))
 			if((type == GroupTyp.ALL || p.getGroup() == type) && p.acceptPermission(permission)){
 				perms.remove(p);
+				System.out.println("[MySQL] -> DELETE FROM `game_perm` WHERE `pgroup`='"+name+"' AND `permission`='"+p.getPermission()+"' AND `grouptype`='"+p.getGroup().getName()+"'");
 				MySQL.getInstance().command("DELETE FROM `game_perm` WHERE `pgroup`='"+name+"' AND `permission`='"+p.getPermission()+"' AND `grouptype`='"+p.getGroup().getName()+"'");
 			}
 	}
 	
 	public void setPrefix(String prefix) {
 		if(this.prefix.equalsIgnoreCase("undefined")){
-			MySQL.getInstance().command("INSERT INTO `game_perm`(`prefix`, `permission`, `pgroup`, `grouptyp`, `uuid`) VALUES ('"+prefix+"','none','"+name+"','none','none')");
-		}
-		else
-		{
-			MySQL.getInstance().command("UPDATE `game_perm` SET `prefix`=[value-1],`permission`=[value-2],`pgroup`=[value-3],`grouptyp`=[value-4],`uuid`=[value-5] WHERE `pgroup`='"+name+"' AMD `permission`='none' AND `uuid`='none'");
+			MySQL.getInstance().command("INSERT INTO `game_perm`(`prefix`, `permission`, `pgroup`, `grouptyp`, `uuid`) VALUES ('"+prefix+"','none','"+name+"','ALL','none')");
+		} else {
+			System.out.println("[MySQL] -> UPDATE `game_perm` SET `prefix`='"+prefix+"',`grouptyp`='ALL' WHERE `pgroup`='"+name+"' AND `permission`='none' AND `uuid`='none'");
+			MySQL.getInstance().command("UPDATE `game_perm` SET `prefix`='"+prefix+"' WHERE `pgroup`='"+name+"' AND `permission`='none' AND `uuid`='none'");
 		}
 		this.prefix = prefix;
 	}
@@ -65,10 +66,50 @@ public class Group {
 		for(Permission p : new ArrayList<>(perms))
 			if((type == GroupTyp.ALL || p.getGroup() == type) && p.acceptPermission(permission))
 				return true;
+		for(Group g : instances)
+			if(g.hasPermission(permission,type))
+				return true;
 		return false;
+	}
+	
+	public void reload(){
+		init();
 	}
 
 	public ArrayList<Permission> getPermissions() {
+		//epicpvp.perm.group.
 		return perms;
+	}
+
+	public ArrayList<Permission> getPermissionsDeep() {
+		//epicpvp.perm.group.
+		ArrayList<Permission> perms = new ArrayList<>();
+		perms.addAll(perms);
+		for(Group g : instances)
+			perms.addAll(g.getPermissions());
+		return perms;
+	}
+	
+	public void delete() {
+		MySQL.getInstance().command("DELETE FROM `game_perm` WHERE `pgroup`='"+name+"'");
+	}
+
+	protected void initPerms() {
+		ArrayList<String[]> query = MySQL.getInstance().querySync("SELECT `prefix`,`permission`,`grouptyp` FROM `game_perm` WHERE `pgroup`='"+name+"' AND `uuid`='none'", -1);
+		for(String[] var : query){
+			if(var[1].equalsIgnoreCase("none"))
+				prefix = var[0];
+			else if(var[1].startsWith("epicpvp.perm.group.")){
+				String group = var[1].replaceFirst("epicpvp.perm.group.", "").split(":")[0]; //mvp+:sky
+				Group g = handle.getGroup(group);
+				if(g == null){
+					System.err.println("Cant find group instance ("+var[1]+"|"+group+")");
+					continue;
+				}
+				instances.add(g);
+			}
+			else
+				perms.add(new Permission(var[1], GroupTyp.get(var[2])));
+		}
 	}
 }

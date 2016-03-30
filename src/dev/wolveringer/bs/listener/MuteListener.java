@@ -2,6 +2,9 @@ package dev.wolveringer.bs.listener;
 
 import java.util.HashMap;
 
+import org.apache.commons.lang3.StringUtils;
+
+import dev.wolveringer.bs.login.LoginManager;
 import me.kingingo.kBungeeCord.Language.Language;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ChatEvent;
@@ -10,13 +13,13 @@ import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
-public class LobbyMuteListener implements Listener {
+public class MuteListener implements Listener {
 	private HashMap<ProxiedPlayer, Long> time = new HashMap<>();
 
 	@EventHandler
 	public void a(PostLoginEvent e) {
 		if (!e.getPlayer().getPendingConnection().isOnlineMode())
-			time.put(e.getPlayer(), System.currentTimeMillis());
+			time.put(e.getPlayer(), System.currentTimeMillis()+15*60*1000);
 	}
 
 	@EventHandler
@@ -27,7 +30,13 @@ public class LobbyMuteListener implements Listener {
 	@EventHandler
 	public void a(ChatEvent e) {
 		if (e.getSender() instanceof ProxiedPlayer) {
-			if (time.containsKey(e.getSender()))
+			if (time.containsKey(e.getSender())){
+				if(e.getMessage().startsWith("/") && !LoginManager.getManager().isLoggedIn((ProxiedPlayer) e.getSender())){
+					if(!(e.getMessage().startsWith("/login") || e.getMessage().startsWith("/register") || e.getMessage().startsWith("/captcha")))
+						e.setCancelled(true);
+					else
+						return;
+				}
 				if (time.get(e.getSender()) > System.currentTimeMillis()) {
 					if ((((ProxiedPlayer) e.getSender()).getServer().getInfo().getName().toLowerCase().contains("hub") || ((ProxiedPlayer) e.getSender()).getServer().getInfo().getName().toLowerCase().contains("lobby")) && !e.getMessage().startsWith("/")) {
 						((ProxiedPlayer) e.getSender()).sendMessage(Language.getText(((ProxiedPlayer) e.getSender()), "PREFIX") + Language.getText(((ProxiedPlayer) e.getSender()), "HUB_MUTE", formatMili((time.get(e.getSender()) - System.currentTimeMillis()))));
@@ -35,9 +44,10 @@ public class LobbyMuteListener implements Listener {
 					}
 				} else
 					time.remove(e.getSender());
+			}
 		}
 	}
-
+	
 	public static final long DAY = 86400000L;
 	public static final long HOUR = 3600000L;
 	public static final long MINUTE = 60000L;

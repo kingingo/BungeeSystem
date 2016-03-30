@@ -36,11 +36,11 @@ public class CommandgPing extends Command {
 		ProxiedPlayer p = (ProxiedPlayer) sender;
 
 		if (args.length == 0) {
-			p.sendMessage(Language.getText(p, "PREFIX") + "Player-Ping: §e" + p.getPing() + " §7Avg-Ping:§e" + getAvgPing() + "§7 Bungee-TPS: §7undef");
+			p.sendMessage(Language.getText(p, "PREFIX") + "Player-Ping: §e" + p.getPing() + " §7Avg-Ping: §e" + getAvgPing() + "§7 Bungee-TPS: §8undef");
 		} else {
 			if (PermissionManager.getManager().hasPermission(p, PermissionType.LAG, false)) {
 				if (BungeeCord.getInstance().getPlayer(args[0]) != null) {
-					p.sendMessage(Language.getText(p, "PREFIX") + "Player-Ping: §e" + BungeeCord.getInstance().getPlayer(args[0]).getPing() + " §7Avg-Ping:§e" + getAvgPing() + "§7 Bungee-TPS: §7undef");
+					p.sendMessage(Language.getText(p, "PREFIX") + "Player-Ping: §e" + BungeeCord.getInstance().getPlayer(args[0]).getPing() + " §7Avg-Ping:§e" + getAvgPing() + "§7 Bungee-TPS: §8undef");
 				} else {
 					p.sendMessage(Language.getText(p, "PREFIX") + Language.getText(p, "BG_WHEREIS_SEARCH", args[0]));
 				}
