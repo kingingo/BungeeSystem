@@ -73,12 +73,12 @@ public class PlayerJoinListener implements Listener {
 			if (response != null && response.isActive()) {
 				String time;
 				if (response.isTempBanned()) {
-					time = getDurationBreakdown(System.currentTimeMillis() - response.getEnd());
+					time = getDurationBreakdown(response.getEnd() - System.currentTimeMillis());
 				} else {
 					time = "§cPermanent";
 				}
 				e.setCancelled(true);
-				e.setCancelReason(Language.getText("BG_BAN_DISCONNECT", new Object[] { time, response.getReson() }));
+				e.setCancelReason(Language.getText(e.getConnection(), "BG_BAN_DISCONNECT", new Object[] { time, response.getReson() }));
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -102,7 +102,7 @@ public class PlayerJoinListener implements Listener {
 
 	@EventHandler
 	public void a(ServerConnectEvent e) {
-		if (e.getPlayer().getServer() == null) {
+		if (e.getPlayer().getServer() == null || e.getTarget().getName().equalsIgnoreCase("hub")) {
 			if (e.getPlayer().getPendingConnection().isOnlineMode() || LoginManager.getManager().isLoggedIn(e.getPlayer())) {
 				LoadedPlayer player = Main.getDatenServer().getClient().getPlayer(e.getPlayer().getUniqueId());
 				MessageManager.getmanager(player.getLanguageSync());
@@ -130,15 +130,22 @@ public class PlayerJoinListener implements Listener {
 		long seconds = TimeUnit.MILLISECONDS.toSeconds(millis);
 
 		StringBuilder sb = new StringBuilder(64);
-		sb.append(days);
-		sb.append(" Days ");
-		sb.append(hours);
-		sb.append(" Hours ");
-		sb.append(minutes);
-		sb.append(" Minutes ");
-		sb.append(seconds);
-		sb.append(" Seconds");
-
+		if (days > 0) {
+			sb.append(days);
+			sb.append(" day" + (days == 1 ? "" : "s") + " ");
+		}
+		if (hours > 0) {
+			sb.append(hours);
+			sb.append(" hour" + (hours == 1 ? "" : "s") + " ");
+		}
+		if (minutes > 0) {
+			sb.append(minutes);
+			sb.append(" minute" + (minutes == 1 ? "" : "s") + " ");
+		}
+		if (seconds > 0) {
+			sb.append(seconds);
+			sb.append(" second" + (seconds == 1 ? "" : "s") + "");
+		}
 		return (sb.toString());
 	}
 }

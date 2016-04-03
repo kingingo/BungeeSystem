@@ -30,6 +30,10 @@ public class CommandPwChange extends Command {
 			String newpw = args[1];
 			
 			LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(p.getUniqueId());
+			if(p.getPendingConnection().isOnlineMode()){
+				sender.sendMessage("§cYou are on premium. You cant change your password!");
+				return;
+			}
 			if(!old.equals(player.getPasswordSync())){
 				p.sendMessage(Language.getText(p, "PREFIX")+Language.getText(p, "BG_PW_NOT", old));
 				return;

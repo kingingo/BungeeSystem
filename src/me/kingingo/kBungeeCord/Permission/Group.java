@@ -18,7 +18,6 @@ public class Group {
 	private PermissionManager handle;
 	
 	public Group(PermissionManager handle,String name) {
-		System.out.println("Load group: "+name);
 		this.name = name;
 		this.handle = handle;
 		init();
@@ -35,6 +34,7 @@ public class Group {
 		if(!perms.contains(new Permission(permission,type))){
 			perms.add(new Permission(permission,type));
 			MySQL.getInstance().command("INSERT INTO `game_perm`(`prefix`, `permission`, `pgroup`, `grouptyp`, `uuid`) VALUES ('none','"+permission+"','"+name+"','"+type.getName()+"','none')");
+			handle.updateGroup(this);
 		}
 	}
 	public void removePermission(String permission){
@@ -46,15 +46,18 @@ public class Group {
 				perms.remove(p);
 				System.out.println("[MySQL] -> DELETE FROM `game_perm` WHERE `pgroup`='"+name+"' AND `permission`='"+p.getPermission()+"' AND `grouptype`='"+p.getGroup().getName()+"'");
 				MySQL.getInstance().command("DELETE FROM `game_perm` WHERE `pgroup`='"+name+"' AND `permission`='"+p.getPermission()+"' AND `grouptype`='"+p.getGroup().getName()+"'");
+				handle.updateGroup(this);
 			}
 	}
 	
 	public void setPrefix(String prefix) {
 		if(this.prefix.equalsIgnoreCase("undefined")){
 			MySQL.getInstance().command("INSERT INTO `game_perm`(`prefix`, `permission`, `pgroup`, `grouptyp`, `uuid`) VALUES ('"+prefix+"','none','"+name+"','ALL','none')");
+			handle.updateGroup(this);
 		} else {
 			System.out.println("[MySQL] -> UPDATE `game_perm` SET `prefix`='"+prefix+"',`grouptyp`='ALL' WHERE `pgroup`='"+name+"' AND `permission`='none' AND `uuid`='none'");
 			MySQL.getInstance().command("UPDATE `game_perm` SET `prefix`='"+prefix+"' WHERE `pgroup`='"+name+"' AND `permission`='none' AND `uuid`='none'");
+			handle.updateGroup(this);
 		}
 		this.prefix = prefix;
 	}
@@ -63,11 +66,8 @@ public class Group {
 		return hasPermission(permission, GroupTyp.ALL);
 	}
 	public boolean hasPermission(String permission,GroupTyp type){
-		for(Permission p : new ArrayList<>(perms))
+		for(Permission p : getPermissionsDeep())
 			if((type == GroupTyp.ALL || p.getGroup() == type) && p.acceptPermission(permission))
-				return true;
-		for(Group g : instances)
-			if(g.hasPermission(permission,type))
 				return true;
 		return false;
 	}
@@ -81,12 +81,24 @@ public class Group {
 		return perms;
 	}
 
+	public ArrayList<Group> getInstances() {
+		return instances;
+	}
+	
 	public ArrayList<Permission> getPermissionsDeep() {
+		return getPermissionsDeep(new ArrayList<>());
+	}
+	
+	protected ArrayList<Permission> getPermissionsDeep(ArrayList<Group> checked) {
 		//epicpvp.perm.group.
 		ArrayList<Permission> perms = new ArrayList<>();
 		perms.addAll(perms);
-		for(Group g : instances)
-			perms.addAll(g.getPermissions());
+		for(Group g : instances){
+			if(checked.contains(g))
+				continue;
+			perms.addAll(g.getPermissionsDeep(checked));
+			checked.add(g);
+		}
 		return perms;
 	}
 	

@@ -76,6 +76,7 @@ public class ServerManager implements Listener{
 	
 	public ServerManager() {
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), this);
+		addServer("hub", "null", 1000);
 	}
 	
 	public void loadServers() {
@@ -154,6 +155,8 @@ public class ServerManager implements Listener{
 		return loginServer[loginWitch++%loginServer.length];
 	}
 	public ServerInfo nextPremiumLobby(){
+		if(permiumServer.length == 0)
+			return nextLobby();
 		if(plobbyWitch>=permiumServer.length)
 			plobbyWitch = 0;
 		return permiumServer[plobbyWitch++%permiumServer.length];

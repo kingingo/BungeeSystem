@@ -19,9 +19,10 @@
 	</build>
 	<dependencies>
 		<dependency>
-			<groupId>DatenClient</groupId>
+			<groupId>dev.wolveringer</groupId>
 			<artifactId>DatenClient</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+			<type>jar</type>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>

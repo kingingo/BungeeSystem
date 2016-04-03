@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.bs.client.event.ServerMessageEvent;
+import dev.wolveringer.client.LanguageType;
 import dev.wolveringer.client.connection.ClientType;
 import dev.wolveringer.dataserver.protocoll.DataBuffer;
 import me.kingingo.kBungeeCord.Language.Language;
@@ -59,7 +60,7 @@ public class CommandPerformance extends Command implements Listener {
 		if (e.getChannel().equalsIgnoreCase("performance")) {
 			UUID sender = e.getBuffer().readUUID();
 			Runtime run = Runtime.getRuntime();
-			Main.getDatenServer().getClient().sendMessage(sender, Language.getText("PREFIX") + Language.getText("BG_PERFORMANCE", new String[] { Main.getInstance().getServerId(),"§cundef", "-1", String.valueOf(BungeeCord.getInstance().getOnlineCount()), getAvgPing(), "undef", String.valueOf(run.maxMemory() / 1048576L) }));
+			Main.getDatenServer().getClient().sendMessage(sender, Language.getText(LanguageType.ENGLISH,"PREFIX") + Language.getText(LanguageType.ENGLISH,"BG_PERFORMANCE", new String[] { Main.getInstance().getServerId(),"§cundef", "-1", String.valueOf(BungeeCord.getInstance().getOnlineCount()), getAvgPing(), "undef", String.valueOf(run.maxMemory() / 1048576L) }));
 		}
 	}
 }

@@ -6,15 +6,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
-import com.google.common.base.Charsets;
-
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.bs.client.event.ServerMessageEvent;
 import dev.wolveringer.bs.login.LoginManager;
+import dev.wolveringer.client.connection.ClientType;
 import dev.wolveringer.dataserver.protocoll.DataBuffer;
+import dev.wolveringer.dataserver.protocoll.packets.PacketInStatsEdit.Action;
 import dev.wolveringer.mysql.MySQL;
 import me.kingingo.kBungeeCord.Language.Language;
 import net.md_5.bungee.BungeeCord;
+import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PluginMessageEvent;
@@ -70,6 +71,11 @@ public class PermissionManager implements Listener {
 	}
 	public boolean hasPermission(ProxiedPlayer player, PermissionType teamMessage,boolean message) {
 		return hasPermission(player, teamMessage.getPermissionToString(), message);
+	}
+	public boolean hasPermission(CommandSender player, PermissionType teamMessage,boolean message) {
+		if(player instanceof ProxiedPlayer)
+			return hasPermission((ProxiedPlayer)player, teamMessage.getPermissionToString(), message);
+		return true;
 	}
 	
 	public boolean hasPermission(ProxiedPlayer player, String permission, boolean message) {
@@ -133,15 +139,21 @@ public class PermissionManager implements Listener {
 		}
 	}
 	
+	protected void updatePlayer(UUID player){
+		Main.getDatenServer().getClient().sendServerMessage(ClientType.BUNGEECORD, "permission", new DataBuffer().writeByte(0).writeUUID(player));
+	}
+	protected void updateGroup(Group group){
+		Main.getDatenServer().getClient().sendServerMessage(ClientType.BUNGEECORD, "permission", new DataBuffer().writeByte(1).writeString(group.getName()));
+	}
+	
 	@EventHandler
 	public void a(PluginMessageEvent e){
-		if(e.getSender() instanceof ProxiedPlayer && !e.getTag().startsWith("MC") && !e.getTag().startsWith("WECUI")){
+		if(e.getSender() instanceof ProxiedPlayer && !e.getTag().startsWith("MC") && !e.getTag().startsWith("WECUI") && !e.getTag().startsWith("bungeecord")){
 			e.setCancelled(true);
 			System.out.print("Player "+((ProxiedPlayer)e.getSender()).getName()+" try to send a plugin message on Channel: "+e.getTag());
 			return;
 		}
-		System.out.print("Have plugin message under tag: "+e.getTag());
-		if(e.getTag().equalsIgnoreCase("permission")){
+ 		if(e.getTag().equalsIgnoreCase("permission")){
 			try{
 				DataInputStream stream = new DataInputStream(new ByteArrayInputStream(e.getData()));
 				//Aufbau ([UUID (Packet UUID)] [INTEGER (Action)] [Data (variable length)])
@@ -156,10 +168,13 @@ public class PermissionManager implements Listener {
 					if(p == null)
 						sendToBukkit(packetUUID,new DataBuffer().writeInt(-1).writeString("Player not found"), player.getServer().getInfo()); //Response (Player not found) [UUID (packet)] [INT -1] [STRING reson]
 					else{
+						System.out.print("Requested permissions for "+player.getName()+" Request UUID: "+packetUUID);
 						DataBuffer out = new DataBuffer();
-						out.writeInt(player.getGroups().size());
-						for(Group group : p.getGroups())
+						out.writeInt(p.getGroups().size());
+						for(Group group : p.getGroups()){
 							out.writeString(group.getName());
+						}
+						System.out.print("Group size "+player.getGroups().size());
 						out.writeInt(p.getPermissions().size());
 						for(Permission perm : p.getPermissions()){
 							out.writeString(perm.getPermission());
@@ -177,7 +192,7 @@ public class PermissionManager implements Listener {
 					else
 					{
 						DataBuffer out = new DataBuffer();
-						out.writeInt(g.getPermissions().size());
+						out.writeInt(g.getPermissionsDeep().size());
 						for(Permission perm : g.getPermissionsDeep()){
 							out.writeString(perm.getPermission());
 							out.writeByte(perm.getGroup().ordinal());
@@ -223,7 +238,7 @@ public class PermissionManager implements Listener {
 
 		//manager.addGroup("tdev");
 		//manager.getGroup("tdev").setPrefix("��9Test-Dev ��7| ��9");
-		UUID name = UUID.fromString("df7b3e54-78f0-41cf-bc36-9d516d46923c");
+		UUID name = UUID.fromString("94c432ae-2b50-4820-8da0-9e3e8832743b");
 		//name = UUID.nameUUIDFromBytes( ( "OfflinePlayer:" + "wolverindev" ).getBytes( Charsets.UTF_8 ) );
 		manager.loadPlayer(name);
 		PermissionPlayer player = manager.getPlayer(name);
@@ -237,13 +252,17 @@ public class PermissionManager implements Listener {
 			if(g == null)
 				continue;
 			System.out.println("  Group: "+g.getName()+"["+g.getPrefix()+"]");
-			for(Permission p : g.getPermissionsDeep())
-				System.out.println("    "+p.getPermission()+"-"+p.getGroup());
+			for(Group f1 : g.getInstances())
+				System.out.println("    "+f1.getName());
 		}
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private static void printGroup(Group g,String premif){
+		
 	}
 }

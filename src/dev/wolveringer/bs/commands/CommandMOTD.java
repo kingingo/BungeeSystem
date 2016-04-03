@@ -5,6 +5,7 @@ import java.util.Arrays;
 import dev.wolveringer.bs.information.InformationManager;
 import me.kingingo.kBungeeCord.Permission.PermissionManager;
 import me.kingingo.kBungeeCord.Permission.PermissionType;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
@@ -24,6 +25,7 @@ public class CommandMOTD extends Command {
 			if (args.length < 1) {
 				cs.sendMessage("§cWrong Syntax:");
 				cs.sendMessage("§a/motd set <line> <message>");
+				cs.sendMessage("§a/motd get");
 				return;
 			}
 			if (args[0].equalsIgnoreCase("set")) {
@@ -38,11 +40,11 @@ public class CommandMOTD extends Command {
 					message+=s+" ";
 				
 				InformationManager.getManager().setInfo("motd" + line,message);
-				cs.sendMessage("§cDu hast den MOTD erfolgrich gesetzt.");
+				cs.sendMessage("§aDu hast den MOTD erfolgrich gesetzt.");
 			} else if (args[0].equalsIgnoreCase("get")) {
 				cs.sendMessage("§aMotd:");
-				cs.sendMessage(InformationManager.getManager().getInfo("motd1"));
-				cs.sendMessage(InformationManager.getManager().getInfo("motd2"));
+				cs.sendMessage(ChatColor.translateAlternateColorCodes('&', InformationManager.getManager().getInfo("motd1")));
+				cs.sendMessage(ChatColor.translateAlternateColorCodes('&', InformationManager.getManager().getInfo("motd2")));
 			}
 		}
 	}

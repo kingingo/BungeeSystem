@@ -20,7 +20,8 @@ public enum PermissionType {
 	BROADCAST("epicpvp.bg.broadcast"),
 	MOTD("epicpvp.bg.motd"),
 	DATEN_SERVER_CHECK("epicpvp.bg.datenservercheck"),
-	PREMIUM_TOGGLE("epicpvp.bg.premium"),
+	PREMIUM_TOGGLE("epicpvp.bg.premium.change"),
+	PREMIUM_CHECK("epicpvp.bg.premium.check"),
 	UNBAN("epicpvp.bg.unkban"),
 	LAG("epicpvp.bg.lag"),
 	WHO("epicpvp.bg.who"),
@@ -69,7 +70,8 @@ public enum PermissionType {
 	TEAMSPEAK_NICHT_ANSTUPSBART("epicpvp.ts.nicht_anstupsbart"),
 	TEAMSPEAK_NICHT_ANSCHREIBBAR("epicpvp.ts.nicht_anschreibbar"),
 
-	NONE("FAIL");
+	NONE("FAIL"),
+	SKIN_ADMIN("epicpvp.skin.admin");
 
 	public static PermissionType isPerm(String perm) {
 		PermissionType per = PermissionType.NONE;

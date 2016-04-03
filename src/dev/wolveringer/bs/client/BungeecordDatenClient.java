@@ -77,4 +77,8 @@ public class BungeecordDatenClient {
 		active = false;
 		infoUpdater.cancel();
 	}
+
+	public SocketAddress getAddress() {
+		return target;
+	}
 }

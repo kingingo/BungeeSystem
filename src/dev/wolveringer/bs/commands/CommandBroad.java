@@ -1,6 +1,7 @@
 package dev.wolveringer.bs.commands;
 
 import dev.wolveringer.bs.Main;
+import dev.wolveringer.client.LanguageType;
 import me.kingingo.kBungeeCord.Language.Language;
 import me.kingingo.kBungeeCord.Permission.PermissionManager;
 import me.kingingo.kBungeeCord.Permission.PermissionType;
@@ -28,7 +29,7 @@ public class CommandBroad extends Command implements Listener {
 				if (args[0].startsWith("&h")) {
 					args[0] = args[0].substring(2, args[0].length());
 				} else {
-					builder.append(Language.getText("PREFIX"));
+					builder.append(Language.getText(LanguageType.ENGLISH,"PREFIX"));
 				}
 
 				for (String s : args) {

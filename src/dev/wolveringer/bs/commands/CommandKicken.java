@@ -1,16 +1,15 @@
 package dev.wolveringer.bs.commands;
 
 import dev.wolveringer.bs.Main;
-import lombok.Getter;
 import me.kingingo.kBungeeCord.Language.Language;
 import me.kingingo.kBungeeCord.Permission.PermissionManager;
 import me.kingingo.kBungeeCord.Permission.PermissionType;
 import net.md_5.bungee.BungeeCord;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.Listener;
-import net.md_5.bungee.event.EventHandler;
 
 public class CommandKicken extends Command implements Listener{
 
@@ -28,7 +27,7 @@ public class CommandKicken extends Command implements Listener{
 			if(args.length<1){
 				player.sendMessages(Language.getText(player, "PREFIX")+"/kicken [Player] [Grund]");
 			}else{
-				String grund = "Kein Grund Angegeben";
+				String grund = "§6Kein Grund Angegeben";
 				String banned=args[0];
 
 				if(args.length>1){
@@ -38,11 +37,11 @@ public class CommandKicken extends Command implements Listener{
 						sb.append(" ");
 					}
 					sb.setLength(sb.length() - 1);
-					grund = sb.toString();
+					grund = ChatColor.translateAlternateColorCodes('&', sb.toString());
 				}
-				if(BungeeCord.getInstance().getPlayer(banned) != null)
-					BungeeCord.getInstance().getPlayer(banned).disconnect("§cKick reson:§b "+grund);
-				else
+				//if(BungeeCord.getInstance().getPlayer(banned) != null)
+				//	BungeeCord.getInstance().getPlayer(banned).disconnect("§cKick reson:§b "+grund);
+				//else
 					Main.getDatenServer().getClient().kickPlayer(Main.getDatenServer().getClient().getPlayerAndLoad(banned).getUUID(), "§cKick reson:§b "+grund);
 				Main.getDatenServer().teamMessage(Language.getText(player, "PREFIX")+Language.getText(player, "BG_KICK_MSG",new String[]{banned,player.getName(),grund}));
 			}
