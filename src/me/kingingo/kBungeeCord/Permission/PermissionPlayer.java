@@ -73,8 +73,8 @@ public class PermissionPlayer {
 		for(Permission p : new ArrayList<>(permissions))
 			if(p.acceptPermission(permission) && (type == GroupTyp.ALL || p.getGroup() == type)){
 				permissions.remove(p);
-				System.out.println("[MySQL] -> "+"DELETE FROM `game_perm` WHERE `uuid`='"+uuid.toString()+"' AND `permission`='"+p.getPermission()+"' AND `grouptype`='"+p.getGroup().getName()+"'");
-				MySQL.getInstance().command("DELETE FROM `game_perm` WHERE `uuid`='"+uuid.toString()+"' AND `permission`='"+p.getPermission()+"' AND `grouptype`='"+p.getGroup().getName()+"'");
+				System.out.println("[MySQL] -> "+"DELETE FROM `game_perm` WHERE `uuid`='"+uuid.toString()+"' AND `permission`='"+p.getPermission()+"' AND `grouptyp`='"+p.getGroup().getName()+"'");
+				MySQL.getInstance().command("DELETE FROM `game_perm` WHERE `uuid`='"+uuid.toString()+"' AND `permission`='"+p.getPermission()+"' AND `grouptyp`='"+p.getGroup().getName()+"'");
 				manager.updatePlayer(uuid);
 			}
 	}

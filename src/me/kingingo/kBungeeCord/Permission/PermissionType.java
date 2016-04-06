@@ -71,7 +71,8 @@ public enum PermissionType {
 	TEAMSPEAK_NICHT_ANSCHREIBBAR("epicpvp.ts.nicht_anschreibbar"),
 
 	NONE("FAIL"),
-	SKIN_ADMIN("epicpvp.skin.admin");
+	SKIN_ADMIN("epicpvp.skin.admin"),
+	BAN_INFO("epicpvp.ban.info");
 
 	public static PermissionType isPerm(String perm) {
 		PermissionType per = PermissionType.NONE;

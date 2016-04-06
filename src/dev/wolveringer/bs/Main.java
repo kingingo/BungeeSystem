@@ -5,6 +5,7 @@ import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.plugin.Plugin;
 
 public class Main extends Plugin{
+	public static boolean restart = false;
 	protected static Main main;
 	protected static BungeecordDatenClient data;
 	public static Main getInstance(){

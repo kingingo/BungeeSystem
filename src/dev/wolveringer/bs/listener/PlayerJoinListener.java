@@ -118,9 +118,10 @@ public class PlayerJoinListener implements Listener {
 
 	public static String getDurationBreakdown(long millis) {
 		if (millis < 0) {
-			throw new IllegalArgumentException("Duration must be greater than zero!");
+			return "millis<0";
 		}
-
+		if(millis == 0)
+			return "now";
 		long days = TimeUnit.MILLISECONDS.toDays(millis);
 		millis -= TimeUnit.DAYS.toMillis(days);
 		long hours = TimeUnit.MILLISECONDS.toHours(millis);

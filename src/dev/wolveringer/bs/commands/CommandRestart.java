@@ -34,7 +34,7 @@ public class CommandRestart extends Command implements Listener {
 			} else {
 				restart();
 			}
-		} else {
+		} else if(args.length == 1){
 			if (args[0].equalsIgnoreCase("all")) {
 				if (sender instanceof ProxiedPlayer) {
 					ProxiedPlayer p = (ProxiedPlayer) sender;

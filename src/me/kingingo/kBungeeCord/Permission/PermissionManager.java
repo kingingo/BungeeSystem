@@ -201,7 +201,7 @@ public class PermissionManager implements Listener {
 						sendToBukkit(packetUUID, out, player.getServer().getInfo()); //Response (Permissions) [UUID (packet)] [INT perms-Length] [STRING[] perms] [STRING name]
 					}
 				}
-				else if(action == 2){
+				else if(action == 2){//Addgroup <long[2] UUID> <string Group> <byte Grouptype>
 					UUID target = buffer.readUUID();
 					PermissionPlayer p = getPlayer(target);
 					if(p == null)

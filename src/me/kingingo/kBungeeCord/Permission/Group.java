@@ -92,7 +92,7 @@ public class Group {
 	protected ArrayList<Permission> getPermissionsDeep(ArrayList<Group> checked) {
 		//epicpvp.perm.group.
 		ArrayList<Permission> perms = new ArrayList<>();
-		perms.addAll(perms);
+		perms.addAll(this.perms);
 		for(Group g : instances){
 			if(checked.contains(g))
 				continue;

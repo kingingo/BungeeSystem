@@ -6,6 +6,7 @@ import java.net.InetSocketAddress;
 
 import dev.wolveringer.bs.client.BungeecordDatenClient;
 import dev.wolveringer.bs.commands.CommandBan;
+import dev.wolveringer.bs.commands.CommandBanInfo;
 import dev.wolveringer.bs.commands.CommandBroad;
 import dev.wolveringer.bs.commands.CommandBuild;
 import dev.wolveringer.bs.commands.CommandClearChat;
@@ -68,6 +69,7 @@ public class Bootstrap {
 		onEnable0();
 	}
 	public void onEnable0(){
+		UtilBungeeCord.class.getName(); //Keep loaded in memory
 		ThreadFactory.setFactory(new ThreadFactory(){
 			@Override
 			public ThreadRunner createThread(Runnable run) {
@@ -182,6 +184,7 @@ public class Bootstrap {
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandBan());
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandTempBan());
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandUnban());
+		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandBanInfo());
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandSkin());
 		
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new ChatListener());
