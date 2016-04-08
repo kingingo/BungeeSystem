@@ -33,13 +33,14 @@ public class SkinListener implements Listener{
 		try {
 			LoginResult result = (LoginResult) getProfileField().get(e.getPlayer().getPendingConnection());
 			Skin skin = Main.getDatenServer().getClient().getPlayerAndLoad(e.getPlayer().getName()).getOwnSkin().getSync();
-			if(skin instanceof SteveSkin)
-				return;
 			if(result == null){
 				result = new LoginResult(e.getPlayer().getUniqueId().toString(), new LoginResult.Property[0]);
 				getProfileField().set(e.getPlayer().getPendingConnection(), result);
 			}
-			result.setProperties(new LoginResult.Property[]{new LoginResult.Property("textures", skin.getRawData(), skin.getSignature())});
+			if(skin instanceof SteveSkin)
+				result.setProperties(new LoginResult.Property[0]);
+			else
+				result.setProperties(new LoginResult.Property[]{new LoginResult.Property("textures", skin.getRawData(), skin.getSignature())});
 		} catch (IllegalArgumentException | IllegalAccessException e1) {
 			e1.printStackTrace();
 		}

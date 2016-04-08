@@ -62,7 +62,8 @@ public class CommandSkin extends Command {
 					skin = Main.getDatenServer().getClient().getSkin(skinName).getSync();
 				cs.sendMessage("§aSetting skin up");
 				player.setOwnSkin(skin);
-				player.kickPlayer("§aYour skin was changed.\n§bRejoin for completion.");
+				//player.kickPlayer("§aYour skin was changed.\n§bRejoin for completion.");
+				updateSkin(player.getName());
 				cs.sendMessage("§aRejoin for successful applay.");
 				return;
 			}
@@ -89,7 +90,8 @@ public class CommandSkin extends Command {
 				else
 					skin = Main.getDatenServer().getClient().getSkin(skinName).getSync();
 				player.setOwnSkin(skin);
-				((ProxiedPlayer) cs).disconnect("§aYour skin has changed.Rejoin for successful applay.");
+				//((ProxiedPlayer) cs).disconnect("§aYour skin has changed.Rejoin for successful applay.");
+				updateSkin(player.getName());
 				return;
 			}
 			if (args[0].equalsIgnoreCase("reset")) {
@@ -106,7 +108,8 @@ public class CommandSkin extends Command {
 				}
 				player.setOwnSkin(null);
 				cs.sendMessage("§aYou set the skin of the player §e"+args[1]+"§a to default.");
-				player.kickPlayer("§aYour skin has changed.Rejoin for successful applay.");
+				//player.kickPlayer("§aYour skin has changed.Rejoin for successful applay.");
+				updateSkin(player.getName());
 				return;
 			}
 			if(args[0].equalsIgnoreCase("info")){
@@ -141,7 +144,8 @@ public class CommandSkin extends Command {
 				LoadedPlayer player = Main.getDatenServer().getClient().getPlayer(cs.getName());
 				player.setOwnSkin(null);
 				cs.sendMessage("§aYou set your skin to default");
-				((ProxiedPlayer) cs).disconnect("§aYour skin has changed.Rejoin for successful applay.");
+				updateSkin(player.getName());
+				//((ProxiedPlayer) cs).disconnect("§aYour skin has changed.Rejoin for successful applay.");
 				return;
 			}
 		}

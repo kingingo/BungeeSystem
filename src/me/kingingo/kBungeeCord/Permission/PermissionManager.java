@@ -140,10 +140,10 @@ public class PermissionManager implements Listener {
 	}
 	
 	protected void updatePlayer(UUID player){
-		Main.getDatenServer().getClient().sendServerMessage(ClientType.BUNGEECORD, "permission", new DataBuffer().writeByte(0).writeUUID(player));
+		Main.getDatenServer().getClient().sendServerMessage(ClientType.ALL, "permission", new DataBuffer().writeByte(0).writeUUID(player));
 	}
 	protected void updateGroup(Group group){
-		Main.getDatenServer().getClient().sendServerMessage(ClientType.BUNGEECORD, "permission", new DataBuffer().writeByte(1).writeString(group.getName()));
+		Main.getDatenServer().getClient().sendServerMessage(ClientType.ALL, "permission", new DataBuffer().writeByte(1).writeString(group.getName()));
 	}
 	
 	@EventHandler
@@ -192,8 +192,15 @@ public class PermissionManager implements Listener {
 					else
 					{
 						DataBuffer out = new DataBuffer();
-						out.writeInt(g.getPermissionsDeep().size());
-						for(Permission perm : g.getPermissionsDeep()){
+						ArrayList<Permission> permissions = g.getPermissionsDeep();
+						out.writeInt(permissions.size());
+						
+						for(Permission perm : permissions){
+							if(perm == null || perm.getGroup() == null){
+								System.err.println("Permissiongroupo for: "+perm+" is null!");
+								out.writeString("anUndefinedPermissionThankAnNullPointerException").writeByte(GroupTyp.ALL.ordinal());
+								continue;
+							}
 							out.writeString(perm.getPermission());
 							out.writeByte(perm.getGroup().ordinal());
 						}

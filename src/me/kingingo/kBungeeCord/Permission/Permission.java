@@ -48,4 +48,9 @@ public class Permission {
 		this.group = group;
 		starIndex = permission.indexOf("*");
 	}
+
+	@Override
+	public String toString() {
+		return "Permission [permission=" + permission + ", group=" + group + ", starIndex=" + starIndex + "]";
+	}
 }
