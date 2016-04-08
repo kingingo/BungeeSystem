@@ -24,6 +24,8 @@ public class BungeecordDatenClient {
 	private String name;
 	private SocketAddress target;
 	
+	private boolean tryConnecting = false;
+	
 	public BungeecordDatenClient(String name, SocketAddress target) {
 		super();
 		this.name = name;
@@ -46,15 +48,24 @@ public class BungeecordDatenClient {
 	}
 	
 	
-	public void start(String password) throws Exception{
-		client = Client.createBungeecordClient(name, (InetSocketAddress) target, new ClientExternalHandler(), new ClientInfoManager());
-		client.connect(password.getBytes());
-		wclient = new ClientWrapper(client);
+	public void start(String password) throws Exception {
+		if(isActive() || tryConnecting)
+			return;
+		tryConnecting = true;
+		if(client == null)
+			client = Client.createBungeecordClient(name, (InetSocketAddress) target, new ClientExternalHandler(), new ClientInfoManager());
+		if(wclient == null)
+			wclient = new ClientWrapper(client);
+		try{
+			client.connect(password.getBytes());
+		}finally {
+			tryConnecting = false;
+		}
 		active = true;
 		infoUpdater = BungeeCord.getInstance().getScheduler().runAsync(Main.getInstance(), new Runnable() {
 			@Override
 			public void run() {
-				while (active && client.isConnected()) {
+				while (isActive()) {
 					try{
 						onlineCount = wclient.getServerStatus(PacketOutServerStatus.Action.GENERAL, null, false).getSync().getPlayer();
 					}catch(Exception e){
@@ -70,7 +81,7 @@ public class BungeecordDatenClient {
 	}
 	
 	public boolean isActive() {
-		return active && client.isConnected();
+		return active && client.isConnected() && client.isHandschakeCompleded() && wclient != null;
 	}
 	
 	public void stop(){
@@ -80,5 +91,13 @@ public class BungeecordDatenClient {
 
 	public SocketAddress getAddress() {
 		return target;
+	}
+	
+	public static void main(String[] args) {
+		try{
+			throw new RuntimeException();
+		}finally{
+			System.out.println("Runtime");
+		}
 	}
 }

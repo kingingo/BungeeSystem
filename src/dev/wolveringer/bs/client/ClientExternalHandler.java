@@ -42,24 +42,6 @@ public class ClientExternalHandler implements BungeeCordActionListener{
 	@Override
 	public void disconnected() {
 		System.err.println("Client disconnected!");
-		System.out.println("Try to reconnect.");
-		while (!Main.getDatenServer().isActive()) {
-			System.out.println("Try to connect to dataserver");
-			try{
-				Main.getDatenServer().start(Main.getInstance().getDatenPassword());
-			}catch(Exception e){
-				if(e.getMessage().equalsIgnoreCase("Connection refused")){
-					System.out.println("Cant connect to DatenServer. Try again in 5 seconds.");
-					try {
-						Thread.sleep(5000);
-					} catch (InterruptedException e1) {
-						e1.printStackTrace();
-					}
-					continue;
-				}
-				e.printStackTrace();
-			}
-		};
 	}
 
 	@Override
