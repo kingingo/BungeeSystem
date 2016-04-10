@@ -8,10 +8,13 @@ import dev.wolveringer.bs.Main;
 import dev.wolveringer.bs.login.LoginManager;
 import dev.wolveringer.bs.message.MessageManager;
 import dev.wolveringer.bs.servermanager.ServerManager;
-import dev.wolveringer.client.LanguageType;
 import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.client.PacketHandleErrorException;
 import dev.wolveringer.dataserver.ban.BanEntity;
+import dev.wolveringer.dataserver.player.LanguageType;
+import dev.wolveringer.dataserver.player.Setting;
+import dev.wolveringer.dataserver.protocoll.packets.PacketInChangePlayerSettings;
+import dev.wolveringer.dataserver.protocoll.packets.PacketOutPlayerSettings;
 import me.kingingo.kBungeeCord.Language.Language;
 import me.kingingo.kBungeeCord.Permission.PermissionManager;
 import me.kingingo.kBungeeCord.Permission.PermissionType;
@@ -19,6 +22,7 @@ import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.event.PreLoginEvent;
 import net.md_5.bungee.api.event.ServerConnectEvent;
 import net.md_5.bungee.api.plugin.Listener;
+import net.md_5.bungee.connection.InitialHandler;
 import net.md_5.bungee.event.EventHandler;
 
 public class PlayerJoinListener implements Listener {
@@ -86,13 +90,23 @@ public class PlayerJoinListener implements Listener {
 			e.setCancelReason("§cAn error happened while joining.\nTry again in 10-30 seconds");
 		}
 		long end = System.currentTimeMillis();
-		if (end - start > 200)
-			System.out.println("LoginEvent for player " + e.getConnection().getName() + " needed more than 200ms (" + (end - start) + ")");
+		if (end - start > 400)
+			System.out.println("LoginEvent for player " + e.getConnection().getName() + " needed more than 400ms (" + (end - start) + ")");
 	}
 
 	@EventHandler
 	public void a(PostLoginEvent e) {
-		LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(e.getPlayer().getUniqueId());
+		System.out.println("ID: "+e.getPlayer().getUniqueId()+":"+e.getPlayer().getName());
+		LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(e.getPlayer().getName());
+		if(!player.getUUID().equals(e.getPlayer().getUniqueId())){
+			if(player.getUUID().equals(UUID.nameUUIDFromBytes(("OfflinePlayer:"+e.getPlayer().getName()).getBytes()))){
+				System.out.println("Switching players uuid (cracked uuid to premium) (But premium is set!)");
+				Main.getDatenServer().getClient().writePacket(new PacketInChangePlayerSettings(player.getUUID(), Setting.UUID, e.getPlayer().getUniqueId().toString())).getSync();
+				Main.getDatenServer().getClient().clearCacheForPlayer(player);
+				player = Main.getDatenServer().getClient().getPlayerAndLoad(e.getPlayer().getName());
+				System.out.println("New uuid: "+player.getUUID());
+			}
+		}
 		LanguageType lang = player.getLanguageSync();
 		Language.updateLanguage(e.getPlayer(), lang);
 		PermissionManager.getManager().loadPlayer(e.getPlayer().getUniqueId());

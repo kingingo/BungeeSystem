@@ -1,6 +1,6 @@
 package me.kingingo.kBungeeCord.Language;
 
-import dev.wolveringer.client.LanguageType;
+import dev.wolveringer.dataserver.player.LanguageType;
 
 public class TranslationEnglish extends Translation{
 

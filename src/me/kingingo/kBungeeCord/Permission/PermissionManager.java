@@ -60,6 +60,8 @@ public class PermissionManager implements Listener {
 	}
 
 	public PermissionPlayer getPlayer(UUID player) {
+		if(user.get(player) == null)
+			loadPlayer(player);
 		return user.get(player);
 	}
 
@@ -162,19 +164,16 @@ public class PermissionManager implements Listener {
 				
 				ProxiedPlayer player = (ProxiedPlayer) e.getReceiver();
 				int action = buffer.readByte();
-				System.out.print("Packet uuid: "+packetUUID+" action: "+action);
 				if(action == 0){ //INFO Get player permissions ([UUID (player)])
 					PermissionPlayer p = getPlayer(buffer.readUUID());
 					if(p == null)
 						sendToBukkit(packetUUID,new DataBuffer().writeInt(-1).writeString("Player not found"), player.getServer().getInfo()); //Response (Player not found) [UUID (packet)] [INT -1] [STRING reson]
 					else{
-						System.out.print("Requested permissions for "+player.getName()+" Request UUID: "+packetUUID);
 						DataBuffer out = new DataBuffer();
 						out.writeInt(p.getGroups().size());
 						for(Group group : p.getGroups()){
 							out.writeString(group.getName());
 						}
-						System.out.print("Group size "+player.getGroups().size());
 						out.writeInt(p.getPermissions().size());
 						for(Permission perm : p.getPermissions()){
 							out.writeString(perm.getPermission());

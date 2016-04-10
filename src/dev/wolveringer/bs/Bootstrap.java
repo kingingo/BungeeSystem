@@ -42,7 +42,6 @@ import dev.wolveringer.bs.commands.CommandgPing;
 import dev.wolveringer.bs.information.InformationManager;
 import dev.wolveringer.bs.listener.ChatListener;
 import dev.wolveringer.bs.listener.PingListener;
-import dev.wolveringer.bs.listener.PlayerDisconnectListener;
 import dev.wolveringer.bs.listener.PlayerJoinListener;
 import dev.wolveringer.bs.listener.PlayerKickListener;
 import dev.wolveringer.bs.listener.ServerListener;
@@ -51,11 +50,13 @@ import dev.wolveringer.bs.listener.TeamChatListener;
 import dev.wolveringer.bs.login.LoginManager;
 import dev.wolveringer.bs.message.MessageManager;
 import dev.wolveringer.bs.servermanager.ServerManager;
+import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.client.threadfactory.ThreadFactory;
 import dev.wolveringer.client.threadfactory.ThreadRunner;
 import dev.wolveringer.event.EventListener;
 import dev.wolveringer.event.EventManager;
 import dev.wolveringer.events.Event;
+import dev.wolveringer.events.EventConditions;
 import dev.wolveringer.events.EventType;
 import dev.wolveringer.events.player.PlayerServerSwitchEvent;
 import dev.wolveringer.mysql.MySQL;
@@ -221,16 +222,18 @@ public class Bootstrap {
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new TeamChatListener());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new ServerListener());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new SkinListener());
-		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new PlayerDisconnectListener());
 
+		System.out.println("Event hander");
 		EventManager emanager = Main.getDatenServer().getClient().getHandle().getEventManager();
 		emanager.getEventManager(EventType.SERVER_SWITCH).setEventEnabled(true);
+		emanager.getEventManager(EventType.SERVER_SWITCH).setConditionEnables(EventConditions.PLAYERS_WHITELIST, true);
+		emanager.getEventManager(EventType.SERVER_SWITCH).getCondition(EventConditions.PLAYERS_WHITELIST).addValue(Main.getDatenServer().getClient().getPlayerAndLoad("WolverinDEV").getUUID());
 		emanager.registerListener(new EventListener() {
 			@Override
 			public void fireEvent(Event e) {
 				if (e instanceof PlayerServerSwitchEvent) {
 					PlayerServerSwitchEvent ev = (PlayerServerSwitchEvent) e;
-					System.out.println("Serverswitch: " + ev.getFrom() + ":" + ev.getTo() + ":" + ev.getPlayer());
+					System.out.println("§aServerswitch: " + ev.getFrom() + ":" + ev.getTo() + ":" + ev.getPlayer());
 				}
 			}
 		});

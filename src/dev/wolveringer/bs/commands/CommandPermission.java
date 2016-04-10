@@ -47,18 +47,23 @@ public class CommandPermission extends Command implements Listener {
 				cs.sendMessage("§aOwned permissions:");
 				for(Permission x : pp.getPermissions())
 					cs.sendMessage("  §7- §b"+x.getPermission()+"§7-§b"+x.getGroup());
+				cs.sendMessage("§aOwned negative permissions:");
+				for(Permission x : pp.getNegativePermissions())
+					cs.sendMessage("  §7- §b"+x.getPermission()+"§7-§b"+x.getGroup());
 				cs.sendMessage("§aGroup permissions:");
 				for(Group g : pp.getGroups())
 					if(g != null){
 						cs.sendMessage("  §6Group §a"+g.getName()+"§7[§r"+g.getPrefix()+"§7]");
 						for(Permission x : g.getPermissions())
 							cs.sendMessage("  §7- §b"+x.getPermission()+"§7-§b"+x.getGroup());
+						for(Permission x : g.getNegativePerms())
+							cs.sendMessage("  §7- §b"+x.getPermission()+"§7-§b"+x.getGroup());
 					}
 				return;
 			}
 			else if(args[0].equalsIgnoreCase("groupInfo")){
 				Group g = PermissionManager.getManager().getGroup(args[1]);
-				if(g == null){
+				if(g != null){
 					cs.sendMessage("§aGroup: §e"+g.getName()+"§7[§r"+g.getPrefix()+"§7]");
 					cs.sendMessage("§aGroup instances:");
 					for(Group id : g.getInstances()){
@@ -66,6 +71,10 @@ public class CommandPermission extends Command implements Listener {
 					}
 					cs.sendMessage("§aPermissions:");
 					for(Permission p : g.getPermissions()){
+						cs.sendMessage("  §7- "+p.getPermission());
+					}
+					cs.sendMessage("§aNegative Permissions:");
+					for(Permission p : g.getNegativePerms()){
 						cs.sendMessage("  §7- "+p.getPermission());
 					}
 				}

@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import dev.wolveringer.bs.Main;
-import dev.wolveringer.client.LanguageType;
 import dev.wolveringer.client.connection.ClientType;
+import dev.wolveringer.dataserver.player.LanguageType;
 import dev.wolveringer.dataserver.protocoll.DataBuffer;
 import dev.wolveringer.mysql.MySQL;
 import me.kingingo.kBungeeCord.Language.Language;
@@ -73,7 +73,7 @@ public class MessageManager implements Listener{
 	public void updateMessages(){
 		titles.clear();
 		messages.clear();
-		ArrayList<String[]> out = MySQL.getInstance().querySync("SELECT `type`,`motd` FROM `BG_News` WHERE `language`='"+lang.getDef()+"'", -1);
+		ArrayList<String[]> out = MySQL.getInstance().querySync("SELECT `type`,`motd` FROM `BG_News` WHERE `language`='"+lang.getShortName()+"'", -1);
 		for(String[] var : out){
 			if(var[0].equalsIgnoreCase("BROADCAST")){
 				messages.add(var[1]);

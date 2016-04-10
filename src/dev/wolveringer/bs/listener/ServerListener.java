@@ -10,6 +10,7 @@ public class ServerListener implements Listener{
 	@EventHandler
 	public void a(PlayerDisconnectEvent e){
 		System.out.println("Player disconnect. UUID: "+e.getPlayer().getUniqueId());
+		Main.getDatenServer().getClient().getPlayer(e.getPlayer().getName()).setServerSync(null); //disconnect
 		Main.getDatenServer().getClient().getPlayer(e.getPlayer().getName()).unload();
 		Main.getDatenServer().getClient().clearCacheForPlayer(Main.getDatenServer().getClient().getPlayer(e.getPlayer().getName()));
 	}

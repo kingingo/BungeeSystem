@@ -1,7 +1,7 @@
 package dev.wolveringer.bs.commands;
 
 import dev.wolveringer.bs.message.MessageManager;
-import dev.wolveringer.client.LanguageType;
+import dev.wolveringer.dataserver.player.LanguageType;
 import me.kingingo.kBungeeCord.Language.Language;
 import me.kingingo.kBungeeCord.Permission.PermissionManager;
 import me.kingingo.kBungeeCord.Permission.PermissionType;
@@ -36,13 +36,13 @@ public class CommandNews extends Command {
 						int id = 0;
 						player.sendMessage("  §aBroadcasts: ");
 						for(String s : MessageManager.getmanager(t).getMessages()){
-							player.sendMessage(new ComponentBuilder("   §7- §r"+ChatColor.translateAlternateColorCodes('&',s)).event(new HoverEvent(Action.SHOW_TEXT, new ComponentBuilder("§cClick to delete").create())).event(new ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.RUN_COMMAND, "/news remove "+t.getDef()+" B "+id)).create());
+							player.sendMessage(new ComponentBuilder("   §7- §r"+ChatColor.translateAlternateColorCodes('&',s)).event(new HoverEvent(Action.SHOW_TEXT, new ComponentBuilder("§cClick to delete").create())).event(new ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.RUN_COMMAND, "/news remove "+t.getShortName()+" B "+id)).create());
 							id++;
 						}
 						id = 0;
 						player.sendMessage("  §aTitles: ");
 						for(String s : MessageManager.getmanager(t).getTitles()){
-							player.sendMessage(new ComponentBuilder("   §7- §r"+ChatColor.translateAlternateColorCodes('&',s)).event(new HoverEvent(Action.SHOW_TEXT, new ComponentBuilder("§cClick to delete").create())).event(new ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.RUN_COMMAND, "/news remove "+t.getDef()+" T "+id)).create());
+							player.sendMessage(new ComponentBuilder("   §7- §r"+ChatColor.translateAlternateColorCodes('&',s)).event(new HoverEvent(Action.SHOW_TEXT, new ComponentBuilder("§cClick to delete").create())).event(new ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.RUN_COMMAND, "/news remove "+t.getShortName()+" T "+id)).create());
 							id++;
 						}
 					}
@@ -53,7 +53,7 @@ public class CommandNews extends Command {
 						player.sendMessage("§cMessage Type not found");
 						return;
 					}
-					LanguageType lang = LanguageType.get(args[1]);
+					LanguageType lang = LanguageType.getLanguageFromName(args[1]);
 					if(lang == null){
 						player.sendMessage("§cLanguage not found");
 						return;
@@ -68,7 +68,7 @@ public class CommandNews extends Command {
 						player.sendMessage("§cMessage Type not found");
 						return;
 					}
-					LanguageType lang = LanguageType.get(args[1]);
+					LanguageType lang = LanguageType.getLanguageFromName(args[1]);
 					if(lang == null){
 						player.sendMessage("§cLanguage not found");
 						return;

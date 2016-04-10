@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import dev.wolveringer.bs.Main;
-import dev.wolveringer.client.LanguageType;
+import dev.wolveringer.dataserver.player.LanguageType;
 import lombok.Getter;
 import net.md_5.bungee.api.connection.PendingConnection;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -60,7 +60,7 @@ public class Language {
 			languages.put(player.getUniqueId(), lang);
 			return lang;
 		} else if (!translations.containsKey(languages.get(player.getUniqueId()))) {
-			System.out.println("[Language] Die Sprache " + languages.get(player.getUniqueId()).getDef() + " wurde nicht gefunden.");
+			System.out.println("[Language] Die Sprache " + languages.get(player.getUniqueId()).getShortName() + " wurde nicht gefunden.");
 		}
 
 		return languages.get(player.getUniqueId());

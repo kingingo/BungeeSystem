@@ -2,7 +2,7 @@ package me.kingingo.kBungeeCord.Language;
 
 import java.util.HashMap;
 
-import dev.wolveringer.client.LanguageType;
+import dev.wolveringer.dataserver.player.LanguageType;
 
 public abstract class Translation {
 	private HashMap<String, String> values = new HashMap<>();

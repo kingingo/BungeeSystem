@@ -4,8 +4,8 @@ import java.util.UUID;
 
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.bs.client.event.ServerMessageEvent;
-import dev.wolveringer.client.LanguageType;
 import dev.wolveringer.client.external.BungeeCordActionListener;
+import dev.wolveringer.dataserver.player.LanguageType;
 import dev.wolveringer.dataserver.player.Setting;
 import dev.wolveringer.dataserver.protocoll.DataBuffer;
 import me.kingingo.kBungeeCord.Language.Language;
@@ -66,7 +66,7 @@ public class ClientExternalHandler implements BungeeCordActionListener{
 	@Override
 	public void settingUpdate(UUID player, Setting setting, String value) {
 		if(setting == Setting.LANGUAGE)
-			Language.updateLanguage(BungeeCord.getInstance().getPlayer(player), LanguageType.get(value));
+			Language.updateLanguage(BungeeCord.getInstance().getPlayer(player), LanguageType.getLanguageFromName(value));
 	}
 
 }
