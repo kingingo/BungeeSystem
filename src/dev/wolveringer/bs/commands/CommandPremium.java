@@ -31,7 +31,7 @@ public class CommandPremium extends Command implements Listener {
 					sender.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.premium.alredyPremium", sender));
 					return;
 				}
-				for(String message : Main.getTranslationManager().translate("command.premium.warn", sender).split("<br>"))
+				for(String message : Main.getTranslationManager().translate("command.premium.warn", sender).split(";"))
 					p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+ message);
 				return;
 			}

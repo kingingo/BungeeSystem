@@ -1,8 +1,6 @@
 package dev.wolveringer.bs.commands;
 
 import dev.wolveringer.bs.Main;
-import lombok.Getter;
-import me.kingingo.kBungeeCord.Language.Language;
 import me.kingingo.kBungeeCord.Permission.PermissionManager;
 import me.kingingo.kBungeeCord.Permission.PermissionType;
 import net.md_5.bungee.BungeeCord;
@@ -10,7 +8,6 @@ import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.Listener;
-import net.md_5.bungee.event.EventHandler;
 
 public class CommandSendServer extends Command implements Listener {
 
@@ -40,17 +37,20 @@ public class CommandSendServer extends Command implements Listener {
 			}
 			
 			if(BungeeCord.getInstance().getServerInfo(server)==null){
-				p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Language.getText(p, "BG_SERVER_NOT_EXIST"));
+				p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.sendserver.notexist", sender)); //§cServer does not exist!
 				return;
 			}
 			
 			if(BungeeCord.getInstance().getPlayer(player) != null){
 				BungeeCord.getInstance().getPlayer(player).connect( BungeeCord.getInstance().getServerInfo(server) );
-				p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Language.getText(p, "BG_PLAYER_SEND"));
+				p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.sendserver.sended", sender)); //§aPlayer was send to the server
 			}else{
 				Main.getDatenServer().getClient().getPlayerAndLoad(player).setServerSync(server);
-				p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Language.getText(p, "BG_SEND_A"));
+				p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.sendserver.other.sended", sender)); //§aA request was send to the BGs
 			}
 		}
 	}
 }
+//command.sendserver.notexist - §cServer does not exist!
+//command.sendserver.sended - §aPlayer was send to the server
+//command.sendserver.other.sended - §aA request was send to the BGs

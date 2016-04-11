@@ -19,8 +19,9 @@ public class CommandVersus extends Command {
 		if (p.getServer().getInfo() != BungeeCord.getInstance().getServerInfo("versus")) {
 			p.connect(BungeeCord.getInstance().getServerInfo("versus"));
 		} else {
-			p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Language.getText(p, "BG_YOU_ARE_NOW_ON", "Versus"));
+			p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.versus.alredy", sender));
 		}
 	}
 
 }
+//command.versus.alredy - §cYou are allready on the §eversus §cserver!

@@ -1,7 +1,6 @@
 package dev.wolveringer.bs;
 
 import dev.wolveringer.bs.client.BungeecordDatenClient;
-import dev.wolveringer.translation.TranslationManager;
 import lombok.Getter;
 import me.kingingo.kBungeeCord.Language.TranslationHandler;
 import net.md_5.bungee.BungeeCord;
@@ -28,12 +27,16 @@ public class Main extends Plugin{
 			@Override
 			public void run() {
 				Plugin plugin;
-				while ((plugin = BungeeCord.getInstance().getPluginManager().getPlugin("DatenClient")) == null) {
+				Class<?> clazz = null;
+				while ((plugin = BungeeCord.getInstance().getPluginManager().getPlugin("DatenClient")) == null || clazz == null) {
 					try {
 						Thread.sleep(100);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
+					try{
+						clazz = Class.forName("dev.wolveringer.client.LoadedPlayer");
+					}catch(Exception e){};
 				}
 				plugin = null;
 				new Bootstrap(Main.getInstance().getDataFolder()).onEnable();

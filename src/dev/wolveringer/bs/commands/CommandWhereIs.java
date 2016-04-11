@@ -28,7 +28,7 @@ public class CommandWhereIs extends Command implements Listener {
 		ProxiedPlayer p = (ProxiedPlayer) sender;
 		
 		if (args.length==0) {
-			p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Language.getText(p, "BG_WHEREIS",new String[]{p.getName(),p.getServer().getInfo().getName(),Main.getInstance().getServerId()}));
+			p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.whereis.message", sender,new String[]{p.getName(),p.getServer().getInfo().getName(),Main.getInstance().getServerId()}));
 			return;
 		}
 		
@@ -36,9 +36,8 @@ public class CommandWhereIs extends Command implements Listener {
 			if (args.length == 1) {
 				String name = args[0];
 				if(BungeeCord.getInstance().getPlayer(name) != null){
-					p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Language.getText(p, "BG_WHEREIS",new String[]{name,BungeeCord.getInstance().getPlayer(name).getServer().getInfo().getName(),Main.getInstance().getServerId()}));
+					p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.whereis.message", sender,new String[]{p.getName(),p.getServer().getInfo().getName(),Main.getInstance().getServerId()}));
 				}else{
-					p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Language.getText(p, "BG_WHEREIS_SEARCH", name));
 					Main.getDatenServer().getClient().sendServerMessage(ClientType.BUNGEECORD, "whereis", new DataBuffer().writeUUID(p.getUniqueId()).writeString(name));
 				}
 			}
@@ -51,9 +50,10 @@ public class CommandWhereIs extends Command implements Listener {
 			String user = e.getBuffer().readString();
 			if(BungeeCord.getInstance().getPlayer(user) != null){
 				ProxiedPlayer p = BungeeCord.getInstance().getPlayer(user);
-				Main.getDatenServer().getClient().sendMessage(player, Main.getTranslationManager().translate("prefix", sender)+Language.getText(p, "BG_WHEREIS",new String[]{user,BungeeCord.getInstance().getPlayer(user).getServer().getInfo().getName(),Main.getInstance().getServerId()}));
+				Main.getDatenServer().getClient().sendMessage(player, Main.getTranslationManager().translate("prefix")+Main.getTranslationManager().translate("command.whereis.message", new String[]{p.getName(),p.getServer().getInfo().getName(),Main.getInstance().getServerId()}));
 			}
 		}
 	}
 
 }
+//command.whereis.message - §a%s0§7 is currently on server §e%s1§7 and BungeeCord §e%s2

@@ -21,8 +21,9 @@ public class CommandVorbau extends Command {
 		if (p.getServer().getInfo() != BungeeCord.getInstance().getServerInfo("v")) {
 			p.connect(BungeeCord.getInstance().getServerInfo("v"));
 		} else {
-			p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Language.getText(p, "BG_YOU_ARE_NOW_ON", "Vorbau"));
+			p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.vorbau.alredy", sender));
 		}
 	}
 
 }
+//command.vorbau.alredy - §cYou are allready on the §eversus §cserver!

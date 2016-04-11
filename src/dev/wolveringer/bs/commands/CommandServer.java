@@ -60,7 +60,7 @@ public class CommandServer extends PlayerCommand implements TabExecutor {
 						p.connect(BungeeCord.getInstance().getServerInfo(args[0]));
 					}
 				} else {
-					sender.sendMessage(new ComponentBuilder(Language.getText((ProxiedPlayer) sender, "PREFIX") + "§cServer not found!").create());
+					sender.sendMessage(new ComponentBuilder(Main.getTranslationManager().translate("prefix", sender)+ "§cServer not found!").create());
 				}
 			} else {
 				Iterator<String> serverss = BungeeCord.getInstance().getServers().keySet().iterator();
@@ -82,14 +82,11 @@ public class CommandServer extends PlayerCommand implements TabExecutor {
 					}
 				}
 				sender.sendMessage(new ComponentBuilder("§7----------------------------------------------------").create());
-				sender.sendMessage(new ComponentBuilder("§6Server Im Netzwerk: ").create());
+				sender.sendMessage(new ComponentBuilder("§6Servers: ").create());
 				for (BaseComponent[] comp : servers)
 					sender.sendMessage(comp);
 				sender.sendMessage(new ComponentBuilder("§7----------------------------------------------------").create());
 			}
-
-		} else {
-			sender.sendMessage(Main.getTranslationManager().translate("prefix", sender)+ Language.getText((ProxiedPlayer) sender, "NO_PERMISSION"));
 		}
 	}
 

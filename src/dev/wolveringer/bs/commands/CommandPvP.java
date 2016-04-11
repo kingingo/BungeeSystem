@@ -21,8 +21,10 @@ public class CommandPvP extends Command {
 		if (p.getServer().getInfo() != BungeeCord.getInstance().getServerInfo("pvp")) {
 	        p.connect(BungeeCord.getInstance().getServerInfo("pvp"));  
 	    }else{
-	    	p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Language.getText(p, "BG_YOU_ARE_NOW_ON", "PvP"));
+	    	p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.pvp.alredy", args)); //§cYou are allready on the §epvp §cserver!
 	    }
 	}
 
 }
+
+//command.pvp.alredy - §cYou are allready on the §epvp §cserver!

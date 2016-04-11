@@ -95,7 +95,7 @@ public class PermissionManager implements Listener {
 			return false; //Not logged in Player cant have perms
 		boolean perm = hasPermission(player.getUniqueId(), permission);
 		if (message && !perm) 
-			player.sendMessage(Language.getText(player, "PREFIX") + "§cYou don't have permission to do that.");
+			player.sendMessage(Main.getTranslationManager().translate("prefix", player)+ "§cYou don't have permission to do that.");
 		return perm;
 	}
 

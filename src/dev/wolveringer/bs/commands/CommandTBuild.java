@@ -24,8 +24,9 @@ public class CommandTBuild extends Command {
 		if (p.getServer().getInfo() != BungeeCord.getInstance().getServerInfo("tbuild")) {
 	        p.connect(BungeeCord.getInstance().getServerInfo("tbuild"));  
 	    }else{
-	    	p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Language.getText(p, "BG_YOU_ARE_NOW_ON", "TBuild"));
+	    	p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.tbuild.alredy", sender));
 	    }
 	}
 
 }
+//command.tbuild.alredy - §cYou are allready on the §etest-build §cserver!

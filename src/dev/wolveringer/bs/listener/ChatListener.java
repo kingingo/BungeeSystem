@@ -42,7 +42,7 @@ public class ChatListener implements Listener {
 				if (time.get(e.getSender()) > System.currentTimeMillis()) {
 					if ((((ProxiedPlayer) e.getSender()).getServer().getInfo().getName().toLowerCase().contains("hub") || ((ProxiedPlayer) e.getSender()).getServer().getInfo().getName().toLowerCase().contains("lobby")) && !e.getMessage().startsWith("/")) {
 						//§cYou are able to Chat here in §e%s0§c!
-						((ProxiedPlayer) e.getSender()).sendMessage(Main.getTranslationManager().translate("prefix", p)));//formatMili((time.get(e.getSender()) - System.currentTimeMillis())
+						((ProxiedPlayer) e.getSender()).sendMessage(Main.getTranslationManager().translate("prefix", p)+Main.getTranslationManager().translate("event.chat.timewait", p,formatMili((time.get(e.getSender()) - System.currentTimeMillis()))));//formatMili((time.get(e.getSender()) - System.currentTimeMillis())
 						e.setCancelled(true);
 					}
 				} else
@@ -125,3 +125,5 @@ public class ChatListener implements Listener {
 		return (int) (milis / SECOND) + "sec";
 	}
 }
+
+//event.chat.timewait - §cYou are able to Chat here in §e%s0§c! [time]
