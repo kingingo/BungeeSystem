@@ -28,45 +28,42 @@ public class CommandPremium extends Command implements Listener {
 
 			if (args.length == 0) {
 				if(p.getPendingConnection().isOnlineMode()){
-					sender.sendMessage("§aYou are alredy on premium.");
+					sender.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.premium.alredyPremium", sender));
 					return;
 				}
-				p.sendMessage(Language.getText(p, "PREFIX") + Language.getText(p, "BG_PREMIUM_MSG1"));
-				p.sendMessage(Language.getText(p, "PREFIX") + Language.getText(p, "BG_PREMIUM_MSG2"));
-				p.sendMessage(Language.getText(p, "PREFIX") + Language.getText(p, "BG_PREMIUM_MSG3"));
-				p.sendMessage(Language.getText(p, "PREFIX") + Language.getText(p, "BG_PREMIUM_MSG4"));
-				p.sendMessage(Language.getText(p, "PREFIX") + Language.getText(p, "BG_PREMIUM_MSG5"));
+				for(String message : Main.getTranslationManager().translate("command.premium.warn", sender).split("<br>"))
+					p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+ message);
 				return;
 			}
 
 			if (args[0].equalsIgnoreCase("on")) {
 				if (args.length == 1) {
 					if(p.getPendingConnection().isOnlineMode()){
-						sender.sendMessage("§aYou are alredy on premium.");
+						sender.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.premium.alredyPremium", sender));
 						return;
 					}
 					LoadedPlayer target = Main.getDatenServer().getClient().getPlayerAndLoad(p.getUniqueId());
 					if (!target.isPremiumSync()) {
-						p.disconnect("§aApplay Changes");
+						p.disconnect(Main.getTranslationManager().translate("command.premium.kickMessage", sender));
 						target.setPremiumSync(true);
 					} else
-						sender.sendMessage("§aYou are alredy on premium.");
+						sender.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.premium.alredyPremium", sender));
 				}
 			} else if (args[0].equalsIgnoreCase("off") && args.length == 2) {
 				if (PermissionManager.getManager().hasPermission(p, PermissionType.PREMIUM_TOGGLE, true)) {
 					LoadedPlayer target = Main.getDatenServer().getClient().getPlayerAndLoad(args[1]);
 					sender.sendMessage("§aChecking user details");
 					if (target.isPremiumSync()) {
-						p.sendMessage(Language.getText(p, "PREFIX") + Language.getText(p, "BG_PREMIUM_OFF", args[1]));
+						p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+ Main.getTranslationManager().translate("command.premium.disabled.other", sender,args[0])); //
 						if (!target.isLoaded())
-							target.load();
+							target.loadPlayer();
 						target.setPremiumSync(false);
 						if (BungeeCord.getInstance().getPlayer(args[1]) != null) {
-							BungeeCord.getInstance().getPlayer(args[1]).disconnect("§aApplay Changes");
+							BungeeCord.getInstance().getPlayer(args[1]).disconnect(Main.getTranslationManager().translate("command.premium.kickMessage", target));
 						} else {
-							Main.getDatenServer().getClient().kickPlayer(target.getUUID(), "§aApplay Changes").getSync();
+							Main.getDatenServer().getClient().kickPlayer(target.getPlayerId(), Main.getTranslationManager().translate("command.premium.kickMessage", target)).getSync();
 						}
-						target.unload();
+						Main.getDatenServer().getClient().clearCacheForPlayer(target);
 						Main.getDatenServer().getClient().sendServerMessage(ClientType.BUNGEECORD, "playerpremium", new DataBuffer().writeString(args[1]));
 					} else
 						sender.sendMessage("§cThe user isnt premium");
@@ -99,3 +96,7 @@ public class CommandPremium extends Command implements Listener {
 		}
 	}
 }
+//command.premium.warn - §4§lWARNING! §cIf you proceed you will be unable to use a cracked minecraft version<br>§7Please think carefully about this step and<br>§7only continue if you bought the game at<br>§eminecraft.net§7! §4You have been warned!<br>§aProceed §7(§cat your own risk!§7): §e§l/premium on
+//command.premium.alredyPremium - §cYou are alredy on premium.
+//command.premium.disabled.other - §c%s0 §ePremium-login§c was deactivated! [playerName]
+//command.premium.kickMessage - §aYour account have been set to premium.\nPlease rejoin to success.

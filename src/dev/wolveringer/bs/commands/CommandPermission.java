@@ -35,7 +35,7 @@ public class CommandPermission extends Command implements Listener {
 					name = Main.getDatenServer().getClient().getPlayer(uuid).getName();
 				}
 				else if(args[1].length()<=16){
-					uuid = Main.getDatenServer().getClient().getUUID(args[1]).getSync()[0].getUuid();
+					uuid = Main.getDatenServer().getClient().getPlayerAndLoad(args[1]).getUUID();
 				}
 				else{
 					cs.sendMessage("§cPlayer \""+args[1]+"\" not found");
@@ -84,6 +84,16 @@ public class CommandPermission extends Command implements Listener {
 				}
 				return;
 			}
+			else if(args[0].equalsIgnoreCase("addgroup")){
+				Group g = PermissionManager.getManager().getGroup(args[1]);
+				if(g != null){
+					cs.sendMessage("§cGroup aredy exists!");
+					return;
+				}
+				PermissionManager.getManager().addGroup(args[1]);
+				cs.sendMessage("§aGroup sucessfuly added!");
+				return;
+			}
 		}
 		if(args.length >= 3){
 			if(args[0].equalsIgnoreCase("prefix")){
@@ -112,7 +122,7 @@ public class CommandPermission extends Command implements Listener {
 				player = UUID.fromString(args[1]);
 			}
 			else if(args[1].length()<=16){
-				player = Main.getDatenServer().getClient().getUUID(args[1]).getSync()[0].getUuid();
+				player = Main.getDatenServer().getClient().getPlayerAndLoad(args[1]).getUUID();
 			}
 			else{
 				cs.sendMessage("§cPlayer \""+args[1]+"\" not found");
@@ -148,5 +158,6 @@ public class CommandPermission extends Command implements Listener {
 		cs.sendMessage("§7/perms removeGroup <Player/UUID> <group>");
 		cs.sendMessage("§7/perms userInfo <Player/UUID>");
 		cs.sendMessage("§7/perms groupInfo <Group>");
+		cs.sendMessage("§7/perms addGroup <Name>");
 	}
 }

@@ -1,5 +1,6 @@
 package dev.wolveringer.bs.commands;
 
+import dev.wolveringer.bs.Main;
 import me.kingingo.kBungeeCord.Language.Language;
 import me.kingingo.kBungeeCord.Permission.PermissionManager;
 import me.kingingo.kBungeeCord.Permission.PermissionType;
@@ -24,8 +25,9 @@ public class CommandBuild extends Command {
 		if (p.getServer().getInfo() != BungeeCord.getInstance().getServerInfo("build")) {
 			p.connect(BungeeCord.getInstance().getServerInfo("build"));
 		} else {
-			p.sendMessage(Language.getText(p, "PREFIX") + Language.getText(p, "BG_YOU_ARE_NOW_ON", "Build"));
+			p.sendMessage(Main.getTranslationManager().translate("prefix",sender)+ Main.getTranslationManager().translate("command.build.alredythere",sender));
 		}
 	}
 
 }
+//command.build.alredythere - §cYou are allready on the §e%build §cserver!

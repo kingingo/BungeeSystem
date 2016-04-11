@@ -1,5 +1,6 @@
 package dev.wolveringer.bs.commands;
 
+import dev.wolveringer.bs.Main;
 import lombok.Getter;
 import me.kingingo.kBungeeCord.Language.Language;
 import net.md_5.bungee.BungeeCord;
@@ -20,7 +21,7 @@ public class CommandVorbau extends Command {
 		if (p.getServer().getInfo() != BungeeCord.getInstance().getServerInfo("v")) {
 			p.connect(BungeeCord.getInstance().getServerInfo("v"));
 		} else {
-			p.sendMessage(Language.getText(p, "PREFIX") + Language.getText(p, "BG_YOU_ARE_NOW_ON", "Vorbau"));
+			p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Language.getText(p, "BG_YOU_ARE_NOW_ON", "Vorbau"));
 		}
 	}
 

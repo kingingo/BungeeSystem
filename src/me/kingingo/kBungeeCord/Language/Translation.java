@@ -2,6 +2,10 @@ package me.kingingo.kBungeeCord.Language;
 
 import java.util.HashMap;
 
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import dev.wolveringer.dataserver.player.LanguageType;
 
 public abstract class Translation {
@@ -26,4 +30,15 @@ public abstract class Translation {
 	public boolean hasTranslation(String name) {
 		return values.containsKey(name);
 	}
+	
+	/*
+	 * NodeList list = document.getDocumentElement().getElementsByTagName("string");
+				for (int i = 0; i < list.getLength(); i++) {
+					Node n = list.item(i);
+					if (n.getNodeType() == Node.ELEMENT_NODE) {
+						Element e = (Element) n;
+						translation.put(e.getAttribute("name"), ((Node) e.getChildNodes().item(0)).getNodeValue().trim().replaceAll("Â", ""));
+					}
+				}
+	 */
 }

@@ -23,6 +23,8 @@ import net.md_5.bungee.command.PlayerCommand;
 
 import com.google.common.collect.Lists;
 
+import dev.wolveringer.bs.Main;
+
 public class CommandServer extends PlayerCommand implements TabExecutor {
 	public CommandServer(String name) {
 		super(name);
@@ -87,7 +89,7 @@ public class CommandServer extends PlayerCommand implements TabExecutor {
 			}
 
 		} else {
-			sender.sendMessage(Language.getText((ProxiedPlayer) sender, "PREFIX") + Language.getText((ProxiedPlayer) sender, "NO_PERMISSION"));
+			sender.sendMessage(Main.getTranslationManager().translate("prefix", sender)+ Language.getText((ProxiedPlayer) sender, "NO_PERMISSION"));
 		}
 	}
 

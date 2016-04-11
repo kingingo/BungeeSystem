@@ -9,7 +9,7 @@ import lombok.Getter;
 //WolverinDEV=57091d6f-839f-48b7-a4b1-4474222d4ad1
 public class PermissionPlayer {
 	@Getter
-	private UUID uuid;
+	private Integer playerId;
 
 	private ArrayList<Permission> permissions = new ArrayList<>();
 	@Getter
@@ -21,11 +21,13 @@ public class PermissionPlayer {
 
 	private PermissionManager manager;
 
-	public PermissionPlayer(PermissionManager manager, UUID uuid) {
+	private boolean tempDefault = false;
+
+	public PermissionPlayer(PermissionManager manager, Integer id) {
 		//
 		this.manager = manager;
-		this.uuid = uuid;
-		ArrayList<String[]> query = MySQL.getInstance().querySync("SELECT `pgroup`,`permission`,`grouptyp` FROM `game_perm` WHERE `uuid`='" + uuid + "'", -1);
+		this.playerId = id;
+		ArrayList<String[]> query = MySQL.getInstance().querySync("SELECT `pgroup`,`permission`,`grouptyp` FROM `game_perm` WHERE `playerId`='" + playerId + "'", -1);
 		for (String[] var : query) {
 			if (!var[0].equalsIgnoreCase("none")) {
 				Group g = manager.getGroup(var[0]);
@@ -39,8 +41,10 @@ public class PermissionPlayer {
 					permissions.add(p);
 			}
 		}
-		if (groups.size() == 0)
+		if (groups.size() == 0) {
+			tempDefault = true;
 			groups.add(manager.getGroup("default"));
+		}
 		finalPermissions = null;
 	}
 
@@ -48,9 +52,14 @@ public class PermissionPlayer {
 		for (Group g : groups)
 			if (g.getName().equalsIgnoreCase(group))
 				return;
+		if (manager.getGroup(group) == null) {
+			System.out.println("Cant find group: " + group);
+		}
+		if(tempDefault)
+			groups.clear();
 		groups.add(manager.getGroup(group));
-		MySQL.getInstance().command("INSERT INTO `game_perm`(`prefix`, `permission`, `pgroup`, `grouptyp`, `uuid`) VALUES ('none','none','" + group + "','all','" + uuid.toString() + "')");
-		manager.updatePlayer(uuid);
+		MySQL.getInstance().command("INSERT INTO `game_perm`(`playerId`, `prefix`, `permission`, `pgroup`, `grouptyp`) VALUES ('" + playerId + "','none','none','" + group + "','all')");
+		manager.updatePlayer(playerId);
 	}
 
 	public void removeGroup(String group) {
@@ -62,9 +71,8 @@ public class PermissionPlayer {
 		if (gg == null)
 			return;
 		groups.remove(gg);
-		System.out.println("[MySQL] -> " + "DELETE FROM `game_perm` WHERE `uuid`='" + uuid.toString() + "' AND `pgroup`='" + group + "'");
-		MySQL.getInstance().command("DELETE FROM `game_perm` WHERE `uuid`='" + uuid.toString() + "' AND `pgroup`='" + group + "'");
-		manager.updatePlayer(uuid);
+		MySQL.getInstance().command("DELETE FROM `game_perm` WHERE `playerId`='" + playerId + "' AND `pgroup`='" + group + "'");
+		manager.updatePlayer(playerId);
 	}
 
 	public void addPermission(String permission) {
@@ -78,8 +86,8 @@ public class PermissionPlayer {
 				negativePermissions.add(p);
 			else
 				permissions.add(p);
-			MySQL.getInstance().command("INSERT INTO `game_perm`(`prefix`, `permission`, `pgroup`, `grouptyp`, `uuid`) VALUES ('none','" + permission + "','none','" + type.getName() + "','" + uuid.toString() + "')");
-			manager.updatePlayer(uuid);
+			MySQL.getInstance().command("INSERT INTO `game_perm`(`playerId`, `prefix`, `permission`, `pgroup`, `grouptyp`) VALUES ('" + playerId + "','none','" + permission + "','none','" + type.getName() + "')");
+			manager.updatePlayer(playerId);
 		}
 		finalPermissions = null;
 	}
@@ -93,9 +101,8 @@ public class PermissionPlayer {
 			if (p.getPermission().equalsIgnoreCase(permission) && (type == GroupTyp.ALL || p.getGroup() == type)) {
 				permissions.remove(p);
 				negativePermissions.remove(p);
-				System.out.println("[MySQL] -> " + "DELETE FROM `game_perm` WHERE `uuid`='" + uuid.toString() + "' AND `permission`='" + p.getPermission() + "' AND `grouptyp`='" + p.getGroup().getName() + "'");
-				MySQL.getInstance().command("DELETE FROM `game_perm` WHERE `uuid`='" + uuid.toString() + "' AND `permission`='" + p.getPermission() + "' AND `grouptyp`='" + p.getGroup().getName() + "'");
-				manager.updatePlayer(uuid);
+				MySQL.getInstance().command("DELETE FROM `game_perm` WHERE `playerId`='" + playerId + "' AND `permission`='" + p.getPermission() + "' AND `grouptyp`='" + p.getGroup().getName() + "'");
+				manager.updatePlayer(playerId);
 			}
 		finalPermissions = null;
 	}

@@ -63,6 +63,7 @@ import dev.wolveringer.mysql.MySQL;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import me.kingingo.kBungeeCord.Language.Language;
+import me.kingingo.kBungeeCord.Language.TranslationHandler;
 import me.kingingo.kBungeeCord.Permission.PermissionManager;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
@@ -168,8 +169,13 @@ public class Bootstrap {
 			}
 		}
 
+		Main.translationManager = new TranslationHandler(Main.getDatenServer().getClient().getTranslationManager());
+		
+		System.out.println("Checking for translation updates:");
+		Main.getTranslationManager().updateTranslations();
+		System.out.println("All translations are now up to date!");
+		
 		LoginManager.setManager(new LoginManager());
-		Language.init();
 		InformationManager.setManager(new InformationManager());
 		PermissionManager.setManager(new PermissionManager()); //TODO load
 		ServerManager.setManager(new ServerManager());

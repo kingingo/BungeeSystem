@@ -1,5 +1,6 @@
 package dev.wolveringer.bs.commands;
 
+import dev.wolveringer.bs.Main;
 import me.kingingo.kBungeeCord.Language.Language;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.CommandSender;
@@ -18,7 +19,7 @@ public class CommandVersus extends Command {
 		if (p.getServer().getInfo() != BungeeCord.getInstance().getServerInfo("versus")) {
 			p.connect(BungeeCord.getInstance().getServerInfo("versus"));
 		} else {
-			p.sendMessage(Language.getText(p, "PREFIX") + Language.getText(p, "BG_YOU_ARE_NOW_ON", "Versus"));
+			p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Language.getText(p, "BG_YOU_ARE_NOW_ON", "Versus"));
 		}
 	}
 

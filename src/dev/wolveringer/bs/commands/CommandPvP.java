@@ -1,5 +1,6 @@
 package dev.wolveringer.bs.commands;
 
+import dev.wolveringer.bs.Main;
 import lombok.Getter;
 import me.kingingo.kBungeeCord.Language.Language;
 import net.md_5.bungee.BungeeCord;
@@ -20,7 +21,7 @@ public class CommandPvP extends Command {
 		if (p.getServer().getInfo() != BungeeCord.getInstance().getServerInfo("pvp")) {
 	        p.connect(BungeeCord.getInstance().getServerInfo("pvp"));  
 	    }else{
-	    	p.sendMessage(Language.getText(p, "PREFIX")+Language.getText(p, "BG_YOU_ARE_NOW_ON", "PvP"));
+	    	p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Language.getText(p, "BG_YOU_ARE_NOW_ON", "PvP"));
 	    }
 	}
 

@@ -31,7 +31,7 @@ public class CommandClearChat extends Command implements Listener {
 					for(int i = 0;i<100;i++)
 						p1.sendMessage("");
 				}
-				p1.sendMessage(Language.getText(p1, "PREFIX")+Language.getText(p1, "BG_CC"));
+				p1.sendMessage(Main.getTranslationManager().translate("prefix",sender)+ Main.getTranslationManager().translate("command.chat.cleared",sender));
 			}
 		}
 	}
@@ -44,8 +44,10 @@ public class CommandClearChat extends Command implements Listener {
 					for(int i = 0;i<100;i++)
 						player.sendMessage("");
 				}
-				player.sendMessage(Language.getText(player, "PREFIX")+Language.getText(player, "BG_CC"));
+				player.sendMessage(Main.getTranslationManager().translate("prefix")+ Main.getTranslationManager().translate("command.chat.cleared"));
 			}
 		}
 	}
 }
+
+//command.chat.cleared - §aThe chat is cleared now.

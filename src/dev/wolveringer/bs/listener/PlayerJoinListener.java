@@ -15,6 +15,7 @@ import dev.wolveringer.dataserver.player.LanguageType;
 import dev.wolveringer.dataserver.player.Setting;
 import dev.wolveringer.dataserver.protocoll.packets.PacketInChangePlayerSettings;
 import dev.wolveringer.dataserver.protocoll.packets.PacketOutPlayerSettings;
+import dev.wolveringer.dataserver.protocoll.packets.PacketVersion;
 import me.kingingo.kBungeeCord.Language.Language;
 import me.kingingo.kBungeeCord.Permission.PermissionManager;
 import me.kingingo.kBungeeCord.Permission.PermissionType;
@@ -43,18 +44,14 @@ public class PlayerJoinListener implements Listener {
 
 			UUID nameUUID = player.getUUID();
 			System.out.println("Connect: Real name: " + e.getConnection().getName() + " Player: " + player.getName() + " UUID: " + player.getUUID());
-			try {
-				player = Main.getDatenServer().getClient().getPlayerAndLoad(player.getUUID());
-				UUID uuidUUID = player.getUUID();
-				if (nameUUID != uuidUUID) {
-					Main.getDatenServer().getClient().clearCacheForPlayer(player);
-					System.out.println("Cleaing up old UUID");
-					player = Main.getDatenServer().getClient().getPlayerAndLoad(e.getConnection().getName());
-				}
-				System.out.println("Connect: Real name: " + e.getConnection().getName() + " Player: " + player.getName() + " UUID: " + player.getUUID());
-			} catch (Exception ex) {
-				ex.printStackTrace();
+			player = Main.getDatenServer().getClient().getPlayerAndLoad(player.getUUID());
+			UUID uuidUUID = player.getUUID();
+			if (nameUUID != uuidUUID) {
+				Main.getDatenServer().getClient().clearCacheForPlayer(player);
+				System.out.println("Cleaing up old UUID");
+				player = Main.getDatenServer().getClient().getPlayerAndLoad(e.getConnection().getName());
 			}
+			System.out.println("Connect: Real name: " + e.getConnection().getName() + " Player: " + player.getName() + " UUID: " + player.getUUID());
 			System.out.println("Player loaded");
 			try {
 				if (player.isPremiumSync()) {
@@ -70,8 +67,10 @@ public class PlayerJoinListener implements Listener {
 			} catch (PacketHandleErrorException ex) {
 				for (dev.wolveringer.dataserver.protocoll.packets.PacketOutPacketStatus.Error er : ex.getErrors())
 					System.out.println(er.getId() + ":" + er.getMessage());
-				System.out.println("XXX");
 				ex.printStackTrace();
+				e.setCancelled(true);
+				e.setCancelReason("§cAn error happened while joining.\n§cWe cant check your premium state.\nTry again in 10-30 seconds");
+				return;
 			}
 			BanEntity response = player.getBanStats(e.getConnection().getVirtualHost().getHostString()).getSync();
 			if (response != null && response.isActive()) {
@@ -82,16 +81,20 @@ public class PlayerJoinListener implements Listener {
 					time = "§cPermanent";
 				}
 				e.setCancelled(true);
-				e.setCancelReason(Language.getText(e.getConnection(), "BG_BAN_DISCONNECT", new Object[] { time, response.getReson() }));
+				Main.getTranslationManager().translate("event.join.kickBan", player,new Object[] { time, response.getReson() });
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			e.setCancelled(true);
-			e.setCancelReason("§cAn error happened while joining.\nTry again in 10-30 seconds");
+			if(ex.getMessage().toLowerCase().contains("timeout")){
+				e.setCancelReason("§cCant connect to §eServer-Chef§c. Protocoll version: §a"+PacketVersion.PROTOCOLL_VERSION+"\nPlease try again in 10-30 seconds");
+			}
+			else
+				e.setCancelReason("§cAn error happened while joining.\nTry again in 10-30 seconds");
 		}
 		long end = System.currentTimeMillis();
-		if (end - start > 400)
-			System.out.println("LoginEvent for player " + e.getConnection().getName() + " needed more than 400ms (" + (end - start) + ")");
+		if (end - start > 500)
+			System.out.println("LoginEvent for player " + e.getConnection().getName() + " needed more than 500ms (" + (end - start) + ")");
 	}
 
 	@EventHandler
@@ -101,14 +104,13 @@ public class PlayerJoinListener implements Listener {
 		if(!player.getUUID().equals(e.getPlayer().getUniqueId())){
 			if(player.getUUID().equals(UUID.nameUUIDFromBytes(("OfflinePlayer:"+e.getPlayer().getName()).getBytes()))){
 				System.out.println("Switching players uuid (cracked uuid to premium) (But premium is set!)");
-				Main.getDatenServer().getClient().writePacket(new PacketInChangePlayerSettings(player.getUUID(), Setting.UUID, e.getPlayer().getUniqueId().toString())).getSync();
+				Main.getDatenServer().getClient().writePacket(new PacketInChangePlayerSettings(player.getPlayerId(), Setting.UUID, e.getPlayer().getUniqueId().toString())).getSync();
 				Main.getDatenServer().getClient().clearCacheForPlayer(player);
 				player = Main.getDatenServer().getClient().getPlayerAndLoad(e.getPlayer().getName());
 				System.out.println("New uuid: "+player.getUUID());
 			}
 		}
 		LanguageType lang = player.getLanguageSync();
-		Language.updateLanguage(e.getPlayer(), lang);
 		PermissionManager.getManager().loadPlayer(e.getPlayer().getUniqueId());
 		if (e.getPlayer().getPendingConnection().isOnlineMode())
 			MessageManager.getmanager(lang).playTitles(e.getPlayer());
@@ -164,3 +166,4 @@ public class PlayerJoinListener implements Listener {
 		return (sb.toString());
 	}
 }
+//event.join.kickBan - §cYou were banned %s0 §cfrom the Network! \n§3Reason: §c%s1 \n \n§aYou can write an unban-request at §ewww.EpicPvP.org [length,reson]

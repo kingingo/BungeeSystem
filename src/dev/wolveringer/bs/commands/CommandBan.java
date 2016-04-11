@@ -28,11 +28,11 @@ public class CommandBan extends Command{
 		
 		if(args.length >= 3){
 			if(!isNumber(args[1])){
-				cs.sendMessage("§cBan-Level is not a number!");
+				cs.sendMessage(Main.getTranslationManager().translate("prefix",cs)+Main.getTranslationManager().translate("command.ban.error.invalidNumber", cs)); 
 			}
 			int level = Integer.parseInt(args[1]);
 			if(level < 1 || level > 5){
-				cs.sendMessage("§cBan-Level out of bounds! [1-5]");
+				cs.sendMessage(Main.getTranslationManager().translate("prefix",cs)+Main.getTranslationManager().translate("command.ban.error.invalidRange", cs)); 
 			}
 			switch (level) { //Ban-Level 1 alredy tested
 			case 2:
@@ -52,28 +52,28 @@ public class CommandBan extends Command{
 			String reson = ChatColor.translateAlternateColorCodes('&', join(Arrays.copyOfRange(args, 2, args.length)," "));
 			
 			LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(args[0]);
-			cs.sendMessage("§aChecking player online state.");
+			cs.sendMessage(Main.getTranslationManager().translate("prefix",cs)+Main.getTranslationManager().translate("command.ban.status.loadingstats", cs));
 			String server;
 			String curruntIp = "undefined";
 			if(!(server = player.getServer().getSyncSave()).equalsIgnoreCase("undefined")){
-				cs.sendMessage("§aPlayer is curruntly online at "+server);
-				cs.sendMessage("§aLooking up IP-Address");
+				cs.sendMessage(Main.getTranslationManager().translate("prefix",cs)+Main.getTranslationManager().translate("command.ban.status.playerOnline", cs,server));
+				cs.sendMessage(Main.getTranslationManager().translate("prefix",cs)+Main.getTranslationManager().translate("command.ban.status.loopupIp", cs));
 				SettingValue[] var = player.getSettings(Setting.CURRUNT_IP).getSync();
 				if(var != null && var.length == 1)
 					curruntIp = var[0].getValue();
 				if(BungeeCord.getInstance().getPlayer(player.getName()) != null)
-					BungeeCord.getInstance().getPlayer(player.getName()).disconnect("§cYou are banned!");
+					BungeeCord.getInstance().getPlayer(player.getName()).disconnect(Main.getTranslationManager().translate("command.ban.kickplayer", cs,reson,cs.getName())); 
 				else
-					player.kickPlayer("§cYou are banned!");
+					player.kickPlayer(Main.getTranslationManager().translate("command.ban.kickplayer", cs,reson,cs.getName()));
 			}
-			cs.sendMessage("§aBanning player and ip");
+			cs.sendMessage(Main.getTranslationManager().translate("prefix",cs)+Main.getTranslationManager().translate("command.ban.banningPlayerIp", cs,curruntIp));
 			player.banPlayer(curruntIp, cs.getName(), (cs instanceof ProxiedPlayer ? ((ProxiedPlayer)cs).getAddress().getHostName() : "console"), (cs instanceof ProxiedPlayer ? ((ProxiedPlayer)cs).getUniqueId() : UUID.nameUUIDFromBytes("console".getBytes())), level, -1, reson);
-			cs.sendMessage("§aPlayer §e"+player.getName()+" §ais now banned!");
-			Main.getDatenServer().getClient().brotcastMessage(PermissionType.KBAN.getPermissionToString(), "§cThe player §e"+player.getName()+" §cwas permanently banned by §e"+cs.getName()+"§c!");
-			Main.getDatenServer().getClient().brotcastMessage(PermissionType.KBAN.getPermissionToString(), "§cReson: §6"+reson);
+			cs.sendMessage(Main.getTranslationManager().translate("prefix",cs)+Main.getTranslationManager().translate("command.ban.playerBannd", cs,player.getName()));
+			Main.getDatenServer().getClient().brotcastMessage(PermissionType.KBAN.getPermissionToString(), Main.getTranslationManager().translate("prefix",cs)+Main.getTranslationManager().translate("command.ban.breadcast.informations", cs,player.getName(),cs.getName()));
+			Main.getDatenServer().getClient().brotcastMessage(PermissionType.KBAN.getPermissionToString(), Main.getTranslationManager().translate("prefix",cs)+Main.getTranslationManager().translate("command.ban.breadcast.reson", cs,reson));
 			return;
 		}
-		cs.sendMessage("§cUsage: §6/ban <Player> <Level> <Reson>");
+		cs.sendMessage(Main.getTranslationManager().translate("prefix",cs)+"§cUsage: §6/ban <Player> <Level> <Reson>");
 	}
 	
 	private String join(String[] copyOfRange, String string) {
@@ -94,3 +94,13 @@ public class CommandBan extends Command{
 	}
 	
 }
+//command.ban.error.invalidNumber - §cBan-Level isn't a number!
+//command.ban.error.invalidRange - §cBan-Level out of bounds! [1-5]
+//command.ban.status.loadingstats - "§aChecking player online state."
+//command.ban.status.playerOnline - §aPlayer is curruntly online at %s0 - [Servername]
+//command.ban.status.loopupIp -§aLooking up IP-Address
+//command.ban.kickplayer - §cYou are banned! [reson,banner-name]
+//command.ban.banningPlayerIp - §aBanning player and ip [playerIp]
+//command.ban.playerBannd - §aPlayer §e%s0 §ais now banned! [playername]
+//command.ban.breadcast.informations - §cThe player §e%s0 §cwas permanently banned by §e%s1§c! [bannedPlayer,banner]
+//command.ban.breadcast.reson - §cReson: §6%s0 [reson]

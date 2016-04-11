@@ -14,11 +14,7 @@ public class CommandGList extends Command {
 
 	@Override
 	public void execute(CommandSender sender, String[] args) {
-		if(sender instanceof ProxiedPlayer){
-			ProxiedPlayer p = (ProxiedPlayer) sender;
-			p.sendMessage(Language.getText(p, "PREFIX")+Language.getText(p, "BG_GLIST", Main.getDatenServer().getPlayerCount()));
-		}else{
-			System.out.println("[EpicPvP] Auf diesem Servern sind insgesamt "+BungeeCord.getInstance().getPlayers().size()+" Spieler Online! Auf dem Netzwerk sind es "+Main.getDatenServer().getPlayerCount()+" Spieler");
-		}
+		sender.sendMessage(Main.getTranslationManager().translate("prefix", sender)+ (Main.getTranslationManager().translate("command.glist.info", sender, Main.getDatenServer().getPlayerCount()))); //
 	}
 }
+//command.glist.info - §7On all server there is a total of §e%s0 §7players online! [playerCOunt]

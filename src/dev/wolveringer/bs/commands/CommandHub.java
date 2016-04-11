@@ -1,5 +1,6 @@
 package dev.wolveringer.bs.commands;
 
+import dev.wolveringer.bs.Main;
 import dev.wolveringer.bs.login.LoginManager;
 import dev.wolveringer.bs.servermanager.ServerManager;
 import me.kingingo.kBungeeCord.Language.Language;
@@ -32,8 +33,9 @@ public class CommandHub extends Command {
 			else
 				p.connect(ServerManager.getManager().nextLobby());
 		} else {
-			p.sendMessage(Language.getText(p, "PREFIX") + Language.getText(p, "BG_YOU_ARE_NOW_ON", "Hub"));
+			p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.hub.alredy", sender) );
 		}
 	}
 
 }
+//command.hub.alredy - §cYou are allready on a hub server!

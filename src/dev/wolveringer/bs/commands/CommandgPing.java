@@ -1,8 +1,6 @@
 package dev.wolveringer.bs.commands;
 
-import me.kingingo.kBungeeCord.Language.Language;
-import me.kingingo.kBungeeCord.Permission.PermissionManager;
-import me.kingingo.kBungeeCord.Permission.PermissionType;
+import dev.wolveringer.bs.Main;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -33,17 +31,7 @@ public class CommandgPing extends Command {
 	@Override
 	public void execute(CommandSender sender, String[] args) {
 		ProxiedPlayer p = (ProxiedPlayer) sender;
-
-		if (args.length == 0) {
-			p.sendMessage(Language.getText(p, "PREFIX") + "Player-Ping: §e" + p.getPing() + " §7Avg-Ping: §e" + getAvgPing() + "§7 Bungee-TPS: §8undef");
-		} else {
-			if (PermissionManager.getManager().hasPermission(p, PermissionType.LAG, false)) {
-				if (BungeeCord.getInstance().getPlayer(args[0]) != null) {
-					p.sendMessage(Language.getText(p, "PREFIX") + "Player-Ping: §e" + BungeeCord.getInstance().getPlayer(args[0]).getPing() + " §7Avg-Ping:§e" + getAvgPing() + "§7 Bungee-TPS: §8undef");
-				} else {
-					p.sendMessage(Language.getText(p, "PREFIX") + Language.getText(p, "BG_WHEREIS_SEARCH", args[0]));
-				}
-			}
-		}
+		p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+ Main.getTranslationManager().translate("command.gping.info", sender,p.getPing(),getAvgPing()));
 	}
 }
+//command.gping.info - Player-Ping: §e%s0 §7Avg-Ping: §e%s1  [playerPing,AvgPing]

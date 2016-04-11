@@ -15,7 +15,7 @@ public class Group {
 	private ArrayList<Permission> permissions = new ArrayList<>();
 	@Getter
 	private ArrayList<Permission> negativePerms = new ArrayList<>();
-	private ArrayList<Permission> finalPermissions = new ArrayList<>();
+	private ArrayList<Permission> finalPermissions = null;
 	private ArrayList<Group> instances = new ArrayList<>();
 
 	private PermissionManager handle;
@@ -41,7 +41,7 @@ public class Group {
 				negativePerms.add(p);
 			else
 				permissions.add(new Permission(permission, type));
-			MySQL.getInstance().command("INSERT INTO `game_perm`(`prefix`, `permission`, `pgroup`, `grouptyp`, `uuid`) VALUES ('none','" + permission + "','" + name + "','" + type.getName() + "','none')");
+			MySQL.getInstance().command("INSERT INTO `game_perm`(`playerId`,`prefix`, `permission`, `pgroup`, `grouptyp`) VALUES ('-2','none','" + permission + "','" + name + "','" + type.getName() + "')");
 			handle.updateGroup(this);
 		}
 		finalPermissions = null;
@@ -56,7 +56,6 @@ public class Group {
 			if ((type == GroupTyp.ALL || p.getGroup() == type) && p.getPermission().equalsIgnoreCase(permission)) {
 				permissions.remove(p);
 				negativePerms.remove(p);
-				System.out.println("[MySQL] -> DELETE FROM `game_perm` WHERE `pgroup`='" + name + "' AND `permission`='" + p.getPermission() + "' AND `grouptype`='" + p.getGroup().getName() + "'");
 				MySQL.getInstance().command("DELETE FROM `game_perm` WHERE `pgroup`='" + name + "' AND `permission`='" + p.getPermission() + "' AND `grouptype`='" + p.getGroup().getName() + "'");
 				handle.updateGroup(this);
 			}
@@ -65,11 +64,10 @@ public class Group {
 
 	public void setPrefix(String prefix) {
 		if (this.prefix.equalsIgnoreCase("undefined")) {
-			MySQL.getInstance().command("INSERT INTO `game_perm`(`prefix`, `permission`, `pgroup`, `grouptyp`, `uuid`) VALUES ('" + prefix + "','none','" + name + "','ALL','none')");
+			MySQL.getInstance().command("INSERT INTO `game_perm`(`playerId`,`prefix`, `permission`, `pgroup`, `grouptyp`) VALUES ('-2','" + prefix + "','none','" + name + "','ALL')");
 			handle.updateGroup(this);
 		} else {
-			System.out.println("[MySQL] -> UPDATE `game_perm` SET `prefix`='" + prefix + "',`grouptyp`='ALL' WHERE `pgroup`='" + name + "' AND `permission`='none' AND `uuid`='none'");
-			MySQL.getInstance().command("UPDATE `game_perm` SET `prefix`='" + prefix + "' WHERE `pgroup`='" + name + "' AND `permission`='none' AND `uuid`='none'");
+			MySQL.getInstance().command("UPDATE `game_perm` SET `prefix`='" + prefix + "' WHERE `pgroup`='" + name + "' AND `permission`='none' AND `playerId`='-2'");
 			handle.updateGroup(this);
 		}
 		this.prefix = prefix;
@@ -131,7 +129,7 @@ public class Group {
 	}
 
 	protected void initPerms() {
-		ArrayList<String[]> query = MySQL.getInstance().querySync("SELECT `prefix`,`permission`,`grouptyp` FROM `game_perm` WHERE `pgroup`='" + name + "' AND `uuid`='none'", -1);
+		ArrayList<String[]> query = MySQL.getInstance().querySync("SELECT `prefix`,`permission`,`grouptyp` FROM `game_perm` WHERE `pgroup`='" + name + "' AND `playerId`='-2'", -1);
 		for (String[] var : query) {
 			if (var[1].equalsIgnoreCase("none"))
 				prefix = var[0];
@@ -143,8 +141,13 @@ public class Group {
 					continue;
 				}
 				instances.add(g);
-			} else
-				permissions.add(new Permission(var[1], GroupTyp.get(var[2])));
+			} else{
+				Permission p = new Permission(var[1], GroupTyp.get(var[2]));
+				if (p.isNegative())
+					negativePerms.add(p);
+				else
+					permissions.add(p);
+			}
 		}
 	}
 }

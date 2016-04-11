@@ -10,7 +10,7 @@ import net.md_5.bungee.api.connection.PendingConnection;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 public class Language {
-	
+	/*
 	private static HashMap<LanguageType, Translation> translations = new HashMap<>();
 	@Getter
 	private static HashMap<UUID, LanguageType> languages;
@@ -65,4 +65,5 @@ public class Language {
 
 		return languages.get(player.getUniqueId());
 	}
+	*/
 }

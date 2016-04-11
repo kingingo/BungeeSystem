@@ -1,8 +1,6 @@
 package dev.wolveringer.bs.commands;
 
 import dev.wolveringer.bs.Main;
-import dev.wolveringer.dataserver.player.LanguageType;
-import me.kingingo.kBungeeCord.Language.Language;
 import me.kingingo.kBungeeCord.Permission.PermissionManager;
 import me.kingingo.kBungeeCord.Permission.PermissionType;
 import net.md_5.bungee.BungeeCord;
@@ -23,13 +21,14 @@ public class CommandBroad extends Command implements Listener {
 		ProxiedPlayer p = (ProxiedPlayer) sender;
 		if (PermissionManager.getManager().hasPermission(p, PermissionType.BROADCAST, true)) {
 			if (args.length == 0) {
-				sender.sendMessage(Language.getText(p, "PREFIX") + Language.getText(p, "BG_NO_MSG"));
+				
+				sender.sendMessage(Main.getTranslationManager().translate("prefix",sender)+ Main.getTranslationManager().translate("command.broad.nomessage",sender));
 			} else {
 				StringBuilder builder = new StringBuilder();
 				if (args[0].startsWith("&h")) {
 					args[0] = args[0].substring(2, args[0].length());
 				} else {
-					builder.append(Language.getText(LanguageType.ENGLISH,"PREFIX"));
+					builder.append(Main.getTranslationManager().translate("prefix",sender));
 				}
 
 				for (String s : args) {
@@ -43,3 +42,4 @@ public class CommandBroad extends Command implements Listener {
 		}
 	}
 }
+//command.broad.nomessage - §cYou have to write a message!

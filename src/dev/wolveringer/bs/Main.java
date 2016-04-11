@@ -1,11 +1,16 @@
 package dev.wolveringer.bs;
 
 import dev.wolveringer.bs.client.BungeecordDatenClient;
+import dev.wolveringer.translation.TranslationManager;
+import lombok.Getter;
+import me.kingingo.kBungeeCord.Language.TranslationHandler;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.plugin.Plugin;
 
 public class Main extends Plugin{
 	public static boolean restart = false;
+	@Getter
+	protected static TranslationHandler translationManager;
 	protected static Main main;
 	protected static BungeecordDatenClient data;
 	public static Main getInstance(){

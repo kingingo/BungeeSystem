@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.bs.message.MessageManager;
 import dev.wolveringer.bs.servermanager.ServerManager;
-import me.kingingo.kBungeeCord.Language.Language;
 import me.kingingo.kBungeeCord.Permission.PermissionManager;
 import me.kingingo.kBungeeCord.Permission.PermissionType;
 import net.md_5.bungee.BungeeCord;
@@ -17,7 +16,6 @@ import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
-import net.md_5.bungee.netty.PacketHandler;
 
 public class LoginManager implements Listener {
 	private static LoginManager manager;
@@ -44,11 +42,11 @@ public class LoginManager implements Listener {
 				DataInputStream in = new DataInputStream(new ByteArrayInputStream(e.getData()));
 				try {
 					String sp;
-					ProxiedPlayer player = BungeeCord.getInstance().getPlayer(sp=in.readUTF());
+					ProxiedPlayer player = BungeeCord.getInstance().getPlayer(sp = in.readUTF());
 					if (player != null) {
-						MessageManager.getmanager(Language.getLanguage(player)).playTitles(player);
+						MessageManager.getmanager(Main.getTranslationManager().getLanguage(player)).playTitles(player);
 						loggedIn.add(player);
-						if(PermissionManager.getManager().hasPermission(player, PermissionType.PREMIUM_LOBBY, false))
+						if (PermissionManager.getManager().hasPermission(player, PermissionType.PREMIUM_LOBBY, false))
 							player.connect(ServerManager.getManager().nextPremiumLobby());
 						else
 							player.connect(ServerManager.getManager().nextLobby());

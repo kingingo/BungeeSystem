@@ -24,12 +24,12 @@ public class CommandSendServer extends Command implements Listener {
 		ProxiedPlayer p = (ProxiedPlayer)sender;
 		if(!PermissionManager.getManager().hasPermission(p, PermissionType.SERVER_SEND,true))return;
 		if(args.length==0){
-			p.sendMessage(Language.getText(p, "PREFIX")+"/sendserver [Player] [Server]");
+			p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+"/sendserver [Player] [Server]");
 		}else{
 			String player = args[0];
 			
 			if(player.equalsIgnoreCase(p.getName())){
-				p.sendMessage(Language.getText(p, "PREFIX")+"§cDu kannst dich nicht selber senden!");
+				p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+"§cDu kannst dich nicht selber senden!");
 				return;
 			}
 			
@@ -40,16 +40,16 @@ public class CommandSendServer extends Command implements Listener {
 			}
 			
 			if(BungeeCord.getInstance().getServerInfo(server)==null){
-				p.sendMessage(Language.getText(p, "PREFIX")+Language.getText(p, "BG_SERVER_NOT_EXIST"));
+				p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Language.getText(p, "BG_SERVER_NOT_EXIST"));
 				return;
 			}
 			
 			if(BungeeCord.getInstance().getPlayer(player) != null){
 				BungeeCord.getInstance().getPlayer(player).connect( BungeeCord.getInstance().getServerInfo(server) );
-				p.sendMessage(Language.getText(p, "PREFIX")+Language.getText(p, "BG_PLAYER_SEND"));
+				p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Language.getText(p, "BG_PLAYER_SEND"));
 			}else{
 				Main.getDatenServer().getClient().getPlayerAndLoad(player).setServerSync(server);
-				p.sendMessage(Language.getText(p, "PREFIX")+Language.getText(p, "BG_SEND_A"));
+				p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Language.getText(p, "BG_SEND_A"));
 			}
 		}
 	}

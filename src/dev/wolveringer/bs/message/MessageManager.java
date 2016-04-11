@@ -73,6 +73,7 @@ public class MessageManager implements Listener{
 	public void updateMessages(){
 		titles.clear();
 		messages.clear();
+		MySQL.getInstance().commandSync("CREATE TABLE IF NOT EXISTS `test`.`BG_News` ( `motd` TEXT NOT NULL , `language` TEXT NOT NULL , `type` TEXT NOT NULL ) ENGINE = InnoDB;");
 		ArrayList<String[]> out = MySQL.getInstance().querySync("SELECT `type`,`motd` FROM `BG_News` WHERE `language`='"+lang.getShortName()+"'", -1);
 		for(String[] var : out){
 			if(var[0].equalsIgnoreCase("BROADCAST")){
@@ -118,7 +119,7 @@ public class MessageManager implements Listener{
 		if(loopMessages.hasNext()){
 			String message = ChatColor.translateAlternateColorCodes('&',loopMessages.next());
 			for(ProxiedPlayer player : BungeeCord.getInstance().getPlayers())
-				if(Language.getLanguage(player) == lang)
+				if(Main.getTranslationManager().getLanguage(player) == lang)
 					player.sendMessage(message);
 			System.out.println("["+lang+"] Brotcast: "+message);
 		}

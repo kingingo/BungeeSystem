@@ -25,9 +25,9 @@ public class CommandKicken extends Command implements Listener{
 			if(!PermissionManager.getManager().hasPermission(player, PermissionType.KICKEN,true))return;
 			
 			if(args.length<1){
-				player.sendMessages(Language.getText(player, "PREFIX")+"/kicken [Player] [Grund]");
+				player.sendMessages(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.kick.help", sender));
 			}else{
-				String grund = "§6Kein Grund Angegeben";
+				String grund = "§6No reson set";
 				String banned=args[0];
 
 				if(args.length>1){
@@ -42,10 +42,12 @@ public class CommandKicken extends Command implements Listener{
 				//if(BungeeCord.getInstance().getPlayer(banned) != null)
 				//	BungeeCord.getInstance().getPlayer(banned).disconnect("§cKick reson:§b "+grund);
 				//else
-					Main.getDatenServer().getClient().kickPlayer(Main.getDatenServer().getClient().getPlayerAndLoad(banned).getUUID(), "§cKick reson:§b "+grund);
-				Main.getDatenServer().teamMessage(Language.getText(player, "PREFIX")+Language.getText(player, "BG_KICK_MSG",new String[]{banned,player.getName(),grund}));
+					Main.getDatenServer().getClient().kickPlayer(Main.getDatenServer().getClient().getPlayerAndLoad(banned).getPlayerId(), "§cKick reson:§b "+grund);
+				Main.getDatenServer().teamMessage(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.kick.teammessage", sender,new String[]{banned,player.getName(),grund}));
 			}
 		}
 	}
 
 }
+//command.kick.help - /kick [Player] [Grund] §7| §aKick a player
+//command.kick.teammessage - §e%s0§c was kicked by §e%s1§c. Reason: §e%s2

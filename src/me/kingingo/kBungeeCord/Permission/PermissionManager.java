@@ -9,9 +9,9 @@ import java.util.UUID;
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.bs.client.event.ServerMessageEvent;
 import dev.wolveringer.bs.login.LoginManager;
+import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.client.connection.ClientType;
 import dev.wolveringer.dataserver.protocoll.DataBuffer;
-import dev.wolveringer.dataserver.protocoll.packets.PacketInStatsEdit.Action;
 import dev.wolveringer.mysql.MySQL;
 import me.kingingo.kBungeeCord.Language.Language;
 import net.md_5.bungee.BungeeCord;
@@ -34,7 +34,7 @@ public class PermissionManager implements Listener {
 	}
 
 	private ArrayList<Group> groups = new ArrayList<>();
-	private HashMap<UUID, PermissionPlayer> user = new HashMap<>();
+	private HashMap<Integer, PermissionPlayer> user = new HashMap<>();
 
 	public PermissionManager() {
 		if(BungeeCord.getInstance() != null){ //Testing Bungee=Null
@@ -44,7 +44,7 @@ public class PermissionManager implements Listener {
 	}
 	
 	public void loadGroups(){
-		ArrayList<String[]> qurry = MySQL.getInstance().querySync("SELECT DISTINCT `pgroup` FROM `game_perm` WHERE `pgroup`!='none' AND `uuid`='none' ",-1);
+		ArrayList<String[]> qurry = MySQL.getInstance().querySync("SELECT DISTINCT `pgroup` FROM `game_perm` WHERE `pgroup`!='none' AND `playerId`='-2' ",-1);
 		long start = System.currentTimeMillis();
 		System.out.println("Loading permission groups...");
 		for(String[] var : qurry)
@@ -54,15 +54,25 @@ public class PermissionManager implements Listener {
 		System.out.println("Done ("+(System.currentTimeMillis()-start)+")");
 	}
 
-	public void loadPlayer(UUID player) {
+	public void loadPlayer(Integer player) {
 		if (!user.containsKey(player))
 			user.put(player, new PermissionPlayer(this, player));
 	}
+	
+	public void loadPlayer(UUID player) {
+		LoadedPlayer p = Main.getDatenServer().getClient().getPlayerAndLoad(player);
+		loadPlayer(p.getPlayerId());
+	}
 
-	public PermissionPlayer getPlayer(UUID player) {
+	public PermissionPlayer getPlayer(Integer player) {
 		if(user.get(player) == null)
 			loadPlayer(player);
 		return user.get(player);
+	}
+	
+	public PermissionPlayer getPlayer(UUID player) {
+		LoadedPlayer p = Main.getDatenServer().getClient().getPlayerAndLoad(player);
+		return getPlayer(p.getPlayerId());
 	}
 
 	public boolean hasPermission(ProxiedPlayer player, String permission) {
@@ -94,9 +104,14 @@ public class PermissionManager implements Listener {
 	}
 
 	public boolean hasPermission(UUID uuid, String permission) {
-		if(!user.containsKey(uuid))
-			user.put(uuid, new PermissionPlayer(this, uuid));
-		return user.get(uuid).hasPermission(permission);
+		LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(uuid);
+		return hasPermission(player.getPlayerId(), permission);
+	}
+	
+	public boolean hasPermission(Integer playerId, String permission) {
+		if(!user.containsKey(playerId))
+			user.put(playerId, new PermissionPlayer(this, playerId));
+		return user.get(playerId).hasPermission(permission);
 	}
 
 	public Group getGroup(String name) {
@@ -141,8 +156,8 @@ public class PermissionManager implements Listener {
 		}
 	}
 	
-	protected void updatePlayer(UUID player){
-		Main.getDatenServer().getClient().sendServerMessage(ClientType.ALL, "permission", new DataBuffer().writeByte(0).writeUUID(player));
+	protected void updatePlayer(int player){
+		Main.getDatenServer().getClient().sendServerMessage(ClientType.ALL, "permission", new DataBuffer().writeByte(0).writeInt(player));
 	}
 	protected void updateGroup(Group group){
 		Main.getDatenServer().getClient().sendServerMessage(ClientType.ALL, "permission", new DataBuffer().writeByte(1).writeString(group.getName()));
@@ -165,7 +180,7 @@ public class PermissionManager implements Listener {
 				ProxiedPlayer player = (ProxiedPlayer) e.getReceiver();
 				int action = buffer.readByte();
 				if(action == 0){ //INFO Get player permissions ([UUID (player)])
-					PermissionPlayer p = getPlayer(buffer.readUUID());
+					PermissionPlayer p = getPlayer(buffer.readInt());
 					if(p == null)
 						sendToBukkit(packetUUID,new DataBuffer().writeInt(-1).writeString("Player not found"), player.getServer().getInfo()); //Response (Player not found) [UUID (packet)] [INT -1] [STRING reson]
 					else{
@@ -208,7 +223,7 @@ public class PermissionManager implements Listener {
 					}
 				}
 				else if(action == 2){//Addgroup <long[2] UUID> <string Group> <byte Grouptype>
-					UUID target = buffer.readUUID();
+					Integer target = buffer.readInt();
 					PermissionPlayer p = getPlayer(target);
 					if(p == null)
 						sendToBukkit(packetUUID,new DataBuffer().writeInt(-1).writeString("Player not found"), player.getServer().getInfo()); //Response (Player not found) [UUID (packet)] [INT -1] [STRING reson]

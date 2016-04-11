@@ -1,5 +1,6 @@
 package dev.wolveringer.bs.commands;
 
+import dev.wolveringer.bs.Main;
 import me.kingingo.kBungeeCord.Language.Language;
 import me.kingingo.kBungeeCord.Permission.PermissionManager;
 import me.kingingo.kBungeeCord.Permission.PermissionType;
@@ -23,7 +24,7 @@ public class CommandTBuild extends Command {
 		if (p.getServer().getInfo() != BungeeCord.getInstance().getServerInfo("tbuild")) {
 	        p.connect(BungeeCord.getInstance().getServerInfo("tbuild"));  
 	    }else{
-	    	p.sendMessage(Language.getText(p, "PREFIX")+Language.getText(p, "BG_YOU_ARE_NOW_ON", "TBuild"));
+	    	p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Language.getText(p, "BG_YOU_ARE_NOW_ON", "TBuild"));
 	    }
 	}
 

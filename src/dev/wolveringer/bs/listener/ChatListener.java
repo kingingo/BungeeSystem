@@ -41,7 +41,8 @@ public class ChatListener implements Listener {
 				}
 				if (time.get(e.getSender()) > System.currentTimeMillis()) {
 					if ((((ProxiedPlayer) e.getSender()).getServer().getInfo().getName().toLowerCase().contains("hub") || ((ProxiedPlayer) e.getSender()).getServer().getInfo().getName().toLowerCase().contains("lobby")) && !e.getMessage().startsWith("/")) {
-						((ProxiedPlayer) e.getSender()).sendMessage(Language.getText(((ProxiedPlayer) e.getSender()), "PREFIX") + Language.getText(((ProxiedPlayer) e.getSender()), "HUB_MUTE", formatMili((time.get(e.getSender()) - System.currentTimeMillis()))));
+						//§cYou are able to Chat here in §e%s0§c!
+						((ProxiedPlayer) e.getSender()).sendMessage(Main.getTranslationManager().translate("prefix", p)));//formatMili((time.get(e.getSender()) - System.currentTimeMillis())
 						e.setCancelled(true);
 					}
 				} else

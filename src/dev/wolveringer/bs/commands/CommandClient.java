@@ -1,7 +1,6 @@
 package dev.wolveringer.bs.commands;
 
 import dev.wolveringer.bs.Main;
-import me.kingingo.kBungeeCord.Language.Language;
 import me.kingingo.kBungeeCord.Permission.PermissionManager;
 import me.kingingo.kBungeeCord.Permission.PermissionType;
 import net.md_5.bungee.BungeeCord;
@@ -14,7 +13,7 @@ public class CommandClient extends Command implements Listener {
 
 	private CommandSender ping;
 	private boolean reconnecting;
-	
+
 	public CommandClient(String name) {
 		super(name);
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), this);
@@ -22,43 +21,56 @@ public class CommandClient extends Command implements Listener {
 
 	@Override
 	public void execute(CommandSender sender, String[] args) {
-		if(sender instanceof ProxiedPlayer){
+		if (sender instanceof ProxiedPlayer) {
 			ProxiedPlayer p = (ProxiedPlayer) sender;
-			if (PermissionManager.getManager().hasPermission(p, PermissionType.CLIENT,true)) {
-				if(args.length==0){
-					p.sendMessage(Language.getText(p, "PREFIX")+"/client info");
-					p.sendMessage(Language.getText(p, "PREFIX")+"/client reconnect");
+			if (PermissionManager.getManager().hasPermission(p, PermissionType.CLIENT, true)) {
+				if (args.length == 0) {
+					p.sendMessage(Main.getTranslationManager().translate("prefix", sender) + Main.getTranslationManager().translate("command.client.help.info", sender));
+					p.sendMessage(Main.getTranslationManager().translate("prefix", sender) + Main.getTranslationManager().translate("command.client.help.reconnect", sender));
 				}
-				if(args.length == 1){
-					if(args[0].equalsIgnoreCase("info")){
-						sender.sendMessage("§bStatus: "+(Main.getDatenServer().getClient().getHandle().isConnected() ? "§aConnected":"§cDisconnected"));
-						sender.sendMessage("§bPing: §a"+Main.getDatenServer().getClient().getHandle().getPing());
-						sender.sendMessage("§bClient known as: §a"+Main.getDatenServer().getClient().getHandle().getName());
-					}
-					else if(args[0].equalsIgnoreCase("reconnect")){
-						if(reconnecting){
-							sender.sendMessage("§cClient reconnecting alredy!");
+				if (args.length == 1) {
+					if (args[0].equalsIgnoreCase("info")) {
+						sender.sendMessage(Main.getTranslationManager().translate("prefix", sender) + (Main.getDatenServer().getClient().getHandle().isConnected() ? Main.getTranslationManager().translate("command.client.info.connected", sender) : Main.getTranslationManager().translate("command.client.info.disconnected", sender)));
+						sender.sendMessage(Main.getTranslationManager().translate("prefix", sender) + Main.getTranslationManager().translate("command.client.info.ping", sender, Main.getDatenServer().getClient().getHandle().getPing()));
+						sender.sendMessage(Main.getTranslationManager().translate("prefix", sender) + Main.getTranslationManager().translate("command.client.info.clientname", sender, Main.getDatenServer().getClient().getHandle().getName()));
+					} else if (args[0].equalsIgnoreCase("reconnect")) {
+						if (reconnecting) {
+							sender.sendMessage(Main.getTranslationManager().translate("prefix", sender) + Main.getTranslationManager().translate("command.client.info.allredyreconnecting", sender));
 							return;
 						}
 						reconnecting = true;
-						if(Main.getDatenServer().getClient().getHandle().isConnected()){
-							sender.sendMessage("§cDisconnecting client...");
-							Main.getDatenServer().getClient().getHandle().disconnect("reconnecting (cmd)");
-							sender.sendMessage("§cDisconnected");
-						}
-						sender.sendMessage("§aReconnecting client...");
-						while (!Main.getDatenServer().getClient().getHandle().isConnected()) {
-							try {
-								Thread.sleep(500);
-							} catch (InterruptedException e) {
-								e.printStackTrace();
+						BungeeCord.getInstance().getScheduler().runAsync(Main.getInstance(), new Runnable() {
+							@Override
+							public void run() {
+								if (Main.getDatenServer().getClient().getHandle().isConnected()) {
+									sender.sendMessage(Main.getTranslationManager().translate("prefix", sender) + Main.getTranslationManager().translate("command.client.info.disconnecting", sender));
+									Main.getDatenServer().getClient().getHandle().disconnect("reconnecting (cmd)");
+									sender.sendMessage(Main.getTranslationManager().translate("prefix", sender) + Main.getTranslationManager().translate("command.client.info.disconnected", sender));
+								}
+								sender.sendMessage(Main.getTranslationManager().translate("prefix", sender) + Main.getTranslationManager().translate("command.client.info.connecting", sender));
+								while (!Main.getDatenServer().getClient().getHandle().isConnected()) {
+									try {
+										Thread.sleep(500);
+									} catch (InterruptedException e) {
+										e.printStackTrace();
+									}
+								}
+								sender.sendMessage(Main.getTranslationManager().translate("prefix", sender) + Main.getTranslationManager().translate("command.client.info.connected", sender));
+								reconnecting = false;
 							}
-						}
-						sender.sendMessage("§aClient reconnected! :)");
-						reconnecting = false;
+						});
 					}
 				}
 			}
 		}
 	}
 }
+//command.client.help.info - /client info §7| §aView client informations
+//command.client.help.reconnect - /client reconnect §7| §aRestart the client
+//command.client.info.connected - §bStatus: §aconnected
+//command.client.info.disconnected - §bStatus: §cdisconnected
+//command.client.info.ping - §bPing: §a%s0 [ping]
+//command.client.info.clientname - §bClient known as: §a%s0 [name]
+//command.client.info.allredyreconnecting - §cClient reconnecting alredy!
+//command.client.info.disconnecting - §cDisconnecting client...
+//command.client.info.connecting - §aReconnecting client...

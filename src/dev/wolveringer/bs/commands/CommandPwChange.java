@@ -17,10 +17,10 @@ public class CommandPwChange extends Command {
 	public void execute(CommandSender sender, String[] args) {
 		ProxiedPlayer p = (ProxiedPlayer) sender;
 		if(args.length == 0){
-			p.sendMessage(Language.getText(p, "PREFIX")+"/pwchange §7[§4Altes Password§7] §7[§aNeues Password§7]");
+			p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+"/pwchange §7[§4Altes Password§7] §7[§aNeues Password§7]");
 		}
 		if(args.length == 1){
-			p.sendMessage(Language.getText(p, "PREFIX")+"/pwchange §7[§aAltes Password§7] §7[§aNeues Password§7]");
+			p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+"/pwchange §7[§aAltes Password§7] §7[§aNeues Password§7]");
 		}
 		
 		if(args.length == 2){
@@ -35,11 +35,11 @@ public class CommandPwChange extends Command {
 				return;
 			}
 			if(!old.equals(player.getPasswordSync())){
-				p.sendMessage(Language.getText(p, "PREFIX")+Language.getText(p, "BG_PW_NOT", old));
+				p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Language.getText(p, "BG_PW_NOT", old));
 				return;
 			}
 			player.setPasswordSync(newpw);
-			p.sendMessage(Language.getText(p, "PREFIX")+Language.getText(p, "BG_PW_CHANGE", newpw));
+			p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Language.getText(p, "BG_PW_CHANGE", newpw));
 		}
 	}
 

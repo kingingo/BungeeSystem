@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.bs.client.event.ServerMessageEvent;
+import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.client.external.BungeeCordActionListener;
 import dev.wolveringer.dataserver.player.LanguageType;
 import dev.wolveringer.dataserver.player.Setting;
@@ -33,10 +34,10 @@ public class ClientExternalHandler implements BungeeCordActionListener{
 	}
 
 	@Override
-	public void kickPlayer(UUID player, String message) {
-		ProxiedPlayer p = BungeeCord.getInstance().getPlayer(player);
-		if(p != null)
-			p.disconnect(message);
+	public void kickPlayer(int player, String message) {
+		LoadedPlayer p = Main.getDatenServer().getClient().getPlayer(player);
+		if(p != null && p.isLoaded())
+			BungeeCord.getInstance().getPlayer(p.getName()).disconnect(message);
 	}
 
 	@Override
@@ -55,18 +56,18 @@ public class ClientExternalHandler implements BungeeCordActionListener{
 	}
 
 	@Override
-	public void sendPlayer(UUID player, String server) {
-		ProxiedPlayer p = BungeeCord.getInstance().getPlayer(player);
-		if(p != null){
+	public void sendPlayer(int player, String server) {
+		LoadedPlayer p = Main.getDatenServer().getClient().getPlayer(player);
+		if(p != null && p.isLoaded()){
 			if(BungeeCord.getInstance().getServerInfo(server) != null)
-				p.connect(BungeeCord.getInstance().getServerInfo(server));
+				BungeeCord.getInstance().getPlayer(p.getName()).connect(BungeeCord.getInstance().getServerInfo(server));
 		}
 	}
 
 	@Override
 	public void settingUpdate(UUID player, Setting setting, String value) {
 		if(setting == Setting.LANGUAGE)
-			Language.updateLanguage(BungeeCord.getInstance().getPlayer(player), LanguageType.getLanguageFromName(value));
+			Main.getTranslationManager().updateLanguage(Main.getDatenServer().getClient().getPlayer(player));
 	}
 
 }
