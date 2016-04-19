@@ -37,9 +37,11 @@ public class SkinListener implements Listener{
 				result = new LoginResult(e.getPlayer().getUniqueId().toString(), new LoginResult.Property[0]);
 				getProfileField().set(e.getPlayer().getPendingConnection(), result);
 			}
-			if(skin instanceof SteveSkin)
-				result.setProperties(new LoginResult.Property[0]);
-			else
+			if(skin instanceof SteveSkin){
+				if(!e.getPlayer().getPendingConnection().isOnlineMode()){
+					result.setProperties(new LoginResult.Property[0]);
+				}
+			}else
 				result.setProperties(new LoginResult.Property[]{new LoginResult.Property("textures", skin.getRawData(), skin.getSignature())});
 		} catch (IllegalArgumentException | IllegalAccessException e1) {
 			e1.printStackTrace();

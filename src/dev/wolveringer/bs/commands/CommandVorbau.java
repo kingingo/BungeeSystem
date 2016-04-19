@@ -2,7 +2,6 @@ package dev.wolveringer.bs.commands;
 
 import dev.wolveringer.bs.Main;
 import lombok.Getter;
-import me.kingingo.kBungeeCord.Language.Language;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;

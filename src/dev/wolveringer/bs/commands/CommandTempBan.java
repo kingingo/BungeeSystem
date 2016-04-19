@@ -92,7 +92,7 @@ public class CommandTempBan extends Command {
 			cs.sendMessage("§aChecking player online state.");
 			String server;
 			String curruntIp = "undefined";
-			if (!(server = player.getServer().getSyncSave()).equalsIgnoreCase("undefined")) {
+			if ((server = player.getServer().getSyncSave()) != null) {
 				cs.sendMessage("§aPlayer is curruntly online at " + server);
 				cs.sendMessage("§aLooking up IP-Address");
 				SettingValue[] var = player.getSettings(Setting.CURRUNT_IP).getSync();
@@ -110,7 +110,7 @@ public class CommandTempBan extends Command {
 			Main.getDatenServer().getClient().brotcastMessage(PermissionType.ZEITBAN.getPermissionToString(), "§cReson: §6"+reson);
 			return;
 		}
-		cs.sendMessage("§cUsage: §6/ban <Player> <Time> <Level> <Reson>");
+		cs.sendMessage("§cUsage: §6/tempban <Player> <Time> <Level> <Reson>");
 		cs.sendMessage("§cTime format: 1H;22D;11S");
 		cs.sendMessage("§cAvariable Time Types: S-Seconds, M-Minutes, H-Houer, D-Days");
 	}

@@ -2,6 +2,11 @@ package dev.wolveringer.bs.servermanager;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Queue;
+
+import com.mysql.fabric.Server;
 
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.bs.client.event.ServerMessageEvent;
@@ -76,7 +81,6 @@ public class ServerManager implements Listener{
 	
 	public ServerManager() {
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), this);
-		addServer("hub", "null", 1000);
 	}
 	
 	public void loadServers() {
@@ -88,15 +92,20 @@ public class ServerManager implements Listener{
 		}
 		recalculateLobbies();
 		System.out.println("Loaded Servers: "+this.server.size()+" Lobbies: "+lobbies.length);
+		addServer("hub", "null", 1000);
 	}
 
 	public boolean addServer(String name, String ip, int port) {
-		BungeecordServerInfo info = new BungeecordServerInfo(name, name, port);
-		if(server.contains(server))
-			return false;
+		BungeecordServerInfo info = new BungeecordServerInfo(name, ip, port);
+		for(BungeecordServerInfo s : new ArrayList<>(server))
+			if(s.name != null)
+				if(s.name.equalsIgnoreCase(name)){
+					return false;
+				}
+		MySQL.getInstance().command("INSERT INTO `BG_Server`(`name`, `adress`, `port`) VALUES ('"+name+"','"+ip+"','"+port+"')");
 		server.add(info);
 		BungeeCord.getInstance().getServers().put(name, info);
-		if(name.startsWith("lobby") || name.startsWith("hub")){
+		if(name.startsWith("lobby") || (name.startsWith("hub") && !name.equalsIgnoreCase("hub"))){
 			recalculateLobbies();
 		}
 		Main.getDatenServer().getClient().sendServerMessage(ClientType.BUNGEECORD, "servers", new DataBuffer().writeByte(0).writeString(name).writeString(ip).writeInt(port));
@@ -112,9 +121,10 @@ public class ServerManager implements Listener{
 			}
 		if(info == null)
 			return false;
+		MySQL.getInstance().command("DELETE FROM `BG_Server` WHERE `name`='"+info.getName()+"'");
 		server.remove(info);
 		BungeeCord.getInstance().getServers().remove(info.getName());
-		if(name.startsWith("lobby") || name.startsWith("hub")){
+		if(name.startsWith("lobby") || (name.startsWith("hub") && !name.equalsIgnoreCase("hub"))){
 			recalculateLobbies();
 		}
 		Main.getDatenServer().getClient().sendServerMessage(ClientType.BUNGEECORD, "servers", new DataBuffer().writeByte(1).writeString(name));
@@ -124,7 +134,7 @@ public class ServerManager implements Listener{
 	private void recalculateLobbies(){
 		ArrayList<BungeecordServerInfo> l = new ArrayList<>();
 		for(BungeecordServerInfo i : server)
-			if(i.name.startsWith("lobby") || i.name.startsWith("hub"))
+			if(i.name.startsWith("lobby") || (i.name.startsWith("hub") && !i.name.equalsIgnoreCase("hub")))
 				l.add(i);
 		lobbies = l.toArray(new BungeecordServerInfo[0]);
 		
@@ -154,6 +164,44 @@ public class ServerManager implements Listener{
 			loginWitch = 0;
 		return loginServer[loginWitch++%loginServer.length];
 	}
+	
+	public Queue<String> buildLoginQueue(){
+		if(loginWitch>=loginServer.length)
+			loginWitch = 0;
+		ArrayList<ServerInfo> i = new ArrayList<>();
+		i.addAll(Arrays.asList(Arrays.copyOfRange(loginServer, loginWitch++%loginServer.length, loginServer.length)));
+		i.addAll(Arrays.asList(Arrays.copyOfRange(loginServer, 0, loginWitch++%loginServer.length)));
+		LinkedList<String> x = new LinkedList<>();
+		for(ServerInfo y: i)
+			x.add(y.getName());
+		return x;
+	}
+	
+	public Queue<String> buildPremiumQueue(){
+		if(plobbyWitch>=permiumServer.length)
+			plobbyWitch = 0;
+		ArrayList<ServerInfo> i = new ArrayList<>();
+		i.addAll(Arrays.asList(Arrays.copyOfRange(permiumServer, plobbyWitch++%permiumServer.length, permiumServer.length)));
+		i.addAll(Arrays.asList(Arrays.copyOfRange(permiumServer, 0, plobbyWitch++%permiumServer.length)));
+		LinkedList<String> x = new LinkedList<>();
+		for(ServerInfo y: i)
+			x.add(y.getName());
+		x.addAll(buildLobbyQueue());
+		return x;
+	}
+	
+	public Queue<String> buildLobbyQueue(){
+		if(lobbyWitch>=lobbies.length)
+			lobbyWitch = 0;
+		ArrayList<ServerInfo> i = new ArrayList<>();
+		i.addAll(Arrays.asList(Arrays.copyOfRange(lobbies, lobbyWitch++%lobbies.length, lobbies.length)));
+		i.addAll(Arrays.asList(Arrays.copyOfRange(lobbies, 0, lobbyWitch++%lobbies.length)));
+		LinkedList<String> x = new LinkedList<>();
+		for(ServerInfo y: i)
+			x.add(y.getName());
+		return x;
+	}
+	
 	public ServerInfo nextPremiumLobby(){
 		if(permiumServer.length == 0)
 			return nextLobby();
@@ -168,27 +216,11 @@ public class ServerManager implements Listener{
 			byte action = e.getBuffer().readByte();
 			if(action == 0){
 				BungeecordServerInfo info = new BungeecordServerInfo(e.getBuffer().readString(), e.getBuffer().readString(), e.getBuffer().readInt());
-				if(server.contains(server))
-					return;
-				server.add(info);
-				if(info.name.startsWith("lobby") || info.name.startsWith("hub")){
-					recalculateLobbies();
-				}
+				addServer(info.getName(), info.getAddress().getHostName()+"", info.getAddress().getPort());
 			}
 			else if(action == 1){
 				String name = e.getBuffer().readString();
-				BungeecordServerInfo info = null;
-				for(BungeecordServerInfo s : new ArrayList<>(server))
-					if(s.name.equalsIgnoreCase(name)){
-						info = s;
-						break;
-					}
-				if(info == null)
-					return;
-				server.remove(info);
-				if(name.startsWith("lobby") || name.startsWith("hub")){
-					recalculateLobbies();
-				}
+				delServer(name);
 			}
 		}
 	}

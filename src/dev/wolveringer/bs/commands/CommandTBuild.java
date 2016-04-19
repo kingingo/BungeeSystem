@@ -1,7 +1,6 @@
 package dev.wolveringer.bs.commands;
 
 import dev.wolveringer.bs.Main;
-import me.kingingo.kBungeeCord.Language.Language;
 import me.kingingo.kBungeeCord.Permission.PermissionManager;
 import me.kingingo.kBungeeCord.Permission.PermissionType;
 import net.md_5.bungee.BungeeCord;

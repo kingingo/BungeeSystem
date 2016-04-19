@@ -9,7 +9,6 @@ import dev.wolveringer.client.connection.ClientType;
 import dev.wolveringer.dataserver.player.LanguageType;
 import dev.wolveringer.dataserver.protocoll.DataBuffer;
 import dev.wolveringer.mysql.MySQL;
-import me.kingingo.kBungeeCord.Language.Language;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.Title;
@@ -73,7 +72,7 @@ public class MessageManager implements Listener{
 	public void updateMessages(){
 		titles.clear();
 		messages.clear();
-		MySQL.getInstance().commandSync("CREATE TABLE IF NOT EXISTS `test`.`BG_News` ( `motd` TEXT NOT NULL , `language` TEXT NOT NULL , `type` TEXT NOT NULL ) ENGINE = InnoDB;");
+		MySQL.getInstance().commandSync("CREATE TABLE IF NOT EXISTS `BG_News` ( `motd` TEXT NOT NULL , `language` TEXT NOT NULL , `type` TEXT NOT NULL ) ENGINE = InnoDB;");
 		ArrayList<String[]> out = MySQL.getInstance().querySync("SELECT `type`,`motd` FROM `BG_News` WHERE `language`='"+lang.getShortName()+"'", -1);
 		for(String[] var : out){
 			if(var[0].equalsIgnoreCase("BROADCAST")){

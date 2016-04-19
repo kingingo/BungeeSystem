@@ -62,4 +62,4 @@ public class CommandPerformance extends Command implements Listener {
 		}
 	}
 }
-//command.performance.information - §7Bungeecord: §b%s0§7 Player Online: %s1§7 Avg-Ping:§b%s2 §7Ram:§b%bs3§7/§c%s4 [Bungeecord,Playersonline,Avg ping,Ram,Max ram]
+//command.performance.information - §7Bungeecord: §b%s0§7 Player Online: %s1§7 Avg-Ping:§b%s2 §7Ram:§b%s3§7/§c%s4 [Bungeecord,Playersonline,Avg ping,Ram,Max ram]

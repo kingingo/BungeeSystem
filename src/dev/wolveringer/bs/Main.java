@@ -8,6 +8,7 @@ import net.md_5.bungee.api.plugin.Plugin;
 
 public class Main extends Plugin{
 	public static boolean restart = false;
+	public static boolean loaded = false;
 	@Getter
 	protected static TranslationHandler translationManager;
 	protected static Main main;

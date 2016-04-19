@@ -28,12 +28,9 @@ public class InformationManager implements Listener{
 
 	public InformationManager() {
 		MySQL.getInstance().commandSync("CREATE TABLE IF NOT EXISTS `BG_INFROMATIONS`(`key` VARCHAR (1000) NOT NULL default '', `value` VARCHAR (1000));");
-		/*
-		 * 
-		 * 
-
-
-		 */
+		ArrayList<String[]> query = MySQL.getInstance().querySync("SELECT `value`,`key` FROM `BG_INFROMATIONS`", -1);
+		for(String[] s : query)
+			inf_cash.put(s[0], s[1]);
 	}
 
 	public void reload() {
@@ -41,35 +38,52 @@ public class InformationManager implements Listener{
 	}
 
 	public String getInfo(String info) {
-		if(inf_cash.get(info) != null && !inf_cash.get(info).equalsIgnoreCase(""))
+		String currunt = inf_cash.get(info);
+		if(currunt != null && !currunt.equalsIgnoreCase(""))
 			return inf_cash.get(info);
 		
 		ArrayList<String[]> query = MySQL.getInstance().querySync("SELECT value FROM `BG_INFROMATIONS` WHERE `key`='"+info+"'", 1);
 		if(query.size()>0){
 			if(query.get(0)[0].startsWith(base64_start))
-			inf_cash.put(info, new String(DatatypeConverter.parseBase64Binary(query.get(0)[0]),Charset.forName("UTF-8")));
+				inf_cash.put(info, currunt = new String(DatatypeConverter.parseBase64Binary(query.get(0)[0].substring(base64_start.length())),Charset.forName("UTF-8")));
 			else
-			inf_cash.put(info, new String(query.get(0)[0]));
+				inf_cash.put(info, currunt = new String(query.get(0)[0]));
 		}
 		else
 			inf_cash.put(info, null);
-		return inf_cash.get(info);
+		return currunt;
 	}
 
 	public boolean infoExist(String info) {
-		if(inf_cash.containsKey(info))
-			return true;
 		return getInfo(info) != null;
 	}
 
 	public void setInfo(String info, String anser) {
-		anser = base64_start + DatatypeConverter.printBase64Binary(anser.getBytes(Charset.forName("UTF-8")));
-		if(infoExist(info))
-			MySQL.getInstance().command("UPDATE `BG_INFROMATIONS` SET value='" + anser + "' WHERE `key`='" + info + "'");
-		else
-			MySQL.getInstance().command("INSERT INTO `BG_INFROMATIONS`(key, value) VALUES ('" + info + "', '" + anser + "')");
+		String sanser = base64_start + DatatypeConverter.printBase64Binary(anser.getBytes(Charset.forName("UTF-8")));
+		if(infoExist(info)){
+			System.out.println("Update");
+			MySQL.getInstance().command("UPDATE `BG_INFROMATIONS` SET `value`='" + sanser + "' WHERE `key`='" + info + "'",new MySQL.Callback<Boolean>(){
+				@Override
+				public void done(Boolean obj, Throwable ex) {
+					if(ex!= null)
+						ex.printStackTrace();
+					Main.getDatenServer().getClient().sendServerMessage(ClientType.BUNGEECORD, "informations", new DataBuffer().writeByte(0).writeString(info));
+				}
+				
+			});
+		}else{
+			System.out.println("Inert");
+			MySQL.getInstance().command("INSERT INTO `BG_INFROMATIONS`(`key`, `value`) VALUES ('" + info + "', '" + sanser + "')",new MySQL.Callback<Boolean>(){
+				@Override
+				public void done(Boolean obj, Throwable ex) {
+					if(ex!= null)
+						ex.printStackTrace();
+					Main.getDatenServer().getClient().sendServerMessage(ClientType.BUNGEECORD, "informations", new DataBuffer().writeByte(0).writeString(info));
+				}
+				
+			});
+		}
 		inf_cash.put(info, anser);
-		Main.getDatenServer().getClient().sendServerMessage(ClientType.BUNGEECORD, "informations", new DataBuffer().writeByte(0).writeString(info));
 	}
 	
 	@EventHandler

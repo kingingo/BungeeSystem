@@ -5,7 +5,6 @@ import java.util.HashMap;
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.bs.login.LoginManager;
 import dev.wolveringer.client.LoadedPlayer;
-import me.kingingo.kBungeeCord.Language.Language;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ChatEvent;
@@ -71,7 +70,7 @@ public class ChatListener implements Listener {
 					}
 					else{
 						LoadedPlayer target = Main.getDatenServer().getClient().getPlayerAndLoad(player);
-						if(!target.getServer().getSync().equalsIgnoreCase("undefined")){
+						if(target.getServer().getSync() != null){
 							p.sendMessage("§8[§6§o"+player+" §6»§8] §7"+message);
 							Main.getDatenServer().getClient().sendMessage(target.getUUID(), "§8[§o§6» "+p.getName()+"§8] §7"+message);
 						}

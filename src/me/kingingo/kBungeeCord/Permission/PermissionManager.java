@@ -3,6 +3,8 @@ package me.kingingo.kBungeeCord.Permission;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -13,7 +15,6 @@ import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.client.connection.ClientType;
 import dev.wolveringer.dataserver.protocoll.DataBuffer;
 import dev.wolveringer.mysql.MySQL;
-import me.kingingo.kBungeeCord.Language.Language;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -143,7 +144,9 @@ public class PermissionManager implements Listener {
 		if(e.getChannel().equalsIgnoreCase("permission")){
 			byte action = e.getBuffer().readByte();
 			if(action == 0){ //Remove cached player
-				user.remove(e.getBuffer().readUUID());
+				int users;
+				user.remove(users = e.getBuffer().readInt());
+				System.out.println("Cleaning user: "+users);
 			}
 			else if(action == 1){
 				String group = e.getBuffer().readString();
@@ -152,6 +155,22 @@ public class PermissionManager implements Listener {
 						System.out.println("Reload permission group: "+g.getName());
 						g.reload();
 					}
+			}
+			else if(action == 2){
+				int playerID = e.getBuffer().readInt();
+				PermissionPlayer player = PermissionManager.getManager().getPlayer(playerID);
+				String neededGroup = e.getBuffer().readString();
+				boolean hase = false;
+				for(Group g : new ArrayList<>(player.getGroups()))
+				{
+					if(g.getName().equalsIgnoreCase(neededGroup))
+						hase = true;
+					player.removeGroup(g.getName());
+				}
+				String group = e.getBuffer().readString();
+				System.out.println("Changing group from "+player.getPlayerId()+" to "+group);
+				if(hase || neededGroup == null)
+					player.addGroup(group);
 			}
 		}
 	}
@@ -186,7 +205,14 @@ public class PermissionManager implements Listener {
 					else{
 						DataBuffer out = new DataBuffer();
 						out.writeInt(p.getGroups().size());
-						for(Group group : p.getGroups()){
+						ArrayList<Group> groups = new ArrayList<>(p.getGroups());
+						Collections.sort(groups, new Comparator<Group>() {
+							@Override
+							public int compare(Group a, Group b) {
+								return Integer.compare(b.getImportance(),a.getImportance());
+							}
+						});
+						for(Group group : groups){
 							out.writeString(group.getName());
 						}
 						out.writeInt(p.getPermissions().size());
@@ -194,6 +220,7 @@ public class PermissionManager implements Listener {
 							out.writeString(perm.getPermission());
 							out.writeByte(perm.getGroup().ordinal());
 						}
+						System.out.print("Requesting permission "+player.getName()+" Action "+action);
 						sendToBukkit(packetUUID, out, player.getServer().getInfo()); //Response (Permissions) [UUID (packet)] [INT Group-Length] [STRING[] groups] [INT perms-Length] [STRING[] perms]
 					}
 					
@@ -210,7 +237,7 @@ public class PermissionManager implements Listener {
 						out.writeInt(permissions.size());
 						
 						for(Permission perm : permissions){
-							if(perm == null || perm.getGroup() == null){
+							if(perm == null || perm.getGroup() == null || perm.getPermission() == null){
 								System.err.println("Permissiongroupo for: "+perm+" is null!");
 								out.writeString("anUndefinedPermissionThankAnNullPointerException").writeByte(GroupTyp.ALL.ordinal());
 								continue;
@@ -219,19 +246,43 @@ public class PermissionManager implements Listener {
 							out.writeByte(perm.getGroup().ordinal());
 						}
 						out.writeString(g.getPrefix());
+						out.writeInt(g.getImportance());
+						System.out.print("Requesting permission "+player.getName()+" Action "+action);
 						sendToBukkit(packetUUID, out, player.getServer().getInfo()); //Response (Permissions) [UUID (packet)] [INT perms-Length] [STRING[] perms] [STRING name]
 					}
 				}
-				else if(action == 2){//Addgroup <long[2] UUID> <string Group> <byte Grouptype>
+				else if(action == 2){
 					Integer target = buffer.readInt();
 					PermissionPlayer p = getPlayer(target);
+					if(p == null){
+						sendToBukkit(packetUUID,new DataBuffer().writeInt(-1).writeString("Player not found"), player.getServer().getInfo()); //Response (Player not found) [UUID (packet)] [INT -1] [STRING reson]
+						return;
+					}else
+					{
+						p.addPermission(buffer.readString(),GroupTyp.values()[buffer.readByte()]);
+					}
+					sendToBukkit(packetUUID, new DataBuffer().writeInt(1), player.getServer().getInfo());
+				}
+				else if(action == 3){//setgroup <long[2] UUID> <string Group> <byte Grouptype>
+					Integer target = buffer.readInt();
+					PermissionPlayer p = getPlayer(target);
+					System.out.print("Setting group (plugin message): "+p.getPlayerId()+" Not implimented!");
+					if(true){
+						sendToBukkit(packetUUID,new DataBuffer().writeInt(-1).writeString("Error 001"), player.getServer().getInfo()); //Response (Player not found) [UUID (packet)] [INT -1] [STRING reson]
+						return;
+					}
 					if(p == null)
 						sendToBukkit(packetUUID,new DataBuffer().writeInt(-1).writeString("Player not found"), player.getServer().getInfo()); //Response (Player not found) [UUID (packet)] [INT -1] [STRING reson]
 					else
-						p.addPermission(buffer.readString(),GroupTyp.values()[buffer.readByte()]);
-					sendToBukkit(packetUUID, new DataBuffer(), player.getServer().getInfo());
+					{
+						for(Group g : p.getGroups())
+							p.removeGroup(g.getName());
+						p.addGroup(buffer.readString());
+					}
+					sendToBukkit(packetUUID, new DataBuffer().writeInt(1), player.getServer().getInfo());
 				}
 			}catch(Exception ex){
+				System.out.print(e.getSender().getAddress());
 				ex.printStackTrace();
 			}
 		}
@@ -248,7 +299,7 @@ public class PermissionManager implements Listener {
 		
 		byte[] bbuffer = new byte[buffer.writerIndex()];
 		System.arraycopy(buffer.array(), 0, bbuffer, 0, buffer.writerIndex());
-		server.sendData("permission", bbuffer);
+		boolean success = server.sendData("permission", bbuffer,true);
 		buffer.release();
 	}
 	
@@ -257,6 +308,9 @@ public class PermissionManager implements Listener {
 		PermissionManager manager = new PermissionManager();
 		manager.loadGroups();
 
+		System.out.println(manager.groups);
+		if(true)
+			return;
 		//manager.addGroup("tdev");
 		//manager.getGroup("tdev").setPrefix("��9Test-Dev ��7| ��9");
 		UUID name = UUID.fromString("94c432ae-2b50-4820-8da0-9e3e8832743b");

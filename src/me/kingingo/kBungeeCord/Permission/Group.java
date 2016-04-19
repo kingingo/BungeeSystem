@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import dev.wolveringer.mysql.MySQL;
 import lombok.Getter;
 
-//TODO get all groups: SELECT DISTINCT `pgroup` FROM `game_perm` WHERE `pgroup`!='none' AND `uuid`='none' 
+@SuppressWarnings("unchecked")
 public class Group {
 
 	@Getter
@@ -17,7 +17,8 @@ public class Group {
 	private ArrayList<Permission> negativePerms = new ArrayList<>();
 	private ArrayList<Permission> finalPermissions = null;
 	private ArrayList<Group> instances = new ArrayList<>();
-
+	private int importance = 0;
+	
 	private PermissionManager handle;
 
 	public Group(PermissionManager handle, String name) {
@@ -30,11 +31,11 @@ public class Group {
 		permissions.clear();
 	}
 
-	public void addPermission(String permission) {
-		addPermission(permission, GroupTyp.ALL);
+	public boolean addPermission(String permission) {
+		return addPermission(permission, GroupTyp.ALL);
 	}
 
-	public void addPermission(String permission, GroupTyp type) {
+	public boolean addPermission(String permission, GroupTyp type) {
 		Permission p = new Permission(permission, type);
 		if ((!permissions.contains(p) && !p.isNegative()) || (!negativePerms.contains(p) && p.isNegative())) {
 			if (p.isNegative())
@@ -44,22 +45,28 @@ public class Group {
 			MySQL.getInstance().command("INSERT INTO `game_perm`(`playerId`,`prefix`, `permission`, `pgroup`, `grouptyp`) VALUES ('-2','none','" + permission + "','" + name + "','" + type.getName() + "')");
 			handle.updateGroup(this);
 		}
+		else
+			return false;
 		finalPermissions = null;
+		return true;
 	}
 
-	public void removePermission(String permission) {
-		removePermission(permission, GroupTyp.ALL);
+	public boolean removePermission(String permission) {
+		return removePermission(permission, GroupTyp.ALL);
 	}
 
-	public void removePermission(String permission, GroupTyp type) {
+	public boolean removePermission(String permission, GroupTyp type) {
+		int count = 0;
 		for (Permission p : new ArrayList<>(permission.startsWith("-") ? negativePerms : permissions))
 			if ((type == GroupTyp.ALL || p.getGroup() == type) && p.getPermission().equalsIgnoreCase(permission)) {
 				permissions.remove(p);
 				negativePerms.remove(p);
 				MySQL.getInstance().command("DELETE FROM `game_perm` WHERE `pgroup`='" + name + "' AND `permission`='" + p.getPermission() + "' AND `grouptype`='" + p.getGroup().getName() + "'");
 				handle.updateGroup(this);
+				count++;
 			}
 		finalPermissions = null;
+		return count!=0;
 	}
 
 	public void setPrefix(String prefix) {
@@ -79,7 +86,10 @@ public class Group {
 
 	public boolean hasPermission(String permission, GroupTyp type) {
 		for (Permission p : getPermissionsDeep())
-			if ((type == GroupTyp.ALL || p.getGroup() == type) && p.acceptPermission(permission))
+			if(p == null){
+				continue;
+			}
+			else if ((type == GroupTyp.ALL || p.getGroup() == type) && p.acceptPermission(permission))
 				return true;
 		return false;
 	}
@@ -127,20 +137,39 @@ public class Group {
 	public void delete() {
 		MySQL.getInstance().command("DELETE FROM `game_perm` WHERE `pgroup`='" + name + "'");
 	}
+	
+	public int getImportance() {
+		return importance;
+	}
+	public void setImportance(int importance) {
+		this.importance = importance;
+		if(MySQL.getInstance().querySync("SELECT prefix FROM game_perm WHERE playerId='-1' AND pgroup='"+name+"' AND prefix='importance'", 1).size() == 0)
+			MySQL.getInstance().command("INSERT INTO `game_perm`(`playerId`,`prefix`, `permission`, `pgroup`, `grouptyp`) VALUES ('-2','importance','importance."+importance+"','" + name + "','ALL')");
+		else
+			MySQL.getInstance().command("UPDATE `game_perm` SET `permission`='importance." + importance + "' WHERE `pgroup`='" + name + "' AND `prefix`='importance' AND `playerId`='-2'");
+		handle.updateGroup(this);
+	}
 
 	protected void initPerms() {
 		ArrayList<String[]> query = MySQL.getInstance().querySync("SELECT `prefix`,`permission`,`grouptyp` FROM `game_perm` WHERE `pgroup`='" + name + "' AND `playerId`='-2'", -1);
 		for (String[] var : query) {
-			if (var[1].equalsIgnoreCase("none"))
-				prefix = var[0];
-			else if (var[1].startsWith("epicpvp.perm.group.")) {
+			if (var[1].startsWith("epicpvp.perm.group.")) {
 				String group = var[1].replaceFirst("epicpvp.perm.group.", "").split(":")[0]; //mvp+:sky
 				Group g = handle.getGroup(group);
 				if (g == null) {
 					System.err.println("Cant find group instance (" + var[1] + "|" + group + ")");
 					continue;
 				}
-				instances.add(g);
+				if(!instances.contains(g))
+					instances.add(g);
+			}else if(var[1].startsWith("importance.")){
+				try{
+					importance = Integer.parseInt(var[1].replaceFirst("importance.", ""));	
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+			}else if (var[1].equalsIgnoreCase("none")){
+					prefix = var[0];
 			} else{
 				Permission p = new Permission(var[1], GroupTyp.get(var[2]));
 				if (p.isNegative())
@@ -149,5 +178,10 @@ public class Group {
 					permissions.add(p);
 			}
 		}
+	}
+
+	@Override
+	public String toString() {
+		return "Group [prefix=" + prefix + ", name=" + name + ", importance=" + importance + ", handle=" + handle + "]";
 	}
 }

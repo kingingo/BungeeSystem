@@ -3,7 +3,6 @@ package dev.wolveringer.bs.commands;
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.bs.message.MessageManager;
 import dev.wolveringer.dataserver.player.LanguageType;
-import me.kingingo.kBungeeCord.Language.Language;
 import me.kingingo.kBungeeCord.Permission.PermissionManager;
 import me.kingingo.kBungeeCord.Permission.PermissionType;
 import net.md_5.bungee.api.ChatColor;

@@ -1,7 +1,6 @@
 package dev.wolveringer.bs.commands;
 
 import dev.wolveringer.bs.Main;
-import me.kingingo.kBungeeCord.Language.Language;
 import me.kingingo.kBungeeCord.Permission.PermissionManager;
 import me.kingingo.kBungeeCord.Permission.PermissionType;
 import net.md_5.bungee.BungeeCord;
@@ -27,7 +26,7 @@ public class CommandKicken extends Command implements Listener{
 			if(args.length<1){
 				player.sendMessages(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.kick.help", sender));
 			}else{
-				String grund = "§6No reson set";
+				String grund = "§6No reason set";
 				String banned=args[0];
 
 				if(args.length>1){
@@ -42,7 +41,7 @@ public class CommandKicken extends Command implements Listener{
 				//if(BungeeCord.getInstance().getPlayer(banned) != null)
 				//	BungeeCord.getInstance().getPlayer(banned).disconnect("§cKick reson:§b "+grund);
 				//else
-					Main.getDatenServer().getClient().kickPlayer(Main.getDatenServer().getClient().getPlayerAndLoad(banned).getPlayerId(), "§cKick reson:§b "+grund);
+				Main.getDatenServer().getClient().kickPlayer(Main.getDatenServer().getClient().getPlayerAndLoad(banned).getPlayerId(), "§cKick reason:§b "+grund);
 				Main.getDatenServer().teamMessage(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.kick.teammessage", sender,new String[]{banned,player.getName(),grund}));
 			}
 		}

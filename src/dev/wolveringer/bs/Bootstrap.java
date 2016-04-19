@@ -34,6 +34,7 @@ import dev.wolveringer.bs.commands.CommandVersus;
 import dev.wolveringer.bs.commands.CommandVorbau;
 import dev.wolveringer.bs.commands.CommandVote;
 import dev.wolveringer.bs.commands.CommandWhereIs;
+import dev.wolveringer.bs.commands.CommandWhitelist;
 import dev.wolveringer.bs.commands.CommandaddServer;
 import dev.wolveringer.bs.commands.CommanddelServer;
 import dev.wolveringer.bs.commands.CommandgPing;
@@ -62,6 +63,7 @@ import lombok.Getter;
 import me.kingingo.kBungeeCord.Language.TranslationHandler;
 import me.kingingo.kBungeeCord.Permission.PermissionManager;
 import net.md_5.bungee.BungeeCord;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
@@ -137,12 +139,26 @@ public class Bootstrap {
 						System.out.println("Try to connect to dataserver");
 						try {
 							Main.data.start(Main.getInstance().datenPassword = configuration.getString("datenserver.passwort"));
+							for(ProxiedPlayer p : BungeeCord.getInstance().getPlayers()){
+								try{
+									if(PermissionManager.getManager().hasPermission(p, "epicpvp.bc.dataserver"))
+										p.sendMessage("§aDatenserver connected!");
+								}catch(Exception ex){
+								}
+							}
 						} catch (Exception e) {
 							System.out.println("Cant connect to DatenServer [" + ((InetSocketAddress) Main.data.getAddress()).getHostName() + ":" + ((InetSocketAddress) Main.data.getAddress()).getPort() + "]. Reson: "+e.getMessage()+" . Try again in 5 seconds.");
 							try {
 								Thread.sleep(5000);
 							} catch (InterruptedException e1) {
 								e1.printStackTrace();
+							}
+							for(ProxiedPlayer p : BungeeCord.getInstance().getPlayers()){
+								try{
+									if(PermissionManager.getManager().hasPermission(p, "epicpvp.bc.dataserver"))
+										p.sendMessage("§cDatenserver offline!");
+								}catch(Exception ex){
+								}
 							}
 							continue;
 						}
@@ -215,8 +231,11 @@ public class Bootstrap {
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandTempBan());
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandUnban());
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandBanInfo());
+		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandWhitelist());
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandSkin());
-
+		
+		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), InformationManager.getManager());
+		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), ServerManager.getManager());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new ChatListener());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new PingListener());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new PlayerJoinListener());
@@ -235,9 +254,11 @@ public class Bootstrap {
 			public void fireEvent(Event e) {
 				if (e instanceof PlayerServerSwitchEvent) {
 					PlayerServerSwitchEvent ev = (PlayerServerSwitchEvent) e;
-					System.out.println("§aServerswitch: " + ev.getFrom() + ":" + ev.getTo() + ":" + ev.getPlayer());
+					System.out.println("§aServerswitch: " + ev.getFrom() + ":" + ev.getTo() + ":" + ev.getPlayerId());
 				}
 			}
 		});
+		
+		Main.loaded = true;
 	}
 }

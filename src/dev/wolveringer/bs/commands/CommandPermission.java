@@ -2,6 +2,8 @@ package dev.wolveringer.bs.commands;
 
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
+
 import dev.wolveringer.bs.Main;
 import me.kingingo.kBungeeCord.Permission.Group;
 import me.kingingo.kBungeeCord.Permission.Permission;
@@ -53,7 +55,7 @@ public class CommandPermission extends Command implements Listener {
 				cs.sendMessage("§aGroup permissions:");
 				for(Group g : pp.getGroups())
 					if(g != null){
-						cs.sendMessage("  §6Group §a"+g.getName()+"§7[§r"+g.getPrefix()+"§7]");
+						cs.sendMessage("  §6Group §a"+g.getName()+"§7[§r"+g.getPrefix()+"§7] Importance: "+g.getImportance());
 						for(Permission x : g.getPermissions())
 							cs.sendMessage("  §7- §b"+x.getPermission()+"§7-§b"+x.getGroup());
 						for(Permission x : g.getNegativePerms())
@@ -114,50 +116,105 @@ public class CommandPermission extends Command implements Listener {
 					cs.sendMessage("§cBitte halte das Format ein!");
 					return;
 				}
+			}else if(args[0].equalsIgnoreCase("importance")){
+				Group group = PermissionManager.getManager().getGroup(args[1]);
+				if(group == null){
+					cs.sendMessage("§cGroup not found!");
+					return;
+				}
+				if(!StringUtils.isNumeric(args[2])){
+					cs.sendMessage("§cInvalid number!");
+					return;
+				}
+				group.setImportance(Integer.parseInt(args[2]));
+				cs.sendMessage("§cYou set the importance to "+group.getImportance());
 			}
 		}
-		if(args.length == 3){
-			UUID player = null;
-			if(args[1].matches("[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}")){
-				player = UUID.fromString(args[1]);
+		if(args.length == 4){
+			if(args[0].equalsIgnoreCase("user")){
+				UUID player = null;
+				if(args[2].matches("[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}")){
+					player = UUID.fromString(args[2]);
+				}
+				else if(args[2].length()<=16){
+					player = Main.getDatenServer().getClient().getPlayerAndLoad(args[2]).getUUID();
+				}
+				else{
+					cs.sendMessage("§cPlayer \""+args[2]+"\" not found");
+					return;
+				}
+				PermissionPlayer pp = PermissionManager.getManager().getPlayer(player);
+				
+				if(args[1].equalsIgnoreCase("addPerm")){
+					if(!pp.addPermission(args[3])){
+						cs.sendMessage("§cDie Permission konnte nicht hinzugefügt werden.");
+						return;
+					}
+					cs.sendMessage("§aDie Permission "+args[3]+" wurde hinzugefügt.");
+					return;
+				}
+				else if(args[1].equalsIgnoreCase("removePerm")){
+					if(!pp.removePermission(args[3])){
+						cs.sendMessage("§cDie Permission konnte nicht entfernt werden.");
+						return;
+					}
+					cs.sendMessage("§aDie Permission "+args[3]+" wurde removed.");
+					return;
+				}
+				else if(args[1].equalsIgnoreCase("addGroup")){
+					if(!pp.addGroup(args[3])){
+						cs.sendMessage("§cDie gruppe "+args[3]+" konnte nicht hinzugefügt werden.");
+						return;
+					}
+					cs.sendMessage("§aDie Gruppe "+args[3]+" wurde hinzugefügt.");
+					return;
+				}
+				else if(args[1].equalsIgnoreCase("removeGroup")){
+					if(!pp.removeGroup(args[3])){
+						cs.sendMessage("§cDie Gruppe "+args[3]+" konnte nicht entfernt werden.");
+						return;
+					}
+					cs.sendMessage("§aDie Gruppe "+args[3]+" wurde removed.");
+					return;
+				}
 			}
-			else if(args[1].length()<=16){
-				player = Main.getDatenServer().getClient().getPlayerAndLoad(args[1]).getUUID();
-			}
-			else{
-				cs.sendMessage("§cPlayer \""+args[1]+"\" not found");
-				return;
-			}
-			PermissionPlayer pp = PermissionManager.getManager().getPlayer(player);
-			
-			if(args[0].equalsIgnoreCase("addPerms")){
-				pp.addPermission(args[2]);
-				cs.sendMessage("§aDie Permission "+args[2]+" wurde hinzugef§gt.");
-				return;
-			}
-			else if(args[0].equalsIgnoreCase("removePerms")){
-				pp.removePermission(args[2]);
-				cs.sendMessage("§aDie Permission "+args[2]+" wurde removed.");
-				return;
-			}
-			else if(args[0].equalsIgnoreCase("addGroup")){
-				pp.addGroup(args[2]);
-				cs.sendMessage("§aDie Gruppe "+args[2]+" wurde hinzugef§gt.");
-				return;
-			}
-			else if(args[0].equalsIgnoreCase("removeGroup")){
-				pp.removeGroup(args[2]);
-				cs.sendMessage("§aDie Gruppe "+args[2]+" wurde removed.");
-				return;
+			else if(args[0].equalsIgnoreCase("group")){
+				Group g = PermissionManager.getManager().getGroup(args[2]);
+				if(g == null){
+					cs.sendMessage("§cThis group does not exist.");
+					return;
+				}
+				if(args[1].equalsIgnoreCase("addPerm")){
+					if(!g.addPermission(args[3])){
+						cs.sendMessage("§cDie Permission konnte nicht hinzugefügt werden.");
+						return;
+					}
+					cs.sendMessage("§aDie Permission "+args[3]+" wurde hinzugefügt.");
+					return;
+				}
+				if(args[1].equalsIgnoreCase("removePerm")){
+					if(!g.removePermission(args[3])){
+						cs.sendMessage("§cDie Permission konnte nicht entfernt werden.");
+						return;
+					}
+					cs.sendMessage("§aDie Permission "+args[3]+" wurde removed.");
+					return;
+				}
 			}
 		}
-		cs.sendMessage("§7/perms prefix <Group> '<Prefix>'");
-		cs.sendMessage("§7/perms addPerms <Player/UUID> <perm>");
-		cs.sendMessage("§7/perms removePerms <Player/UUID> <perm>");
-		cs.sendMessage("§7/perms addGroup <Player/UUID> <group>");
-		cs.sendMessage("§7/perms removeGroup <Player/UUID> <group>");
-		cs.sendMessage("§7/perms userInfo <Player/UUID>");
-		cs.sendMessage("§7/perms groupInfo <Group>");
-		cs.sendMessage("§7/perms addGroup <Name>");
+		cs.sendMessage("§7/perm prefix <Group> '<Prefix>'");
+		cs.sendMessage("§7/perm addGroup <Name>");
+		cs.sendMessage("§7/perm importance <Group> <importance>");
+		cs.sendMessage("§7/perm groupInfo <Group>");
+		cs.sendMessage("§7/perm userInfo <Player/UUID>");
+		
+		cs.sendMessage("§7/perm group addPerm <group> <permission>");
+		cs.sendMessage("§7/perm group removePerm <group> <permission>");
+		
+		cs.sendMessage("§7/perm user addGroup <Player/UUID> <group>");
+		cs.sendMessage("§7/perm user removeGroup <Player/UUID> <group>");
+		
+		cs.sendMessage("§7/perm user addPerm <Player/UUID> <perm>");
+		cs.sendMessage("§7/perm user removePerm <Player/UUID> <perm>");
 	}
 }

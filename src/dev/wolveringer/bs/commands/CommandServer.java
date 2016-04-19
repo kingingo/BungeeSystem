@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Set;
 
 import lombok.Getter;
-import me.kingingo.kBungeeCord.Language.Language;
 import me.kingingo.kBungeeCord.Permission.PermissionManager;
 import me.kingingo.kBungeeCord.Permission.PermissionType;
 import net.md_5.bungee.BungeeCord;

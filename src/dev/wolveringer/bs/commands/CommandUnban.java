@@ -23,7 +23,7 @@ public class CommandUnban extends Command{
 			if(!player.getBanStats("undefined").getSync().isActive()){
 				cs.sendMessage("§cThis player isnt banned!");
 			}
-			player.banPlayer("undefined", "unban", "system", UUID.nameUUIDFromBytes("system".getBytes()), -1, System.currentTimeMillis(), "§cunbanned");
+			player.banPlayer("undefined", "unban", "system", UUID.nameUUIDFromBytes("system".getBytes()), -2, System.currentTimeMillis(), "§cunbanned");
 			cs.sendMessage("§aPlayer unbanned!");
 			return;
 		}

@@ -72,7 +72,8 @@ public enum PermissionType {
 
 	NONE("FAIL"),
 	SKIN_ADMIN("epicpvp.skin.admin"),
-	BAN_INFO("epicpvp.ban.info");
+	BAN_INFO("epicpvp.ban.info"),
+	COMMAND_WHITELIST("epicpvp.whitelist");
 
 	public static PermissionType isPerm(String perm) {
 		PermissionType per = PermissionType.NONE;

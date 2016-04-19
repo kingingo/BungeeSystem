@@ -78,6 +78,11 @@ public class BungeecordDatenClient {
 				}
 			}
 		});
+		System.out.println("Loading players");
+		for(ProxiedPlayer player : BungeeCord.getInstance().getPlayers()){
+			Main.getDatenServer().getClient().getPlayerAndLoad(player.getName()).setServerSync(player.getServer().getInfo().getName());; //Loading player
+		}
+		System.out.println("players loaded");
 	}
 	
 	public boolean isActive() {
