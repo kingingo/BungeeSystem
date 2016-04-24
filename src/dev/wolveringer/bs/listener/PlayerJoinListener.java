@@ -1,9 +1,5 @@
 package dev.wolveringer.bs.listener;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.UUID;
@@ -11,7 +7,6 @@ import java.util.concurrent.TimeUnit;
 
 import dev.wolveringer.arrays.CachedArrayList;
 import dev.wolveringer.bs.Main;
-import dev.wolveringer.bs.commands.CommandWhitelist;
 import dev.wolveringer.bs.information.InformationManager;
 import dev.wolveringer.bs.login.LoginManager;
 import dev.wolveringer.bs.message.MessageManager;
@@ -26,16 +21,12 @@ import dev.wolveringer.dataserver.protocoll.packets.PacketVersion;
 import me.kingingo.kBungeeCord.Permission.PermissionManager;
 import me.kingingo.kBungeeCord.Permission.PermissionType;
 import net.md_5.bungee.BungeeCord;
-import net.md_5.bungee.ServerConnector;
 import net.md_5.bungee.UserConnection;
-import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.event.PreLoginEvent;
 import net.md_5.bungee.api.event.ServerConnectEvent;
-import net.md_5.bungee.api.event.ServerDisconnectEvent;
 import net.md_5.bungee.api.plugin.Listener;
-import net.md_5.bungee.connection.InitialHandler;
 import net.md_5.bungee.event.EventHandler;
 
 public class PlayerJoinListener implements Listener {
@@ -43,7 +34,18 @@ public class PlayerJoinListener implements Listener {
 
 	@EventHandler
 	public void a(PreLoginEvent e) {
-		if(!Main.loaded){
+		//e.getConnection().getName()
+		//48-57
+		//65-90
+		//97-122
+		for (char c : e.getConnection().getName().toCharArray()) {
+			if ((('0' > c) || (c > '9')) && (('a' > c) || (c > 'z')) && (('A' > c) || (c > 'Z')) && (c != '_')){
+				e.setCancelled(true);
+				e.setCancelReason("§cInvalid caracters!");
+				return;
+			}
+		}
+		if (!Main.loaded) {
 			e.setCancelled(true);
 			e.setCancelReason("§cBungeecord isnt fully loaded");
 		}
@@ -89,11 +91,12 @@ public class PlayerJoinListener implements Listener {
 					time = "§cPermanent";
 				}
 				e.setCancelled(true);
-				e.setCancelReason(Main.getTranslationManager().translate("event.join.kickBan", player,new Object[] { time, response.getReson() }));;
+				e.setCancelReason(Main.getTranslationManager().translate("event.join.kickBan", player, new Object[] { time, response.getReson() }));
+				;
 			}
-			if("true".equalsIgnoreCase(InformationManager.getManager().getInfo("whitelistActive")) && !PermissionManager.getManager().hasPermission(player.getPlayerId(),"epicpvp.whitelist.bypass")){
+			if ("true".equalsIgnoreCase(InformationManager.getManager().getInfo("whitelistActive")) && !PermissionManager.getManager().hasPermission(player.getPlayerId(), "epicpvp.whitelist.bypass")) {
 				String message = InformationManager.getManager().getInfo("whitelistMessage"); //
-				if(message == null)
+				if (message == null)
 					message = "§cWhitelist is active!";
 				e.setCancelled(true);
 				e.setCancelReason(message);
@@ -102,10 +105,9 @@ public class PlayerJoinListener implements Listener {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			e.setCancelled(true);
-			if(ex.getMessage() != null && ex.getMessage().toLowerCase().contains("timeout")){
-				e.setCancelReason("§cCant connect to §eServer-Chef§c. Protocoll version: §a"+PacketVersion.PROTOCOLL_VERSION+"\nPlease try again in 10-30 seconds");
-			}
-			else
+			if (ex.getMessage() != null && ex.getMessage().toLowerCase().contains("timeout")) {
+				e.setCancelReason("§cCant connect to §eServer-Chef§c. Protocoll version: §a" + PacketVersion.PROTOCOLL_VERSION + "\nPlease try again in 10-30 seconds");
+			} else
 				e.setCancelReason("§cAn error happened while joining.\nTry again in 10-30 seconds");
 		}
 		long end = System.currentTimeMillis();
@@ -116,13 +118,13 @@ public class PlayerJoinListener implements Listener {
 	@EventHandler
 	public void a(PostLoginEvent e) {
 		LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(e.getPlayer().getName());
-		if(!player.getUUID().equals(e.getPlayer().getUniqueId())){
-			if(player.getUUID().equals(UUID.nameUUIDFromBytes(("OfflinePlayer:"+e.getPlayer().getName()).getBytes()))){
+		if (!player.getUUID().equals(e.getPlayer().getUniqueId())) {
+			if (player.getUUID().equals(UUID.nameUUIDFromBytes(("OfflinePlayer:" + e.getPlayer().getName()).getBytes()))) {
 				System.out.println("Switching players uuid (cracked uuid to premium) (But premium is set!)");
 				Main.getDatenServer().getClient().writePacket(new PacketInChangePlayerSettings(player.getPlayerId(), Setting.UUID, e.getPlayer().getUniqueId().toString())).getSync();
 				Main.getDatenServer().getClient().clearCacheForPlayer(player);
 				player = Main.getDatenServer().getClient().getPlayerAndLoad(e.getPlayer().getName());
-				System.out.println("New uuid: "+player.getUUID());
+				System.out.println("New uuid: " + player.getUUID());
 			}
 		}
 		LanguageType lang = player.getLanguageSync();
@@ -132,6 +134,7 @@ public class PlayerJoinListener implements Listener {
 	}
 
 	private CachedArrayList<ProxiedPlayer> inQueue = new CachedArrayList<>(5, TimeUnit.SECONDS);
+
 	@EventHandler
 	public void a(ServerConnectEvent e) {
 		if ((e.getPlayer().getServer() == null && !inQueue.contains(e.getPlayer())) || e.getTarget().getName().equalsIgnoreCase("hub")) {
@@ -145,10 +148,10 @@ public class PlayerJoinListener implements Listener {
 				else
 					joinQueue = ServerManager.getManager().buildLobbyQueue();
 			} else {
-				joinQueue =  ServerManager.getManager().buildLoginQueue();
+				joinQueue = ServerManager.getManager().buildLoginQueue();
 			}
-			e.setTarget(BungeeCord.getInstance().getServerInfo(((LinkedList<String>)joinQueue).removeFirst()));
-			((UserConnection)e.getPlayer()).setServerJoinQueue(joinQueue);
+			e.setTarget(BungeeCord.getInstance().getServerInfo(((LinkedList<String>) joinQueue).removeFirst()));
+			((UserConnection) e.getPlayer()).setServerJoinQueue(joinQueue);
 		}
 	}
 
@@ -156,7 +159,7 @@ public class PlayerJoinListener implements Listener {
 		if (millis < 0) {
 			return "millis<0";
 		}
-		if(millis == 0)
+		if (millis == 0)
 			return "now";
 		long days = TimeUnit.MILLISECONDS.toDays(millis);
 		millis -= TimeUnit.DAYS.toMillis(days);

@@ -55,7 +55,7 @@ public class CommandBan extends Command{
 			cs.sendMessage(Main.getTranslationManager().translate("prefix",cs)+Main.getTranslationManager().translate("command.ban.status.loadingstats", cs));
 			String server;
 			String curruntIp = "undefined";
-			if(!(server = player.getServer().getSyncSave()).equalsIgnoreCase("undefined")){
+			if((server = player.getServer().getSyncSave()) != null){
 				cs.sendMessage(Main.getTranslationManager().translate("prefix",cs)+Main.getTranslationManager().translate("command.ban.status.playerOnline", cs,server));
 				cs.sendMessage(Main.getTranslationManager().translate("prefix",cs)+Main.getTranslationManager().translate("command.ban.status.loopupIp", cs));
 				SettingValue[] var = player.getSettings(Setting.CURRUNT_IP).getSync();
@@ -69,8 +69,8 @@ public class CommandBan extends Command{
 			cs.sendMessage(Main.getTranslationManager().translate("prefix",cs)+Main.getTranslationManager().translate("command.ban.banningPlayerIp", cs,curruntIp));
 			player.banPlayer(curruntIp, cs.getName(), (cs instanceof ProxiedPlayer ? ((ProxiedPlayer)cs).getAddress().getHostName() : "console"), (cs instanceof ProxiedPlayer ? ((ProxiedPlayer)cs).getUniqueId() : UUID.nameUUIDFromBytes("console".getBytes())), level, -1, reson);
 			cs.sendMessage(Main.getTranslationManager().translate("prefix",cs)+Main.getTranslationManager().translate("command.ban.playerBannd", cs,player.getName()));
-			Main.getDatenServer().getClient().brotcastMessage(PermissionType.KBAN.getPermissionToString(), Main.getTranslationManager().translate("prefix",cs)+Main.getTranslationManager().translate("command.ban.breadcast.informations", cs,player.getName(),cs.getName()));
-			Main.getDatenServer().getClient().brotcastMessage(PermissionType.KBAN.getPermissionToString(), Main.getTranslationManager().translate("prefix",cs)+Main.getTranslationManager().translate("command.ban.breadcast.reson", cs,reson));
+			Main.getDatenServer().getClient().brotcastMessage(PermissionType.KBAN.getPermissionToString(), Main.getTranslationManager().translate("prefix",cs)+Main.getTranslationManager().translate("command.ban.breadcast.informations", cs,player.getName(),cs.getName())).getSync();
+			Main.getDatenServer().getClient().brotcastMessage(PermissionType.KBAN.getPermissionToString(), Main.getTranslationManager().translate("prefix",cs)+Main.getTranslationManager().translate("command.ban.breadcast.reson", cs,reson)).getSync();
 			return;
 		}
 		cs.sendMessage(Main.getTranslationManager().translate("prefix",cs)+"§cUsage: §6/ban <Player> <Level> <Reson>");

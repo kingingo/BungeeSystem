@@ -48,6 +48,26 @@ public class CommandPremium extends Command implements Listener {
 					} else
 						sender.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.premium.alredyPremium", sender));
 				}
+				else if(args.length == 2){
+					if(PermissionManager.getManager().hasPermission(p, PermissionType.PREMIUM_TOGGLE, true)){
+						LoadedPlayer target = Main.getDatenServer().getClient().getPlayerAndLoad(args[1]);
+						sender.sendMessage("§aChecking user details");
+						if (!target.isPremiumSync()) {
+							p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+ Main.getTranslationManager().translate("command.premium.enable.other", sender,args[0])); //
+							if (!target.isLoaded())
+								target.loadPlayer();
+							target.setPremiumSync(false);
+							if (BungeeCord.getInstance().getPlayer(args[1]) != null) {
+								BungeeCord.getInstance().getPlayer(args[1]).disconnect(Main.getTranslationManager().translate("command.premium.kickMessage", target));
+							} else {
+								Main.getDatenServer().getClient().kickPlayer(target.getPlayerId(), Main.getTranslationManager().translate("command.premium.kickMessage", target)).getSync();
+							}
+							Main.getDatenServer().getClient().clearCacheForPlayer(target);
+							Main.getDatenServer().getClient().sendServerMessage(ClientType.BUNGEECORD, "playerpremium", new DataBuffer().writeString(args[1]));
+						} else
+							sender.sendMessage("§cThe user is alredy premium");
+					}
+				}
 			} else if (args[0].equalsIgnoreCase("off") && args.length == 2) {
 				if (PermissionManager.getManager().hasPermission(p, PermissionType.PREMIUM_TOGGLE, true)) {
 					LoadedPlayer target = Main.getDatenServer().getClient().getPlayerAndLoad(args[1]);
@@ -79,11 +99,11 @@ public class CommandPremium extends Command implements Listener {
 				sender.sendMessage("§a/premium on §7| §aSet you to a premium player!");
 				if (PermissionManager.getManager().hasPermission(p, PermissionType.PREMIUM_TOGGLE, false)) {
 					sender.sendMessage("§a/premium off <name> §7| §aSet you somebody to a cracked player!");
+					sender.sendMessage("§a/premium on <name> §7| §aSet you somebody to a premium player!");
 				}
 				if (PermissionManager.getManager().hasPermission(p, PermissionType.PREMIUM_CHECK, false)) {
-
+					sender.sendMessage("§a/premium check <name> §7| §aCheck premium state from a player!");
 				}
-				sender.sendMessage("§a/premium check <name> §7| §aCheck premium state from a player!");
 			}
 		}
 	}

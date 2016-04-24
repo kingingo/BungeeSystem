@@ -37,6 +37,7 @@ public class CommandWhereIs extends Command implements Listener {
 				if(BungeeCord.getInstance().getPlayer(name) != null){
 					p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.whereis.message", sender,new String[]{p.getName(),p.getServer().getInfo().getName(),Main.getInstance().getServerId()}));
 				}else{
+					p.sendMessage("§cWaiting for response.");
 					Main.getDatenServer().getClient().sendServerMessage(ClientType.BUNGEECORD, "whereis", new DataBuffer().writeUUID(p.getUniqueId()).writeString(name));
 				}
 			}

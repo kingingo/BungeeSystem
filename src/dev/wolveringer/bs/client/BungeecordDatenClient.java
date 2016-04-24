@@ -2,6 +2,7 @@ package dev.wolveringer.bs.client;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.util.List;
 
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.client.ClientWrapper;
@@ -17,6 +18,7 @@ public class BungeecordDatenClient {
 	private Client client;
 	private ClientWrapper wclient;
 	private int onlineCount = -2;
+	private List<String> players;
 	
 	private ScheduledTask infoUpdater;
 	private boolean active = false;
@@ -65,9 +67,18 @@ public class BungeecordDatenClient {
 		infoUpdater = BungeeCord.getInstance().getScheduler().runAsync(Main.getInstance(), new Runnable() {
 			@Override
 			public void run() {
+				int count = 0;
 				while (isActive()) {
 					try{
-						onlineCount = wclient.getServerStatus(PacketOutServerStatus.Action.GENERAL, null, false).getSync().getPlayer();
+						count++;
+						if(count%4 == 0){ //Update player names only all 6 seconds!
+						players = wclient.getServerStatus(PacketOutServerStatus.Action.GENERAL, null, true).getSync().getPlayers();
+						onlineCount = players.size();
+						}
+						else
+						{
+							onlineCount = wclient.getServerStatus(PacketOutServerStatus.Action.GENERAL, null, false).getSync().getPlayer();
+						}
 					}catch(Exception e){
 						e.printStackTrace();
 					}
@@ -104,5 +115,9 @@ public class BungeecordDatenClient {
 		}finally{
 			System.out.println("Runtime");
 		}
+	}
+	
+	public List<String> getPlayers() {
+		return players;
 	}
 }

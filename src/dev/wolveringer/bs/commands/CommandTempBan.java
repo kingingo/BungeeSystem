@@ -85,6 +85,10 @@ public class CommandTempBan extends Command {
 				}
 				time+=timeConverts.get(identifier).toMillis(Integer.parseInt(stime));
 			}
+			if(TimeUnit.DAYS.toMillis(14)<time){
+				cs.sendMessage("§cToo long ban time. Maximal temp-time 14D");
+				return;
+			}
 			
 			String reson = ChatColor.translateAlternateColorCodes('&', join(Arrays.copyOfRange(args, 3, args.length), " "));
 

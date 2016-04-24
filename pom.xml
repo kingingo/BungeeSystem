@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>BungeeCordSystem</groupId>
+	<groupId>dev.wolveringer</groupId>
 	<artifactId>BungeeCordSystem</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<build>
@@ -17,6 +17,12 @@
 			</plugin>
 		</plugins>
 	</build>
+	<repositories>
+		<repository>
+			<id>bungee-repo</id>
+			<url>https://oss.sonatype.org/content/groups/public/</url>
+		</repository>
+	</repositories>
 	<dependencies>
 		<dependency>
 			<groupId>dev.wolveringer</groupId>
@@ -34,6 +40,18 @@
 			<groupId>org.yaml</groupId>
 			<artifactId>snakeyaml</artifactId>
 			<version>1.17</version>
+		</dependency>
+		<dependency>
+			<artifactId>bungeecord-api</artifactId>
+			<groupId>net.md-5</groupId>
+			<version>1.9-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<artifactId>bungeecord-proxy</artifactId>
+			<groupId>net.md-5</groupId>
+			<version>1.9-SNAPSHOT</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 </project>
