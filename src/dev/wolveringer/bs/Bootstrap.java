@@ -40,6 +40,7 @@ import dev.wolveringer.bs.commands.CommanddelServer;
 import dev.wolveringer.bs.commands.CommandgPing;
 import dev.wolveringer.bs.information.InformationManager;
 import dev.wolveringer.bs.listener.ChatListener;
+import dev.wolveringer.bs.listener.InvalidChatListener;
 import dev.wolveringer.bs.listener.PingListener;
 import dev.wolveringer.bs.listener.PlayerJoinListener;
 import dev.wolveringer.bs.listener.PlayerKickListener;
@@ -243,6 +244,7 @@ public class Bootstrap {
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new TeamChatListener());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new ServerListener());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new SkinListener());
+		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new InvalidChatListener());
 
 		System.out.println("Event hander");
 		EventManager emanager = Main.getDatenServer().getClient().getHandle().getEventManager();
