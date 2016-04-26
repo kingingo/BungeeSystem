@@ -87,8 +87,12 @@ public class PermissionPlayer {
 		}
 		removeGroup("default");
 		groups.add(manager.getGroup(group));
-		MySQL.getInstance().command("INSERT INTO `game_perm`(`playerId`, `prefix`, `permission`, `pgroup`, `grouptyp`) VALUES ('" + playerId + "','none','none','" + group + "','all')");
-		manager.updatePlayer(playerId);
+		MySQL.getInstance().command("INSERT INTO `game_perm`(`playerId`, `prefix`, `permission`, `pgroup`, `grouptyp`) VALUES ('" + playerId + "','none','none','" + group + "','all')",new MySQL.Callback<Boolean>(){
+			@Override
+			public void done(Boolean obj, Throwable ex) {
+				manager.updatePlayer(playerId);
+			}
+		});
 		return true;
 	}
 
@@ -101,8 +105,12 @@ public class PermissionPlayer {
 		if (gg == null)
 			return false;
 		groups.remove(gg);
-		MySQL.getInstance().command("DELETE FROM `game_perm` WHERE `playerId`='" + playerId + "' AND `pgroup`='" + group + "'");
-		manager.updatePlayer(playerId);
+		MySQL.getInstance().command("DELETE FROM `game_perm` WHERE `playerId`='" + playerId + "' AND `pgroup`='" + group + "'",new MySQL.Callback<Boolean>(){
+			@Override
+			public void done(Boolean obj, Throwable ex) {
+				manager.updatePlayer(playerId);
+			}
+		});
 		return true;
 	}
 
@@ -117,8 +125,12 @@ public class PermissionPlayer {
 				negativePermissions.add(p);
 			else
 				permissions.add(p);
-			MySQL.getInstance().command("INSERT INTO `game_perm`(`playerId`, `prefix`, `permission`, `pgroup`, `grouptyp`) VALUES ('" + playerId + "','none','" + permission + "','none','" + type.getName() + "')");
-			manager.updatePlayer(playerId);
+			MySQL.getInstance().command("INSERT INTO `game_perm`(`playerId`, `prefix`, `permission`, `pgroup`, `grouptyp`) VALUES ('" + playerId + "','none','" + permission + "','none','" + type.getName() + "')",new MySQL.Callback<Boolean>(){
+				@Override
+				public void done(Boolean obj, Throwable ex) {
+					manager.updatePlayer(playerId);
+				}
+			});
 		}
 		else
 			return false;
@@ -136,8 +148,12 @@ public class PermissionPlayer {
 			if (p.getPermission().equalsIgnoreCase(permission) && (type == GroupTyp.ALL || p.getGroup() == type)) {
 				permissions.remove(p);
 				negativePermissions.remove(p);
-				MySQL.getInstance().command("DELETE FROM `game_perm` WHERE `playerId`='" + playerId + "' AND `permission`='" + p.getPermission() + "' AND `grouptyp`='" + p.getGroup().getName() + "'");
-				manager.updatePlayer(playerId);
+				MySQL.getInstance().command("DELETE FROM `game_perm` WHERE `playerId`='" + playerId + "' AND `permission`='" + p.getPermission() + "' AND `grouptyp`='" + p.getGroup().getName() + "'",new MySQL.Callback<Boolean>(){
+					@Override
+					public void done(Boolean obj, Throwable ex) {
+						manager.updatePlayer(playerId);
+					}
+				});
 				removed++;
 			}
 		finalPermissions = null;

@@ -31,7 +31,7 @@ public class CommandTempBan extends Command {
 
 	@Override
 	public void execute(CommandSender cs, String[] args) {
-		if (!PermissionManager.getManager().hasPermission( cs, PermissionType.BAN_LVL_1, true))
+		if (!PermissionManager.getManager().hasPermission( cs, PermissionType.ZEITBAN, true))
 			return; //basic permission
 
 		if (args.length >= 4) {

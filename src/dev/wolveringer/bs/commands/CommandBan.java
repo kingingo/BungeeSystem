@@ -24,7 +24,7 @@ public class CommandBan extends Command{
 	///ban <Player> <level> <reson>
 	@Override
 	public void execute(CommandSender cs, String[] args) {
-		if(!PermissionManager.getManager().hasPermission(cs, PermissionType.BAN_LVL_1,true))return; //basic permission
+		if(!PermissionManager.getManager().hasPermission(cs, PermissionType.KBAN,true))return; //basic permission
 		
 		if(args.length >= 3){
 			if(!isNumber(args[1])){

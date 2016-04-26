@@ -15,8 +15,13 @@ public class PingListener implements Listener{
 		if(InformationManager.getManager() == null){
 			return;
 		}
-		
-
+		String[] extraData = e.getConnection().getVirtualHost().getHostName().split("-",2);
+		if(extraData.length>1){
+			if(extraData[1].equalsIgnoreCase("bungeeOnly")){
+				e.getResponse().setDescription(ChatColor.translateAlternateColorCodes('&', InformationManager.getManager().getInfo("motd1"))+"\n"+ChatColor.translateAlternateColorCodes('&', InformationManager.getManager().getInfo("motd2")));
+				return;
+			}
+		}
 		Players player = new Players(Integer.parseInt(InformationManager.getManager().getInfo("maxPlayers")), Main.getDatenServer().getPlayerCount(), new ServerPing.PlayerInfo[0]);
 		e.getResponse().setPlayers(player);
 		e.getResponse().setDescription(ChatColor.translateAlternateColorCodes('&', InformationManager.getManager().getInfo("motd1"))+"\n"+ChatColor.translateAlternateColorCodes('&', InformationManager.getManager().getInfo("motd2")));

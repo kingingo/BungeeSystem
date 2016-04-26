@@ -11,9 +11,12 @@ import java.util.UUID;
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.bs.client.event.ServerMessageEvent;
 import dev.wolveringer.bs.login.LoginManager;
+import dev.wolveringer.client.Callback;
 import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.client.connection.ClientType;
 import dev.wolveringer.dataserver.protocoll.DataBuffer;
+import dev.wolveringer.dataserver.protocoll.packets.PacketOutPacketStatus;
+import dev.wolveringer.dataserver.protocoll.packets.PacketOutPacketStatus.Error;
 import dev.wolveringer.mysql.MySQL;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.CommandSender;
@@ -143,6 +146,34 @@ public class PermissionManager implements Listener {
 	public void a(ServerMessageEvent e){
 		if(e.getChannel().equalsIgnoreCase("permission")){
 			byte action = e.getBuffer().readByte();
+			if(action == 2){
+				int playerID = e.getBuffer().readInt();
+				PermissionPlayer player = PermissionManager.getManager().getPlayer(playerID);
+				String neededGroup = e.getBuffer().readString();
+				boolean hase = neededGroup == null;
+				for(Group g : new ArrayList<>(player.getGroups()))
+				{
+					if(g.getName().equalsIgnoreCase(neededGroup))
+						hase = true;
+					player.removeGroup(g.getName());
+				}
+				String group = e.getBuffer().readString();
+				System.out.println("Changing group from "+player.getPlayerId()+" to "+group);
+				if(hase)
+					player.addGroup(group);
+			}
+			else if(action == 3){
+				int playerID = e.getBuffer().readInt();
+				PermissionPlayer player = PermissionManager.getManager().getPlayer(playerID);
+				String permission = e.getBuffer().readString();
+				GroupTyp type = GroupTyp.values()[e.getBuffer().readInt()];
+				
+				System.out.println("Adding permission "+permission+":"+type+" to "+player.getPlayerId());
+				player.addPermission(permission,type);
+			}
+		}
+		if(e.getChannel().equalsIgnoreCase("bpermission")){
+			byte action = e.getBuffer().readByte();
 			if(action == 0){ //Remove cached player
 				int users;
 				user.remove(users = e.getBuffer().readInt());
@@ -154,32 +185,27 @@ public class PermissionManager implements Listener {
 					if(g.getName().equalsIgnoreCase(group)){
 						System.out.println("Reload permission group: "+g.getName());
 						g.reload();
+						g.initPerms();
 					}
-			}
-			else if(action == 2){
-				int playerID = e.getBuffer().readInt();
-				PermissionPlayer player = PermissionManager.getManager().getPlayer(playerID);
-				String neededGroup = e.getBuffer().readString();
-				boolean hase = false;
-				for(Group g : new ArrayList<>(player.getGroups()))
-				{
-					if(g.getName().equalsIgnoreCase(neededGroup))
-						hase = true;
-					player.removeGroup(g.getName());
-				}
-				String group = e.getBuffer().readString();
-				System.out.println("Changing group from "+player.getPlayerId()+" to "+group);
-				if(hase || neededGroup == null)
-					player.addGroup(group);
 			}
 		}
 	}
 	
 	protected void updatePlayer(int player){
-		Main.getDatenServer().getClient().sendServerMessage(ClientType.ALL, "permission", new DataBuffer().writeByte(0).writeInt(player));
+		Main.getDatenServer().getClient().sendServerMessage(ClientType.ALL, "bpermission", new DataBuffer().writeByte(0).writeInt(player)).getAsync(new Callback<PacketOutPacketStatus.Error[]>() {
+			@Override
+			public void call(PacketOutPacketStatus.Error[] obj) {
+				Main.getDatenServer().getClient().sendServerMessage(ClientType.ALL, "permission", new DataBuffer().writeByte(0).writeInt(player));
+			}
+		});;
 	}
 	protected void updateGroup(Group group){
-		Main.getDatenServer().getClient().sendServerMessage(ClientType.ALL, "permission", new DataBuffer().writeByte(1).writeString(group.getName()));
+		Main.getDatenServer().getClient().sendServerMessage(ClientType.ALL, "bpermission", new DataBuffer().writeByte(1).writeString(group.getName())).getAsync(new Callback<PacketOutPacketStatus.Error[]>() {
+			@Override
+			public void call(PacketOutPacketStatus.Error[] obj) {
+				Main.getDatenServer().getClient().sendServerMessage(ClientType.ALL, "permission", new DataBuffer().writeByte(1).writeString(group.getName()));
+			}
+		});
 	}
 	
 	@EventHandler
@@ -299,7 +325,7 @@ public class PermissionManager implements Listener {
 		
 		byte[] bbuffer = new byte[buffer.writerIndex()];
 		System.arraycopy(buffer.array(), 0, bbuffer, 0, buffer.writerIndex());
-		boolean success = server.sendData("permission", bbuffer,true);
+		boolean success = server.sendData("permission", bbuffer,false); //Dont Queue
 		buffer.release();
 	}
 	

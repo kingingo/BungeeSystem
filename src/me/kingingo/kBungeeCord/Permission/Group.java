@@ -42,8 +42,12 @@ public class Group {
 				negativePerms.add(p);
 			else
 				permissions.add(new Permission(permission, type));
-			MySQL.getInstance().command("INSERT INTO `game_perm`(`playerId`,`prefix`, `permission`, `pgroup`, `grouptyp`) VALUES ('-2','none','" + permission + "','" + name + "','" + type.getName() + "')");
-			handle.updateGroup(this);
+			MySQL.getInstance().command("INSERT INTO `game_perm`(`playerId`,`prefix`, `permission`, `pgroup`, `grouptyp`) VALUES ('-2','none','" + permission + "','" + name + "','" + type.getName() + "')",new MySQL.Callback<Boolean>(){
+				@Override
+				public void done(Boolean obj, Throwable ex) {
+					handle.updateGroup(Group.this);
+				}
+			});
 		}
 		else
 			return false;
@@ -61,8 +65,12 @@ public class Group {
 			if ((type == GroupTyp.ALL || p.getGroup() == type) && p.getPermission().equalsIgnoreCase(permission)) {
 				permissions.remove(p);
 				negativePerms.remove(p);
-				MySQL.getInstance().command("DELETE FROM `game_perm` WHERE `pgroup`='" + name + "' AND `permission`='" + p.getPermission() + "' AND `grouptype`='" + p.getGroup().getName() + "'");
-				handle.updateGroup(this);
+				MySQL.getInstance().command("DELETE FROM `game_perm` WHERE `pgroup`='" + name + "' AND `permission`='" + p.getPermission() + "' AND `grouptype`='" + p.getGroup().getName() + "'",new MySQL.Callback<Boolean>(){
+					@Override
+					public void done(Boolean obj, Throwable ex) {
+						handle.updateGroup(Group.this);
+					}
+				});
 				count++;
 			}
 		finalPermissions = null;
@@ -71,11 +79,19 @@ public class Group {
 
 	public void setPrefix(String prefix) {
 		if (this.prefix.equalsIgnoreCase("undefined")) {
-			MySQL.getInstance().command("INSERT INTO `game_perm`(`playerId`,`prefix`, `permission`, `pgroup`, `grouptyp`) VALUES ('-2','" + prefix + "','none','" + name + "','ALL')");
-			handle.updateGroup(this);
+			MySQL.getInstance().command("INSERT INTO `game_perm`(`playerId`,`prefix`, `permission`, `pgroup`, `grouptyp`) VALUES ('-2','" + prefix + "','none','" + name + "','ALL')", new MySQL.Callback<Boolean>(){
+				@Override
+				public void done(Boolean obj, Throwable ex) {
+					handle.updateGroup(Group.this);
+				}
+			});
 		} else {
-			MySQL.getInstance().command("UPDATE `game_perm` SET `prefix`='" + prefix + "' WHERE `pgroup`='" + name + "' AND `permission`='none' AND `playerId`='-2'");
-			handle.updateGroup(this);
+			MySQL.getInstance().command("UPDATE `game_perm` SET `prefix`='" + prefix + "' WHERE `pgroup`='" + name + "' AND `permission`='none' AND `playerId`='-2'", new MySQL.Callback<Boolean>(){
+				@Override
+				public void done(Boolean obj, Throwable ex) {
+					handle.updateGroup(Group.this);
+				}
+			});
 		}
 		this.prefix = prefix;
 	}
@@ -144,10 +160,19 @@ public class Group {
 	public void setImportance(int importance) {
 		this.importance = importance;
 		if(MySQL.getInstance().querySync("SELECT prefix FROM game_perm WHERE playerId='-1' AND pgroup='"+name+"' AND prefix='importance'", 1).size() == 0)
-			MySQL.getInstance().command("INSERT INTO `game_perm`(`playerId`,`prefix`, `permission`, `pgroup`, `grouptyp`) VALUES ('-2','importance','importance."+importance+"','" + name + "','ALL')");
+			MySQL.getInstance().command("INSERT INTO `game_perm`(`playerId`,`prefix`, `permission`, `pgroup`, `grouptyp`) VALUES ('-2','importance','importance."+importance+"','" + name + "','ALL')",new MySQL.Callback<Boolean>(){
+				@Override
+				public void done(Boolean obj, Throwable ex) {
+					handle.updateGroup(Group.this);
+				}
+			});
 		else
-			MySQL.getInstance().command("UPDATE `game_perm` SET `permission`='importance." + importance + "' WHERE `pgroup`='" + name + "' AND `prefix`='importance' AND `playerId`='-2'");
-		handle.updateGroup(this);
+			MySQL.getInstance().command("UPDATE `game_perm` SET `permission`='importance." + importance + "' WHERE `pgroup`='" + name + "' AND `prefix`='importance' AND `playerId`='-2'",new MySQL.Callback<Boolean>(){
+				@Override
+				public void done(Boolean obj, Throwable ex) {
+					handle.updateGroup(Group.this);
+				}
+			});
 	}
 
 	protected void initPerms() {

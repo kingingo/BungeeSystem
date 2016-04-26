@@ -57,11 +57,12 @@ public class CommandPremium extends Command implements Listener {
 							if (!target.isLoaded())
 								target.loadPlayer();
 							target.setPremiumSync(false);
-							if (BungeeCord.getInstance().getPlayer(args[1]) != null) {
-								BungeeCord.getInstance().getPlayer(args[1]).disconnect(Main.getTranslationManager().translate("command.premium.kickMessage", target));
-							} else {
-								Main.getDatenServer().getClient().kickPlayer(target.getPlayerId(), Main.getTranslationManager().translate("command.premium.kickMessage", target)).getSync();
-							}
+							if(target.getServer().getSync() != null)
+								if (BungeeCord.getInstance().getPlayer(args[1]) != null) {
+									BungeeCord.getInstance().getPlayer(args[1]).disconnect(Main.getTranslationManager().translate("command.premium.kickMessage", target));
+								} else {
+									Main.getDatenServer().getClient().kickPlayer(target.getPlayerId(), Main.getTranslationManager().translate("command.premium.kickMessage", target)).getSync();
+								}
 							Main.getDatenServer().getClient().clearCacheForPlayer(target);
 							Main.getDatenServer().getClient().sendServerMessage(ClientType.BUNGEECORD, "playerpremium", new DataBuffer().writeString(args[1]));
 						} else

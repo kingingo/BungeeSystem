@@ -29,4 +29,8 @@ public class CommandUnban extends Command{
 		}
 		cs.sendMessage("§cUsage: §6/unban <player>");
 	}
+	
+	public static void main(String[] args) {
+		System.out.println(System.currentTimeMillis()-1461589132212L);
+	}
 }
