@@ -156,11 +156,14 @@ public class PlayerJoinListener implements Listener {
 	}
 
 	public static String getDurationBreakdown(long millis) {
+		return getDurationBreakdown(millis, "now");
+	}
+	public static String getDurationBreakdown(long millis,String no) {
 		if (millis < 0) {
 			return "millis<0";
 		}
 		if (millis == 0)
-			return "now";
+			return no;
 		long days = TimeUnit.MILLISECONDS.toDays(millis);
 		millis -= TimeUnit.DAYS.toMillis(days);
 		long hours = TimeUnit.MILLISECONDS.toHours(millis);
