@@ -37,7 +37,6 @@ public class CommandBroad extends Command implements Listener {
 				}
 				String message = builder.substring(0, builder.length() - 1);
 				Main.getDatenServer().getClient().brotcastMessage(null, message);
-				BungeeCord.getInstance().broadcast(message);
 			}
 		}
 	}

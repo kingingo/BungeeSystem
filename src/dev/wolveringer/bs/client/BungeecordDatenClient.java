@@ -8,7 +8,6 @@ import dev.wolveringer.bs.Main;
 import dev.wolveringer.client.ClientWrapper;
 import dev.wolveringer.client.connection.Client;
 import dev.wolveringer.dataserver.protocoll.packets.PacketOutServerStatus;
-import me.kingingo.kBungeeCord.Permission.PermissionManager;
 import me.kingingo.kBungeeCord.Permission.PermissionType;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -43,9 +42,11 @@ public class BungeecordDatenClient {
 	}
 	
 	public void teamMessage(String message){
+		/*
 		for(ProxiedPlayer player : BungeeCord.getInstance().getPlayers())
 			if(PermissionManager.getManager().hasPermission(player, PermissionType.TEAM_MESSAGE))
 				player.sendMessage(message);
+		*/
 		wclient.brotcastMessage(PermissionType.TEAM_MESSAGE.getPermissionToString(), message);
 	}
 	
@@ -72,8 +73,9 @@ public class BungeecordDatenClient {
 					try{
 						count++;
 						if(count%4 == 0){ //Update player names only all 6 seconds!
-						players = wclient.getServerStatus(PacketOutServerStatus.Action.GENERAL, null, true).getSync().getPlayers();
-						onlineCount = players.size();
+							PacketOutServerStatus r = wclient.getServerStatus(PacketOutServerStatus.Action.GENERAL, null, true).getSync();
+							onlineCount =  r.getPlayer();
+							players = r.getPlayers();
 						}
 						else
 						{

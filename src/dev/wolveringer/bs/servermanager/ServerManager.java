@@ -6,8 +6,6 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import com.mysql.fabric.Server;
-
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.bs.client.event.ServerMessageEvent;
 import dev.wolveringer.client.connection.ClientType;
@@ -151,26 +149,11 @@ public class ServerManager implements Listener{
 		permiumServer = l.toArray(new BungeecordServerInfo[0]);
 	}
 	
-	public ServerInfo nextLobby(){
-		if(lobbies.length == 0){
-			System.out.println("No lobbies found");
-		}
-		if(lobbyWitch>=lobbies.length)
-			lobbyWitch = 0;
-		return lobbies[lobbyWitch++%lobbies.length];
-	}
-	public ServerInfo nextLoginLobby(){
-		if(loginWitch>=loginServer.length)
-			loginWitch = 0;
-		return loginServer[loginWitch++%loginServer.length];
-	}
-	
 	public Queue<String> buildLoginQueue(){
-		if(loginWitch>=loginServer.length)
-			loginWitch = 0;
+		lobbyWitch = loginWitch++%loginServer.length;
 		ArrayList<ServerInfo> i = new ArrayList<>();
-		i.addAll(Arrays.asList(Arrays.copyOfRange(loginServer, loginWitch++%loginServer.length, loginServer.length)));
-		i.addAll(Arrays.asList(Arrays.copyOfRange(loginServer, 0, loginWitch++%loginServer.length)));
+		i.addAll(Arrays.asList(Arrays.copyOfRange(loginServer, loginWitch%loginServer.length, loginServer.length)));
+		i.addAll(Arrays.asList(Arrays.copyOfRange(loginServer, 0, loginWitch%loginServer.length)));
 		LinkedList<String> x = new LinkedList<>();
 		for(ServerInfo y: i)
 			x.add(y.getName());
@@ -178,11 +161,10 @@ public class ServerManager implements Listener{
 	}
 	
 	public Queue<String> buildPremiumQueue(){
-		if(plobbyWitch>=permiumServer.length)
-			plobbyWitch = 0;
+		plobbyWitch = plobbyWitch++%permiumServer.length;
 		ArrayList<ServerInfo> i = new ArrayList<>();
-		i.addAll(Arrays.asList(Arrays.copyOfRange(permiumServer, plobbyWitch++%permiumServer.length, permiumServer.length)));
-		i.addAll(Arrays.asList(Arrays.copyOfRange(permiumServer, 0, plobbyWitch++%permiumServer.length)));
+		i.addAll(Arrays.asList(Arrays.copyOfRange(permiumServer, plobbyWitch%permiumServer.length, permiumServer.length)));
+		i.addAll(Arrays.asList(Arrays.copyOfRange(permiumServer, 0, plobbyWitch%permiumServer.length)));
 		LinkedList<String> x = new LinkedList<>();
 		for(ServerInfo y: i)
 			x.add(y.getName());
@@ -191,11 +173,10 @@ public class ServerManager implements Listener{
 	}
 	
 	public Queue<String> buildLobbyQueue(){
-		if(lobbyWitch>=lobbies.length)
-			lobbyWitch = 0;
+		lobbyWitch = lobbyWitch++%lobbies.length;
 		ArrayList<ServerInfo> i = new ArrayList<>();
-		i.addAll(Arrays.asList(Arrays.copyOfRange(lobbies, lobbyWitch++%lobbies.length, lobbies.length)));
-		i.addAll(Arrays.asList(Arrays.copyOfRange(lobbies, 0, lobbyWitch++%lobbies.length)));
+		i.addAll(Arrays.asList(Arrays.copyOfRange(lobbies, lobbyWitch%lobbies.length, lobbies.length)));
+		i.addAll(Arrays.asList(Arrays.copyOfRange(lobbies, 0, lobbyWitch%lobbies.length)));
 		LinkedList<String> x = new LinkedList<>();
 		for(ServerInfo y: i)
 			x.add(y.getName());
@@ -208,6 +189,21 @@ public class ServerManager implements Listener{
 		if(plobbyWitch>=permiumServer.length)
 			plobbyWitch = 0;
 		return permiumServer[plobbyWitch++%permiumServer.length];
+	}
+	
+	public ServerInfo nextLobby(){
+		if(lobbies.length == 0){
+			System.out.println("No lobbies found");
+			return null;
+		}
+		if(lobbyWitch>=lobbies.length)
+			lobbyWitch = 0;
+		return lobbies[lobbyWitch++%lobbies.length];
+	}
+	public ServerInfo nextLoginLobby(){
+		if(loginWitch>=loginServer.length)
+			loginWitch = 0;
+		return loginServer[loginWitch++%loginServer.length];
 	}
 	
 	@EventHandler

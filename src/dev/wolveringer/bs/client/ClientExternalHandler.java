@@ -7,7 +7,6 @@ import dev.wolveringer.bs.UtilBungeeCord;
 import dev.wolveringer.bs.client.event.ServerMessageEvent;
 import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.client.external.BungeeCordActionListener;
-import dev.wolveringer.dataserver.player.LanguageType;
 import dev.wolveringer.dataserver.player.Setting;
 import dev.wolveringer.dataserver.protocoll.DataBuffer;
 import me.kingingo.kBungeeCord.Permission.PermissionManager;
@@ -18,9 +17,10 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 public class ClientExternalHandler implements BungeeCordActionListener{
 
 	@Override
-	public void sendMessage(UUID player, String message) {
+	public void sendMessage(int player, String message) {
 		System.out.println("Sendmessage: "+player+" Message: "+message);
-		ProxiedPlayer p = BungeeCord.getInstance().getPlayer(player);
+		LoadedPlayer lp = Main.getDatenServer().getClient().getPlayerAndLoad(player);
+		ProxiedPlayer p = BungeeCord.getInstance().getPlayer(lp.getName());
 		if(p != null)
 			p.sendMessage(message);
 	}

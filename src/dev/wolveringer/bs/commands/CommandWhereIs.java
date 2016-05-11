@@ -1,9 +1,8 @@
 package dev.wolveringer.bs.commands;
 
-import java.util.UUID;
-
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.bs.client.event.ServerMessageEvent;
+import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.client.connection.ClientType;
 import dev.wolveringer.dataserver.protocoll.DataBuffer;
 import me.kingingo.kBungeeCord.Permission.PermissionManager;
@@ -35,10 +34,14 @@ public class CommandWhereIs extends Command implements Listener {
 			if (args.length == 1) {
 				String name = args[0];
 				if(BungeeCord.getInstance().getPlayer(name) != null){
-					p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.whereis.message", sender,new String[]{name,p.getServer().getInfo().getName(),Main.getInstance().getServerId()}));
+					p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.whereis.message", sender,new String[]{name,BungeeCord.getInstance().getPlayer(name).getServer().getInfo().getName(),Main.getInstance().getServerId()}));
 				}else{
-					p.sendMessage("§cWaiting for response.");
-					Main.getDatenServer().getClient().sendServerMessage(ClientType.BUNGEECORD, "whereis", new DataBuffer().writeUUID(p.getUniqueId()).writeString(name));
+					p.sendMessage("§cSarching for the player...");
+					LoadedPlayer tp = Main.getDatenServer().getClient().getPlayer(name);
+					if(tp.getServer().getSync() != null)
+						Main.getDatenServer().getClient().sendServerMessage(ClientType.BUNGEECORD, "whereis", new DataBuffer().writeInt(Main.getDatenServer().getClient().getPlayer(p.getName()).getPlayerId()).writeString(name));
+					else
+						p.sendMessage("§cPlayer isnt online on thin network!");
 				}
 			}
 		}
@@ -46,7 +49,7 @@ public class CommandWhereIs extends Command implements Listener {
 	@EventHandler
 	public void a(ServerMessageEvent e){
 		if(e.getChannel().equalsIgnoreCase("whereis")){
-			UUID player = e.getBuffer().readUUID();
+			int player = e.getBuffer().readInt();
 			String user = e.getBuffer().readString();
 			if(BungeeCord.getInstance().getPlayer(user) != null){
 				ProxiedPlayer p = BungeeCord.getInstance().getPlayer(user);

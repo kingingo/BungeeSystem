@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 
+import dev.wolveringer.BungeeUtil.AsyncCatcher;
+import dev.wolveringer.booster.BoosterManager;
+import dev.wolveringer.booster.CMD_BOOSTER;
 import dev.wolveringer.bs.client.BungeecordDatenClient;
 import dev.wolveringer.bs.commands.CommandBan;
 import dev.wolveringer.bs.commands.CommandBanInfo;
@@ -48,6 +51,7 @@ import dev.wolveringer.bs.listener.ServerListener;
 import dev.wolveringer.bs.listener.SkinListener;
 import dev.wolveringer.bs.listener.TeamChatListener;
 import dev.wolveringer.bs.login.LoginManager;
+import dev.wolveringer.bs.login.PlayerDisconnectListener;
 import dev.wolveringer.bs.message.MessageManager;
 import dev.wolveringer.bs.servermanager.ServerManager;
 import dev.wolveringer.client.threadfactory.ThreadFactory;
@@ -59,6 +63,9 @@ import dev.wolveringer.events.EventConditions;
 import dev.wolveringer.events.EventType;
 import dev.wolveringer.events.player.PlayerServerSwitchEvent;
 import dev.wolveringer.mysql.MySQL;
+import dev.wolveringer.report.commands.CMD_Report;
+import dev.wolveringer.report.info.ActionBarInformation;
+import dev.wolveringer.skin.SkinCacheManager;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import me.kingingo.kBungeeCord.Language.TranslationHandler;
@@ -80,6 +87,7 @@ public class Bootstrap {
 	}
 
 	public void onEnable0() {
+		AsyncCatcher.disableAll();
 		UtilBungeeCord.class.getName(); //Keep loaded in memory
 		ThreadFactory.setFactory(new ThreadFactory() {
 			@Override
@@ -200,7 +208,9 @@ public class Bootstrap {
 				PermissionManager.getManager().loadGroups();
 			}
 		});
-
+		Main.boosterManager = new BoosterManager();
+		Main.getBoosterManager().init();
+		
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandNews("news"));
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandBroad("broad"));
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandKicken("kicken"));
@@ -234,6 +244,8 @@ public class Bootstrap {
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandBanInfo());
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandWhitelist());
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandSkin());
+		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CMD_Report());
+		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CMD_BOOSTER());
 		
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), InformationManager.getManager());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), ServerManager.getManager());
@@ -245,7 +257,12 @@ public class Bootstrap {
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new ServerListener());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new SkinListener());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new InvalidChatListener());
-
+		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new PlayerDisconnectListener());
+		
+		Main.skins = new SkinCacheManager();
+		Main.info = new ActionBarInformation(1000, 5000);
+		Main.info.start();
+		
 		System.out.println("Event hander");
 		EventManager emanager = Main.getDatenServer().getClient().getHandle().getEventManager();
 		emanager.getEventManager(EventType.SERVER_SWITCH).setEventEnabled(true);

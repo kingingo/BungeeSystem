@@ -1,21 +1,26 @@
 package dev.wolveringer.bs.listener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.bs.login.LoginManager;
 import dev.wolveringer.client.LoadedPlayer;
+import dev.wolveringer.hashmaps.CachedHashMap;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ChatEvent;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.PostLoginEvent;
+import net.md_5.bungee.api.event.TabCompleteEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
 public class ChatListener implements Listener {
 	private HashMap<ProxiedPlayer, Long> time = new HashMap<>();
-
+	private CachedHashMap<ProxiedPlayer, String> lastTarget = new CachedHashMap<>(10, TimeUnit.SECONDS);
 	@EventHandler
 	public void a(PostLoginEvent e) {
 		if (!e.getPlayer().getPendingConnection().isOnlineMode())
@@ -33,7 +38,7 @@ public class ChatListener implements Listener {
 			ProxiedPlayer p = (ProxiedPlayer) e.getSender();
 			if (time.containsKey(e.getSender())){
 				if(e.getMessage().startsWith("/") && !LoginManager.getManager().isLoggedIn((ProxiedPlayer) e.getSender())){
-					if(!(e.getMessage().startsWith("/login") || e.getMessage().startsWith("/register") || e.getMessage().startsWith("/captcha")))
+					if(!(e.getMessage().toLowerCase().startsWith("/login") || e.getMessage().toLowerCase().startsWith("/register") || e.getMessage().toLowerCase().startsWith("/captcha")))
 						e.setCancelled(true);
 					else
 						return;
@@ -50,20 +55,31 @@ public class ChatListener implements Listener {
 			if(!e.isCancelled()){
 				if(e.getMessage().startsWith("@")){
 					e.setCancelled(true);
-					if(e.getMessage().split(" ").length < 2){
-						p.sendMessage("§cPlease write a message.");
-						return;
-					}
-					
 					String player = e.getMessage().split(" ")[0].substring(1);
 					
 					if(player.equalsIgnoreCase(p.getName())){
-						p.sendMessage("§cAre you so alone? You write with yourself....");
+						p.sendMessage("§cYou cant write with yourself.\n\n§cIf you want write with yourself then you must add yourself on Whatsapp.\n§cThis server doesn't support even talks.\n§cYours truly §aWolverinDEV");
 						return;
 					}
-					
+					if(player.length()+2 > e.getMessage().length()){
+						p.sendMessage("Please provide a message.");
+						return;
+					}
 					String message = e.getMessage().substring(player.length()+2);
+					if(player.isEmpty()){
+						if(!lastTarget.containsKey(p)){
+							p.sendMessage("§cPlease provide a player.");
+							return;
+						}
+						player = lastTarget.get(p);
+					}
+					else
+						lastTarget.put(p, player);
 					
+					if(message.isEmpty()){
+						p.sendMessage("§cPlease provide a message.");
+						return;
+					}
 					if(BungeeCord.getInstance().getPlayer(player) != null){
 						BungeeCord.getInstance().getPlayer(player).sendMessage("§8[§6»§o "+p.getName()+"§8] §7"+message);
 						p.sendMessage("§8[§6§o"+player+" §6»§8] §7"+message);
@@ -72,7 +88,7 @@ public class ChatListener implements Listener {
 						LoadedPlayer target = Main.getDatenServer().getClient().getPlayerAndLoad(player);
 						if(target.getServer().getSync() != null){
 							p.sendMessage("§8[§6§o"+player+" §6»§8] §7"+message);
-							Main.getDatenServer().getClient().sendMessage(target.getUUID(), "§8[§o§6» "+p.getName()+"§8] §7"+message);
+							Main.getDatenServer().getClient().sendMessage(target.getPlayerId(), "§8[§o§6» "+p.getName()+"§8] §7"+message);
 						}
 						else
 							p.sendMessage("§cTarget player isnt online.");
@@ -82,12 +98,19 @@ public class ChatListener implements Listener {
 		}
 	}
 	
-	
-	private String join(String[] copyOfRange, String string) {
-		String out = "";
-		for(String s : copyOfRange)
-			out+=string+s;
-		return out.substring(string.length());
+	@EventHandler
+	public void a(TabCompleteEvent e){
+		if(e.getCursor().startsWith("@")){
+			if(e.getCursor().split(" ").length==1 && !e.getCursor().endsWith(" ")){
+				String nameStart = e.getCursor().substring(1, e.getCursor().length());
+				List<String> avariable = new ArrayList<>();
+				for(String s : Main.getDatenServer().getPlayers())
+					if(s.toLowerCase().startsWith(nameStart.toLowerCase()))
+						avariable.add("@"+s);
+				e.getSuggestions().clear();
+				e.getSuggestions().addAll(avariable);
+			}
+		}
 	}
 	
 	public static final long DAY = 86400000L;

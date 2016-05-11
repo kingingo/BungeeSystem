@@ -18,7 +18,11 @@ public class PlayerKickListener implements Listener{
 			ev.getPlayer().disconnect(ev.getKickReason());
 			return;
 		}
-
+		if (ev.getKickReason().contains("Wartungsmodus")) {
+			ev.getPlayer().disconnect(ev.getKickReasonComponent());
+			return;
+		}
+		
 		ServerInfo kickedFrom = null;
 		if (ev.getPlayer().getServer() != null) {
 			kickedFrom = ev.getPlayer().getServer().getInfo();
@@ -29,11 +33,6 @@ public class PlayerKickListener implements Listener{
 			if (kickedFrom == null) {
 				kickedFrom = ProxyServer.getInstance().getServerInfo(ev.getPlayer().getPendingConnection().getListener().getDefaultServer());
 			}
-		}
-
-		if (ev.getKickReason().contains("Wartungsmodus")) {
-			ev.getPlayer().disconnect(ev.getKickReasonComponent());
-			return;
 		}
 
 		ev.setCancelled(true);

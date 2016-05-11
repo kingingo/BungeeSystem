@@ -27,7 +27,7 @@ public class CommandKicken extends Command implements Listener{
 				player.sendMessages(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.kick.help", sender));
 			}else{
 				String grund = "§6No reason set";
-				String banned=args[0];
+				String targetPlayer = args[0];
 
 				if(args.length>1){
 					StringBuilder sb = new StringBuilder();
@@ -41,8 +41,12 @@ public class CommandKicken extends Command implements Listener{
 				//if(BungeeCord.getInstance().getPlayer(banned) != null)
 				//	BungeeCord.getInstance().getPlayer(banned).disconnect("§cKick reson:§b "+grund);
 				//else
-				Main.getDatenServer().getClient().kickPlayer(Main.getDatenServer().getClient().getPlayerAndLoad(banned).getPlayerId(), "§cKick reason:§b "+grund);
-				Main.getDatenServer().teamMessage(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.kick.teammessage", sender,new String[]{banned,player.getName(),grund}));
+				try{
+					Main.getDatenServer().getClient().kickPlayer(Main.getDatenServer().getClient().getPlayerAndLoad(targetPlayer).getPlayerId(), "§cKick reason:§b "+grund);
+				}catch(Exception e){
+					sender.sendMessage("§xception: "+e.getMessage());
+				}
+				Main.getDatenServer().teamMessage(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.kick.teammessage", sender,new String[]{targetPlayer,player.getName(),grund}));
 			}
 		}
 	}

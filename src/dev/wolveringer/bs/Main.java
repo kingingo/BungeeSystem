@@ -1,6 +1,9 @@
 package dev.wolveringer.bs;
 
+import dev.wolveringer.booster.BoosterManager;
 import dev.wolveringer.bs.client.BungeecordDatenClient;
+import dev.wolveringer.report.info.ActionBarInformation;
+import dev.wolveringer.skin.SkinCacheManager;
 import lombok.Getter;
 import me.kingingo.kBungeeCord.Language.TranslationHandler;
 import net.md_5.bungee.BungeeCord;
@@ -13,6 +16,14 @@ public class Main extends Plugin{
 	protected static TranslationHandler translationManager;
 	protected static Main main;
 	protected static BungeecordDatenClient data;
+	
+	public static SkinCacheManager getSkinManager() {
+		return skins;
+	}
+	protected static SkinCacheManager skins;
+	protected static ActionBarInformation info;
+	@Getter
+	protected static BoosterManager boosterManager;
 	public static Main getInstance(){
 		return main;
 	}

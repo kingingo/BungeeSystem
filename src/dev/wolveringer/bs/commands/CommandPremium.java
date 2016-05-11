@@ -56,7 +56,7 @@ public class CommandPremium extends Command implements Listener {
 							p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+ Main.getTranslationManager().translate("command.premium.enable.other", sender,args[0])); //
 							if (!target.isLoaded())
 								target.loadPlayer();
-							target.setPremiumSync(false);
+							target.setPremiumSync(true);
 							if(target.getServer().getSync() != null)
 								if (BungeeCord.getInstance().getPlayer(args[1]) != null) {
 									BungeeCord.getInstance().getPlayer(args[1]).disconnect(Main.getTranslationManager().translate("command.premium.kickMessage", target));

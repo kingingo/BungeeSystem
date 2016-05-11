@@ -91,7 +91,7 @@ public class PlayerJoinListener implements Listener {
 					time = "§cPermanent";
 				}
 				e.setCancelled(true);
-				e.setCancelReason(Main.getTranslationManager().translate("event.join.kickBan", player, new Object[] { time, response.getReson() }));
+				e.setCancelReason(Main.getTranslationManager().translate("event.join.kickBan", player, new Object[] { time, response.getReson(),response.getLevel() }));
 				;
 			}
 			if ("true".equalsIgnoreCase(InformationManager.getManager().getInfo("whitelistActive")) && !PermissionManager.getManager().hasPermission(player.getPlayerId(), "epicpvp.whitelist.bypass")) {
@@ -137,7 +137,7 @@ public class PlayerJoinListener implements Listener {
 
 	@EventHandler
 	public void a(ServerConnectEvent e) {
-		if ((e.getPlayer().getServer() == null && !inQueue.contains(e.getPlayer())) || e.getTarget().getName().equalsIgnoreCase("hub")) {
+		if ((e.getPlayer().getServer() == null && !inQueue.contains(e.getPlayer())) || e.getTarget().getName().toLowerCase().contains("hub")) {
 			Queue<String> joinQueue;
 			inQueue.add(e.getPlayer());
 			if (e.getPlayer().getPendingConnection().isOnlineMode() || LoginManager.getManager().isLoggedIn(e.getPlayer())) {
