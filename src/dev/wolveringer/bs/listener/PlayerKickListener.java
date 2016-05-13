@@ -18,7 +18,7 @@ public class PlayerKickListener implements Listener{
 			ev.getPlayer().disconnect(ev.getKickReason());
 			return;
 		}
-		if (ev.getKickReason().contains("Wartungsmodus")) {
+		if (ev.getKickReason().toLowerCase().contains("wartungsmodus") || ev.getKickReason().toLowerCase().contains("version") || ev.getKickReason().toLowerCase().contains("outdated")) {
 			ev.getPlayer().disconnect(ev.getKickReasonComponent());
 			return;
 		}

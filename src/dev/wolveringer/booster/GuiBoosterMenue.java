@@ -52,7 +52,7 @@ public class GuiBoosterMenue extends GuiUpdating{
 				});
 			}
 		} else {
-			LoadedPlayer player = Main.getDatenServer().getClient().getPlayer(getPlayer().getName());
+			LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(getPlayer().getName());
 			NetworkBooster ownBooster = Main.getDatenServer().getClient().getNetworkBoosterInformation(type, player.getPlayerId()).getSync();
 			int max = ownBooster.getTime();
 			builder.id(289);

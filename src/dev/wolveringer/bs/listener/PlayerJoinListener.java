@@ -5,6 +5,8 @@ import java.util.Queue;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import dev.wolveringer.BungeeUtil.ClientVersion;
+import dev.wolveringer.BungeeUtil.ClientVersion.BigClientVersion;
 import dev.wolveringer.arrays.CachedArrayList;
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.bs.information.InformationManager;
@@ -38,6 +40,13 @@ public class PlayerJoinListener implements Listener {
 		//48-57
 		//65-90
 		//97-122
+		ClientVersion version = ClientVersion.fromProtocoll(e.getConnection().getVersion());
+		if(version.getBigVersion() != BigClientVersion.v1_8 && (e.getConnection().getVersion() > ClientVersion.v1_9_3.getVersion() || e.getConnection().getVersion() < ClientVersion.v1_9_0.getVersion()) ){
+			e.setCancelled(true);
+			e.setCancelReason("§cYour minecraft versions issnt supportted. Please use 1.8.X or 1.9.X");
+			System.out.println("Player "+e.getConnection().getName()+" try to connect with an outdated version ("+e.getConnection().getVersion()+")");
+			return;
+		}
 		for (char c : e.getConnection().getName().toCharArray()) {
 			if ((('0' > c) || (c > '9')) && (('a' > c) || (c > 'z')) && (('A' > c) || (c > 'Z')) && (c != '_')){
 				e.setCancelled(true);
@@ -137,11 +146,11 @@ public class PlayerJoinListener implements Listener {
 
 	@EventHandler
 	public void a(ServerConnectEvent e) {
-		if ((e.getPlayer().getServer() == null && !inQueue.contains(e.getPlayer())) || e.getTarget().getName().toLowerCase().contains("hub")) {
+		if ((e.getPlayer().getServer() == null && !inQueue.contains(e.getPlayer())) || e.getTarget().getName().equalsIgnoreCase("hub")) {
 			Queue<String> joinQueue;
 			inQueue.add(e.getPlayer());
 			if (e.getPlayer().getPendingConnection().isOnlineMode() || LoginManager.getManager().isLoggedIn(e.getPlayer())) {
-				LoadedPlayer player = Main.getDatenServer().getClient().getPlayer(e.getPlayer().getUniqueId());
+				LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(e.getPlayer().getUniqueId());
 				MessageManager.getmanager(player.getLanguageSync());
 				if (PermissionManager.getManager().hasPermission(e.getPlayer(), PermissionType.PREMIUM_LOBBY, false))
 					joinQueue = ServerManager.getManager().buildPremiumQueue();

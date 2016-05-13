@@ -46,7 +46,7 @@ public class TranslationHandler {
 	}
 
 	public LanguageType getLanguage(ProxiedPlayer player) {
-		return manager.getLanguage(Main.getDatenServer().getClient().getPlayer(player.getName()));
+		return manager.getLanguage(Main.getDatenServer().getClient().getPlayerAndLoad(player.getName()));
 	}
 	
 	

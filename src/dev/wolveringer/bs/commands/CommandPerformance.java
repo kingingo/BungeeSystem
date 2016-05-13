@@ -47,7 +47,7 @@ public class CommandPerformance extends Command implements Listener {
 					Runtime run = Runtime.getRuntime();
 					//"§7Bungeecord: §b%s0§7 Player Online: %s1§7 Avg-Ping:§b%s2 §7Ram:§b%bs3§7/§c%s4" [Bungeecord,Playersonline,Avg ping,Ram,Max ram]
 					p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.performance.information", sender,Main.getInstance().getServerId(),BungeeCord.getInstance().getOnlineCount(),getAvgPing(),((run.totalMemory()-run.freeMemory()) / 1048576L),run.maxMemory()));
-					Main.getDatenServer().getClient().sendServerMessage(ClientType.BUNGEECORD, "performance", new DataBuffer().writeInt(Main.getDatenServer().getClient().getPlayer(p.getName()).getPlayerId()));
+					Main.getDatenServer().getClient().sendServerMessage(ClientType.BUNGEECORD, "performance", new DataBuffer().writeInt(Main.getDatenServer().getClient().getPlayerAndLoad(p.getName()).getPlayerId()));
 				}
 			}
 		}

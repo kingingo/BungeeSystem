@@ -70,7 +70,7 @@ public class ClientExternalHandler implements BungeeCordActionListener{
 	@Override
 	public void settingUpdate(UUID player, Setting setting, String value) {
 		if(setting == Setting.LANGUAGE)
-			Main.getTranslationManager().updateLanguage(Main.getDatenServer().getClient().getPlayer(player));
+			Main.getTranslationManager().updateLanguage(Main.getDatenServer().getClient().getPlayerAndLoad(player));
 	}
 
 	@Override

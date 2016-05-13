@@ -37,9 +37,9 @@ public class CommandWhereIs extends Command implements Listener {
 					p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.whereis.message", sender,new String[]{name,BungeeCord.getInstance().getPlayer(name).getServer().getInfo().getName(),Main.getInstance().getServerId()}));
 				}else{
 					p.sendMessage("§cSarching for the player...");
-					LoadedPlayer tp = Main.getDatenServer().getClient().getPlayer(name);
+					LoadedPlayer tp = Main.getDatenServer().getClient().getPlayerAndLoad(name);
 					if(tp.getServer().getSync() != null)
-						Main.getDatenServer().getClient().sendServerMessage(ClientType.BUNGEECORD, "whereis", new DataBuffer().writeInt(Main.getDatenServer().getClient().getPlayer(p.getName()).getPlayerId()).writeString(name));
+						Main.getDatenServer().getClient().sendServerMessage(ClientType.BUNGEECORD, "whereis", new DataBuffer().writeInt(Main.getDatenServer().getClient().getPlayerAndLoad(p.getName()).getPlayerId()).writeString(name));
 					else
 						p.sendMessage("§cPlayer isnt online on thin network!");
 				}

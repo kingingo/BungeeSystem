@@ -83,7 +83,7 @@ public class CommandSkin extends Command {
 					}
 				}
 				cs.sendMessage("§aLoading skin.");
-				LoadedPlayer player = Main.getDatenServer().getClient().getPlayer(cs.getName());
+				LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(cs.getName());
 				Skin skin = null;
 				if (skinUUID != null)
 					skin = Main.getDatenServer().getClient().getSkin(skinUUID).getSync();

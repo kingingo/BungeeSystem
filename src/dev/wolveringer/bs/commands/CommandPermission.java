@@ -34,7 +34,7 @@ public class CommandPermission extends Command implements Listener {
 				String name = null;
 				if(args[1].matches("[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}")){
 					uuid = UUID.fromString(args[1]);
-					name = Main.getDatenServer().getClient().getPlayer(uuid).getName();
+					name = Main.getDatenServer().getClient().getPlayerAndLoad(uuid).getName();
 				}
 				else if(args[1].length()<=16){
 					uuid = Main.getDatenServer().getClient().getPlayerAndLoad(args[1]).getUUID();

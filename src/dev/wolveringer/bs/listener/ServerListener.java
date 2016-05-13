@@ -35,6 +35,6 @@ public class ServerListener implements Listener{
 	
 	@EventHandler
 	public void a(ServerSwitchEvent e){
-		Main.getDatenServer().getClient().getPlayer(e.getPlayer().getUniqueId()).setServerSync(e.getPlayer().getServer().getInfo().getName());
+		Main.getDatenServer().getClient().getPlayerAndLoad(e.getPlayer().getUniqueId()).setServerSync(e.getPlayer().getServer().getInfo().getName());
 	}
 }
