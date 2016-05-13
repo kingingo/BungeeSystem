@@ -51,8 +51,8 @@ public class BungeecordDatenClient {
 	}
 	
 	
-	public void start(String password) throws Exception {
-		if(isActive() || tryConnecting)
+	public synchronized void start(String password) throws Exception {
+		if(isActive())
 			return;
 		tryConnecting = true;
 		if(client == null)

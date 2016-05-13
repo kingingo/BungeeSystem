@@ -5,10 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import dev.wolveringer.BungeeUtil.Player;
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.bs.login.LoginManager;
 import dev.wolveringer.client.LoadedPlayer;
+import dev.wolveringer.dataserver.protocoll.packets.PacketVersion;
 import dev.wolveringer.hashmaps.CachedHashMap;
+import me.kingingo.kBungeeCord.Permission.PermissionManager;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ChatEvent;
@@ -21,6 +24,8 @@ import net.md_5.bungee.event.EventHandler;
 public class ChatListener implements Listener {
 	private HashMap<ProxiedPlayer, Long> time = new HashMap<>();
 	private CachedHashMap<ProxiedPlayer, String> lastTarget = new CachedHashMap<>(10, TimeUnit.SECONDS);
+	private CachedHashMap<Player, Long> lastCommand = new CachedHashMap<>(750, TimeUnit.MILLISECONDS);
+	
 	@EventHandler
 	public void a(PostLoginEvent e) {
 		if (!e.getPlayer().getPendingConnection().isOnlineMode())
@@ -36,6 +41,16 @@ public class ChatListener implements Listener {
 	public void a(ChatEvent e) {
 		if (e.getSender() instanceof ProxiedPlayer) {
 			ProxiedPlayer p = (ProxiedPlayer) e.getSender();
+			if(!Main.getDatenServer().isActive()){
+				p.sendMessage("§cCant connect to §eServer-Chef§c. Protocoll version: §a" + PacketVersion.PROTOCOLL_VERSION + "\n§c(Bungeecord) -> §aPlease wait a littlebit.");
+				e.setCancelled(true);
+				return;
+			}
+			if(e.getMessage().startsWith("/") && System.currentTimeMillis()-lastCommand.getOrDefault(p, System.currentTimeMillis())>1 && !PermissionManager.getManager().hasPermission(p, "chat.delay.bypass")){
+				p.sendMessage("§cDu chattest zu schnell. Bitte chatte etwas langsamer ;)");
+				e.setCancelled(true);
+				return;
+			}
 			if (time.containsKey(e.getSender())){
 				if(e.getMessage().startsWith("/") && !LoginManager.getManager().isLoggedIn((ProxiedPlayer) e.getSender())){
 					if(!(e.getMessage().toLowerCase().startsWith("/login") || e.getMessage().toLowerCase().startsWith("/register") || e.getMessage().toLowerCase().startsWith("/captcha")))

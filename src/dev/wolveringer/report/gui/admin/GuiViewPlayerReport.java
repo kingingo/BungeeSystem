@@ -62,6 +62,7 @@ public class GuiViewPlayerReport extends Gui{
 					e.getWorkers().add(new ReportWorker(e.getReportId(), own.getPlayerId(), System.currentTimeMillis(), -1));
 					Main.getDatenServer().getClient().sendMessage(e.getReporter(), "§aDein Spielerreport gegen §e"+name+" §awird von §e"+getPlayer().getName()+" §abearbeitet.");
 				}
+				Main.getDatenServer().getClient().brotcastMessage("report.alert", "§aDer Spieler §e"+c.getPlayer().getName()+" §ahat den report gegen §e"+name+" §aangenommen.");
 				switchToGui(new GuiPlayerSupportTools(name,reports));
 			}).build());
 		}

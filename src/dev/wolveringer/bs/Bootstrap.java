@@ -102,7 +102,17 @@ public class Bootstrap {
 
 					@Override
 					public void start() {
-						task = BungeeCord.getInstance().getScheduler().runAsync(Main.getInstance(), run);
+						task = BungeeCord.getInstance().getScheduler().runAsync(Main.getInstance(), new Runnable() {
+							@Override
+							public void run() {
+								try{
+									run.run();
+								}catch(Exception e){
+									System.err.println("Having error while excecuting Runable "+run.getClass()+":");
+									e.printStackTrace();
+								}
+							}
+						});
 					}
 				};
 			}
@@ -145,7 +155,7 @@ public class Bootstrap {
 			public void run() {
 				while (true) {
 					while (!Main.data.isActive()) {
-						System.out.println("Try to connect to dataserver");
+						System.out.println("§aTry to connect to dataserver");
 						try {
 							Main.data.start(Main.getInstance().datenPassword = configuration.getString("datenserver.passwort"));
 							for(ProxiedPlayer p : BungeeCord.getInstance().getPlayers()){
@@ -156,7 +166,7 @@ public class Bootstrap {
 								}
 							}
 						} catch (Exception e) {
-							System.out.println("Cant connect to DatenServer [" + ((InetSocketAddress) Main.data.getAddress()).getHostName() + ":" + ((InetSocketAddress) Main.data.getAddress()).getPort() + "]. Reson: "+e.getMessage()+" . Try again in 5 seconds.");
+							System.out.println("§cCant connect to DatenServer [" + ((InetSocketAddress) Main.data.getAddress()).getHostName() + ":" + ((InetSocketAddress) Main.data.getAddress()).getPort() + "]. Reson: "+e.getMessage()+" . Try again in 5 seconds.");
 							try {
 								Thread.sleep(5000);
 							} catch (InterruptedException e1) {
@@ -171,10 +181,10 @@ public class Bootstrap {
 							}
 							continue;
 						}
-						System.out.println("Successful connected");
+						System.out.println("§aSuccessful connected");
 					}
 					try {
-						Thread.sleep(10000);
+						Thread.sleep(2000);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}

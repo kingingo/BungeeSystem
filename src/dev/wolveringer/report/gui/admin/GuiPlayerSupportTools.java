@@ -43,7 +43,6 @@ public class GuiPlayerSupportTools extends Gui {
 						c.getPlayer().closeInventory();
 						c.getPlayer().sendMessage("§aPlayer kicked.");
 					}
-					
 					@Override
 					public void canceled() {}
 				};
@@ -59,6 +58,7 @@ public class GuiPlayerSupportTools extends Gui {
 				Main.getDatenServer().getClient().closeReportWorker(e.getReportId(), own.getPlayerId());
 				Main.getDatenServer().getClient().sendMessage(e.getReporter(), "§aDein Spielerreport gegen §e"+player+" §awurde von §e"+getPlayer().getName()+" §abearbeitet.");
 			}
+			Main.getDatenServer().getClient().brotcastMessage("report.alert", "§aDer Spieler §e"+getPlayer().getName()+" §ahat den Report gegen §e"+player+" §ageschlossen.");
 			c.getPlayer().sendMessage("§aReport closed.");
 		}).build());
 		fill(ItemBuilder.create(160).durbility(7).name("§7").build(), 0, 6*9);

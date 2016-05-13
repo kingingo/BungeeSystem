@@ -40,6 +40,23 @@ public class PlayerJoinListener implements Listener {
 		//48-57
 		//65-90
 		//97-122
+		if(!Main.getDatenServer().isActive()){
+			e.setCancelReason("§cCant connect to §eServer-Chef§c. Protocoll version: §a" + PacketVersion.PROTOCOLL_VERSION + "\nPlease try again in 10-30 seconds");
+			e.setCancelled(true);
+			return;
+		}
+		if (!Main.loaded) {
+			e.setCancelled(true);
+			e.setCancelReason("§cBungeecord isnt fully loaded");
+			return;
+		}
+		if (connections.size() >= 5) {
+			e.setCancelled(true);
+			e.setCancelReason("§cTo many people logging in.");
+			return;
+		}
+		
+		
 		ClientVersion version = ClientVersion.fromProtocoll(e.getConnection().getVersion());
 		if(version.getBigVersion() != BigClientVersion.v1_8 && (e.getConnection().getVersion() > ClientVersion.v1_9_3.getVersion() || e.getConnection().getVersion() < ClientVersion.v1_9_0.getVersion()) ){
 			e.setCancelled(true);
@@ -54,22 +71,11 @@ public class PlayerJoinListener implements Listener {
 				return;
 			}
 		}
-		if (!Main.loaded) {
-			e.setCancelled(true);
-			e.setCancelReason("§cBungeecord isnt fully loaded");
-		}
-		if (connections.size() >= 5) {
-			e.setCancelled(true);
-			e.setCancelReason("§cTo many people logging in.");
-			return;
-		}
 		connections.add(UUID.randomUUID());
 
 		long start = System.currentTimeMillis();
 		try {
 			LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(e.getConnection().getName());
-
-			UUID nameUUID = player.getUUID();
 			System.out.println("Connect: Real name: " + e.getConnection().getName() + " Player: " + player.getName() + " UUID: " + player.getUUID());
 			System.out.println("Player loaded");
 			try {

@@ -37,7 +37,7 @@ public class GuiReportConfirm extends Gui{
 				getPlayer().sendMessage("§cAction canceled.");
 			}
 		});
-		inv.setItem(8, ItemBuilder.create(159).name("§a§mBestätigen").lore("§cBitte warte noch 5 secunden befor du").lore("§cden Report Bestätigen kannst.").durbility(11).build());
+		inv.setItem(8, ItemBuilder.create(159).name("§a§mBestätigen").lore("§cBitte warte noch 5 sekunden befor du").lore("§cden Report Bestätigen kannst.").durbility(11).build());
 		
 		fill(ItemBuilder.create(160).durbility(7).name("§7").build(), 0, 9);
 	}

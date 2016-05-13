@@ -1,8 +1,6 @@
 package dev.wolveringer.bs.commands;
 
 import dev.wolveringer.bs.Main;
-import me.kingingo.kBungeeCord.Permission.PermissionManager;
-import me.kingingo.kBungeeCord.Permission.PermissionType;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -20,46 +18,43 @@ public class CommandClient extends Command implements Listener {
 	}
 
 	@Override
-	public void execute(CommandSender sender, String[] args) {
-		if (sender instanceof ProxiedPlayer) {
-			ProxiedPlayer p = (ProxiedPlayer) sender;
-			if (PermissionManager.getManager().hasPermission(p, PermissionType.CLIENT, true)) {
-				if (args.length == 0) {
-					p.sendMessage(Main.getTranslationManager().translate("prefix", sender) + Main.getTranslationManager().translate("command.client.help.info", sender));
-					p.sendMessage(Main.getTranslationManager().translate("prefix", sender) + Main.getTranslationManager().translate("command.client.help.reconnect", sender));
-				}
-				if (args.length == 1) {
-					if (args[0].equalsIgnoreCase("info")) {
-						sender.sendMessage(Main.getTranslationManager().translate("prefix", sender) + (Main.getDatenServer().getClient().getHandle().isConnected() ? Main.getTranslationManager().translate("command.client.info.connected", sender) : Main.getTranslationManager().translate("command.client.info.disconnected", sender)));
-						sender.sendMessage(Main.getTranslationManager().translate("prefix", sender) + Main.getTranslationManager().translate("command.client.info.ping", sender, Main.getDatenServer().getClient().getHandle().getPing()));
-						sender.sendMessage(Main.getTranslationManager().translate("prefix", sender) + Main.getTranslationManager().translate("command.client.info.clientname", sender, Main.getDatenServer().getClient().getHandle().getName()));
-					} else if (args[0].equalsIgnoreCase("reconnect")) {
-						if (reconnecting) {
-							sender.sendMessage(Main.getTranslationManager().translate("prefix", sender) + Main.getTranslationManager().translate("command.client.info.allredyreconnecting", sender));
-							return;
-						}
-						reconnecting = true;
-						BungeeCord.getInstance().getScheduler().runAsync(Main.getInstance(), new Runnable() {
-							@Override
-							public void run() {
-								if (Main.getDatenServer().getClient().getHandle().isConnected()) {
-									sender.sendMessage(Main.getTranslationManager().translate("prefix", sender) + Main.getTranslationManager().translate("command.client.info.disconnecting", sender));
-									Main.getDatenServer().getClient().getHandle().disconnect("reconnecting (cmd)");
-									sender.sendMessage(Main.getTranslationManager().translate("prefix", sender) + Main.getTranslationManager().translate("command.client.info.disconnected", sender));
-								}
-								sender.sendMessage(Main.getTranslationManager().translate("prefix", sender) + Main.getTranslationManager().translate("command.client.info.connecting", sender));
-								while (!Main.getDatenServer().getClient().getHandle().isConnected()) {
-									try {
-										Thread.sleep(500);
-									} catch (InterruptedException e) {
-										e.printStackTrace();
-									}
-								}
-								sender.sendMessage(Main.getTranslationManager().translate("prefix", sender) + Main.getTranslationManager().translate("command.client.info.connected", sender));
-								reconnecting = false;
-							}
-						});
+	public void execute(CommandSender p, String[] args) {
+		if (p instanceof ProxiedPlayer) {
+			if (args.length == 0) {
+				p.sendMessage(Main.getTranslationManager().translate("prefix", p) + Main.getTranslationManager().translate("command.client.help.info", p));
+				p.sendMessage(Main.getTranslationManager().translate("prefix", p) + Main.getTranslationManager().translate("command.client.help.reconnect", p));
+			}
+			if (args.length == 1) {
+				if (args[0].equalsIgnoreCase("info")) {
+					p.sendMessage(Main.getTranslationManager().translate("prefix", p) + (Main.getDatenServer().getClient().getHandle().isConnected() ? Main.getTranslationManager().translate("command.client.info.connected", p) : Main.getTranslationManager().translate("command.client.info.disconnected", p)));
+					p.sendMessage(Main.getTranslationManager().translate("prefix", p) + Main.getTranslationManager().translate("command.client.info.ping", p, Main.getDatenServer().getClient().getHandle().getPing()));
+					p.sendMessage(Main.getTranslationManager().translate("prefix", p) + Main.getTranslationManager().translate("command.client.info.clientname", p, Main.getDatenServer().getClient().getHandle().getName()));
+				} else if (args[0].equalsIgnoreCase("reconnect")) {
+					if (reconnecting) {
+						p.sendMessage(Main.getTranslationManager().translate("prefix", p) + Main.getTranslationManager().translate("command.client.info.allredyreconnecting", p));
+						return;
 					}
+					reconnecting = true;
+					BungeeCord.getInstance().getScheduler().runAsync(Main.getInstance(), new Runnable() {
+						@Override
+						public void run() {
+							if (Main.getDatenServer().getClient().getHandle().isConnected()) {
+								p.sendMessage(Main.getTranslationManager().translate("prefix", p) + Main.getTranslationManager().translate("command.client.info.disconnecting", p));
+								Main.getDatenServer().getClient().getHandle().disconnect("reconnecting (cmd)");
+								p.sendMessage(Main.getTranslationManager().translate("prefix", p) + Main.getTranslationManager().translate("command.client.info.disconnected", p));
+							}
+							p.sendMessage(Main.getTranslationManager().translate("prefix", p) + Main.getTranslationManager().translate("command.client.info.connecting", p));
+							while (!Main.getDatenServer().getClient().getHandle().isConnected()) {
+								try {
+									Thread.sleep(500);
+								} catch (InterruptedException e) {
+									e.printStackTrace();
+								}
+							}
+							p.sendMessage(Main.getTranslationManager().translate("prefix", p) + Main.getTranslationManager().translate("command.client.info.connected", p));
+							reconnecting = false;
+						}
+					});
 				}
 			}
 		}

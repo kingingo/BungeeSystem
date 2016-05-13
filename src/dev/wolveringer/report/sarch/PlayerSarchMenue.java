@@ -17,9 +17,9 @@ import dev.wolveringer.BungeeUtil.packets.PacketPlayOutSetSlot;
 import dev.wolveringer.api.guy.AnvilGui;
 import dev.wolveringer.api.guy.AnvilGuiListener;
 import dev.wolveringer.api.inventory.Inventory;
-import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.item.ItemBuilder;
 import dev.wolveringer.bs.Main;
+import dev.wolveringer.client.threadfactory.ThreadFactory;
 import dev.wolveringer.skin.Skin;
 import dev.wolveringer.skin.SteveSkin;
 import net.md_5.bungee.BungeeCord;
@@ -195,7 +195,7 @@ public abstract class PlayerSarchMenue implements AnvilGuiListener, PacketHandle
 			((SkullMeta)is.getItemMeta()).setSkin(toBungeeUtilSkin(skin));
 			return is;
 		}
-		BungeeCord.getInstance().getScheduler().runAsync(Main.getInstance(), new Runnable() {
+		ThreadFactory.getFactory().createThread(new Runnable() {
 			@Override
 			public void run() {
 				Skin skin = Main.getSkinManager().getOrLoad(name);
@@ -206,7 +206,7 @@ public abstract class PlayerSarchMenue implements AnvilGuiListener, PacketHandle
 					setInventoryItemstack(is, slot);
 				}
 			}
-		});
+		}).start();
 		return is;
 	}
 	

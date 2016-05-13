@@ -25,8 +25,12 @@ public class ActionBarInformation {
 			while (active) {
 				try {
 					Thread.sleep(intervall);
+				} catch (Exception e) {
+				}
+				try {
 					sendBar();
 				} catch (Exception e) {
+					e.printStackTrace();
 				}
 			}
 		});
@@ -56,8 +60,9 @@ public class ActionBarInformation {
 			return;
 		String message = "§c§lEs gibt momentan "+buildReportColor()+"§l"+openReports+" §c§loffene Reports!";
 		for(ProxiedPlayer p : BungeeCord.getInstance().getPlayers())
-			if(PermissionManager.getManager().hasPermission(p, "bungee.report.info"))
-				p.unsafe().sendPacket(new Chat("{\"text\": \"" + message + "\"}", (byte) 2));
+			if(p != null)
+				if(PermissionManager.getManager().hasPermission(p, "bungee.report.info"))
+					p.unsafe().sendPacket(new Chat("{\"text\": \"" + message + "\"}", (byte) 2));
 	}
 	private String buildReportColor(){
 		if(openReports < 2)

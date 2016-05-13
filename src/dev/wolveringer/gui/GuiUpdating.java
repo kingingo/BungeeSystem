@@ -3,12 +3,11 @@ package dev.wolveringer.gui;
 import dev.wolveringer.BungeeUtil.Player;
 import dev.wolveringer.api.inventory.Inventory;
 import dev.wolveringer.api.inventory.ItemContainer;
-import dev.wolveringer.bs.Main;
-import net.md_5.bungee.BungeeCord;
-import net.md_5.bungee.api.scheduler.ScheduledTask;
+import dev.wolveringer.client.threadfactory.ThreadFactory;
+import dev.wolveringer.client.threadfactory.ThreadRunner;
 
 public abstract class GuiUpdating extends Gui{
-	private ScheduledTask pid;
+	private ThreadRunner pid;
 	private int waitTime = 1000;
 	
 	public GuiUpdating(int rows, String name) {
@@ -22,7 +21,7 @@ public abstract class GuiUpdating extends Gui{
 	
 	@Override
 	public void active() {
-		pid = BungeeCord.getInstance().getScheduler().runAsync(Main.getInstance(), new Runnable() {
+		pid = ThreadFactory.getFactory().createThread(new Runnable() {
 			@Override
 			public void run() {
 				while (isActive()) {
@@ -31,7 +30,7 @@ public abstract class GuiUpdating extends Gui{
 					} catch (InterruptedException e) {
 					}
 					updateInventory();
-				}
+				}				
 			}
 		});
 	}
@@ -47,6 +46,6 @@ public abstract class GuiUpdating extends Gui{
 	
 	@Override
 	public void deactive() {
-		pid.cancel();
+		pid.stop();
 	}
 }

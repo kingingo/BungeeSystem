@@ -7,7 +7,10 @@ import dev.wolveringer.skin.SkinCacheManager;
 import lombok.Getter;
 import me.kingingo.kBungeeCord.Language.TranslationHandler;
 import net.md_5.bungee.BungeeCord;
+import net.md_5.bungee.api.event.PreLoginEvent;
+import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
+import net.md_5.bungee.event.EventHandler;
 
 public class Main extends Plugin{
 	public static boolean restart = false;
@@ -35,6 +38,16 @@ public class Main extends Plugin{
 	@Override
 	public void onEnable() {
 		main = this;
+		BungeeCord.getInstance().getPluginManager().registerListener(this, new Listener() {
+			@EventHandler
+			public void a(PreLoginEvent e) {
+				if (!Main.loaded) {
+					e.setCancelled(true);
+					e.setCancelReason("§cBungeecord isnt fully loaded");
+					return;
+				}
+			}
+		});
 		BungeeCord.getInstance().getScheduler().runAsync(Main.getInstance(), new Runnable() {
 			@Override
 			public void run() {

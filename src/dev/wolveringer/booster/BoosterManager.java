@@ -33,7 +33,7 @@ public class BoosterManager implements EventListener{
 						if(b == null)
 							throw new NullPointerException("Booster is null!");
 						booster.put(type, b);
-						return;
+						break;
 					}catch(Exception e){
 						e.printStackTrace();
 						try {
