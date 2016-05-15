@@ -38,16 +38,7 @@ public class Main extends Plugin{
 	@Override
 	public void onEnable() {
 		main = this;
-		BungeeCord.getInstance().getPluginManager().registerListener(this, new Listener() {
-			@EventHandler
-			public void a(PreLoginEvent e) {
-				if (!Main.loaded) {
-					e.setCancelled(true);
-					e.setCancelReason("§cBungeecord isnt fully loaded");
-					return;
-				}
-			}
-		});
+		BungeeCord.getInstance().getPluginManager().registerListener(this, new PreLoadedLoginListener());
 		BungeeCord.getInstance().getScheduler().runAsync(Main.getInstance(), new Runnable() {
 			@Override
 			public void run() {
