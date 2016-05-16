@@ -67,7 +67,7 @@ public class BungeecordDatenClient {
 			tryConnecting = false;
 		}
 		active = true;
-//		client.getInfoSender().setUpdateTime(1000);// Beschleunigt die aktualisierung der Spielerzahl.
+		client.getInfoSender().setUpdateTime(1000);// Beschleunigt die aktualisierung der Spielerzahl.
 		
 		infoUpdater = BungeeCord.getInstance().getScheduler().runAsync(Main.getInstance(), new Runnable() {
 			@Override
