@@ -5,7 +5,7 @@ import dev.wolveringer.BungeeUtil.item.ItemStack;
 import dev.wolveringer.BungeeUtil.item.ItemStack.Click;
 import dev.wolveringer.gui.Gui;
 import dev.wolveringer.item.ItemBuilder;
-import dev.wolveringer.report.sarch.PlayerTextEnterMenue;
+import dev.wolveringer.report.search.PlayerTextEnterMenue;
 
 public class GuiSelectPlayerReportReson extends Gui{
 	private String target;

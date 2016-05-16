@@ -19,6 +19,10 @@
 	</build>
 	<repositories>
 		<repository>
+			<id>epicpvp-all</id>
+			<url>http://149.202.150.185:8081/artifactory/epicpvp-all/</url>
+		</repository>
+		<repository>
 			<id>bungee-repo</id>
 			<url>https://oss.sonatype.org/content/groups/public/</url>
 		</repository>
@@ -56,7 +60,7 @@
 		<dependency>
 			<groupId>dev.wolveringer</groupId>
 			<artifactId>BungeeUtil</artifactId>
-			<version>1.6.5.4.8</version>
+			<version>1.6.5.5</version>
 		</dependency>
 	</dependencies>
 </project>

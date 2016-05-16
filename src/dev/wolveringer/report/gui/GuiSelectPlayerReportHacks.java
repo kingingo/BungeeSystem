@@ -4,7 +4,7 @@ import dev.wolveringer.BungeeUtil.Material;
 import dev.wolveringer.BungeeUtil.item.ItemStack.Click;
 import dev.wolveringer.gui.Gui;
 import dev.wolveringer.item.ItemBuilder;
-import dev.wolveringer.report.sarch.PlayerTextEnterMenue;
+import dev.wolveringer.report.search.PlayerTextEnterMenue;
 
 public class GuiSelectPlayerReportHacks extends Gui {
 	private String target;

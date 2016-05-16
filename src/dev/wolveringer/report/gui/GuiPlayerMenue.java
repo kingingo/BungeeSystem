@@ -5,7 +5,7 @@ import dev.wolveringer.BungeeUtil.item.ItemStack;
 import dev.wolveringer.gui.Gui;
 import dev.wolveringer.item.ItemBuilder;
 import dev.wolveringer.report.gui.admin.GuiViewOpenReports;
-import dev.wolveringer.report.sarch.PlayerSarchMenue;
+import dev.wolveringer.report.search.PlayerSearchMenue;
 import me.kingingo.kBungeeCord.Permission.PermissionManager;
 
 public class GuiPlayerMenue extends Gui {
@@ -19,7 +19,7 @@ public class GuiPlayerMenue extends Gui {
 		inv.setItem(2, new ItemStack(ItemBuilder.create(372).name("§aReport a player").lore("§7Click to report a player.").glow().build()) {
 			@Override
 			public void click(Click c) {
-				PlayerSarchMenue m = new PlayerSarchMenue(getPlayer()) {
+				PlayerSearchMenue m = new PlayerSearchMenue(getPlayer()) {
 					@Override
 					public void playerEntered(String name) {
 						if(name.equalsIgnoreCase(getPlayer().getName())){

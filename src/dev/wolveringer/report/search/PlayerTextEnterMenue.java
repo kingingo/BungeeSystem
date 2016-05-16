@@ -1,4 +1,4 @@
-package dev.wolveringer.report.sarch;
+package dev.wolveringer.report.search;
 
 import java.util.ArrayList;
 import java.util.List;
