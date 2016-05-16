@@ -40,7 +40,7 @@ public class GuiBoosterMenue extends GuiUpdating{
 		NetworkBooster booster = Main.getBoosterManager().getBooster(type);
 		if (booster.isActive()) {
 			builder.id(399);
-			builder.name("§a" + booster.getType().getDisplayName() + "-Booster von §e" + Main.getDatenServer().getClient().getPlayer(booster.getPlayer()).getName());
+			builder.name("§a" + booster.getType().getDisplayName() + "-Booster von §e" + Main.getDatenServer().getClient().getPlayerAndLoad(booster.getPlayer()).getName());
 			builder.lore("§bBooster hält noch " + PlayerJoinListener.getDurationBreakdown((booster.getStart() + booster.getTime()) - System.currentTimeMillis()));
 			builder.lore("§a");
 			LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(booster.getPlayer());

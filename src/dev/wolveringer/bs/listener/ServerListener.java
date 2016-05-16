@@ -14,11 +14,11 @@ public class ServerListener implements Listener{
 	@EventHandler
 	public void a(PlayerDisconnectEvent e){
 		System.out.println("Player disconnect. UUID: "+e.getPlayer().getUniqueId());
-		disconnectPlayer(Main.getDatenServer().getClient().getPlayer(e.getPlayer().getName()));
+		disconnectPlayer(Main.getDatenServer().getClient().getPlayerAndLoad(e.getPlayer().getName()));
 		BungeeCord.getInstance().getScheduler().schedule(Main.getInstance(), ()->{
-			if(Main.getDatenServer().getClient().getPlayer(e.getPlayer().getName()) != null)
-				if(Main.getDatenServer().getClient().getPlayer(e.getPlayer().getName()).getServer().getSync() == null) //Player still disconnected
-					Main.getDatenServer().getClient().clearCacheForPlayer(Main.getDatenServer().getClient().getPlayer(e.getPlayer().getName()));
+			if(Main.getDatenServer().getClient().getPlayerAndLoad(e.getPlayer().getName()) != null)
+				if(Main.getDatenServer().getClient().getPlayerAndLoad(e.getPlayer().getName()).getServer().getSync() == null) //Player still disconnected
+					Main.getDatenServer().getClient().clearCacheForPlayer(Main.getDatenServer().getClient().getPlayerAndLoad(e.getPlayer().getName()));
 		}, 500, TimeUnit.MILLISECONDS);
 	}
 	

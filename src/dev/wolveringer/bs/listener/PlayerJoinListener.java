@@ -67,7 +67,7 @@ public class PlayerJoinListener implements Listener {
 		for (char c : e.getConnection().getName().toCharArray()) {
 			if ((('0' > c) || (c > '9')) && (('a' > c) || (c > 'z')) && (('A' > c) || (c > 'Z')) && (c != '_')){
 				e.setCancelled(true);
-				e.setCancelReason("§cInvalid caracters!");
+				e.setCancelReason("§cInvalid characters!");
 				return;
 			}
 		}
