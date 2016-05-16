@@ -5,6 +5,7 @@
 	<artifactId>BungeeCordSystem</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<build>
+		<finalName>BungeeSystem</finalName>
 		<sourceDirectory>src</sourceDirectory>
 		<plugins>
 			<plugin>
