@@ -1,4 +1,4 @@
-package dev.wolveringer.report.sarch;
+package dev.wolveringer.report.search;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,7 @@ import dev.wolveringer.skin.Skin;
 import dev.wolveringer.skin.SteveSkin;
 import net.md_5.bungee.BungeeCord;
 
-public abstract class PlayerSarchMenue implements AnvilGuiListener, PacketHandler<PacketPlayInWindowClick> {
+public abstract class PlayerSearchMenue implements AnvilGuiListener, PacketHandler<PacketPlayInWindowClick> {
 	private AnvilGui gui;
 	private Player player;
 	private int maxPlayerEachSide = 27;
@@ -35,7 +35,7 @@ public abstract class PlayerSarchMenue implements AnvilGuiListener, PacketHandle
 
 	private boolean active = false;
 	
-	public PlayerSarchMenue(Player player) {
+	public PlayerSearchMenue(Player player) {
 		this.player = player;
 		this.gui = new AnvilGui(player);
 		this.gui.addListener(this);
@@ -201,7 +201,7 @@ public abstract class PlayerSarchMenue implements AnvilGuiListener, PacketHandle
 				Skin skin = Main.getSkinManager().getOrLoad(name);
 				is.setDurability((short) 3);
 				((SkullMeta)is.getItemMeta()).setSkin(toBungeeUtilSkin(skin));
-				Item old = PlayerSarchMenue.this.player.getPlayerInventory().getItem(slot+9);
+				Item old = PlayerSearchMenue.this.player.getPlayerInventory().getItem(slot+9);
 				if(old != null){
 					setInventoryItemstack(is, slot);
 				}

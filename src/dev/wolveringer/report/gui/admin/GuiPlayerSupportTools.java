@@ -10,7 +10,7 @@ import dev.wolveringer.item.ItemBuilder;
 import dev.wolveringer.item.ItemBuilder.ItemClickListener;
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.report.ReportEntity;
-import dev.wolveringer.report.sarch.PlayerTextEnterMenue;
+import dev.wolveringer.report.search.PlayerTextEnterMenue;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ChatColor;
 

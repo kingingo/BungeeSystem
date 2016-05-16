@@ -8,6 +8,8 @@ import dev.wolveringer.bs.Main;
 import dev.wolveringer.client.ClientWrapper;
 import dev.wolveringer.client.connection.Client;
 import dev.wolveringer.dataserver.protocoll.packets.PacketOutServerStatus;
+import dev.wolveringer.dataserver.protocoll.packets.PacketOutServerStatus.Action;
+import dev.wolveringer.dataserver.protocoll.packets.Packet.PacketDirection;
 import me.kingingo.kBungeeCord.Permission.PermissionType;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -65,6 +67,8 @@ public class BungeecordDatenClient {
 			tryConnecting = false;
 		}
 		active = true;
+//		client.getInfoSender().setUpdateTime(1000);// Beschleunigt die aktualisierung der Spielerzahl.
+		
 		infoUpdater = BungeeCord.getInstance().getScheduler().runAsync(Main.getInstance(), new Runnable() {
 			@Override
 			public void run() {
@@ -81,9 +85,13 @@ public class BungeecordDatenClient {
 						{
 							onlineCount = wclient.getServerStatus(PacketOutServerStatus.Action.GENERAL, null, false).getSync().getPlayer();
 						}
+						
+						
+						System.err.print("Load OnlineCount "+onlineCount);
 					}catch(Exception e){
 						e.printStackTrace();
 					}
+					
 					try {
 						Thread.sleep(1500);
 					} catch (InterruptedException e) {
