@@ -60,7 +60,7 @@
 		<dependency>
 			<groupId>dev.wolveringer</groupId>
 			<artifactId>BungeeUtil</artifactId>
-			<version>1.6.5.5</version>
+			<version>1.6.5.7.2-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>
