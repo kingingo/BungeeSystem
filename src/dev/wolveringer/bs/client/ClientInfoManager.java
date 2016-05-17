@@ -11,7 +11,6 @@ public class ClientInfoManager implements ServerInformations{
 
 	@Override
 	public PacketInServerStatus getStatus() {
-		System.err.print("Send Player Count "+BungeeCord.getInstance().getOnlineCount());
 		PacketInServerStatus status = new PacketInServerStatus(0x00, BungeeCord.getInstance().getOnlineCount(), -1, "This is a Bungeecord", GameType.NONE, GameState.NONE,"NONE", true, Main.getInstance().getServerId());
 		return status;
 	}

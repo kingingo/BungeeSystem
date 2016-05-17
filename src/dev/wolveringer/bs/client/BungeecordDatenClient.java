@@ -85,9 +85,6 @@ public class BungeecordDatenClient {
 						{
 							onlineCount = wclient.getServerStatus(PacketOutServerStatus.Action.GENERAL, null, false).getSync().getPlayer();
 						}
-						
-						
-						System.err.print("Load OnlineCount "+onlineCount);
 					}catch(Exception e){
 						e.printStackTrace();
 					}
