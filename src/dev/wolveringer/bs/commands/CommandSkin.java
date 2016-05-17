@@ -141,7 +141,7 @@ public class CommandSkin extends Command {
 			}
 		} else if (args.length == 1) {
 			if (args[0].equalsIgnoreCase("reset")) {
-				LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(cs.getName());
+				LoadedPlayer player = Main.getDatenServer().getClient().getPlayer(cs.getName());
 				player.setOwnSkin(null);
 				cs.sendMessage("§aYou set your skin to default");
 				updateSkin(player.getName());

@@ -43,7 +43,7 @@ public class GuiViewPlayerReport extends Gui{
 		}
 		builder.lore("§aCurrunt workers:");
 		for(ReportWorker w : reports.get(0).getWorkers()){
-			builder.lore(" §7- §e"+Main.getDatenServer().getClient().getPlayerAndLoad(w.getPlayerId()).getName());
+			builder.lore(" §7- §e"+Main.getDatenServer().getClient().getPlayer(w.getPlayerId()).getName());
 		}
 		inv.setItem(4, loadSkin(builder.build(), name));
 		

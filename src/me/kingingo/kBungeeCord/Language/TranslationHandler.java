@@ -27,12 +27,12 @@ public class TranslationHandler {
 	}
 	
 	public String translate(String key, ProxiedPlayer player, Object... args) {
-		return manager.translate(key, Main.getDatenServer().getClient().getPlayerAndLoad(player.getName()), args);
+		return manager.translate(key, Main.getDatenServer().getClient().getPlayer(player.getName()), args);
 	}
 
 	public String translate(String key, CommandSender cs, Object... args) {
 		if(cs instanceof ProxiedPlayer)
-			return manager.translate(key, Main.getDatenServer().getClient().getPlayerAndLoad(cs.getName()), args);
+			return manager.translate(key, Main.getDatenServer().getClient().getPlayer(cs.getName()), args);
 		else
 			return translate(key, LanguageType.ENGLISH, args);
 	}

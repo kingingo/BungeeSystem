@@ -112,7 +112,7 @@ public class CommandPremium extends Command implements Listener {
 	@EventHandler
 	public void a(ServerMessageEvent e) {
 		if (e.getChannel().equalsIgnoreCase("playerpremium")) {
-			Main.getDatenServer().getClient().clearCacheForPlayer(Main.getDatenServer().getClient().getPlayerAndLoad(e.getBuffer().readString()));
+			Main.getDatenServer().getClient().clearCacheForPlayer(Main.getDatenServer().getClient().getPlayer(e.getBuffer().readString()));
 		}
 	}
 }

@@ -60,7 +60,7 @@ public class ClientExternalHandler implements BungeeCordActionListener{
 
 	@Override
 	public void sendPlayer(int player, String server) {
-		LoadedPlayer p = Main.getDatenServer().getClient().getPlayerAndLoad(player);
+		LoadedPlayer p = Main.getDatenServer().getClient().getPlayer(player);
 		if(p != null && p.isLoaded()){
 			if(BungeeCord.getInstance().getServerInfo(server) != null)
 				BungeeCord.getInstance().getPlayer(p.getName()).connect(BungeeCord.getInstance().getServerInfo(server));
