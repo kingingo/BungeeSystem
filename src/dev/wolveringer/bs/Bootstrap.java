@@ -50,6 +50,7 @@ import dev.wolveringer.bs.listener.PlayerKickListener;
 import dev.wolveringer.bs.listener.ServerListener;
 import dev.wolveringer.bs.listener.SkinListener;
 import dev.wolveringer.bs.listener.TeamChatListener;
+import dev.wolveringer.bs.listener.TimeListener;
 import dev.wolveringer.bs.login.LoginManager;
 import dev.wolveringer.bs.login.PlayerDisconnectListener;
 import dev.wolveringer.bs.message.MessageManager;
@@ -268,6 +269,7 @@ public class Bootstrap {
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new SkinListener());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new InvalidChatListener());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new PlayerDisconnectListener());
+		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new TimeListener());
 		
 		Main.skins = new SkinCacheManager();
 		Main.info = new ActionBarInformation(1000, 5000);

@@ -8,8 +8,11 @@ import java.util.concurrent.TimeUnit;
 import dev.wolveringer.BungeeUtil.Player;
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.bs.login.LoginManager;
+import dev.wolveringer.client.Callback;
 import dev.wolveringer.client.LoadedPlayer;
+import dev.wolveringer.dataserver.gamestats.GameType;
 import dev.wolveringer.dataserver.protocoll.packets.PacketVersion;
+import dev.wolveringer.gamestats.Statistic;
 import dev.wolveringer.hashmaps.CachedHashMap;
 import me.kingingo.kBungeeCord.Permission.PermissionManager;
 import net.md_5.bungee.BungeeCord;
@@ -28,8 +31,28 @@ public class ChatListener implements Listener {
 	
 	@EventHandler
 	public void a(PostLoginEvent e) {
-		if (!e.getPlayer().getPendingConnection().isOnlineMode())
-			time.put(e.getPlayer(), System.currentTimeMillis()+15*60*1000);
+		if (!e.getPlayer().getPendingConnection().isOnlineMode()){
+			LoadedPlayer loadedplayer = Main.getDatenServer().getClient().getPlayerAndLoad(e.getPlayer().getName());
+			
+			loadedplayer.getStats(GameType.TIME).getAsync(new Callback<Statistic[]>() {
+				
+				@Override
+				public void call(Statistic[] obj) {
+					long total = 0;
+					
+					for(Statistic s : obj){
+						if(Statistic.types.get(s.getValue().getClass()) == 3){
+							total += s.asLong();
+						}
+					}
+					
+					if(total < (15*60*1000)){
+						time.put(e.getPlayer(), System.currentTimeMillis()+((15*60*1000)-total));
+					}
+				}
+			});
+			
+		}
 	}
 
 	@EventHandler
