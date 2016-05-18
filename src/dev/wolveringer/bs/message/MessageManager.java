@@ -135,7 +135,7 @@ public class MessageManager implements Listener{
 					title.fadeIn(0);
 					title.fadeOut(30);
 					title.stay(30);
-					title.title(TextComponent.fromLegacyText("§6§lEPICPVP.EU"));
+					title.title(TextComponent.fromLegacyText("§6§lCLASHMC.EU"));
 					title.subTitle(TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&',next)));
 					title.send(player);
 					try {

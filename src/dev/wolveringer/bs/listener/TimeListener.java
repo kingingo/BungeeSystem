@@ -99,9 +99,10 @@ public class TimeListener implements Listener{
 		if(this.players.containsKey(playerId)){
 			Counter c = this.players.get(playerId);
 
-			if( (System.currentTimeMillis()-c.timestamp) > (MINUTE * 5) ){
+			if( (System.currentTimeMillis()-c.timestamp) > (MINUTE * 3) ){
+				System.out.println("[TimeListener] Save for the player "+playerId+" "+ (System.currentTimeMillis()-c.timestamp)+" "+c.key.name());
 				LoadedPlayer loadedplayer = Main.getDatenServer().getClient().getPlayerAndLoad(playerId);
-				EditStats edit = new EditStats(GameType.TIME,Action.ADD,c.key, (System.currentTimeMillis()-c.timestamp));
+				EditStats edit = new EditStats(GameType.TIME,Action.ADD,c.key, (int)(System.currentTimeMillis()-c.timestamp));
 				loadedplayer.setStats(edit);
 			}
 		}

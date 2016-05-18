@@ -38,11 +38,11 @@ public class ChatListener implements Listener {
 				
 				@Override
 				public void call(Statistic[] obj) {
-					long total = 0;
+					int total = 0;
 					
 					for(Statistic s : obj){
-						if(Statistic.types.get(s.getValue().getClass()) == 3){
-							total += s.asLong();
+						if(Statistic.types.get(s.getValue().getClass()) == 0){
+							total += s.asInt();
 						}
 					}
 					
