@@ -23,6 +23,10 @@ public class TimeListener implements Listener{
 	private final long MINUTE = 60000L;
 	private static boolean active = false;
 	
+	public TimeListener(){
+		init();
+	}
+	
 	@EventHandler
 	public void dis(PlayerDisconnectEvent ev){
 		LoadedPlayer loadedplayer = Main.getDatenServer().getClient().getPlayerAndLoad(ev.getPlayer().getName());
