@@ -90,7 +90,7 @@ public class ServerManager implements Listener{
 		}
 		recalculateLobbies();
 		System.out.println("Loaded Servers: "+this.server.size()+" Lobbies: "+lobbies.length);
-		addServer("hub", "null", 1000);
+//		addServer("hub", "null", 1000);
 	}
 
 	public boolean addServer(String name, String ip, int port) {
