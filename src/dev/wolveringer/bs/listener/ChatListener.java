@@ -74,13 +74,15 @@ public class ChatListener implements Listener {
 				e.setCancelled(true);
 				return;
 			}
+				
+			if(e.getMessage().startsWith("/") && !LoginManager.getManager().isLoggedIn((ProxiedPlayer) e.getSender())){
+				if(!(e.getMessage().toLowerCase().startsWith("/login") || e.getMessage().toLowerCase().startsWith("/register") || e.getMessage().toLowerCase().startsWith("/captcha")))
+					e.setCancelled(true);
+				else
+					return;
+			}
+
 			if (time.containsKey(e.getSender())){
-				if(e.getMessage().startsWith("/") && !LoginManager.getManager().isLoggedIn((ProxiedPlayer) e.getSender())){
-					if(!(e.getMessage().toLowerCase().startsWith("/login") || e.getMessage().toLowerCase().startsWith("/register") || e.getMessage().toLowerCase().startsWith("/captcha")))
-						e.setCancelled(true);
-					else
-						return;
-				}
 				if (time.get(e.getSender()) > System.currentTimeMillis()) {
 					if ((((ProxiedPlayer) e.getSender()).getServer().getInfo().getName().toLowerCase().contains("hub") || ((ProxiedPlayer) e.getSender()).getServer().getInfo().getName().toLowerCase().contains("lobby")) && !e.getMessage().startsWith("/")) {
 						//§cYou are able to Chat here in §e%s0§c!
@@ -90,6 +92,7 @@ public class ChatListener implements Listener {
 				} else
 					time.remove(e.getSender());
 			}
+			
 			if(!e.isCancelled()){
 				if(e.getMessage().startsWith("@")){
 					e.setCancelled(true);
