@@ -18,8 +18,12 @@ public class SkinCacheManager {
 	public Skin getOrLoad(String player){
 		Skin s = getIfLoaded(player);
 		if(s == null){
-			LoadedPlayer lp = Main.getDatenServer().getClient().getPlayerAndLoad(player);
-			skinCache.put(player, s = lp.getOwnSkin().getSync());
+			if(Main.getDatenServer().isActive()){
+				LoadedPlayer lp = Main.getDatenServer().getClient().getPlayerAndLoad(player);
+				skinCache.put(player, s = lp.getOwnSkin().getSync());
+			}else{
+				s = new SteveSkin();
+			}
 		}
 		return s;
 	}

@@ -115,7 +115,9 @@ public abstract class PlayerSearchMenue implements AnvilGuiListener, PacketHandl
 
 	@Override
 	public void handle(PacketHandleEvent<PacketPlayInWindowClick> e) {
-		if (!e.getPlayer().equals(player) || !(e.getPacket() instanceof PacketPlayInWindowClick))
+		if(player==null)throw new NullPointerException("player == NULL");
+		
+		if (!(e.getPacket() instanceof PacketPlayInWindowClick) || !e.getPlayer().equals(player))
 			return;
 		if (e.getPacket().getWindow() == Inventory.ID && e.getPacket().getSlot()>=0) { //Player inventory
 			int slot = e.getPacket().getSlot() - 3 + 9; //-3 -> Anvil | +9 -> Player inv + armor

@@ -88,7 +88,7 @@ public class MessageManager implements Listener {
 	}
 
 	public void addMessage(String message, String type) {
-		MySQL.getInstance().commandSync("INSERT INTO `BG_NEWS`(`motd`, `language`, `type`) VALUES ('" + message + "','"
+		MySQL.getInstance().commandSync("INSERT INTO `BG_News`(`motd`, `language`, `type`) VALUES ('" + message + "','"
 				+ lang + "','" + type + "')");
 		if (type.equalsIgnoreCase("BROADCAST"))
 			messages.add(message);
