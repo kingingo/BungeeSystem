@@ -27,29 +27,35 @@ public class GuiPlayerSupportTools extends Gui {
 	@Override
 	public void build() {
 		inv.setItem(1, ItemBuilder.create(Material.BARRIER).name("§cZurück").listener((c)->switchToGui(new GuiViewPlayerReport(player, reports))).build());
-		inv.setItem(3, ItemBuilder.create(Material.ENDER_PEARL).name("§aTeleport to player").glow().listener((c)->{
-			c.getPlayer().closeInventory();
-			c.getPlayer().connect(BungeeCord.getInstance().getServerInfo(Main.getDatenServer().getClient().getPlayerAndLoad(player).getServer().getSync()));
-		}).build());
 		
-		inv.setItem(5, ItemBuilder.create(Material.GLOWSTONE).name("§aKick Player").glow().listener(new ItemClickListener() {
-
-			@Override
-			public void click(Click c) {
-				PlayerTextEnterMenue m = new PlayerTextEnterMenue(c.getPlayer()) {
-					@Override
-					public void textEntered(String name) {
-						Main.getDatenServer().getClient().getPlayerAndLoad(player).kickPlayer("§cDu wurdest vom Netzwerk gekickt!\n§6Grund: §e"+ChatColor.translateAlternateColorCodes('&', name));
-						c.getPlayer().closeInventory();
-						c.getPlayer().sendMessage("§aPlayer kicked.");
-					}
-					@Override
-					public void canceled() {}
-				};
-				m.open();
-			}
+		if(Main.getDatenServer().getClient().getPlayerAndLoad(player).isOnlineSync()){
+			inv.setItem(3, ItemBuilder.create(Material.ENDER_PEARL).name("§aTeleport to player").glow().listener((c)->{
+				c.getPlayer().closeInventory();
+				c.getPlayer().connect(BungeeCord.getInstance().getServerInfo(Main.getDatenServer().getClient().getPlayerAndLoad(player).getServer().getSync()));
+			}).build());
 			
-		}).build());
+			inv.setItem(5, ItemBuilder.create(Material.GLOWSTONE).name("§aKick Player").glow().listener(new ItemClickListener() {
+
+				@Override
+				public void click(Click c) {
+					PlayerTextEnterMenue m = new PlayerTextEnterMenue(c.getPlayer()) {
+						@Override
+						public void textEntered(String name) {
+							Main.getDatenServer().getClient().getPlayerAndLoad(player).kickPlayer("§cDu wurdest vom Netzwerk gekickt!\n§6Grund: §e"+ChatColor.translateAlternateColorCodes('&', name));
+							c.getPlayer().closeInventory();
+							c.getPlayer().sendMessage("§aPlayer kicked.");
+						}
+						@Override
+						public void canceled() {}
+					};
+					m.open();
+				}
+				
+			}).build());
+		}else{
+			inv.setItem(4, ItemBuilder.create(Material.MAGMA_CREAM).name("§cDer Spieler ist Offline!").build());
+		}
+		
 		inv.setItem(7, ItemBuilder.create(Material.LAVA_BUCKET).name("§cClose reports").glow().listener((c)->{
 			c.getPlayer().closeInventory();
 			LoadedPlayer own = Main.getDatenServer().getClient().getPlayerAndLoad(c.getPlayer().getName());

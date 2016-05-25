@@ -1,6 +1,7 @@
 package dev.wolveringer.bs.commands;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 
 import dev.wolveringer.bs.Main;
 import net.md_5.bungee.BungeeCord;
@@ -17,6 +18,7 @@ public class CommandgPing extends Command {
 	public String getAvgPing() {
 		BigDecimal all = new BigDecimal(0);
 		int count = 0;
+		
 
 		for (ProxiedPlayer player : BungeeCord.getInstance().getPlayers()) {
 			all = all.add(new BigDecimal(player.getPing()));
@@ -27,7 +29,7 @@ public class CommandgPing extends Command {
 			return "-1";
 		}
 
-		return "" + all.divide(new BigDecimal(count)).longValue();
+		return "" + all.divide(new BigDecimal(count),MathContext.DECIMAL128).longValue();
 	}
 
 	@Override

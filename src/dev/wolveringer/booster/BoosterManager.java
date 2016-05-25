@@ -28,18 +28,20 @@ public class BoosterManager implements EventListener{
 			@Override
 			public void run() {
 				while (true) {
-					try{
-						NetworkBooster b = Main.getDatenServer().getClient().getNetworkBooster(type).getSync();
-						if(b == null)
-							throw new NullPointerException("Booster is null!");
-						booster.put(type, b);
-						break;
-					}catch(Exception e){
-						e.printStackTrace();
-						try {
-							Thread.sleep(1000);
-						} catch (InterruptedException e1) {
-							e1.printStackTrace();
+					if(Main.getDatenServer().isActive()){
+						try{
+							NetworkBooster b = Main.getDatenServer().getClient().getNetworkBooster(type).getSync();
+							if(b == null)
+								throw new NullPointerException("Booster is null!");
+							booster.put(type, b);
+							break;
+						}catch(Exception e){
+							e.printStackTrace();
+							try {
+								Thread.sleep(1000);
+							} catch (InterruptedException e1) {
+								e1.printStackTrace();
+							}
 						}
 					}
 				}

@@ -76,7 +76,7 @@ public class GuiViewPlayerReport extends Gui{
 	}
 	
 	private Item createItem(ReportEntity e){
-		return ItemBuilder.create(Material.PAPER).name("§6"+e.getReson()).lore("§aExtra info §7» §e"+e.getInfos()).lore("§aDatum/Zeit §7» §e"+formatter.format(new Date(e.getTime()))).lore("§aReporter §7» §e"+Main.getDatenServer().getClient().getPlayer(e.getReporter()).getName()).build();
+		return ItemBuilder.create(Material.PAPER).name("§6"+e.getReson()).lore("§aExtra info §7» §e"+e.getInfos()).lore("§aDatum/Zeit §7» §e"+formatter.format(new Date(e.getTime()))).lore("§aReporter §7» §e"+Main.getDatenServer().getClient().getPlayerAndLoad(e.getReporter()).getName()).build();
 	}
 	
 	private String online(){
