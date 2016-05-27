@@ -30,7 +30,7 @@ public class CommandClearChat extends Command implements Listener {
 					for(int i = 0;i<100;i++)
 						p1.sendMessage("");
 				}
-				p1.sendMessage(Main.getTranslationManager().translate("prefix",sender)+ Main.getTranslationManager().translate("command.chat.cleared",sender));
+				p1.sendMessage(Main.getTranslationManager().translate("prefix",p1)+ Main.getTranslationManager().translate("command.chat.cleared",p1));
 			}
 		}
 	}
@@ -43,7 +43,7 @@ public class CommandClearChat extends Command implements Listener {
 					for(int i = 0;i<100;i++)
 						player.sendMessage("");
 				}
-				player.sendMessage(Main.getTranslationManager().translate("prefix")+ Main.getTranslationManager().translate("command.chat.cleared"));
+				player.sendMessage(Main.getTranslationManager().translate("prefix",player)+ Main.getTranslationManager().translate("command.chat.cleared",player));
 			}
 		}
 	}

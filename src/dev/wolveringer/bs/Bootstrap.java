@@ -14,8 +14,10 @@ import dev.wolveringer.bs.commands.CommandBroad;
 import dev.wolveringer.bs.commands.CommandBuild;
 import dev.wolveringer.bs.commands.CommandClearChat;
 import dev.wolveringer.bs.commands.CommandClient;
+import dev.wolveringer.bs.commands.CommandCreative;
 import dev.wolveringer.bs.commands.CommandEvent;
 import dev.wolveringer.bs.commands.CommandGList;
+import dev.wolveringer.bs.commands.CommandGunGame;
 import dev.wolveringer.bs.commands.CommandHub;
 import dev.wolveringer.bs.commands.CommandKicken;
 import dev.wolveringer.bs.commands.CommandMOTD;
@@ -221,7 +223,8 @@ public class Bootstrap {
 		});
 		Main.boosterManager = new BoosterManager();
 		Main.getBoosterManager().init();
-		
+
+		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandCreative("creative"));
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandNews("news"));
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandBroad("broad"));
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandKicken("kicken"));
@@ -235,8 +238,9 @@ public class Bootstrap {
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandClearChat("cc"));
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandGList("glist"));
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandPvP("pvp"));
+		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandGunGame("gungame"));
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandSky("sky"));
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandHub("hub", "l", "tm", "lobby", "penis"));
+		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandHub("hub", "l", "tm", "lobby"));
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandWhereIs("whereis"));
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandVorbau("vorbau"));
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandBuild("build"));
