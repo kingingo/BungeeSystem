@@ -7,10 +7,7 @@ import dev.wolveringer.skin.SkinCacheManager;
 import lombok.Getter;
 import me.kingingo.kBungeeCord.Language.TranslationHandler;
 import net.md_5.bungee.BungeeCord;
-import net.md_5.bungee.api.event.PreLoginEvent;
-import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
-import net.md_5.bungee.event.EventHandler;
 
 public class Main extends Plugin{
 	public static boolean restart = false;

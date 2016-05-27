@@ -3,9 +3,10 @@ package dev.wolveringer.bs.commands;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
-import lombok.Getter;
+import com.google.common.collect.Lists;
+
+import dev.wolveringer.bs.Main;
 import me.kingingo.kBungeeCord.Permission.PermissionManager;
 import me.kingingo.kBungeeCord.Permission.PermissionType;
 import net.md_5.bungee.BungeeCord;
@@ -19,10 +20,6 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.TabExecutor;
 import net.md_5.bungee.command.PlayerCommand;
-
-import com.google.common.collect.Lists;
-
-import dev.wolveringer.bs.Main;
 
 public class CommandServer extends PlayerCommand implements TabExecutor {
 	public CommandServer(String name) {

@@ -17,12 +17,11 @@ import dev.wolveringer.BungeeUtil.packets.PacketPlayOutSetSlot;
 import dev.wolveringer.api.guy.AnvilGui;
 import dev.wolveringer.api.guy.AnvilGuiListener;
 import dev.wolveringer.api.inventory.Inventory;
-import dev.wolveringer.item.ItemBuilder;
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.client.threadfactory.ThreadFactory;
+import dev.wolveringer.item.ItemBuilder;
 import dev.wolveringer.skin.Skin;
 import dev.wolveringer.skin.SteveSkin;
-import net.md_5.bungee.BungeeCord;
 
 public abstract class PlayerSearchMenue implements AnvilGuiListener, PacketHandler<PacketPlayInWindowClick> {
 	private AnvilGui gui;

@@ -8,8 +8,6 @@ import dev.wolveringer.bs.Main;
 import dev.wolveringer.client.ClientWrapper;
 import dev.wolveringer.client.connection.Client;
 import dev.wolveringer.dataserver.protocoll.packets.PacketOutServerStatus;
-import dev.wolveringer.dataserver.protocoll.packets.PacketOutServerStatus.Action;
-import dev.wolveringer.dataserver.protocoll.packets.Packet.PacketDirection;
 import me.kingingo.kBungeeCord.Permission.PermissionType;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -54,8 +52,8 @@ public class BungeecordDatenClient {
 	
 	
 	public synchronized void start(String password) throws Exception {
-		if(isActive())
-			return;
+		if(isActive())return;
+		
 		tryConnecting = true;
 		if(client == null)
 			client = Client.createBungeecordClient(name, (InetSocketAddress) target, new ClientExternalHandler(), new ClientInfoManager());
@@ -104,7 +102,7 @@ public class BungeecordDatenClient {
 	}
 	
 	public boolean isActive() {
-		return active && client.isConnected() && client.isHandschakeCompleded() && wclient != null;
+		return active && client.isConnected() && client.isHandshakeCompleted() && wclient != null;
 	}
 	
 	public void stop(){

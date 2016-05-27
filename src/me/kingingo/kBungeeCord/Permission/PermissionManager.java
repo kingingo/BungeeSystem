@@ -16,7 +16,6 @@ import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.client.connection.ClientType;
 import dev.wolveringer.dataserver.protocoll.DataBuffer;
 import dev.wolveringer.dataserver.protocoll.packets.PacketOutPacketStatus;
-import dev.wolveringer.dataserver.protocoll.packets.PacketOutPacketStatus.Error;
 import dev.wolveringer.mysql.MySQL;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.CommandSender;

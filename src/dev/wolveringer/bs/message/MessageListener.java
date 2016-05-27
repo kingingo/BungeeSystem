@@ -1,7 +1,5 @@
 package dev.wolveringer.bs.message;
 
-import java.util.List;
-
 import dev.wolveringer.bs.client.event.ServerMessageEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;

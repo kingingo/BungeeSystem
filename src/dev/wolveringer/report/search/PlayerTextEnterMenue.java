@@ -1,28 +1,10 @@
 package dev.wolveringer.report.search;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import dev.wolveringer.BungeeUtil.Material;
-import dev.wolveringer.BungeeUtil.PacketHandleEvent;
-import dev.wolveringer.BungeeUtil.PacketHandler;
-import dev.wolveringer.BungeeUtil.PacketLib;
 import dev.wolveringer.BungeeUtil.Player;
-import dev.wolveringer.BungeeUtil.gameprofile.SkinFactory;
-import dev.wolveringer.BungeeUtil.item.Item;
-import dev.wolveringer.BungeeUtil.item.ItemStack;
-import dev.wolveringer.BungeeUtil.item.itemmeta.SkullMeta;
-import dev.wolveringer.BungeeUtil.packets.PacketPlayInWindowClick;
-import dev.wolveringer.BungeeUtil.packets.PacketPlayOutSetSlot;
 import dev.wolveringer.api.guy.AnvilGui;
 import dev.wolveringer.api.guy.AnvilGuiListener;
-import dev.wolveringer.api.inventory.Inventory;
-import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.item.ItemBuilder;
-import dev.wolveringer.bs.Main;
-import dev.wolveringer.skin.Skin;
-import dev.wolveringer.skin.SteveSkin;
-import net.md_5.bungee.BungeeCord;
 
 public abstract class PlayerTextEnterMenue implements AnvilGuiListener {
 	private AnvilGui gui;

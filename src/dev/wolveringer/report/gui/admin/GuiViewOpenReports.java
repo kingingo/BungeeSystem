@@ -5,19 +5,18 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 import java.util.Map.Entry;
 
 import dev.wolveringer.BungeeUtil.Material;
 import dev.wolveringer.BungeeUtil.item.Item;
 import dev.wolveringer.BungeeUtil.item.ItemStack;
+import dev.wolveringer.bs.Main;
 import dev.wolveringer.bs.listener.PlayerJoinListener;
 import dev.wolveringer.client.PacketHandleErrorException;
 import dev.wolveringer.dataserver.protocoll.packets.PacketReportRequest.RequestType;
 import dev.wolveringer.gui.Gui;
 import dev.wolveringer.hashmaps.InitHashMap;
 import dev.wolveringer.item.ItemBuilder;
-import dev.wolveringer.bs.Main;
 import dev.wolveringer.report.ReportEntity;
 import dev.wolveringer.report.gui.GuiPlayerMenue;
 import net.md_5.bungee.BungeeCord;
@@ -133,10 +132,10 @@ public class GuiViewOpenReports extends Gui implements Runnable{
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 			}
-			System.out.println("Reprint");
+//			System.out.println("Reprint");
 			printReportItems();
 		}
-		System.out.println("Breake update!");
+//		System.out.println("Breake update!");
 	}
 	
 	@Override

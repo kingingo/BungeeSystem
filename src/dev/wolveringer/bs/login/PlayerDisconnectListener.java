@@ -1,8 +1,8 @@
 package dev.wolveringer.bs.login;
 
+import dev.wolveringer.bs.Main;
 import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.dataserver.protocoll.packets.PacketReportRequest.RequestType;
-import dev.wolveringer.bs.Main;
 import dev.wolveringer.report.ReportEntity;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.plugin.Listener;

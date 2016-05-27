@@ -1,9 +1,7 @@
 package dev.wolveringer.bs.commands;
 
 import dev.wolveringer.bs.Main;
-import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
 public class CommandGList extends Command {

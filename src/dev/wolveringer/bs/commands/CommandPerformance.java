@@ -1,7 +1,5 @@
 package dev.wolveringer.bs.commands;
 
-import java.util.UUID;
-
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.bs.client.event.ServerMessageEvent;
 import dev.wolveringer.client.connection.ClientType;

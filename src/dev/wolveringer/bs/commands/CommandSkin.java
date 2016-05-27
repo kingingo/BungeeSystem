@@ -11,7 +11,6 @@ import dev.wolveringer.skin.SteveSkin;
 import me.kingingo.kBungeeCord.Permission.PermissionManager;
 import me.kingingo.kBungeeCord.Permission.PermissionType;
 import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.command.ConsoleCommandSender;
 

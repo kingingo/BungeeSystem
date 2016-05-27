@@ -10,7 +10,6 @@ import dev.wolveringer.dataserver.gamestats.StatsKey;
 import dev.wolveringer.dataserver.protocoll.packets.PacketInStatsEdit.Action;
 import dev.wolveringer.dataserver.protocoll.packets.PacketInStatsEdit.EditStats;
 import net.md_5.bungee.BungeeCord;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.event.ServerConnectEvent;

@@ -26,13 +26,13 @@ public class ClientExternalHandler implements BungeeCordActionListener{
 	}
 
 	@Override
-	public void brotcast(String permission, String message) {
+	public void broadcast(String permission, String message) {
 		message = ChatColor.translateAlternateColorCodes('&', message);
 		for(ProxiedPlayer player : BungeeCord.getInstance().getPlayers()){
 			if(permission == null || PermissionManager.getManager().hasPermission(player, permission, false))
 				player.sendMessage(message);
 		}
-		BungeeCord.getInstance().getConsole().sendMessage("§7[Brotcast] §r"+message);
+		BungeeCord.getInstance().getConsole().sendMessage("§7[Broadcast] §r"+message);
 	}
 
 	@Override

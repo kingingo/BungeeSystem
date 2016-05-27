@@ -1,9 +1,9 @@
 package dev.wolveringer.report.info;
 
+import dev.wolveringer.bs.Main;
 import dev.wolveringer.client.threadfactory.ThreadFactory;
 import dev.wolveringer.client.threadfactory.ThreadRunner;
 import dev.wolveringer.dataserver.protocoll.packets.PacketReportRequest.RequestType;
-import dev.wolveringer.bs.Main;
 import me.kingingo.kBungeeCord.Permission.PermissionManager;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.connection.ProxiedPlayer;

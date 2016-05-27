@@ -164,21 +164,22 @@ public class Bootstrap {
 							for(ProxiedPlayer p : BungeeCord.getInstance().getPlayers()){
 								try{
 									if(PermissionManager.getManager().hasPermission(p, "epicpvp.bc.dataserver"))
-										p.sendMessage("§aDatenserver connected!");
+										p.sendMessage(Main.getTranslationManager().translate("prefix", p)+"§aDatenserver connected!");
 								}catch(Exception ex){
 								}
 							}
 						} catch (Exception e) {
-							System.out.println("§cCant connect to DatenServer [" + ((InetSocketAddress) Main.data.getAddress()).getHostName() + ":" + ((InetSocketAddress) Main.data.getAddress()).getPort() + "]. Reson: "+e.getMessage()+" . Try again in 5 seconds.");
+							System.out.println("§cCant connect to DatenServer [" + ((InetSocketAddress) Main.data.getAddress()).getHostName() + ":" + ((InetSocketAddress) Main.data.getAddress()).getPort() + "]. Reason: "+e.getMessage()+" . Try it again in 4 seconds.");
 							try {
-								Thread.sleep(5000);
+								Thread.sleep(4000);
 							} catch (InterruptedException e1) {
 								e1.printStackTrace();
 							}
+							
 							for(ProxiedPlayer p : BungeeCord.getInstance().getPlayers()){
 								try{
 									if(PermissionManager.getManager().hasPermission(p, "epicpvp.bc.dataserver"))
-										p.sendMessage("§cDatenserver offline!");
+										p.sendMessage(Main.getTranslationManager().translate("prefix", p)+"§cDatenserver offline!");
 								}catch(Exception ex){
 								}
 							}
@@ -196,7 +197,7 @@ public class Bootstrap {
 		});
 
 		System.out.println("Pause main thread while client try to connect!");
-		while (Main.data.getClient() == null || !Main.data.getClient().getHandle().isHandschakeCompleded()) {
+		while (Main.data.getClient() == null || !Main.data.getClient().getHandle().isHandshakeCompleted()) {
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e1) {
