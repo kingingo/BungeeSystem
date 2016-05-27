@@ -61,7 +61,7 @@ public class GuiReportConfirm extends Gui{
 						getPlayer().closeInventory();
 						Main.getDatenServer().getClient().createReport(Main.getDatenServer().getClient().getPlayerAndLoad(c.getPlayer().getName()).getPlayerId(), Main.getDatenServer().getClient().getPlayerAndLoad(target).getPlayerId(), reson, moreInfo);
 						getPlayer().sendMessage("§aDu hast den Spieler §e"+target+" §areportet!");
-						Main.getDatenServer().getClient().brotcastMessage("report.alert", "§aDer Spieler §e"+c.getPlayer().getName()+" §ahat den Spieler §e"+target+" §awegen §6"+reson+" "+(moreInfo == null ? "":"("+moreInfo+") reportet!"));
+						Main.getDatenServer().getClient().broadcastMessage("report.alert", "§aDer Spieler §e"+c.getPlayer().getName()+" §ahat den Spieler §e"+target+" §awegen §6"+reson+" "+(moreInfo == null ? "":"("+moreInfo+") reportet!"));
 					}
 				});
 			}

@@ -42,12 +42,7 @@ public class BungeecordDatenClient {
 	}
 	
 	public void teamMessage(String message){
-		/*
-		for(ProxiedPlayer player : BungeeCord.getInstance().getPlayers())
-			if(PermissionManager.getManager().hasPermission(player, PermissionType.TEAM_MESSAGE))
-				player.sendMessage(message);
-		*/
-		wclient.brotcastMessage(PermissionType.TEAM_MESSAGE.getPermissionToString(), message);
+		wclient.broadcastMessage(PermissionType.TEAM_MESSAGE.getPermissionToString(), message);
 	}
 	
 	
@@ -96,7 +91,7 @@ public class BungeecordDatenClient {
 		});
 		System.out.println("Loading players");
 		for(ProxiedPlayer player : BungeeCord.getInstance().getPlayers()){
-			Main.getDatenServer().getClient().getPlayerAndLoad(player.getName()).setServerSync(player.getServer().getInfo().getName());; //Loading player
+			Main.getDatenServer().getClient().getPlayerAndLoad(player.getName()).setServerSync(player.getServer().getInfo().getName()); //Loading player
 		}
 		System.out.println("players loaded");
 	}

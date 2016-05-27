@@ -64,7 +64,7 @@ public class GuiPlayerSupportTools extends Gui {
 				Main.getDatenServer().getClient().closeReportWorker(e.getReportId(), own.getPlayerId());
 				Main.getDatenServer().getClient().sendMessage(e.getReporter(), "§aDein Spielerreport gegen §e"+player+" §awurde von §e"+getPlayer().getName()+" §abearbeitet.");
 			}
-			Main.getDatenServer().getClient().brotcastMessage("report.alert", "§aDer Spieler §e"+getPlayer().getName()+" §ahat den Report gegen §e"+player+" §ageschlossen.");
+			Main.getDatenServer().getClient().broadcastMessage("report.alert", "§aDer Spieler §e"+getPlayer().getName()+" §ahat den Report gegen §e"+player+" §ageschlossen.");
 			c.getPlayer().sendMessage("§aReport closed.");
 		}).build());
 		fill(ItemBuilder.create(160).durbility(7).name("§7").build(), 0, 6*9);

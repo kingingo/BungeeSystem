@@ -110,8 +110,8 @@ public class CommandTempBan extends Command {
 			cs.sendMessage("§aBanning player and ip");
 			player.banPlayer(curruntIp, cs.getName(), (cs instanceof ProxiedPlayer ? ((ProxiedPlayer) cs).getAddress().getHostName() : "console"), (cs instanceof ProxiedPlayer ? ((ProxiedPlayer) cs).getUniqueId() : UUID.nameUUIDFromBytes("console".getBytes())), level, System.currentTimeMillis()+time, reson);
 			cs.sendMessage("§aPlayer §e" + player.getName() + " §ais now for "+getDurationBreakdown(time)+" banned!");
-			Main.getDatenServer().getClient().brotcastMessage(PermissionType.ZEITBAN.getPermissionToString(), "§cThe player §e"+player.getName()+" §cwas banned for §a"+getDurationBreakdown(time)+" by §e"+cs.getName()+"§c!");
-			Main.getDatenServer().getClient().brotcastMessage(PermissionType.ZEITBAN.getPermissionToString(), "§cReson: §6"+reson);
+			Main.getDatenServer().getClient().broadcastMessage(PermissionType.ZEITBAN.getPermissionToString(), "§cThe player §e"+player.getName()+" §cwas banned for §a"+getDurationBreakdown(time)+" by §e"+cs.getName()+"§c!");
+			Main.getDatenServer().getClient().broadcastMessage(PermissionType.ZEITBAN.getPermissionToString(), "§cReson: §6"+reson);
 			return;
 		}
 		cs.sendMessage("§cUsage: §6/tempban <Player> <Time> <Level> <Reson>");
