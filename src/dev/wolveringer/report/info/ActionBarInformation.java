@@ -41,7 +41,7 @@ public class ActionBarInformation {
 				} catch (Exception e) {
 				}
 				try {
-					if(Main.getDatenServer().isActive())openReports = Main.getDatenServer().getClient().getReportEntity(RequestType.OPEN_REPORTS, -1).getSync().length;
+					openReports = Main.getDatenServer().getClient().getReportEntity(RequestType.OPEN_REPORTS, -1).getSync().length;
 				}catch(Exception e){
 					e.printStackTrace();
 				}

@@ -56,10 +56,9 @@ public class BungeecordDatenClient {
 			wclient = new ClientWrapper(client);
 		try{
 			client.connect(password.getBytes());
-		}finally{
+		}finally {
 			tryConnecting = false;
 		}
-		
 		active = true;
 		client.getInfoSender().setUpdateTime(1000);// Beschleunigt die aktualisierung der Spielerzahl.
 		

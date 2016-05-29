@@ -24,8 +24,9 @@ public class SkinCacheManager {
 			}else{
 				if(player==null)new NullPointerException("The Player is null!").printStackTrace();
 				s = new SteveSkin();
-			}
+			} 
 		}
 		return s;
 	}
 }
+ 

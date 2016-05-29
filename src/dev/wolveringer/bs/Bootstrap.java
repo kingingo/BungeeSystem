@@ -100,7 +100,7 @@ public class Bootstrap {
 
 					@Override
 					public void stop() {
-						task.cancel();
+						task.cancel(); 
 					}
 
 					@Override
