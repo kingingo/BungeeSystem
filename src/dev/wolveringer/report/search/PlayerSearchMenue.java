@@ -14,8 +14,8 @@ import dev.wolveringer.BungeeUtil.item.ItemStack;
 import dev.wolveringer.BungeeUtil.item.itemmeta.SkullMeta;
 import dev.wolveringer.BungeeUtil.packets.PacketPlayInWindowClick;
 import dev.wolveringer.BungeeUtil.packets.PacketPlayOutSetSlot;
-import dev.wolveringer.api.guy.AnvilGui;
-import dev.wolveringer.api.guy.AnvilGuiListener;
+import dev.wolveringer.api.gui.AnvilGui;
+import dev.wolveringer.api.gui.AnvilGuiListener;
 import dev.wolveringer.api.inventory.Inventory;
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.client.threadfactory.ThreadFactory;
@@ -121,7 +121,7 @@ public abstract class PlayerSearchMenue implements AnvilGuiListener, PacketHandl
 		if (e.getPacket().getWindow() == Inventory.ID && e.getPacket().getSlot()>=0) { //Player inventory
 			int slot = e.getPacket().getSlot() - 3 + 9; //-3 -> Anvil | +9 -> Player inv + armor
 			if (player.getPlayerInventory().getItem(slot) instanceof ItemStack) {
-				((ItemStack) player.getPlayerInventory().getItem(slot)).click(new ItemStack.Click(e.getPlayer(), slot, null, e.getPacket().getItem(), e.getPacket().getMode()));
+				((ItemStack) player.getPlayerInventory().getItem(slot)).click(new ItemStack.Click(e.getPlayer(), slot, null, e.getPacket().getItem(), e.getPacket().getMode(),true));
 			}
 			player.sendPacket(new PacketPlayOutSetSlot(null, -1, 0));
 			e.setCancelled(true);

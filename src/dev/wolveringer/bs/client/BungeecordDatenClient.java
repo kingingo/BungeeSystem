@@ -46,6 +46,10 @@ public class BungeecordDatenClient {
 	}
 	
 	
+	public boolean isConnecting() {
+		return tryConnecting;
+	}
+	
 	public synchronized void start(String password) throws Exception {
 		if(isActive())return;
 		
@@ -60,7 +64,7 @@ public class BungeecordDatenClient {
 			tryConnecting = false;
 		}
 		active = true;
-		client.getInfoSender().setUpdateTime(1000);// Beschleunigt die aktualisierung der Spielerzahl.
+		client.getInfoSender().setSleepTime(1000);// Beschleunigt die aktualisierung der Spielerzahl.
 		
 		infoUpdater = BungeeCord.getInstance().getScheduler().runAsync(Main.getInstance(), new Runnable() {
 			@Override

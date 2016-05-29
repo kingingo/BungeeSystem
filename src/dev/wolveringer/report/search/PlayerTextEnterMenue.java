@@ -2,8 +2,8 @@ package dev.wolveringer.report.search;
 
 import dev.wolveringer.BungeeUtil.Material;
 import dev.wolveringer.BungeeUtil.Player;
-import dev.wolveringer.api.guy.AnvilGui;
-import dev.wolveringer.api.guy.AnvilGuiListener;
+import dev.wolveringer.api.gui.AnvilGui;
+import dev.wolveringer.api.gui.AnvilGuiListener;
 import dev.wolveringer.item.ItemBuilder;
 
 public abstract class PlayerTextEnterMenue implements AnvilGuiListener {
