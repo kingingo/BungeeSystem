@@ -34,7 +34,6 @@ public class PlayerKickListener implements Listener{
 				kickedFrom = ProxyServer.getInstance().getServerInfo(ev.getPlayer().getPendingConnection().getListener().getDefaultServer());
 			}
 		}
-
 		ev.setCancelled(true);
 
 		if (!LoginManager.getManager().isLoggedIn(ev.getPlayer())) {

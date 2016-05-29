@@ -152,7 +152,7 @@ public class PlayerJoinListener implements Listener {
 
 	@EventHandler
 	public void a(ServerConnectEvent e) {
-		if ((e.getPlayer().getServer() == null && !inQueue.contains(e.getPlayer())) || e.getTarget().getName().equalsIgnoreCase("hub")) {
+		if (e.getPlayer().getServer() == null || e.getTarget().getName().equalsIgnoreCase("hub")) {
 			Queue<String> joinQueue;
 			inQueue.add(e.getPlayer());
 			if (e.getPlayer().getPendingConnection().isOnlineMode() || LoginManager.getManager().isLoggedIn(e.getPlayer())) {
@@ -165,6 +165,7 @@ public class PlayerJoinListener implements Listener {
 			} else {
 				joinQueue = ServerManager.getManager().buildLoginQueue();
 			}
+
 			e.setTarget(BungeeCord.getInstance().getServerInfo(((LinkedList<String>) joinQueue).removeFirst()));
 			((UserConnection) e.getPlayer()).setServerJoinQueue(joinQueue);
 		}

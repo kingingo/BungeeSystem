@@ -6,16 +6,7 @@ import java.io.IOException;
 import net.md_5.bungee.BungeeCord;
 
 public class UtilBungeeCord {
-	/*
-	@Getter
-	@Setter
-	public static LagMeter lagMeter;
 	
-	public static LagMeter createLagMeter(){
-		if(lagMeter==null)setLagMeter(new LagMeter(instance));;
-		return lagMeter;
-	}
-	*/
 	public static void DebugLog(long time,String[] Reason,String c){
 		System.err.println("[DebugMode]: Class: "+c);
 		for(String r : Reason){

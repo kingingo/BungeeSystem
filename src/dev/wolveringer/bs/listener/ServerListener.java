@@ -3,9 +3,12 @@ package dev.wolveringer.bs.listener;
 import java.util.concurrent.TimeUnit;
 
 import dev.wolveringer.bs.Main;
+import dev.wolveringer.bs.login.LoginManager;
+import dev.wolveringer.bs.servermanager.ServerManager;
 import dev.wolveringer.client.LoadedPlayer;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
+import net.md_5.bungee.api.event.ServerConnectEvent;
 import net.md_5.bungee.api.event.ServerSwitchEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
@@ -34,7 +37,7 @@ public class ServerListener implements Listener{
 	}
 	
 	@EventHandler
-	public void a(ServerSwitchEvent e){
-		Main.getDatenServer().getClient().getPlayerAndLoad(e.getPlayer().getUniqueId()).setServerSync(e.getPlayer().getServer().getInfo().getName());
+	public void a(ServerSwitchEvent ev){
+		Main.getDatenServer().getClient().getPlayerAndLoad(ev.getPlayer().getUniqueId()).setServerSync(ev.getPlayer().getServer().getInfo().getName());
 	}
 }
