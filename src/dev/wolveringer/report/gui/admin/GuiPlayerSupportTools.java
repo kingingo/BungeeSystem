@@ -57,15 +57,7 @@ public class GuiPlayerSupportTools extends Gui {
 		}
 		
 		inv.setItem(7, ItemBuilder.create(Material.LAVA_BUCKET).name("§cClose reports").glow().listener((c)->{
-			c.getPlayer().closeInventory();
-			LoadedPlayer own = Main.getDatenServer().getClient().getPlayerAndLoad(c.getPlayer().getName());
-			for(ReportEntity e : reports){
-				Main.getDatenServer().getClient().closeReport(e);
-				Main.getDatenServer().getClient().closeReportWorker(e.getReportId(), own.getPlayerId());
-				Main.getDatenServer().getClient().sendMessage(e.getReporter(), "§aDein Spielerreport gegen §e"+player+" §awurde von §e"+getPlayer().getName()+" §abearbeitet.");
-			}
-			Main.getDatenServer().getClient().broadcastMessage("report.alert", "§aDer Spieler §e"+getPlayer().getName()+" §ahat den Report gegen §e"+player+" §ageschlossen.");
-			c.getPlayer().sendMessage("§aReport closed.");
+			switchToGui(new GuiReportCloseReason(reports, player));
 		}).build());
 		fill(ItemBuilder.create(160).durbility(7).name("§7").build(), 0, 6*9);
 	}
