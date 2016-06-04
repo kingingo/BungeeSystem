@@ -27,6 +27,8 @@ public class BungeecordDatenClient {
 	
 	private boolean tryConnecting = false;
 	
+	private ClientExternalHandler externalHandler = new ClientExternalHandler();
+	private ClientInfoManager infoSender = new ClientInfoManager();
 	public BungeecordDatenClient(String name, SocketAddress target) {
 		super();
 		this.name = name;
@@ -51,16 +53,20 @@ public class BungeecordDatenClient {
 	}
 	
 	public synchronized void start(String password) throws Exception {
-		if(isActive())return;
-		
+		while (tryConnecting) {
+			Thread.sleep(1);
+		}
+		if(isActive()) return;
 		tryConnecting = true;
 		if(client == null)
-			client = Client.createBungeecordClient(name, (InetSocketAddress) target, new ClientExternalHandler(), new ClientInfoManager());
+			client = Client.createBungeecordClient(name, (InetSocketAddress) target, externalHandler, infoSender);
 		if(wclient == null)
 			wclient = new ClientWrapper(client);
 		try{
 			client.connect(password.getBytes());
-		}finally {
+		}catch(Exception e){
+			throw e;
+		} finally {
 			tryConnecting = false;
 		}
 		active = true;
@@ -113,15 +119,16 @@ public class BungeecordDatenClient {
 		return target;
 	}
 	
-	public static void main(String[] args) {
-		try{
-			throw new RuntimeException();
-		}finally{
-			System.out.println("Runtime");
-		}
-	}
-	
 	public List<String> getPlayers() {
 		return players;
+	}
+	public static void main(String[] args) {
+		try{
+			if(false)
+			throw new RuntimeException();
+		} finally {
+			System.out.println("X");
+		}
+		System.out.println("Y");
 	}
 }

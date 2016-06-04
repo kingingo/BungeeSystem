@@ -37,7 +37,11 @@ public class ChatListener implements Listener {
 			loadedplayer.getStats(GameType.TIME).getAsync(new Callback<Statistic[]>() {
 				
 				@Override
-				public void call(Statistic[] obj) {
+				public void call(Statistic[] obj,Throwable ex) {
+					if(ex != null){
+						ex.printStackTrace();
+						loadedplayer.kickPlayer("§cError while loading stats");
+					}
 					int total = 0;
 					
 					for(Statistic s : obj){

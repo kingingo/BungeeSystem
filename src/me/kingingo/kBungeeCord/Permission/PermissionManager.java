@@ -87,6 +87,14 @@ public class PermissionManager implements Listener {
 	public boolean hasPermission(ProxiedPlayer player, PermissionType teamMessage,boolean message) {
 		return hasPermission(player, teamMessage.getPermissionToString(), message);
 	}
+	public boolean hasPermission(CommandSender player, String permission) {
+		return hasPermission(player, permission, false);
+	}
+	public boolean hasPermission(CommandSender player, String permission,boolean message) {
+		if(player instanceof ProxiedPlayer)
+			return hasPermission((ProxiedPlayer)player, permission, message);
+		return true;
+	}
 	public boolean hasPermission(CommandSender player, PermissionType teamMessage,boolean message) {
 		if(player instanceof ProxiedPlayer)
 			return hasPermission((ProxiedPlayer)player, teamMessage.getPermissionToString(), message);
@@ -193,7 +201,11 @@ public class PermissionManager implements Listener {
 	protected void updatePlayer(int player){
 		Main.getDatenServer().getClient().sendServerMessage(ClientType.ALL, "bpermission", new DataBuffer().writeByte(0).writeInt(player)).getAsync(new Callback<PacketOutPacketStatus.Error[]>() {
 			@Override
-			public void call(PacketOutPacketStatus.Error[] obj) {
+			public void call(PacketOutPacketStatus.Error[] obj,Throwable e) {
+				if(e != null){
+					e.printStackTrace();
+					return;
+				}
 				Main.getDatenServer().getClient().sendServerMessage(ClientType.ALL, "permission", new DataBuffer().writeByte(0).writeInt(player));
 			}
 		});;
@@ -201,7 +213,11 @@ public class PermissionManager implements Listener {
 	protected void updateGroup(Group group){
 		Main.getDatenServer().getClient().sendServerMessage(ClientType.ALL, "bpermission", new DataBuffer().writeByte(1).writeString(group.getName())).getAsync(new Callback<PacketOutPacketStatus.Error[]>() {
 			@Override
-			public void call(PacketOutPacketStatus.Error[] obj) {
+			public void call(PacketOutPacketStatus.Error[] obj,Throwable e) {
+				if(e != null){
+					e.printStackTrace();
+					return;
+				}
 				Main.getDatenServer().getClient().sendServerMessage(ClientType.ALL, "permission", new DataBuffer().writeByte(1).writeString(group.getName()));
 			}
 		});

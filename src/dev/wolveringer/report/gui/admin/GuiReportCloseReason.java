@@ -7,7 +7,7 @@ import dev.wolveringer.bs.Main;
 import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.gui.Gui;
 import dev.wolveringer.item.ItemBuilder;
-import dev.wolveringer.report.CloseReason;
+import dev.wolveringer.report.ReportState;
 import dev.wolveringer.report.ReportEntity;
 
 public class GuiReportCloseReason extends Gui{
@@ -23,11 +23,14 @@ public class GuiReportCloseReason extends Gui{
 	@Override
 	public void build() {
 		inv.setItem(0, ItemBuilder.create(Material.BARRIER).name("§cSchließen").listener((c)->getPlayer().closeInventory()).build());
-		inv.setItem(3, ItemBuilder.create(Material.CLAY).name(reports.size() == 1 ? "§aBerechtigter Report" : "§aBerechtigte Reports").listener((c)->{
-			closeReports(CloseReason.POSITIVE_REPORT.ordinal());
+		inv.setItem(2, ItemBuilder.create(159).name(reports.size() == 1 ? "§aBerechtigter Report" : "§aBerechtigte Reports").listener((c)->{
+			closeReports(ReportState.POSITIVE_REPORT_CLOSED.ordinal());
 		}).durbility(5).build());
-		inv.setItem(5, ItemBuilder.create(Material.CLAY).name(reports.size() == 1 ? "§cUnberechtigter Report" : "§cUnberechtigte Reports").listener((c)->{
-			closeReports(CloseReason.NEGATIVE_REPORT.ordinal());
+		inv.setItem(4, ItemBuilder.create(159).name(reports.size() == 1 ? "§eNicht nachprüfbarer Report" : "§aNicht nachprüfbare Reports").listener((c)->{
+			closeReports(ReportState.NOT_PROOFABLE_CLOSED.ordinal());
+		}).durbility(4).build());
+		inv.setItem(6, ItemBuilder.create(159).name(reports.size() == 1 ? "§cUnberechtigter Report" : "§cUnberechtigte Reports").listener((c)->{
+			closeReports(ReportState.NEGATIVE_REPORT_CLOSED.ordinal());
 		}).durbility(14).build());
 		inv.setItem(8, ItemBuilder.create(Material.GLOWSTONE_DUST).name("§aSchließe die reports gegen §e"+player).listener((c)->getPlayer().closeInventory()).build());
 		fill(ItemBuilder.create(160).durbility(7).name("§7").build());

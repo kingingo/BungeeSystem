@@ -6,6 +6,7 @@ import dev.wolveringer.BungeeUtil.item.ItemStack.Click;
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.bs.listener.PlayerJoinListener;
 import dev.wolveringer.client.LoadedPlayer;
+import dev.wolveringer.dataserver.protocoll.packets.PacketInStatsEdit.Action;
 import dev.wolveringer.gui.GuiUpdating;
 import dev.wolveringer.item.ItemBuilder;
 
@@ -46,9 +47,30 @@ public class GuiBoosterMenue extends GuiUpdating{
 			LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(booster.getPlayer());
 			if (!player.getName().equalsIgnoreCase(getPlayer().getName())) {
 				builder.lore("§eKlicke um dich bei dem Spieler zu bedanken.");
-				builder.listener((c) -> {
-					c.getPlayer().closeInventory();
-					c.getPlayer().sendMessage("§aOperation not supported yet.");
+				builder.listener((Click c) -> {
+					GuiIntegerSelect select = new GuiIntegerSelect(c.getPlayer(), "§aWähle deine Spendensumme", 10, "§b%d §aGems") {
+						int max = 0;
+						
+						{
+							max = player.getGemsSync();
+						}
+						
+						@Override
+						public void numberEntered(int number) {
+							player.changeGems(Action.REMOVE, number);
+							LoadedPlayer target = Main.getDatenServer().getClient().getPlayer(booster.getPlayer());
+							target.changeCoins(Action.ADD, number);
+							c.getPlayer().sendMessage("§aDu hast dem Spieler "+target.getName()+" §e"+number+" §aGems gespendet.");
+							Main.getDatenServer().getClient().sendMessage(target.getPlayerId(), "§aEin User hat dir §e"+number+" §aGems gespendet!");
+							c.getPlayer().closeInventory();
+						}
+
+						@Override
+						public boolean isNumberAllowed(int number) {
+							return number >= 10 && number <= max;
+						}
+					};
+					select.open();
 				});
 			}
 		} else {
@@ -66,7 +88,7 @@ public class GuiBoosterMenue extends GuiUpdating{
 						public void numberEntered(int number) {
 							Player pplayer = c.getPlayer();
 							if (!Main.getBoosterManager().getBooster(type).isActive()) {
-								pplayer.sendMessage("§aDu hast den Netzwerkbooster für " + booster.getType().getDisplayName() + " " + PlayerJoinListener.getDurationBreakdown(number * 60 * 1000) + " activiert.");
+								pplayer.sendMessage("§aDu hast den Netzwerkbooster für " + booster.getType().getDisplayName() + " " + PlayerJoinListener.getDurationBreakdown(number * 60 * 1000) + " aktiviert.");
 								player.activeNetworkBooster(type, number * 60 * 1000);
 								pplayer.closeInventory();
 							} else {

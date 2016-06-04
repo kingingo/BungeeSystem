@@ -165,9 +165,9 @@ public class Bootstrap {
 								try{
 									if(PermissionManager.getManager().hasPermission(p, "epicpvp.bc.dataserver"))
 										p.sendMessage(Main.getTranslationManager().translate("prefix", p)+"§aDatenserver connected!");
-								}catch(Exception ex){
-								}
+								}catch(Exception ex){ }
 							}
+							Main.data.getClient().getHandle().getPingManager().ping(); //init first ping
 						} catch (Exception e) {
 							System.out.println("§cCant connect to DatenServer [" + ((InetSocketAddress) Main.data.getAddress()).getHostName() + ":" + ((InetSocketAddress) Main.data.getAddress()).getPort() + "]. Reason: "+e.getMessage()+" . Try it again in 4 seconds.");
 							try {
@@ -207,7 +207,12 @@ public class Bootstrap {
 		Main.translationManager = new TranslationHandler(Main.getDatenServer().getClient().getTranslationManager());
 		
 		System.out.println("Checking for translation updates:");
-		Main.getTranslationManager().updateTranslations();
+		try{
+			Main.getTranslationManager().updateTranslations();
+		}catch(Exception e){
+			System.out.println("§cCould not update tragslations:");
+			e.printStackTrace();
+		}
 		System.out.println("All translations are now up to date!");
 		
 		LoginManager.setManager(new LoginManager());

@@ -40,7 +40,7 @@ public abstract class GuiIntegerSelect {
 	}
 	
 	private Item buildItem(int id,int action){
-		return ItemBuilder.create(id).name((action>0?"§a":"§c")+action).listener((c)->{
+		return ItemBuilder.create(id).name((action>0?"§a":"§c")+action).glow(!isNumberAllowed(currunt+action)).listener((c)->{
 			if(isNumberAllowed(currunt+action))
 				currunt += action;
 			updateCenter();

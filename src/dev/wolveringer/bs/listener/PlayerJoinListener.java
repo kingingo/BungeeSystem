@@ -1,9 +1,12 @@
 package dev.wolveringer.bs.listener;
 
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+
+import com.mysql.fabric.xmlrpc.base.Data;
 
 import dev.wolveringer.BungeeUtil.ClientVersion;
 import dev.wolveringer.BungeeUtil.ClientVersion.BigClientVersion;
@@ -97,7 +100,7 @@ public class PlayerJoinListener implements Listener {
 				e.setCancelReason("§cAn error happened while joining.\n§cWe cant check your premium state.\nTry again in 10-30 seconds");
 				return;
 			}
-			BanEntity response = player.getBanStats(e.getConnection().getVirtualHost().getHostString()).getSync();
+			BanEntity response = player.getBanStats(e.getConnection().getAddress().getHostString()).getSync();
 			if (response != null && response.isActive()) {
 				String time;
 				if (response.isTempBanned()) {
@@ -205,6 +208,9 @@ public class PlayerJoinListener implements Listener {
 			sb.append(" second" + (seconds == 1 ? "" : "s") + "");
 		}
 		return (sb.toString());
+	}
+	public static void main(String[] args) {
+		System.out.println(new Date(437015404));
 	}
 }
 //event.join.kickBan - §cYou were banned %s0 §cfrom the Network! \n§3Reason: §c%s1 \n \n§aYou can write an unban-request at §ewww.EpicPvP.org [length,reson]
