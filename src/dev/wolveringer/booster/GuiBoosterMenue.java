@@ -90,6 +90,7 @@ public class GuiBoosterMenue extends GuiUpdating{
 							if (!Main.getBoosterManager().getBooster(type).isActive()) {
 								pplayer.sendMessage("§aDu hast den Netzwerkbooster für " + booster.getType().getDisplayName() + " " + PlayerJoinListener.getDurationBreakdown(number * 60 * 1000) + " aktiviert.");
 								player.activeNetworkBooster(type, number * 60 * 1000);
+								Main.getBoosterManager().reloadBooster(type);
 								pplayer.closeInventory();
 							} else {
 								pplayer.sendMessage("§cLeider hat schon wer anders einen Netzwerk-Booster aktiviert.\n§cVersuche es später erneut.");

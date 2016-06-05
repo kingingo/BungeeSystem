@@ -19,6 +19,10 @@ public class CMD_BOOSTER extends Command{
 	
 	@Override
 	public void execute(CommandSender sender, String[] args) {
+		if(!Main.getDatenServer().isActive()){
+			sender.sendMessage("§cDatenserver is offline. Try again in 10 seconds.");
+			return;
+		}
 		if(args.length != 0){
 			if(PermissionManager.getManager().hasPermission(sender, "booster.admin")){
 				if(args.length > 0)

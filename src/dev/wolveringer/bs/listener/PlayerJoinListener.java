@@ -78,6 +78,14 @@ public class PlayerJoinListener implements Listener {
 
 		long start = System.currentTimeMillis();
 		try {
+			/*
+			 * Clean up old cache
+			 */
+			if(Main.getDatenServer().getClient().getPlayer(e.getConnection().getName()) != null)
+				Main.getDatenServer().getClient().clearCacheForPlayer(Main.getDatenServer().getClient().getPlayer(e.getConnection().getName()));
+			if(Main.getDatenServer().getClient().getPlayer(e.getConnection().getUniqueId()) != null)
+				Main.getDatenServer().getClient().clearCacheForPlayer(Main.getDatenServer().getClient().getPlayer(e.getConnection().getUniqueId()));
+			
 			LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(e.getConnection().getName());
 			System.out.println("Connect: Real name: " + e.getConnection().getName() + " Player: " + player.getName() + " UUID: " + player.getUUID());
 			System.out.println("Player loaded");

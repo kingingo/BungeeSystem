@@ -59,6 +59,11 @@ public class BoosterManager implements EventListener{
 		}
 	}
 	
+	public void reloadBooster(BoosterType type){
+		booster.remove(type);
+		loadBooster(type);
+	}
+	
 	public NetworkBooster getBooster(BoosterType type){
 		return booster.get(type);
 	}

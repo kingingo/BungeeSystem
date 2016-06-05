@@ -64,7 +64,7 @@ public class PermissionPlayer {
 					if(System.currentTimeMillis()>Long.parseLong(args[1])){
 						System.out.println("Player group is now outtimed! "+playerId+":"+g.getName());
 						removeGroup(g.getName());
-						removePermission(args[1]);
+						removePermission(var[1]);
 						addPermission("!"+args[1]);
 					}
 			}

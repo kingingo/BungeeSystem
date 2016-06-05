@@ -287,6 +287,10 @@ public class Bootstrap {
 		
 		System.out.println("Event hander");
 		EventManager emanager = Main.getDatenServer().getClient().getHandle().getEventManager();
+		
+		emanager.getEventManager(EventType.BOOSTER_SWITCH).setEventEnabled(true);
+		emanager.registerListener(Main.getBoosterManager());
+		
 		emanager.getEventManager(EventType.SERVER_SWITCH).setEventEnabled(true);
 		emanager.getEventManager(EventType.SERVER_SWITCH).setConditionEnables(EventConditions.PLAYERS_WHITELIST, true);
 		emanager.getEventManager(EventType.SERVER_SWITCH).getCondition(EventConditions.PLAYERS_WHITELIST).addValue(Main.getDatenServer().getClient().getPlayerAndLoad("WolverinDEV").getUUID());
