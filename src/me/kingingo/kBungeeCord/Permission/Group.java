@@ -2,6 +2,7 @@ package me.kingingo.kBungeeCord.Permission;
 
 import java.util.ArrayList;
 
+import dev.wolveringer.bukkit.permissions.GroupTyp;
 import dev.wolveringer.mysql.MySQL;
 import lombok.Getter;
 
