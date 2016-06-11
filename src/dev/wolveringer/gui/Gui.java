@@ -46,7 +46,7 @@ public abstract class Gui {
 			to = 150;
 		for (int i = from; i <= Math.min(inv.getSlots() - 1, to); i++) {
 			if (ignoreFull || inv.getItem(i) == null) {
-				inv.setItem(i, is);
+				setItemLater(i, is);
 				filled++;
 			}
 		}
@@ -117,6 +117,13 @@ public abstract class Gui {
 		return is;
 	}
 
+	protected void setItemLater(int slot,Item item){
+		inv.setItem(slot, item);
+		if (container != null) {
+			container.setItem(slot, item);
+		}
+	}
+	
 	private dev.wolveringer.BungeeUtil.gameprofile.Skin toBungeeUtilSkin(Skin skin) {
 		dev.wolveringer.BungeeUtil.gameprofile.Skin _new = SkinFactory.createEmptySkin();
 		if (!(skin instanceof SteveSkin)) {

@@ -289,7 +289,7 @@ public class PermissionManager implements Listener {
 						}
 						out.writeString(g.getPrefix());
 						out.writeInt(g.getImportance());
-						System.out.print("Requesting permission "+player.getName()+" Action "+action);
+						System.out.print("Requesting group permission "+player.getName()+" Action "+action);
 						sendToBukkit(packetUUID, out, player.getServer().getInfo()); //Response (Permissions) [UUID (packet)] [INT perms-Length] [STRING[] perms] [STRING name]
 					}
 				}
@@ -308,7 +308,6 @@ public class PermissionManager implements Listener {
 				else if(action == 3){//setgroup <long[2] UUID> <string Group> <byte Grouptype>
 					Integer target = buffer.readInt();
 					PermissionPlayer p = getPlayer(target);
-					System.out.print("Setting group (plugin message): "+p.getPlayerId()+" Not implimented!");
 					if(true){
 						sendToBukkit(packetUUID,new DataBuffer().writeInt(-1).writeString("Error 001"), player.getServer().getInfo()); //Response (Player not found) [UUID (packet)] [INT -1] [STRING reson]
 						return;
@@ -342,6 +341,8 @@ public class PermissionManager implements Listener {
 		byte[] bbuffer = new byte[buffer.writerIndex()];
 		System.arraycopy(buffer.array(), 0, bbuffer, 0, buffer.writerIndex());
 		boolean success = server.sendData("permission", bbuffer,false); //Dont Queue
+		if(!success)
+			System.out.println("Cant send a plugin message...");
 		buffer.release();
 	}
 	
