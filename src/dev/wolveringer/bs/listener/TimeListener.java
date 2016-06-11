@@ -89,6 +89,10 @@ public class TimeListener implements Listener{
 			return StatsKey.SKY_TIME;
 		}else if(server.toLowerCase().contains("gungame")){
 			return StatsKey.GUNGAME_TIME;
+		}else if(server.toLowerCase().contains("warz")){
+			return StatsKey.WARZ_TIME;
+		}else if(server.toLowerCase().contains("creative")){
+			return StatsKey.CREATIVE_TIME;
 		}else{
 			return StatsKey.GAME_TIME;
 		}

@@ -27,6 +27,7 @@
 			<id>bungee-repo</id>
 			<url>https://oss.sonatype.org/content/groups/public/</url>
 		</repository>
+		
 	</repositories>
 	<dependencies>
 		<dependency>
@@ -61,7 +62,7 @@
 		<dependency>
 			<groupId>dev.wolveringer</groupId>
 			<artifactId>BungeeUtil</artifactId>
-			<version>1.6.5.7.2</version>
+			<version>1.6.7</version>
 		</dependency>
 	</dependencies>
 </project>
