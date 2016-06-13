@@ -19,8 +19,13 @@ public class SkinCacheManager {
 		Skin s = getIfLoaded(player);
 		if(s == null){
 			if(player!=null && Main.getDatenServer().isActive()){
-				LoadedPlayer lp = Main.getDatenServer().getClient().getPlayerAndLoad(player);
-				skinCache.put(player, s = lp.getOwnSkin().getSync());
+				try{
+					LoadedPlayer lp = Main.getDatenServer().getClient().getPlayerAndLoad(player);
+					skinCache.put(player, s = lp.getOwnSkin().getSync());
+				}catch(RuntimeException e){
+					s = new SteveSkin();
+					e.printStackTrace();
+				}
 			}else{
 				if(player==null)new NullPointerException("The Player is null!").printStackTrace();
 				s = new SteveSkin();

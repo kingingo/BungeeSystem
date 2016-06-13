@@ -147,9 +147,14 @@ public class ChatListener implements Listener {
 			e.getSuggestions().clear();
 
 			if (nameStart.length() >= 2) {
-				for (String s : Main.getDatenServer().getPlayers())
+				for (String s : Main.getDatenServer().getPlayers()){
+					if(s==null){
+						System.err.println("[ChatListener]: TabCompleteEvent s == NULL !?");
+						continue;
+					}
 					if (s.toLowerCase().startsWith(nameStart.toLowerCase()))
 						e.getSuggestions().add("@" + s);
+				}
 			}
 		}
 	}
