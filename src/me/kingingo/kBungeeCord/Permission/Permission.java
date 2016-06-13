@@ -13,7 +13,6 @@ public class Permission {
 	private boolean negative = false;
 	
 	public boolean acceptPermission(String perm){
-		
 		if(starIndex != -1){
 			return perm.substring(0,Math.min(starIndex, perm.length())).equalsIgnoreCase(finalPermission.substring(0,starIndex));
 		}

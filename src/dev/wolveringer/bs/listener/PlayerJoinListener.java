@@ -6,8 +6,6 @@ import java.util.Queue;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import com.mysql.fabric.xmlrpc.base.Data;
-
 import dev.wolveringer.BungeeUtil.ClientVersion;
 import dev.wolveringer.BungeeUtil.ClientVersion.BigClientVersion;
 import dev.wolveringer.arrays.CachedArrayList;
@@ -61,7 +59,7 @@ public class PlayerJoinListener implements Listener {
 		
 		
 		ClientVersion version = ClientVersion.fromProtocoll(e.getConnection().getVersion());
-		if(version.getBigVersion() != BigClientVersion.v1_8 && (e.getConnection().getVersion() > ClientVersion.v1_9_3.getVersion() || e.getConnection().getVersion() < ClientVersion.v1_9_0.getVersion()) ){
+		if(version.getBigVersion() != BigClientVersion.v1_8 && version.getBigVersion() != BigClientVersion.v1_9 && version != ClientVersion.v1_10_0){
 			e.setCancelled(true);
 			e.setCancelReason("§cYour minecraft versions issnt supportted. Please use 1.8.X or 1.9.X");
 			System.out.println("Player "+e.getConnection().getName()+" try to connect with an outdated version ("+e.getConnection().getVersion()+")");
@@ -128,6 +126,7 @@ public class PlayerJoinListener implements Listener {
 				e.setCancelReason(message);
 				return;
 			}
+			player.setIp(e.getConnection().getAddress().getHostString());
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			e.setCancelled(true);

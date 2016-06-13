@@ -57,6 +57,8 @@ public class ActionBarInformation {
 	}
 	
 	private void sendBar(){
+		if(!Main.getDatenServer().isActive())
+			return;
 		if(openReports == 0)
 			return;
 		String message = "§c§lEs gibt momentan "+buildReportColor()+"§l"+openReports+" §c§loffene Reports!";
@@ -66,10 +68,12 @@ public class ActionBarInformation {
 					p.unsafe().sendPacket(new Chat("{\"text\": \"" + message + "\"}", (byte) 2));
 	}
 	private String buildReportColor(){
-		if(openReports < 2)
+		if(openReports < 5)
 			return "§a";
-		else if(openReports < 10)
+		else if(openReports < 15)
 			return "§e";
+		else if(openReports < 25)
+			return "§6";
 		else 
 			return "§4";
 	}
