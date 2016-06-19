@@ -119,9 +119,6 @@ public abstract class Gui {
 
 	protected void setItemLater(int slot,Item item){
 		inv.setItem(slot, item);
-		if (container != null) {
-			container.setItem(slot, item);
-		}
 	}
 	
 	private dev.wolveringer.BungeeUtil.gameprofile.Skin toBungeeUtilSkin(Skin skin) {

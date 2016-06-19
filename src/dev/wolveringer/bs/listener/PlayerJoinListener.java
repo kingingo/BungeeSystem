@@ -21,8 +21,8 @@ import dev.wolveringer.dataserver.player.LanguageType;
 import dev.wolveringer.dataserver.player.Setting;
 import dev.wolveringer.dataserver.protocoll.packets.PacketInChangePlayerSettings;
 import dev.wolveringer.dataserver.protocoll.packets.PacketVersion;
-import me.kingingo.kBungeeCord.Permission.PermissionManager;
-import me.kingingo.kBungeeCord.Permission.PermissionType;
+import dev.wolveringer.permission.PermissionManager;
+import dev.wolveringer.bukkit.permissions.PermissionType;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.UserConnection;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -86,6 +86,22 @@ public class PlayerJoinListener implements Listener {
 			
 			LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(e.getConnection().getName());
 			System.out.println("Connect: Real name: " + e.getConnection().getName() + " Player: " + player.getName() + " UUID: " + player.getUUID());
+			if(Main.getDatenServer().getClient().getPlayer(e.getConnection().getName()) != null)
+				Main.getDatenServer().getClient().clearCacheForPlayer(Main.getDatenServer().getClient().getPlayer(e.getConnection().getName()));
+			/*//TODO cant get playerId before premium login
+			try{
+				LoadedPlayer playerUUID = Main.getDatenServer().getClient().getPlayerAndLoad(UUID.fromString(e.getConnection().getUUID()));
+				if(playerUUID != null && !playerUUID.getName().equalsIgnoreCase(e.getConnection().getName())){
+					if(playerUUID.isOnlineSync()){
+						player.setName(player.getName()+"_old_player_overwridden_by_"+e.getConnection().getName());
+						playerUUID.setName(e.getConnection().getName());
+						player = playerUUID;
+					}
+				}
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
+			*/
 			System.out.println("Player loaded");
 			try {
 				if (player.isPremiumSync()) {

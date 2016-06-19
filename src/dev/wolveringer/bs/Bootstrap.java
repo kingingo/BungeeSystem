@@ -2,9 +2,15 @@ package dev.wolveringer.bs;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.net.InetSocketAddress;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import dev.wolveringer.BungeeUtil.AsyncCatcher;
+import dev.wolveringer.BungeeUtil.PacketLib;
+import dev.wolveringer.animations.text.StringUntils;
 import dev.wolveringer.booster.BoosterManager;
 import dev.wolveringer.booster.CMD_BOOSTER;
 import dev.wolveringer.bs.client.BungeecordDatenClient;
@@ -28,6 +34,7 @@ import dev.wolveringer.bs.commands.CommandPremium;
 import dev.wolveringer.bs.commands.CommandPvP;
 import dev.wolveringer.bs.commands.CommandPwChange;
 import dev.wolveringer.bs.commands.CommandRestart;
+import dev.wolveringer.bs.commands.CommandRoulett;
 import dev.wolveringer.bs.commands.CommandSendServer;
 import dev.wolveringer.bs.commands.CommandServer;
 import dev.wolveringer.bs.commands.CommandSkin;
@@ -43,8 +50,11 @@ import dev.wolveringer.bs.commands.CommandWhitelist;
 import dev.wolveringer.bs.commands.CommandaddServer;
 import dev.wolveringer.bs.commands.CommanddelServer;
 import dev.wolveringer.bs.commands.CommandgPing;
+import dev.wolveringer.bs.consolencommand.CommandHashMap;
+import dev.wolveringer.bs.consolencommand.PrefixCommandRegistry;
 import dev.wolveringer.bs.information.InformationManager;
 import dev.wolveringer.bs.listener.ChatListener;
+import dev.wolveringer.bs.listener.ConsoleTeamMessageListener;
 import dev.wolveringer.bs.listener.InvalidChatListener;
 import dev.wolveringer.bs.listener.PingListener;
 import dev.wolveringer.bs.listener.PlayerJoinListener;
@@ -57,6 +67,7 @@ import dev.wolveringer.bs.login.LoginManager;
 import dev.wolveringer.bs.login.PlayerDisconnectListener;
 import dev.wolveringer.bs.message.MessageManager;
 import dev.wolveringer.bs.servermanager.ServerManager;
+import dev.wolveringer.client.connection.PacketListener;
 import dev.wolveringer.client.threadfactory.ThreadFactory;
 import dev.wolveringer.client.threadfactory.ThreadRunner;
 import dev.wolveringer.event.EventListener;
@@ -65,16 +76,24 @@ import dev.wolveringer.events.Event;
 import dev.wolveringer.events.EventConditions;
 import dev.wolveringer.events.EventType;
 import dev.wolveringer.events.player.PlayerServerSwitchEvent;
+import dev.wolveringer.guild.listener.TabListener;
+import dev.wolveringer.hashmaps.InitHashMap;
 import dev.wolveringer.mysql.MySQL;
+import dev.wolveringer.permission.PermissionManager;
 import dev.wolveringer.report.commands.CMD_Report;
 import dev.wolveringer.report.info.ActionBarInformation;
 import dev.wolveringer.skin.SkinCacheManager;
+import dev.wolveringer.slotmachine.RoulettHistory;
+import dev.wolveringer.util.UtilReflection;
+import dev.wolveringer.util.apache.StringUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import me.kingingo.kBungeeCord.Language.TranslationHandler;
-import me.kingingo.kBungeeCord.Permission.PermissionManager;
 import net.md_5.bungee.BungeeCord;
+import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.plugin.Command;
+import net.md_5.bungee.api.plugin.PluginManager;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
@@ -89,6 +108,7 @@ public class Bootstrap {
 		onEnable0();
 	}
 
+	@SuppressWarnings("serial")
 	public void onEnable0() {
 		AsyncCatcher.disableAll();
 		UtilBungeeCord.class.getName(); //Keep loaded in memory
@@ -100,7 +120,7 @@ public class Bootstrap {
 
 					@Override
 					public void stop() {
-						task.cancel(); 
+						task.cancel();
 					}
 
 					@Override
@@ -108,10 +128,10 @@ public class Bootstrap {
 						task = BungeeCord.getInstance().getScheduler().runAsync(Main.getInstance(), new Runnable() {
 							@Override
 							public void run() {
-								try{
+								try {
 									run.run();
-								}catch(Exception e){
-									System.err.println("Having error while excecuting Runable "+run.getClass()+":");
+								} catch (Exception e) {
+									System.err.println("Having error while excecuting Runable " + run.getClass() + ":");
 									e.printStackTrace();
 								}
 							}
@@ -152,7 +172,7 @@ public class Bootstrap {
 		final Configuration configuration = conf;
 
 		Main.data = new BungeecordDatenClient(Main.getInstance().serverId, new InetSocketAddress(configuration.getString("datenserver.host"), configuration.getInt("datenserver.port")));
-
+		Main.data.setPassword(configuration.getString("datenserver.passwort"));
 		BungeeCord.getInstance().getScheduler().runAsync(Main.getInstance(), new Runnable() {
 			@Override
 			public void run() {
@@ -160,27 +180,28 @@ public class Bootstrap {
 					while (!Main.data.isActive()) {
 						System.out.println("§aTry to connect to dataserver");
 						try {
-							Main.data.start(Main.getInstance().datenPassword = configuration.getString("datenserver.passwort"));
+							Main.data.start();
 							Main.data.getClient().getHandle().getPingManager().ping(); //init first ping
-							for(ProxiedPlayer p : BungeeCord.getInstance().getPlayers()){
-								try{
-									if(PermissionManager.getManager().hasPermission(p, "epicpvp.bc.dataserver"))
-										p.sendMessage(Main.getTranslationManager().translate("prefix", p)+"§aDatenserver connected!");
-								}catch(Exception ex){ }
+							for (ProxiedPlayer p : BungeeCord.getInstance().getPlayers()) {
+								try {
+									if (PermissionManager.getManager().hasPermission(p, "epicpvp.bc.dataserver"))
+										p.sendMessage(Main.getTranslationManager().translate("prefix", p) + "§aDatenserver connected!");
+								} catch (Exception ex) {
+								}
 							}
 						} catch (Exception e) {
-							System.out.println("§cCant connect to DatenServer [" + ((InetSocketAddress) Main.data.getAddress()).getHostName() + ":" + ((InetSocketAddress) Main.data.getAddress()).getPort() + "]. Reason: "+e.getMessage()+" . Try it again in 1 second.");
+							System.out.println("§cCant connect to DatenServer [" + ((InetSocketAddress) Main.data.getAddress()).getHostName() + ":" + ((InetSocketAddress) Main.data.getAddress()).getPort() + "]. Reason: " + e.getMessage() + " . Try it again in 1 second.");
 							try {
 								Thread.sleep(1000);
 							} catch (InterruptedException e1) {
 								e1.printStackTrace();
 							}
-							
-							for(ProxiedPlayer p : BungeeCord.getInstance().getPlayers()){
-								try{
-									if(p.hasPermission("epicpvp.bc.dataserver"))
+
+							for (ProxiedPlayer p : BungeeCord.getInstance().getPlayers()) {
+								try {
+									if (p.hasPermission("epicpvp.bc.dataserver"))
 										p.sendMessage("§cDatenserver offline!");
-								}catch(Exception ex){
+								} catch (Exception ex) {
 								}
 							}
 							continue;
@@ -205,22 +226,23 @@ public class Bootstrap {
 		}
 
 		Main.translationManager = new TranslationHandler(Main.getDatenServer().getClient().getTranslationManager());
-		
+
 		System.out.println("Checking for translation updates:");
-		try{
+		try {
 			Main.getTranslationManager().updateTranslations();
-		}catch(Exception e){
+		} catch (Exception e) {
 			System.out.println("§cCould not update tragslations:");
 			e.printStackTrace();
 		}
 		System.out.println("All translations are now up to date!");
-		
+
 		LoginManager.setManager(new LoginManager());
 		InformationManager.setManager(new InformationManager());
 		PermissionManager.setManager(new PermissionManager()); //TODO load
 		ServerManager.setManager(new ServerManager());
 		ServerManager.getManager().loadServers();
 		MessageManager.start();
+		RoulettHistory.history = new RoulettHistory();
 
 		BungeeCord.getInstance().getScheduler().runAsync(Main.getInstance(), new Runnable() {
 			public void run() {
@@ -267,9 +289,11 @@ public class Bootstrap {
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandSkin());
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CMD_Report());
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CMD_BOOSTER());
-		
+		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandRoulett());
+
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), InformationManager.getManager());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), ServerManager.getManager());
+		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), RoulettHistory.history);
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new ChatListener());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new PingListener());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new PlayerJoinListener());
@@ -280,17 +304,17 @@ public class Bootstrap {
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new InvalidChatListener());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new PlayerDisconnectListener());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new TimeListener());
-		
+
 		Main.skins = new SkinCacheManager();
 		Main.info = new ActionBarInformation(1000, 5000);
 		Main.info.start();
-		
+
 		System.out.println("Event hander");
 		EventManager emanager = Main.getDatenServer().getClient().getHandle().getEventManager();
-		
+
 		emanager.getEventManager(EventType.BOOSTER_SWITCH).setEventEnabled(true);
 		emanager.registerListener(Main.getBoosterManager());
-		
+
 		emanager.getEventManager(EventType.SERVER_SWITCH).setEventEnabled(true);
 		emanager.getEventManager(EventType.SERVER_SWITCH).setConditionEnables(EventConditions.PLAYERS_WHITELIST, true);
 		emanager.getEventManager(EventType.SERVER_SWITCH).getCondition(EventConditions.PLAYERS_WHITELIST).addValue(Main.getDatenServer().getClient().getPlayerAndLoad("WolverinDEV").getUUID());
@@ -303,7 +327,23 @@ public class Bootstrap {
 				}
 			}
 		});
-		
+
+		PacketLib.addHandler(new TabListener());
+
 		Main.loaded = true;
+
+		try {
+			PrefixCommandRegistry.setInstance(new PrefixCommandRegistry());
+			Field commandMap = UtilReflection.getField(PluginManager.class, "commandMap");
+			HashMap<String, Command> old = (HashMap<String, Command>) commandMap.get(BungeeCord.getInstance().getPluginManager());
+			CommandHashMap _new = new CommandHashMap();
+			commandMap.set(BungeeCord.getInstance().getPluginManager(), (Map<String, Command>) _new);
+			for(Entry<String, Command> cmd : old.entrySet())
+				_new.put(cmd.getKey(), cmd.getValue());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		PrefixCommandRegistry.getInstance().registerCommandListener("~", new ConsoleTeamMessageListener());
 	}
 }

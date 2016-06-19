@@ -1,8 +1,8 @@
 package dev.wolveringer.bs.listener;
 
 import dev.wolveringer.bs.Main;
-import me.kingingo.kBungeeCord.Permission.PermissionManager;
-import me.kingingo.kBungeeCord.Permission.PermissionType;
+import dev.wolveringer.permission.PermissionManager;
+import dev.wolveringer.bukkit.permissions.PermissionType;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ChatEvent;
 import net.md_5.bungee.api.plugin.Listener;

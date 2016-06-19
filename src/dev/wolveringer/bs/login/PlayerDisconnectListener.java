@@ -17,5 +17,8 @@ public class PlayerDisconnectListener implements Listener{
 		for(ReportEntity re : are){
 			Main.getDatenServer().getClient().closeReport(re,ReportState.DISCONNECTED_CLOSED.ordinal());
 		}
+		for(ReportEntity re : Main.getDatenServer().getClient().getReportEntity(RequestType.OPEN_REPORTS, -1).getSync())
+			if(re.getTarget() == player.getPlayerId())
+				Main.getDatenServer().getClient().closeReport(re, ReportState.DISCONNECTED_CLOSED.ordinal());
 	}
 }

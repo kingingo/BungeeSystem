@@ -48,6 +48,8 @@ public class TranslationHandler {
 	public LanguageType getLanguage(ProxiedPlayer player) {
 		return manager.getLanguage(Main.getDatenServer().getClient().getPlayerAndLoad(player.getName()));
 	}
-	
+	public void registerFallback(LanguageType type,String key,String message){
+		manager.getTranslationFile(type).registerFallbackMessage(key, message);
+	}
 	
 }

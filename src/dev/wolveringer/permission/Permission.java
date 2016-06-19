@@ -1,4 +1,4 @@
-package me.kingingo.kBungeeCord.Permission;
+package dev.wolveringer.permission;
 
 import dev.wolveringer.bukkit.permissions.GroupTyp;
 import lombok.Getter;

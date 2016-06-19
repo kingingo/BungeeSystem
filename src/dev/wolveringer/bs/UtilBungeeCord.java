@@ -6,38 +6,6 @@ import java.io.IOException;
 import net.md_5.bungee.BungeeCord;
 
 public class UtilBungeeCord {
-	/*
-	@Getter
-	@Setter
-	public static LagMeter lagMeter;
-	
-	public static LagMeter createLagMeter(){
-		if(lagMeter==null)setLagMeter(new LagMeter(instance));;
-		return lagMeter;
-	}
-	*/
-	public static void DebugLog(long time,String[] Reason,String c){
-		System.err.println("[DebugMode]: Class: "+c);
-		for(String r : Reason){
-			System.err.println("[DebugMode]: Reason: "+r);
-		}
-		System.err.println("[DebugMode]: Zeit: "+ ((System.currentTimeMillis()-time) / 1000.0D) + " Seconds");
-	}
-	
-	public static void DebugLog(long time,String Reason,String c){
-		System.err.println("[DebugMode]: Class: "+c);
-		System.err.println("[DebugMode]: Reason: "+Reason);
-		System.err.println("[DebugMode]: Zeit: "+ ((System.currentTimeMillis()-time) / 1000.0D) + " Seconds");
-	}
-	
-	public static void DebugLog(long time,String c){
-		System.err.println("[DebugMode]: Class: "+c);
-		System.err.println("[DebugMode]: Zeit: "+ ((System.currentTimeMillis()-time) / 1000.0D) + " Seconds");
-	}
-	
-	public static void DebugLog(String m){
-		System.err.println("[DebugMode]: "+m);
-	}
 	
 	public static void restart(){
 		if(new File("start.sh").exists()){

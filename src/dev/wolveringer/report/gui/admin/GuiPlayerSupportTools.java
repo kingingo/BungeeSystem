@@ -27,7 +27,7 @@ public class GuiPlayerSupportTools extends Gui {
 	public void build() {
 		inv.setItem(1, ItemBuilder.create(Material.BARRIER).name("§cZurück").listener((c)->switchToGui(new GuiViewPlayerReport(player, reports))).build());
 		
-		if(Main.getDatenServer().getClient().getPlayerAndLoad(player).isOnlineSync()){
+		if(Main.getDatenServer().isActive() && Main.getDatenServer().getClient().getPlayerAndLoad(player).isOnlineSync()){
 			inv.setItem(3, ItemBuilder.create(Material.ENDER_PEARL).name("§aTeleport to player").glow().listener((c)->{
 				c.getPlayer().closeInventory();
 				c.getPlayer().connect(BungeeCord.getInstance().getServerInfo(Main.getDatenServer().getClient().getPlayerAndLoad(player).getServer().getSync()));
@@ -52,7 +52,7 @@ public class GuiPlayerSupportTools extends Gui {
 				
 			}).build());
 		}else{
-			inv.setItem(4, ItemBuilder.create(Material.MAGMA_CREAM).name("§cDer Spieler ist Offline!").build());
+			inv.setItem(4, ItemBuilder.create(Material.MAGMA_CREAM).name(Main.getDatenServer().isActive() ? "§cDer Spieler ist Offline!" :" §cCant load information").build());
 		}
 		
 		inv.setItem(7, ItemBuilder.create(Material.LAVA_BUCKET).name("§cClose reports").glow().listener((c)->{

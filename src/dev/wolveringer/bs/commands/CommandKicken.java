@@ -1,8 +1,8 @@
 package dev.wolveringer.bs.commands;
 
 import dev.wolveringer.bs.Main;
-import me.kingingo.kBungeeCord.Permission.PermissionManager;
-import me.kingingo.kBungeeCord.Permission.PermissionType;
+import dev.wolveringer.permission.PermissionManager;
+import dev.wolveringer.bukkit.permissions.PermissionType;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;

@@ -110,31 +110,10 @@ public class GuiViewOpenReports extends Gui implements Runnable{
 		});
 		this.reportEntities = reports;
 		
-		setItemLater(45, new ItemStack(ItemBuilder.create(Material.ARROW).name("§aVorherige seite").build()){
-			@Override
-			public void click(Click c) {
-				if(side > 0){
-					side--;
-					printReportItems();
-					getItemMeta().setGlow(!(side > 0));
-				}
-			}
-		});
-		setItemLater(53, new ItemStack(ItemBuilder.create(Material.ARROW).name("§aNächste seite").build()){
-			@Override
-			public void click(Click c) {
-				if(reportEntities.size()>(side+1)*REPORTS_PER_SIDE){
-					side++;
-					printReportItems();
-					getItemMeta().setGlow(!(reportEntities.size()>(side+1)*36));
-				}
-			}
-		});
-		
 		printReportItems();
 	}
 	private void printReportItems(){
-		if(entites == null)
+		if(entites == null || !isActive())
 			return;
 		inv.disableUpdate();
 
@@ -147,7 +126,28 @@ public class GuiViewOpenReports extends Gui implements Runnable{
 			setItemLater(pos+start, createReportInfo(e.getKey(), e.getValue(), minTimes.get(e.getKey())));
 			pos++;
 		}
-		fill(fillItem, start+pos, inv.getSlots()-9, true);
+		fill(fillItem, start+pos, inv.getSlots()-10, true);
+		
+		setItemLater(45, new ItemStack(ItemBuilder.create(Material.ARROW).name("§aVorherige seite").build()){
+			@Override
+			public void click(Click c) {
+				if(side > 0){
+					side--;
+					printReportItems();
+					getItemMeta().setGlow((side > 0));
+				}
+			}
+		});
+		setItemLater(53, new ItemStack(ItemBuilder.create(Material.ARROW).name("§aNächste seite").build()){
+			@Override
+			public void click(Click c) {
+				if(reportEntities.size()>(side+1)*REPORTS_PER_SIDE){
+					side++;
+					printReportItems();
+					getItemMeta().setGlow((reportEntities.size()>(side+1)*36));
+				}
+			}
+		});
 		
 		inv.enableUpdate();
 	}

@@ -28,8 +28,6 @@ public class Main extends Plugin{
 		return main;
 	}
 	
-	protected String datenPassword;
-	
 	protected String serverId;
 	
 	@Override
@@ -68,13 +66,4 @@ public class Main extends Plugin{
 	public String getServerId() {
 		return serverId;
 	}
-	public String getDatenPassword() {
-		return datenPassword;
-	}
 }
-//TODO
-//Join set right UUID Done
-//Language Update (When Change) Done
-//get Message from Database Done
-//Permission System! Done
-//Join add all Permissions Done

@@ -2,8 +2,8 @@ package dev.wolveringer.bs.commands;
 
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.bs.servermanager.ServerManager;
-import me.kingingo.kBungeeCord.Permission.PermissionManager;
-import me.kingingo.kBungeeCord.Permission.PermissionType;
+import dev.wolveringer.bukkit.permissions.PermissionType;
+import dev.wolveringer.permission.PermissionManager;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.Listener;

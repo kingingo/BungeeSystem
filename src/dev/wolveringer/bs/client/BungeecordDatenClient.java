@@ -5,10 +5,10 @@ import java.net.SocketAddress;
 import java.util.List;
 
 import dev.wolveringer.bs.Main;
+import dev.wolveringer.bukkit.permissions.PermissionType;
 import dev.wolveringer.client.ClientWrapper;
 import dev.wolveringer.client.connection.Client;
 import dev.wolveringer.dataserver.protocoll.packets.PacketOutServerStatus;
-import me.kingingo.kBungeeCord.Permission.PermissionType;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
@@ -18,80 +18,89 @@ public class BungeecordDatenClient {
 	private ClientWrapper wclient;
 	private int onlineCount = -2;
 	private List<String> players;
-	
+
 	private ScheduledTask infoUpdater;
 	private boolean active = false;
-	
+
 	private String name;
 	private SocketAddress target;
-	
+
 	private boolean tryConnecting = false;
-	
+
 	private ClientExternalHandler externalHandler = new ClientExternalHandler();
 	private ClientInfoManager infoSender = new ClientInfoManager();
+	private String password;
+
 	public BungeecordDatenClient(String name, SocketAddress target) {
 		super();
 		this.name = name;
 		this.target = target;
 	}
 
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
 	public ClientWrapper getClient() {
 		return wclient;
 	}
-	
-	public int getPlayerCount(){
+
+	public int getPlayerCount() {
 		return onlineCount;
 	}
-	
-	public void teamMessage(String message){
+
+	public void teamMessage(String message) {
 		wclient.broadcastMessage(PermissionType.TEAM_MESSAGE.getPermissionToString(), message);
 	}
-	
-	
+
 	public boolean isConnecting() {
 		return tryConnecting;
 	}
-	
-	public synchronized void start(String password) throws Exception {
+
+	public synchronized void start() throws Exception {
 		while (tryConnecting) {
-			Thread.sleep(1);
+			Thread.sleep(10);
 		}
-		if(isActive()) return;
+		if (isActive())
+			return;
+
 		tryConnecting = true;
-		if(client == null)
+		if (client == null)
 			client = Client.createBungeecordClient(name, (InetSocketAddress) target, externalHandler, infoSender);
-		if(wclient == null)
+		if (wclient == null)
 			wclient = new ClientWrapper(client);
-		try{
+		try {
 			client.connect(password.getBytes());
-		}catch(Exception e){
+		} catch (Exception e) {
 			throw e;
 		} finally {
 			tryConnecting = false;
 		}
 		active = true;
 		client.getInfoSender().setSleepTime(1000);// Beschleunigt die aktualisierung der Spielerzahl.
-		
+
 		infoUpdater = BungeeCord.getInstance().getScheduler().runAsync(Main.getInstance(), new Runnable() {
 			@Override
 			public void run() {
 				int count = 0;
 				while (isActive()) {
-					try{
+					try {
 						count++;
-						if(count%4 == 0){ //Update player names only all 6 seconds!
+						if (count % 3 == 0) { //Update player names only all 4.5 seconds!
 							PacketOutServerStatus r = wclient.getServerStatus(PacketOutServerStatus.Action.GENERAL, null, true).getSync();
-							onlineCount =  r.getPlayer();
+							onlineCount = r.getPlayer();
 							players = r.getPlayers();
-						}
-						else
-						{
+						} else {
 							onlineCount = wclient.getServerStatus(PacketOutServerStatus.Action.GENERAL, null, false).getSync().getPlayer();
 						}
-					}catch(Exception e){
+					} catch (Exception e) {
 						e.printStackTrace();
 					}
-					
+
 					try {
 						Thread.sleep(1500);
 					} catch (InterruptedException e) {
@@ -100,17 +109,17 @@ public class BungeecordDatenClient {
 			}
 		});
 		System.out.println("Loading players");
-		for(ProxiedPlayer player : BungeeCord.getInstance().getPlayers()){
+		for (ProxiedPlayer player : BungeeCord.getInstance().getPlayers()) {
 			Main.getDatenServer().getClient().getPlayerAndLoad(player.getName()).setServerSync(player.getServer().getInfo().getName()); //Loading player
 		}
 		System.out.println("players loaded");
 	}
-	
+
 	public boolean isActive() {
 		return active && client.isConnected() && client.isHandshakeCompleted() && wclient != null;
 	}
-	
-	public void stop(){
+
+	public void stop() {
 		active = false;
 		infoUpdater.cancel();
 	}
@@ -118,17 +127,8 @@ public class BungeecordDatenClient {
 	public SocketAddress getAddress() {
 		return target;
 	}
-	
+
 	public List<String> getPlayers() {
 		return players;
-	}
-	public static void main(String[] args) {
-		try{
-			if(false)
-			throw new RuntimeException();
-		} finally {
-			System.out.println("X");
-		}
-		System.out.println("Y");
 	}
 }
