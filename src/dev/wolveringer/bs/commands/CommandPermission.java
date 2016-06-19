@@ -5,11 +5,11 @@ import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 
 import dev.wolveringer.bs.Main;
-import me.kingingo.kBungeeCord.Permission.Group;
-import me.kingingo.kBungeeCord.Permission.Permission;
-import me.kingingo.kBungeeCord.Permission.PermissionManager;
-import me.kingingo.kBungeeCord.Permission.PermissionPlayer;
-import me.kingingo.kBungeeCord.Permission.PermissionType;
+import dev.wolveringer.permission.Group;
+import dev.wolveringer.permission.Permission;
+import dev.wolveringer.permission.PermissionManager;
+import dev.wolveringer.permission.PermissionPlayer;
+import dev.wolveringer.bukkit.permissions.PermissionType;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;

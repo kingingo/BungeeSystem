@@ -61,7 +61,7 @@ public class GuiBoosterMenue extends GuiUpdating{
 							LoadedPlayer target = Main.getDatenServer().getClient().getPlayer(booster.getPlayer());
 							target.changeCoins(Action.ADD, number);
 							c.getPlayer().sendMessage("§aDu hast dem Spieler "+target.getName()+" §e"+number+" §aGems gespendet.");
-							Main.getDatenServer().getClient().sendMessage(target.getPlayerId(), "§aEin User hat dir §e"+number+" §aGems gespendet!");
+							Main.getDatenServer().getClient().sendMessage(target.getPlayerId(), "§aDer user §e"+((Click)c).getPlayer().getName()+"§a hat dir §e"+number+" §aGems gespendet!");
 							c.getPlayer().closeInventory();
 						}
 

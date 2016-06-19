@@ -14,7 +14,7 @@ import dev.wolveringer.dataserver.gamestats.GameType;
 import dev.wolveringer.dataserver.protocoll.packets.PacketVersion;
 import dev.wolveringer.gamestats.Statistic;
 import dev.wolveringer.hashmaps.CachedHashMap;
-import me.kingingo.kBungeeCord.Permission.PermissionManager;
+import dev.wolveringer.permission.PermissionManager;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ChatEvent;

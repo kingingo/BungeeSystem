@@ -19,4 +19,4 @@ encoding//src/dev/wolveringer/bs/listener/PlayerJoinListener.java=UTF-8
 encoding//src/dev/wolveringer/bs/listener/PlayerKickListener.java=UTF-8
 encoding//src/dev/wolveringer/bs/listener/TeamChatListener.java=UTF-8
 encoding//src/dev/wolveringer/bs/message/MessageManager.java=UTF-8
-encoding//src/me/kingingo/kBungeeCord/Permission/PermissionManager.java=UTF-8
+encoding//src/dev/wolveringer/permission/PermissionManager.java=UTF-8

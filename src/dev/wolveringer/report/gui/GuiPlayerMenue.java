@@ -4,9 +4,9 @@ import dev.wolveringer.BungeeUtil.Material;
 import dev.wolveringer.BungeeUtil.item.ItemStack;
 import dev.wolveringer.gui.Gui;
 import dev.wolveringer.item.ItemBuilder;
+import dev.wolveringer.permission.PermissionManager;
 import dev.wolveringer.report.gui.admin.GuiViewOpenReports;
 import dev.wolveringer.report.search.PlayerSearchMenue;
-import me.kingingo.kBungeeCord.Permission.PermissionManager;
 
 public class GuiPlayerMenue extends Gui {
 
@@ -39,7 +39,13 @@ public class GuiPlayerMenue extends Gui {
 		});
 		
 		if(PermissionManager.getManager().hasPermission(getPlayer(), "report.help",false)){
-			inv.setItem(4, ItemBuilder.create(Material.BOOK).name("§aView open reports").glow().lore("§7Click to see all open reports.").listener((c)->switchToGui(new GuiViewOpenReports())).build());
+			inv.setItem(4, ItemBuilder.create(Material.BOOK).name("§aView open reports").glow().lore("§7Click to see all open reports.").listener((c)->{
+				Gui gui = new GuiViewOpenReports();
+				//gui.setPlayer(c.getPlayer());
+				//gui.active();
+				//gui.openGui();
+				switchToGui(gui);
+			}).build());
 		}
 		
 		inv.setItem(6, new ItemStack(ItemBuilder.create(Material.WATCH).name("§aView your open reports").lore("§7Click to see your open reports.").build()) {

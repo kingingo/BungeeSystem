@@ -7,8 +7,8 @@ import dev.wolveringer.dataserver.gamestats.GameType;
 import dev.wolveringer.dataserver.gamestats.StatsKey;
 import dev.wolveringer.dataserver.protocoll.packets.PacketInStatsEdit;
 import dev.wolveringer.dataserver.protocoll.packets.PacketInStatsEdit.Action;
+import dev.wolveringer.permission.PermissionManager;
 import dev.wolveringer.util.apache.StringUtils;
-import me.kingingo.kBungeeCord.Permission.PermissionManager;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.plugin.Command;
 

@@ -4,8 +4,8 @@ import java.util.UUID;
 
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.client.LoadedPlayer;
-import me.kingingo.kBungeeCord.Permission.PermissionManager;
-import me.kingingo.kBungeeCord.Permission.PermissionType;
+import dev.wolveringer.permission.PermissionManager;
+import dev.wolveringer.bukkit.permissions.PermissionType;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.plugin.Command;
 

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import dev.wolveringer.booster.BoosterType;
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.client.connection.ClientType;
 import dev.wolveringer.dataserver.player.LanguageType;
@@ -16,6 +17,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
+import net.md_5.bungee.protocol.packet.Chat;
 
 public class MessageManager implements Listener {
 	private static ScheduledTask task;
@@ -138,12 +140,32 @@ public class MessageManager implements Listener {
 		BungeeCord.getInstance().getScheduler().runAsync(Main.getInstance(), new Runnable() {
 			@Override
 			public void run() {
+				/*
+				 * 	if(Main.getBoosterManager().getBooster(BoosterType.ARCADE).isActive())
+						if(p.getServer().getInfo().getName().startsWith("a")){
+							String m = "§a§lDouble-Coin Booster wurde aktiviert von §e§l"+Main.getDatenServer().getClient().getPlayerAndLoad(Main.getBoosterManager().getBooster(BoosterType.ARCADE).getPlayer()).getName();
+							p.unsafe().sendPacket(new Chat("{\"text\": \"" + m + "\"}", (byte) 2));
+						}
+					if(Main.getBoosterManager().getBooster(BoosterType.SKY).isActive())
+						if(p.getServer().getInfo().getName().equalsIgnoreCase("sky")){
+							String m = "§a§lFarm Booster wurde aktiviert von §e§l"+Main.getDatenServer().getClient().getPlayerAndLoad(Main.getBoosterManager().getBooster(BoosterType.ARCADE).getPlayer()).getName();
+							p.unsafe().sendPacket(new Chat("{\"text\": \"" + m + "\"}", (byte) 2));
+						}
+				 */
+				
+				ArrayList<String> titles = new ArrayList<>(MessageManager.this.titles);
+				if(Main.getDatenServer().isActive()){
+					if(Main.getBoosterManager().getBooster(BoosterType.ARCADE).isActive())
+						titles.add("§aArcade-Booster activiert von §e"+Main.getDatenServer().getClient().getPlayerAndLoad(Main.getBoosterManager().getBooster(BoosterType.ARCADE).getPlayer()).getName());
+					if(Main.getBoosterManager().getBooster(BoosterType.SKY).isActive())
+						titles.add("§aSky-Booster activiert von §e"+Main.getDatenServer().getClient().getPlayerAndLoad(Main.getBoosterManager().getBooster(BoosterType.ARCADE).getPlayer()).getName());
+				}
 				Iterator<String> left = titles.iterator();
 				while (left.hasNext()) {
 					String next = left.next();
 					Title title = BungeeCord.getInstance().createTitle();
 					title.fadeIn(0);
-					title.fadeOut(30);
+					title.fadeOut(50);
 					title.stay(30);
 					title.title(TextComponent.fromLegacyText("§6§lCLASHMC.EU"));
 					title.subTitle(TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&', next)));
@@ -154,6 +176,7 @@ public class MessageManager implements Listener {
 						e.printStackTrace();
 					}
 				}
+				
 			}
 		});
 	}

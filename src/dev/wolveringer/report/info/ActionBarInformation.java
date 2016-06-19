@@ -1,10 +1,12 @@
 package dev.wolveringer.report.info;
 
+import dev.wolveringer.booster.BoosterManager;
+import dev.wolveringer.booster.BoosterType;
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.client.threadfactory.ThreadFactory;
 import dev.wolveringer.client.threadfactory.ThreadRunner;
 import dev.wolveringer.dataserver.protocoll.packets.PacketReportRequest.RequestType;
-import me.kingingo.kBungeeCord.Permission.PermissionManager;
+import dev.wolveringer.permission.PermissionManager;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.protocol.packet.Chat;
@@ -59,13 +61,27 @@ public class ActionBarInformation {
 	private void sendBar(){
 		if(!Main.getDatenServer().isActive())
 			return;
-		if(openReports == 0)
-			return;
 		String message = "§c§lEs gibt momentan "+buildReportColor()+"§l"+openReports+" §c§loffene Reports!";
 		for(ProxiedPlayer p : BungeeCord.getInstance().getPlayers())
 			if(p != null)
-				if(PermissionManager.getManager().hasPermission(p, "bungee.report.info"))
+				if(PermissionManager.getManager().hasPermission(p, "bungee.report.info") && openReports != 0){
 					p.unsafe().sendPacket(new Chat("{\"text\": \"" + message + "\"}", (byte) 2));
+				}
+				else
+				{
+					if(Main.getBoosterManager().getBooster(BoosterType.ARCADE).isActive())
+						if(p.getServer().getInfo().getName().startsWith("a")){
+							String m = "§a§lDouble-Coin Booster wurde aktiviert von §e§l"+Main.getDatenServer().getClient().getPlayerAndLoad(Main.getBoosterManager().getBooster(BoosterType.ARCADE).getPlayer()).getName();
+							p.unsafe().sendPacket(new Chat("{\"text\": \"" + m + "\"}", (byte) 2));
+						}
+					if(Main.getBoosterManager().getBooster(BoosterType.SKY).isActive())
+						if(p.getServer().getInfo().getName().equalsIgnoreCase("sky")){
+							String m = "§a§lFarm Booster wurde aktiviert von §e§l"+Main.getDatenServer().getClient().getPlayerAndLoad(Main.getBoosterManager().getBooster(BoosterType.ARCADE).getPlayer()).getName();
+							p.unsafe().sendPacket(new Chat("{\"text\": \"" + m + "\"}", (byte) 2));
+						}
+				}
+		
+	
 	}
 	private String buildReportColor(){
 		if(openReports < 5)
@@ -78,3 +94,4 @@ public class ActionBarInformation {
 			return "§4";
 	}
 }
+//http://hastebin.com/qusoqofepu.avrasm

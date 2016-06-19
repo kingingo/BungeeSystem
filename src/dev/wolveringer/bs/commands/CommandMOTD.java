@@ -3,8 +3,8 @@ package dev.wolveringer.bs.commands;
 import java.util.Arrays;
 
 import dev.wolveringer.bs.information.InformationManager;
-import me.kingingo.kBungeeCord.Permission.PermissionManager;
-import me.kingingo.kBungeeCord.Permission.PermissionType;
+import dev.wolveringer.permission.PermissionManager;
+import dev.wolveringer.bukkit.permissions.PermissionType;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;

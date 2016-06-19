@@ -12,12 +12,11 @@ public class ItemBuilder {
 	public static interface ItemClickListener {
 		public void click(Click c);
 	}
-	
 
 	public static ItemBuilder create() {
 		return new ItemBuilder();
 	}
-	
+
 	public static ItemBuilder create(Material m) {
 		return create(m.getId());
 	}
@@ -26,20 +25,30 @@ public class ItemBuilder {
 		return new ItemBuilder(id);
 	}
 
+	public static ItemBuilder create(Item handle) {
+		return new ItemBuilder(handle);
+	}
+
 	private int id;
-	private int sid = 0;
-	private int amouth = 1;
+	private int sid = -1;
+	private int amouth = -1;
 	private String name;
 	private ArrayList<String> lore = new ArrayList<>();
 	private boolean glow;
 	private ItemClickListener listener;
-	
+	private Item handle;
+
 	public ItemBuilder(int id) {
 		this.id = id;
 	}
 
-	public ItemBuilder() {}
-	
+	public ItemBuilder(Item handle) {
+		this.handle = new Item(handle); //Copy
+	}
+
+	public ItemBuilder() {
+	}
+
 	public ItemBuilder name(String name) {
 		this.name = name;
 		return this;
@@ -70,33 +79,41 @@ public class ItemBuilder {
 		return this;
 	}
 
-	public ItemBuilder listener(ItemClickListener run){
+	public ItemBuilder listener(ItemClickListener run) {
 		this.listener = run;
 		return this;
 	}
-	
-	public ItemBuilder id(int id){
+
+	public ItemBuilder id(int id) {
 		this.id = id;
 		return this;
 	}
-	
-	public ItemBuilder material(Material m){
+
+	public ItemBuilder material(Material m) {
 		this.id = m.getId();
 		return this;
 	}
-	
+
 	public Item build() {
 		Item i;
-		if(listener == null){
-			i = new Item(id, amouth, (short) sid);
-		}
-		else
-			i = new ItemStack(id, amouth, (short) sid) {
+		if (handle != null) {
+			if (id != 0)
+				handle.setTypeId(id);
+			if (sid != -1)
+				handle.setDurability((short) sid);
+			if(amouth != -1)
+				handle.setAmount(amouth);
+			i = handle;
+		} else
+			i = new Item(id, amouth == -1 ? 1 : amouth, (short) (sid == -1 ? 0 : sid));
+		if (listener != null) {
+			i = new ItemStack(i) {
 				@Override
 				public void click(Click c) {
 					listener.click(c);
 				}
 			};
+		}
 		if (name != null)
 			i.getItemMeta().setDisplayName(name);
 		if (!lore.isEmpty())
