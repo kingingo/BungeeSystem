@@ -14,11 +14,10 @@ public abstract class GuiUpdating extends Gui{
 		super(rows, name);
 	}
 
-	public GuiUpdating(Player player, Inventory inv, ItemContainer container, boolean active) {
-		super(player, inv, container, active);
+	public GuiUpdating(Player player, Inventory inv, ItemContainer container, boolean active, long animationend) {
+		super(player, inv, container, active, animationend);
 	}
 
-	
 	@Override
 	public void active() {
 		pid = ThreadFactory.getFactory().createThread(new Runnable() {
@@ -30,9 +29,10 @@ public abstract class GuiUpdating extends Gui{
 					} catch (InterruptedException e) {
 					}
 					updateInventory();
-				}				
+				}		
 			}
 		});
+		pid.start();
 	}
 	
 	public abstract void updateInventory();

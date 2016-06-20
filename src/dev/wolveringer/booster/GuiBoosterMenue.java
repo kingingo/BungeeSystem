@@ -87,6 +87,7 @@ public class GuiBoosterMenue extends GuiUpdating{
 						@Override
 						public void numberEntered(int number) {
 							Player pplayer = c.getPlayer();
+							System.out.println(number+" - "+(number * 60 * 1000)+" - "+PlayerJoinListener.getDurationBreakdown(number * 60 * 1000));
 							if (!Main.getBoosterManager().getBooster(type).isActive()) {
 								pplayer.sendMessage("§aDu hast den Netzwerkbooster für " + booster.getType().getDisplayName() + " " + PlayerJoinListener.getDurationBreakdown(number * 60 * 1000) + " aktiviert.");
 								player.activeNetworkBooster(type, number * 60 * 1000);

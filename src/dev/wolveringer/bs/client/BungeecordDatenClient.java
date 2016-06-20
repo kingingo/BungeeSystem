@@ -61,7 +61,8 @@ public class BungeecordDatenClient {
 		return tryConnecting;
 	}
 
-	public synchronized void start() throws Exception {
+	public void start() throws Exception {
+		System.out.println("start() called. Active -> "+isActive()+". Is conencting: "+tryConnecting);
 		while (tryConnecting) {
 			Thread.sleep(10);
 		}

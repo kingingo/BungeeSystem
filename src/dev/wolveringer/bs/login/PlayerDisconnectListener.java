@@ -2,6 +2,7 @@ package dev.wolveringer.bs.login;
 
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.client.LoadedPlayer;
+import dev.wolveringer.client.threadfactory.ThreadFactory;
 import dev.wolveringer.dataserver.protocoll.packets.PacketReportRequest.RequestType;
 import dev.wolveringer.report.ReportState;
 import dev.wolveringer.report.ReportEntity;
@@ -17,8 +18,18 @@ public class PlayerDisconnectListener implements Listener{
 		for(ReportEntity re : are){
 			Main.getDatenServer().getClient().closeReport(re,ReportState.DISCONNECTED_CLOSED.ordinal());
 		}
-		for(ReportEntity re : Main.getDatenServer().getClient().getReportEntity(RequestType.OPEN_REPORTS, -1).getSync())
-			if(re.getTarget() == player.getPlayerId())
-				Main.getDatenServer().getClient().closeReport(re, ReportState.DISCONNECTED_CLOSED.ordinal());
+		ThreadFactory.getFactory().createThread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					Thread.sleep(2*60*1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				for(ReportEntity re : Main.getDatenServer().getClient().getReportEntity(RequestType.OPEN_REPORTS, -1).getSync())
+					if(re.getTarget() == player.getPlayerId())
+						Main.getDatenServer().getClient().closeReport(re, ReportState.DISCONNECTED_CLOSED.ordinal());
+			}
+		});
 	}
 }

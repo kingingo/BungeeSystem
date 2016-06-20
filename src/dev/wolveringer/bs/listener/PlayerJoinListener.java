@@ -2,6 +2,7 @@ package dev.wolveringer.bs.listener;
 
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -122,8 +123,9 @@ public class PlayerJoinListener implements Listener {
 				e.setCancelReason("§cAn error happened while joining.\n§cWe cant check your premium state.\nTry again in 10-30 seconds");
 				return;
 			}
-			BanEntity response = player.getBanStats(e.getConnection().getAddress().getHostString()).getSync();
-			if (response != null && response.isActive()) {
+			List<BanEntity> entries = player.getBanStats(e.getConnection().getAddress().getHostString(),1).getSync();
+			if (entries.size() > 0 && entries.get(0).isActive()) {
+				BanEntity response = entries.get(0);
 				String time;
 				if (response.isTempBanned()) {
 					time = getDurationBreakdown(response.getEnd() - System.currentTimeMillis());

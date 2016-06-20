@@ -37,6 +37,13 @@ public class TranslationHandler {
 			return translate(key, LanguageType.ENGLISH, args);
 	}
 	
+	public String translateWithPrefix(String key, CommandSender cs, Object... args) {
+		if(cs instanceof ProxiedPlayer)
+			return Main.getTranslationManager().translate("prefix",cs)+manager.translate(key, Main.getDatenServer().getClient().getPlayer(cs.getName()), args);
+		else
+			return Main.getTranslationManager().translate("prefix",cs)+translate(key, LanguageType.ENGLISH, args);
+	}
+	
 	public String translate(String key, LanguageType lang, Object... args) {
 		return manager.translate(key, lang, args);
 	}

@@ -1,5 +1,0 @@
-name: BungeecordSystem
-main: dev.wolveringer.bs.Main
-version: 1.0
-author: WolverinDEV
-depend: [DatenClient]

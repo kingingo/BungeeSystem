@@ -4,13 +4,24 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.InetSocketAddress;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import dev.wolveringer.BungeeUtil.AsyncCatcher;
+import dev.wolveringer.BungeeUtil.ClientVersion.BigClientVersion;
+import dev.wolveringer.BungeeUtil.ClientVersion.ProtocollVersion;
 import dev.wolveringer.BungeeUtil.PacketLib;
-import dev.wolveringer.animations.text.StringUntils;
+import dev.wolveringer.BungeeUtil.packets.Packet;
+import dev.wolveringer.BungeeUtil.packets.PacketPlayOutEntityProperties;
+import dev.wolveringer.BungeeUtil.packets.PacketPlayOutEntityTeleport;
+import dev.wolveringer.BungeeUtil.packets.PacketPlayOutKeepAlive;
+import dev.wolveringer.BungeeUtil.packets.PacketPlayOutSetExperience;
+import dev.wolveringer.BungeeUtil.packets.PacketPlayOutSpawnPostition;
+import dev.wolveringer.BungeeUtil.packets.PacketPlayOutUpdateHealth;
+import dev.wolveringer.BungeeUtil.packets.PacketPlayOutUpdateSign;
+import dev.wolveringer.afk.AfkListener;
 import dev.wolveringer.booster.BoosterManager;
 import dev.wolveringer.booster.CMD_BOOSTER;
 import dev.wolveringer.bs.client.BungeecordDatenClient;
@@ -67,7 +78,6 @@ import dev.wolveringer.bs.login.LoginManager;
 import dev.wolveringer.bs.login.PlayerDisconnectListener;
 import dev.wolveringer.bs.message.MessageManager;
 import dev.wolveringer.bs.servermanager.ServerManager;
-import dev.wolveringer.client.connection.PacketListener;
 import dev.wolveringer.client.threadfactory.ThreadFactory;
 import dev.wolveringer.client.threadfactory.ThreadRunner;
 import dev.wolveringer.event.EventListener;
@@ -76,21 +86,22 @@ import dev.wolveringer.events.Event;
 import dev.wolveringer.events.EventConditions;
 import dev.wolveringer.events.EventType;
 import dev.wolveringer.events.player.PlayerServerSwitchEvent;
-import dev.wolveringer.guild.listener.TabListener;
-import dev.wolveringer.hashmaps.InitHashMap;
 import dev.wolveringer.mysql.MySQL;
 import dev.wolveringer.permission.PermissionManager;
 import dev.wolveringer.report.commands.CMD_Report;
 import dev.wolveringer.report.info.ActionBarInformation;
+import dev.wolveringer.server.ServerConfiguration;
+import dev.wolveringer.server.packets.PacketPlayInKeepAlive;
+import dev.wolveringer.server.packets.PacketPlayOutMapChunk;
+import dev.wolveringer.server.packets.PacketPlayOutMapChunkBulk;
+import dev.wolveringer.server.world.WorldFileReader;
 import dev.wolveringer.skin.SkinCacheManager;
 import dev.wolveringer.slotmachine.RoulettHistory;
 import dev.wolveringer.util.UtilReflection;
-import dev.wolveringer.util.apache.StringUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import me.kingingo.kBungeeCord.Language.TranslationHandler;
 import net.md_5.bungee.BungeeCord;
-import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.PluginManager;
@@ -98,6 +109,8 @@ import net.md_5.bungee.api.scheduler.ScheduledTask;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
+import net.md_5.bungee.protocol.Protocol;
+import net.md_5.bungee.protocol.ProtocolConstants.Direction;
 
 @AllArgsConstructor
 public class Bootstrap {
@@ -155,6 +168,9 @@ public class Bootstrap {
 				conf.set("datenserver.host", "localhost");
 				conf.set("datenserver.port", 1111);
 				conf.set("datenserver.passwort", "HelloWorld");
+				conf.set("server.afk.world", "worlds/afk/");
+				conf.set("server.banned.world", "worlds/banned/");
+				conf.set("server.chunksize", 2);
 				ConfigurationProvider.getProvider(YamlConfiguration.class).save(conf, new File(getDataFolder(), "config.yml"));
 			} else
 				conf = ConfigurationProvider.getProvider(YamlConfiguration.class).load(new File(getDataFolder(), "config.yml"));
@@ -178,6 +194,15 @@ public class Bootstrap {
 			public void run() {
 				while (true) {
 					while (!Main.data.isActive()) {
+						if(Main.data.isConnecting()){
+							System.out.println("§6Connecting to datenserver....");
+							try {
+								Thread.sleep(1000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							continue;
+						}
 						System.out.println("§aTry to connect to dataserver");
 						try {
 							Main.data.start();
@@ -305,6 +330,33 @@ public class Bootstrap {
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new PlayerDisconnectListener());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new TimeListener());
 
+		Packet.registerPacket(Protocol.GAME, Direction.TO_SERVER, PacketPlayInKeepAlive.class,new Packet.ProtocollId(BigClientVersion.v1_8, 0),new Packet.ProtocollId(BigClientVersion.v1_9, 0x1F));
+		
+		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutKeepAlive.class,new Packet.ProtocollId(BigClientVersion.v1_8, 0x00),new Packet.ProtocollId(BigClientVersion.v1_9, 0x1F));
+		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, 0x05,0x43, PacketPlayOutSpawnPostition.class);
+		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, 0x21,0x20, PacketPlayOutMapChunk.class);
+		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, 0x26,null, PacketPlayOutMapChunkBulk.class);
+
+		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, 0x06,0x3E, PacketPlayOutUpdateHealth.class);
+		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, 24,0x4A, PacketPlayOutEntityTeleport.class);
+		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, 0x20,0x4B, PacketPlayOutEntityProperties.class); 
+		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, 0x33,0x46, PacketPlayOutUpdateSign.class); 
+		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, 0x1F,0x3D, PacketPlayOutSetExperience.class); 
+		
+		System.out.println(Packet.getPacketId(ProtocollVersion.v1_8, PacketPlayOutKeepAlive.class));
+		
+		System.out.println("Packets loaded");
+		
+		if(!WorldFileReader.isWorld(new File(conf.getString("server.afk.world")))){
+			System.out.println("§cCant create AFK server!");
+		}
+		else
+		{
+			System.out.println("§aLoading world!");
+			PacketLib.addHandler(new AfkListener(new ServerConfiguration("§cDu bist AFK", "", "§aDu bist AFK", Arrays.asList("","","","","§aDU bist AFK!"), Arrays.asList("",""), WorldFileReader.read(new File(conf.getString("server.afk.world"))), conf.getInt("server.chunksize")))); //Afk Server
+			System.out.println("§aAFK-Server loaded!");
+		}
+		
 		Main.skins = new SkinCacheManager();
 		Main.info = new ActionBarInformation(1000, 5000);
 		Main.info.start();
@@ -328,7 +380,7 @@ public class Bootstrap {
 			}
 		});
 
-		PacketLib.addHandler(new TabListener());
+		//PacketLib.addHandler(new TabListener());
 
 		Main.loaded = true;
 
@@ -345,5 +397,10 @@ public class Bootstrap {
 		}
 		
 		PrefixCommandRegistry.getInstance().registerCommandListener("~", new ConsoleTeamMessageListener());
+	}
+	public static void main(String[] args) {
+		int i = 0x00;
+		Integer x = i;
+		System.out.println((x == null)+" - "+x.intValue()+" - "+PacketPlayOutKeepAlive.class);
 	}
 }

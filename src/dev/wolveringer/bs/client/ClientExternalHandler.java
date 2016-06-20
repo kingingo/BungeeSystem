@@ -6,7 +6,9 @@ import dev.wolveringer.bs.Main;
 import dev.wolveringer.bs.UtilBungeeCord;
 import dev.wolveringer.bs.client.event.ServerMessageEvent;
 import dev.wolveringer.client.LoadedPlayer;
+import dev.wolveringer.client.connection.State;
 import dev.wolveringer.client.external.BungeeCordActionListener;
+import dev.wolveringer.client.threadfactory.ThreadFactory;
 import dev.wolveringer.dataserver.player.Setting;
 import dev.wolveringer.dataserver.protocoll.DataBuffer;
 import dev.wolveringer.permission.PermissionManager;
@@ -45,23 +47,31 @@ public class ClientExternalHandler implements BungeeCordActionListener{
 
 	@Override
 	public void disconnected() {
-		BungeeCord.getInstance().getConsole().sendMessage("§cDatenclient disconnected!");
-		for(ProxiedPlayer p : BungeeCord.getInstance().getPlayers()){
-			try{
-				if(PermissionManager.getManager().hasPermission(p, "epicpvp.bc.dataserver"))
-					p.sendMessage(Main.getTranslationManager().translate("prefix", p)+"§eClientListener §7>> §cDatenclient disconnected");
-			}catch(Exception ex){ }
-		}
-		try {
-			Main.getDatenServer().start();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		ThreadFactory.getFactory().createThread(new Runnable() {
+			@Override
+			public void run() {
+				BungeeCord.getInstance().getConsole().sendMessage("§5Clientlistener §7> §cDatenclient disconnected!");
+				for(ProxiedPlayer p : BungeeCord.getInstance().getPlayers()){
+					try{
+						if(PermissionManager.getManager().hasPermission(p, "epicpvp.bc.dataserver"))
+							p.sendMessage(Main.getTranslationManager().translate("prefix", p)+"§eClientListener §7>> §cDatenclient disconnected");
+					}catch(Exception ex){ }
+				}
+				try {
+					Main.getDatenServer().start();
+				} catch (Exception e) {
+					BungeeCord.getInstance().getConsole().sendMessage("§5Clientlistener §7> §cReconnect failed!");
+					e.printStackTrace();
+					return;
+				}
+				BungeeCord.getInstance().getConsole().sendMessage("§5Clientlistener §7> §aReconnect sucessfull!");
+			}
+		}).start();;
 	}
 
 	@Override
 	public void connected() {
-		BungeeCord.getInstance().getConsole().sendMessage("§aDatenclient connected!");
+		BungeeCord.getInstance().getConsole().sendMessage("§5Clientlistener §7> §aDatenclient connected!");
 		for(ProxiedPlayer p : BungeeCord.getInstance().getPlayers()){
 			try{
 				if(PermissionManager.getManager().hasPermission(p, "epicpvp.bc.dataserver"))
@@ -101,5 +111,11 @@ public class ClientExternalHandler implements BungeeCordActionListener{
 		for(ProxiedPlayer p : BungeeCord.getInstance().getPlayers())
 			p.disconnect(kickMessage);
 		BungeeCord.getInstance().stop();
+	}
+
+	@Override
+	public void error(State state, Exception e) {
+		System.out.println("§cError while "+state);
+		e.printStackTrace();
 	}
 }

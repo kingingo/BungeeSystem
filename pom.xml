@@ -7,6 +7,14 @@
 	<build>
 		<finalName>BungeeSystem</finalName>
 		<sourceDirectory>src</sourceDirectory>
+		<resources>
+			<resource>
+				<directory>./src/</directory>
+				<includes>
+					<include>*.yml</include>
+				</includes>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -14,6 +22,86 @@
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.3</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+			<!-- download source code in Eclipse, best practice -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<version>2.9</version>
+				<configuration>
+					<downloadSources>true</downloadSources>
+					<downloadJavadocs>false</downloadJavadocs>
+				</configuration>
+			</plugin>
+
+			<!-- Copy project dependency -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.5.1</version>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<!-- exclude junit, we need runtime dependency only -->
+							<includeScope>runtime</includeScope>
+							<outputDirectory>${project.build.directory}/dependency-jars/</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+				 <artifactSet>
+	                <includes>
+	                	<include>dev.wolveringer:BungeeCordSystem</include>
+	                	<include>dev.wolveringer:AFK-Server</include>
+	                </includes>
+	              </artifactSet>
+					<finalName>${project.artifactId}-all</finalName>
+					<minimizeJar>true</minimizeJar>
+					<filters>
+						<filter>
+							<artifact>**:**</artifact>
+							<includes>
+								<include>**.yml</include>
+								<include>**/*.class</include>
+							</includes>
+						</filter>
+						<filter>
+							<artifact>**:**</artifact>
+							<excludes>
+								<exclude>META-INF/*.SF</exclude>
+								<exclude>META-INF/*.DSA</exclude>
+								<exclude>META-INF/*.RSA</exclude>
+								<exclude>**/*.java</exclude>
+							</excludes>
+						</filter>
+					</filters>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -27,7 +115,7 @@
 			<id>bungee-repo</id>
 			<url>https://oss.sonatype.org/content/groups/public/</url>
 		</repository>
-		
+
 	</repositories>
 	<dependencies>
 		<dependency>
@@ -63,6 +151,11 @@
 			<groupId>dev.wolveringer</groupId>
 			<artifactId>BungeeUtil</artifactId>
 			<version>1.6.7.4.1</version>
+		</dependency>
+		<dependency>
+			<groupId>dev.wolveringer</groupId>
+			<artifactId>AFK-Server</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>

@@ -1,18 +1,30 @@
 package dev.wolveringer.bs.commands;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.bs.listener.PlayerJoinListener;
 import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.dataserver.ban.BanEntity;
+import dev.wolveringer.dataserver.player.LanguageType;
 import dev.wolveringer.permission.PermissionManager;
 import dev.wolveringer.bukkit.permissions.PermissionType;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.plugin.Command;
 
 public class CommandBanInfo extends Command{
+	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy.MM.dd HH:mm");
+	static {
+		Main.getTranslationManager().registerFallback(LanguageType.ENGLISH, "command.baninfo.history.tempban", "§7[§b%s5§7] §aBaned from §e%s0 §afor §e%s1§a with level §e%s2 §areason: §e%s4");
+		Main.getTranslationManager().registerFallback(LanguageType.ENGLISH, "command.baninfo.history.ban", "§7[§b%s4§7] §aBaned from §e%s0§a with level §e%s1 §areason: §e%s3");
+		Main.getTranslationManager().registerFallback(LanguageType.ENGLISH, "command.baninfo.history.unban.buy", "§7[§b%s0§7] §aBought unban.");
+		Main.getTranslationManager().registerFallback(LanguageType.ENGLISH, "command.baninfo.history.unban.player", "§7[§b%s0§7] §aUnbaned by §e%s1§a.");
+	}
 	
+	private static final int DEFAULT_DEEP = 5;
 	public CommandBanInfo() {
 		super("baninfo");
 	}
@@ -21,7 +33,7 @@ public class CommandBanInfo extends Command{
 	public void execute(CommandSender cs, String[] args) {
 		if(!PermissionManager.getManager().hasPermission(cs, PermissionType.BAN_INFO,true)) return;
 		
-		if(args.length == 1){
+		if(args.length >= 1){
 			cs.sendMessage(Main.getTranslationManager().translate("prefix",cs)+Main.getTranslationManager().translate("command.baninfo.status.loadingPlayer",cs)); 
 			LoadedPlayer player = null;
 
@@ -34,10 +46,17 @@ public class CommandBanInfo extends Command{
 				}
 				player = Main.getDatenServer().getClient().getPlayerAndLoad(args[0]);
 			}
-			BanEntity baned = player.getBanStats("system").getSync();
+			List<BanEntity> entries = player.getBanStats("system", args.length >= 2 ? Integer.parseInt(args[1]) : DEFAULT_DEEP).getSync();
+			cs.sendMessage("");
+			cs.sendMessage("");
+			cs.sendMessage("");
+			cs.sendMessage("");
 			cs.sendMessage("");
 			cs.sendMessage(Main.getTranslationManager().translate("prefix",cs)+Main.getTranslationManager().translate("command.baninfo.baninfo.general",cs,player.getName()));
-			if(baned.isActive())
+			boolean skipFirst = false;
+			if(entries.size() > 0 && entries.get(0).isActive()){
+				skipFirst = true;
+				BanEntity baned = entries.get(0);
 				if(baned.isTempBanned()){
 					cs.sendMessage(Main.getTranslationManager().translate("prefix",cs)+Main.getTranslationManager().translate("command.baninfo.baninfo.temporary",cs));
 					cs.sendMessage(Main.getTranslationManager().translate("prefix",cs)+Main.getTranslationManager().translate("command.baninfo.baninfo.expire",cs,PlayerJoinListener.getDurationBreakdown(baned.getEnd()-System.currentTimeMillis())));
@@ -52,8 +71,21 @@ public class CommandBanInfo extends Command{
 					cs.sendMessage(Main.getTranslationManager().translate("prefix",cs)+Main.getTranslationManager().translate("command.baninfo.baninfo.banner",cs,baned.getBanner()));
 					cs.sendMessage(Main.getTranslationManager().translate("prefix",cs)+Main.getTranslationManager().translate("command.baninfo.baninfo.reson",cs,baned.getReson()));
 				}
+			}
 			else
 				cs.sendMessage(Main.getTranslationManager().translate("prefix",cs)+Main.getTranslationManager().translate("command.baninfo.baninfo.notbanned",cs));
+			cs.sendMessage("");
+			cs.sendMessage("§7--------------------[ §8Histoy §7]--------------------");
+			if(entries.size() > (skipFirst ? 1 : 0))
+				for(BanEntity e : entries.subList(skipFirst ? 1 : 0, entries.size()))
+					if(e.getLevel() >= -1)
+						if(e.isTempBanned())
+							cs.sendMessage(Main.getTranslationManager().translate("command.baninfo.history.tempban", cs, e.getBanner(), PlayerJoinListener.getDurationBreakdown(e.getEnd()-e.getDate()), e.getLevel(), e.getIp(), e.getReson(),DATE_FORMAT.format(new Date(e.getDate()))));
+						else
+							cs.sendMessage(Main.getTranslationManager().translate("command.baninfo.history.ban", cs, e.getBanner(), e.getLevel(), e.getIp(), e.getReson(),DATE_FORMAT.format(new Date(e.getDate()))));
+					else
+						if(e.getLevel() == -2)
+						cs.sendMessage(Main.getTranslationManager().translate("command.baninfo.history.unban.player", cs,DATE_FORMAT.format(new Date(e.getDate())),e.getReson()));
 			return;
 		}
 		cs.sendMessage(Main.getTranslationManager().translate("prefix",cs)+Main.getTranslationManager().translate("command.baninfo.help",cs));

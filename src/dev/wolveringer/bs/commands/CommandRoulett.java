@@ -30,6 +30,7 @@ public class CommandRoulett extends Command {
 			}
 			if(!RoulettHistory.active){
 				cs.sendMessage("§cRoulett is currently disabled!");
+				return;
 			}
 			RoulettGui gui = new RoulettGui();
 			gui.setPlayer((Player) cs);

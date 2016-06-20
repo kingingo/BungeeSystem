@@ -16,6 +16,7 @@ import dev.wolveringer.chat.ChatMessage;
 import dev.wolveringer.chat.ChatSerializer;
 import dev.wolveringer.chat.IChatBaseComponent;
 import dev.wolveringer.client.LoadedPlayer;
+import dev.wolveringer.client.threadfactory.ThreadFactory;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.plugin.PluginManager;
@@ -31,18 +32,16 @@ public class TabListener implements PacketHandler<Packet>{
 	}
 	
 	public void handle0(PacketHandleEvent<PacketPlayOutPlayerInfo> e) {
-		if(e.getPacket().getAction() == EnumPlayerInfoAction.ADD_PLAYER)
 			for(PlayerInfoData data : e.getPacket().getData()){
-				if(data.getUsername() != null && BungeeCord.getInstance().getPlayer(data.getUsername()) != null){
-					LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(data.getUsername());
-					Player bplayer = (Player) BungeeCord.getInstance().getPlayer(data.getUsername());
-					bplayer.sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.UPDATE_DISPLAY_NAME, new PlayerInfoData(data.getGameprofile(), 1, 1, ChatSerializer.fromMessage(data.getUsername()+" §7[§aX§7]"))));
+				IChatBaseComponent base = data.getName();
+				if(base != null){
+					base.addSibling(new ChatMessage(" §7[§aX§7]"));
 				}
 			}
 			System.out.println(e.getPacket().getAction()+":"+e.getPacket().getData());
 	}
 	public void handle1(PacketHandleEvent<PacketPlayOutScoreboardTeam> e) {
-		e.setCancelled(true);
+		//e.setCancelled(true);
 	}
 	
 }

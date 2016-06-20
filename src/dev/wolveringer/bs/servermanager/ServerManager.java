@@ -18,6 +18,8 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
 public class ServerManager implements Listener{
+	public static ServerInfo DEFAULT_HUB;
+			
 	private static class BungeecordServerInfo extends BungeeServerInfo {
 		private String name;
 		private InetSocketAddress addr;
@@ -79,6 +81,7 @@ public class ServerManager implements Listener{
 	
 	public ServerManager() {
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), this);
+		DEFAULT_HUB = createServerInfo("hub", "localhost", 1000);
 	}
 	
 	public void loadServers() {
@@ -93,20 +96,27 @@ public class ServerManager implements Listener{
 //		addServer("hub", "null", 1000);
 	}
 
-	public boolean addServer(String name, String ip, int port) {
+	private ServerInfo createServerInfo(String name,String ip,int port){
 		BungeecordServerInfo info = new BungeecordServerInfo(name, ip, port);
 		for(BungeecordServerInfo s : new ArrayList<>(server))
 			if(s.name != null)
 				if(s.name.equalsIgnoreCase(name)){
-					return false;
+					return s;
 				}
-		MySQL.getInstance().command("INSERT INTO `BG_Server`(`name`, `adress`, `port`) VALUES ('"+name+"','"+ip+"','"+port+"')");
-		server.add(info);
 		BungeeCord.getInstance().getServers().put(name, info);
+		server.add(info);
 		if(name.startsWith("lobby") || (name.startsWith("hub") && !name.equalsIgnoreCase("hub"))){
 			recalculateLobbies();
 		}
+		return info;
+	}
+	
+	public boolean addServer(String name, String ip, int port) {
+		if(MySQL.getInstance().querySync("SELECT * FROM `BG_Server` WHERE `name`='"+name+"'",1).size() > 0)
+			return false;
+		MySQL.getInstance().command("INSERT INTO `BG_Server`(`name`, `adress`, `port`) VALUES ('"+name+"','"+ip+"','"+port+"')");
 		Main.getDatenServer().getClient().sendServerMessage(ClientType.BUNGEECORD, "servers", new DataBuffer().writeByte(0).writeString(name).writeString(ip).writeInt(port));
+		createServerInfo(name, ip, port);
 		return true;
 	}
 	

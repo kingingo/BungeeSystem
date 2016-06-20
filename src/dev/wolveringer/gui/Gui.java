@@ -26,6 +26,8 @@ public abstract class Gui {
 	protected Inventory inv;
 	private ItemContainer container;
 	private boolean active = false;
+	@Getter
+	private long animationEnd = 0;
 	
 	public Gui(int rows, String name) {
 		this.inv = new Inventory(rows * 9, name);
@@ -55,9 +57,9 @@ public abstract class Gui {
 
 	public void openGui() {
 		build();
+		player.openInventory(inv);
 		active = true;
 		active();
-		player.openInventory(inv);
 	}
 
 	protected Item loadSkin(Item is, String name) {
@@ -142,6 +144,7 @@ public abstract class Gui {
 		active = false;
 		deactive();
 		InventoryViewChangeAnimations.runAnimation(AnimationType.SCROLL_UP, this.inv, items, newName, ItemBuilder.create(160).durbility(7).name("§7").build(), 100);
+		gui.animationEnd = System.currentTimeMillis()+100*(items.getSize()/9)*3;
 		gui.active = true;
 		gui.active();
 	}
@@ -152,6 +155,6 @@ public abstract class Gui {
 	public void deactive() {
 	};
 	public boolean isActive(){
-		return active && getPlayer() != null && getPlayer().getInventoryView() != null;
+		return active && getPlayer() != null && (getPlayer().getInventoryView() != null || System.currentTimeMillis() < animationEnd);
 	}
 }
