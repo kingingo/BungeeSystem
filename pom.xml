@@ -4,6 +4,20 @@
 	<groupId>dev.wolveringer</groupId>
 	<artifactId>BungeeCordSystem</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+
+	<distributionManagement>
+		<repository>
+			<id>epicpvp-releases</id>
+			<name>epicpvp-artifactory-releases</name>
+			<url>http://149.202.150.185:8081/artifactory/epicpvp-releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>epicpvp-snapshots</id>
+			<name>epicpvp-artifactory-snapshots</name>
+			<url>http://149.202.150.185:8081/artifactory/epicpvp-snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
+
 	<build>
 		<finalName>BungeeSystem</finalName>
 		<sourceDirectory>src</sourceDirectory>
@@ -131,7 +145,6 @@
 			<id>bungee-repo</id>
 			<url>https://oss.sonatype.org/content/groups/public/</url>
 		</repository>
-
 	</repositories>
 	<dependencies>
 		<dependency>
