@@ -2,13 +2,13 @@ package dev.wolveringer.report.info;
 
 import dev.wolveringer.BungeeUtil.Player;
 import dev.wolveringer.ban.BannedServerManager;
-import dev.wolveringer.booster.BoosterManager;
 import dev.wolveringer.booster.BoosterType;
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.client.threadfactory.ThreadFactory;
 import dev.wolveringer.client.threadfactory.ThreadRunner;
 import dev.wolveringer.dataserver.protocoll.packets.PacketReportRequest.RequestType;
 import dev.wolveringer.permission.PermissionManager;
+import dev.wolveringer.report.ReportEntity;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.protocol.packet.Chat;
@@ -45,8 +45,18 @@ public class ActionBarInformation {
 				} catch (Exception e) {
 				}
 				try {
-					if(Main.getDatenServer().isActive())
-						openReports = Main.getDatenServer().getClient().getReportEntity(RequestType.OPEN_REPORTS, -1).getSync().length;
+					if(Main.getDatenServer().isActive()){
+						long start = System.currentTimeMillis();
+						ReportEntity[] e = Main.getDatenServer().getClient().getReportEntity(RequestType.OPEN_REPORTS, -1).getSync();
+						for(ReportEntity e1 : e){
+							Main.getDatenServer().getClient().getPlayerAndLoad(e1.getReporter());
+							Main.getDatenServer().getClient().getPlayerAndLoad(e1.getTarget());
+						}
+						long end = System.currentTimeMillis();
+						if(end-start > 1000)
+							System.out.println("Time needed for reports: "+(end-start));
+						openReports = e.length;
+					}
 				}catch(Exception e){
 					e.printStackTrace();
 				}

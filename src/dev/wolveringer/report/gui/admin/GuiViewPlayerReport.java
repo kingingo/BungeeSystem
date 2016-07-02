@@ -69,7 +69,8 @@ public class GuiViewPlayerReport extends Gui{
 		
 		int pos = 9;
 		for(ReportEntity e : reports){
-			inv.setItem(pos++, createItem(e));
+			if(pos < inv.getSlots())
+				inv.setItem(pos++, createItem(e));
 		}
 		
 		fill(ItemBuilder.create(160).durbility(7).name("§7").build(), 0, 6*9);

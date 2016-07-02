@@ -68,23 +68,9 @@ public abstract class Gui {
 		final Item old = new Item(is);
 		try{
 			Skin skin = Main.getSkinManager().getIfLoaded(name);
-			if (skin != null) {
-				is.setDurability((short) 3);
+			is.setDurability((short) 3);
+			if (skin != null && !(skin instanceof SteveSkin)) {
 				((SkullMeta) is.getItemMeta()).setSkin(toBungeeUtilSkin(skin));
-				int s = inv.getSlot(is);
-				if (s != -1)
-					inv.setItem(s, is);
-				s = inv.getSlot(old);
-				if (s != -1)
-					inv.setItem(s, is);
-				if (container != null) {
-					s = container.getSlot(old);
-					if (s != -1)
-						container.setItem(s, is);
-					s = container.getSlot(is);
-					if (s != -1)
-						container.setItem(s, is);
-				}
 				return is;
 			}
 		}catch(Exception e){
@@ -96,7 +82,12 @@ public abstract class Gui {
 				try{
 					Skin skin = Main.getSkinManager().getOrLoad(name);
 					is.setDurability((short) 3);
-					((SkullMeta) is.getItemMeta()).setSkin(toBungeeUtilSkin(skin));
+					if(!(skin instanceof SteveSkin)){
+						((SkullMeta) is.getItemMeta()).setSkin(toBungeeUtilSkin(skin));
+					}
+					while (isInAnimation()) {
+						Thread.sleep(50);
+					};
 					int s = inv.getSlot(is);
 					if (s != -1)
 						inv.setItem(s, is);
@@ -144,7 +135,7 @@ public abstract class Gui {
 		active = false;
 		deactive();
 		InventoryViewChangeAnimations.runAnimation(AnimationType.SCROLL_UP, this.inv, items, newName, ItemBuilder.create(160).durbility(7).name("§7").build(), 100);
-		gui.animationEnd = System.currentTimeMillis()+100*(items.getSize()/9)*3;
+		gui.animationEnd = System.currentTimeMillis()+100*(items.getSize()/9)*1;
 		gui.active = true;
 		gui.active();
 	}
@@ -154,6 +145,9 @@ public abstract class Gui {
 
 	public void deactive() {
 	};
+	public boolean isInAnimation(){
+		return System.currentTimeMillis() < animationEnd;
+	}
 	public boolean isActive(){
 		return active && getPlayer() != null && (getPlayer().getInventoryView() != null || System.currentTimeMillis() < animationEnd);
 	}

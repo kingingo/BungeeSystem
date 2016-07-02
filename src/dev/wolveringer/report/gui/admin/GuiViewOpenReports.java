@@ -165,7 +165,8 @@ public class GuiViewOpenReports extends Gui implements Runnable{
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 			}
-			printReportItems();
+			if(!isInAnimation())
+				printReportItems();
 		}
 	}
 	
