@@ -3,8 +3,11 @@ package dev.wolveringer.bs.commands;
 import java.util.Arrays;
 import java.util.UUID;
 
+import dev.wolveringer.ban.BanServerMessageListener;
 import dev.wolveringer.bs.Main;
+import dev.wolveringer.client.Callback;
 import dev.wolveringer.client.LoadedPlayer;
+import dev.wolveringer.client.threadfactory.ThreadFactory;
 import dev.wolveringer.dataserver.player.Setting;
 import dev.wolveringer.dataserver.protocoll.packets.PacketOutPlayerSettings.SettingValue;
 import dev.wolveringer.permission.PermissionManager;
@@ -61,10 +64,23 @@ public class CommandBan extends Command{
 				SettingValue[] var = player.getSettings(Setting.CURRUNT_IP).getSync();
 				if(var != null && var.length == 1)
 					curruntIp = var[0].getValue();
-				if(BungeeCord.getInstance().getPlayer(player.getName()) != null)
-					BungeeCord.getInstance().getPlayer(player.getName()).disconnect(Main.getTranslationManager().translate("command.ban.kickplayer", cs,reson,cs.getName())); 
-				else
-					player.kickPlayer(Main.getTranslationManager().translate("command.ban.kickplayer", cs,reson,cs.getName()));
+				ThreadFactory.getFactory().createThread(()->{
+					try {
+						Thread.sleep(500);
+					} catch (Exception e) {
+					}
+					BanServerMessageListener.getInstance().movePlayer(player, true).getAsync(new Callback<Boolean>() { //Kick/Move player
+						@Override
+						public void call(Boolean obj, Throwable exception) {
+							if(exception != null || obj == false){
+								if(BungeeCord.getInstance().getPlayer(player.getName()) != null)
+									BungeeCord.getInstance().getPlayer(player.getName()).disconnect(Main.getTranslationManager().translate("command.ban.kickplayer", cs,reson,cs.getName())); 
+								else
+									player.kickPlayer(Main.getTranslationManager().translate("command.ban.kickplayer", cs,reson,cs.getName()));
+							}
+						}
+					},2000);
+				}).start();
 			}
 			cs.sendMessage(Main.getTranslationManager().translate("prefix",cs)+Main.getTranslationManager().translate("command.ban.banningPlayerIp", cs,curruntIp));
 			player.banPlayer(curruntIp, cs.getName(), (cs instanceof ProxiedPlayer ? ((ProxiedPlayer)cs).getAddress().getHostName() : "console"), (cs instanceof ProxiedPlayer ? ((ProxiedPlayer)cs).getUniqueId() : UUID.nameUUIDFromBytes("console".getBytes())), level, -1, reson);

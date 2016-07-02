@@ -2,6 +2,8 @@ package dev.wolveringer.bs.listener;
 
 import java.util.concurrent.TimeUnit;
 
+import dev.wolveringer.BungeeUtil.Player;
+import dev.wolveringer.ban.BannedServerManager;
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.client.LoadedPlayer;
 import net.md_5.bungee.BungeeCord;
@@ -20,6 +22,8 @@ public class ServerListener implements Listener{
 				if(Main.getDatenServer().getClient().getPlayer(e.getPlayer().getName()).getServer().getSync() == null) //Player still disconnected
 					Main.getDatenServer().getClient().clearCacheForPlayer(Main.getDatenServer().getClient().getPlayer(e.getPlayer().getName()));
 		}, 500, TimeUnit.MILLISECONDS);
+		if(BannedServerManager.getInstance() != null)
+			BannedServerManager.getInstance().playerQuit((Player) e.getPlayer());
 	}
 	
 	public void disconnectPlayer(LoadedPlayer player){

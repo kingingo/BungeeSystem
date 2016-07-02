@@ -8,6 +8,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.UUID;
 
+import dev.wolveringer.BungeeUtil.Player;
+import dev.wolveringer.ban.BannedServerManager;
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.bs.client.event.ServerMessageEvent;
 import dev.wolveringer.bs.login.LoginManager;
@@ -104,7 +106,7 @@ public class PermissionManager implements Listener {
 	}
 	
 	public boolean hasPermission(ProxiedPlayer player, String permission, boolean message) {
-		if (!LoginManager.getManager().isLoggedIn(player))
+		if (!LoginManager.getManager().isLoggedIn(player) || BannedServerManager.getInstance().isBanned((Player)player))
 			return false; //Not logged in Player cant have perms
 		boolean perm = hasPermission(player.getUniqueId(), permission);
 		if (message && !perm) 

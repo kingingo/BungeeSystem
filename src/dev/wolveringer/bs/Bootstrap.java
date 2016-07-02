@@ -14,6 +14,7 @@ import dev.wolveringer.BungeeUtil.ClientVersion.BigClientVersion;
 import dev.wolveringer.BungeeUtil.ClientVersion.ProtocollVersion;
 import dev.wolveringer.BungeeUtil.PacketLib;
 import dev.wolveringer.BungeeUtil.packets.Packet;
+import dev.wolveringer.BungeeUtil.packets.PacketPlayOutChat;
 import dev.wolveringer.BungeeUtil.packets.PacketPlayOutEntityProperties;
 import dev.wolveringer.BungeeUtil.packets.PacketPlayOutEntityTeleport;
 import dev.wolveringer.BungeeUtil.packets.PacketPlayOutKeepAlive;
@@ -22,6 +23,9 @@ import dev.wolveringer.BungeeUtil.packets.PacketPlayOutSpawnPostition;
 import dev.wolveringer.BungeeUtil.packets.PacketPlayOutUpdateHealth;
 import dev.wolveringer.BungeeUtil.packets.PacketPlayOutUpdateSign;
 import dev.wolveringer.afk.AfkListener;
+import dev.wolveringer.ban.BanServerMessageListener;
+import dev.wolveringer.ban.BannedServerListener;
+import dev.wolveringer.ban.BannedServerManager;
 import dev.wolveringer.booster.BoosterManager;
 import dev.wolveringer.booster.CMD_BOOSTER;
 import dev.wolveringer.bs.client.BungeecordDatenClient;
@@ -194,7 +198,7 @@ public class Bootstrap {
 			public void run() {
 				while (true) {
 					while (!Main.data.isActive()) {
-						if(Main.data.isConnecting()){
+						if (Main.data.isConnecting()) {
 							System.out.println("§6Connecting to datenserver....");
 							try {
 								Thread.sleep(1000);
@@ -293,7 +297,7 @@ public class Bootstrap {
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandPvP("pvp"));
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandGunGame("gungame"));
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandSky("sky"));
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandHub("hub", "l", "tm", "lobby"));
+		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandHub("hub", "l", "tm", "lobby", "penis", "bigcock"));
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandWhereIs("whereis"));
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandVorbau("vorbau"));
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandBuild("build"));
@@ -330,33 +334,37 @@ public class Bootstrap {
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new PlayerDisconnectListener());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new TimeListener());
 
-		Packet.registerPacket(Protocol.GAME, Direction.TO_SERVER, PacketPlayInKeepAlive.class,new Packet.ProtocollId(BigClientVersion.v1_8, 0),new Packet.ProtocollId(BigClientVersion.v1_9, 0x1F));
-		
-		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutKeepAlive.class,new Packet.ProtocollId(BigClientVersion.v1_8, 0x00),new Packet.ProtocollId(BigClientVersion.v1_9, 0x1F));
-		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, 0x05,0x43, PacketPlayOutSpawnPostition.class);
-		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, 0x21,0x20, PacketPlayOutMapChunk.class);
-		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, 0x26,null, PacketPlayOutMapChunkBulk.class);
+		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutChat.class, new Packet.ProtocollId(BigClientVersion.v1_8, 0x02), new Packet.ProtocollId(BigClientVersion.v1_9, 0x0F), new Packet.ProtocollId(BigClientVersion.v1_10, 0x0F));
+		Packet.registerPacket(Protocol.GAME, Direction.TO_SERVER, PacketPlayInKeepAlive.class, new Packet.ProtocollId(BigClientVersion.v1_8, 0), new Packet.ProtocollId(BigClientVersion.v1_9, 0x1F), new Packet.ProtocollId(BigClientVersion.v1_10, 0x1F));
 
-		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, 0x06,0x3E, PacketPlayOutUpdateHealth.class);
-		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, 24,0x4A, PacketPlayOutEntityTeleport.class);
-		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, 0x20,0x4B, PacketPlayOutEntityProperties.class); 
-		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, 0x33,0x46, PacketPlayOutUpdateSign.class); 
-		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, 0x1F,0x3D, PacketPlayOutSetExperience.class); 
-		
-		System.out.println(Packet.getPacketId(ProtocollVersion.v1_8, PacketPlayOutKeepAlive.class));
-		
-		System.out.println("Packets loaded");
-		
-		if(!WorldFileReader.isWorld(new File(conf.getString("server.afk.world")))){
+		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutKeepAlive.class, new Packet.ProtocollId(BigClientVersion.v1_8, 0x00), new Packet.ProtocollId(BigClientVersion.v1_9, 0x1F), new Packet.ProtocollId(BigClientVersion.v1_10, 0x1F));
+		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutSpawnPostition.class, new Packet.ProtocollId(BigClientVersion.v1_8, 0x05), new Packet.ProtocollId(BigClientVersion.v1_9, 0x43), new Packet.ProtocollId(BigClientVersion.v1_10, 0x43));
+		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutMapChunk.class, new Packet.ProtocollId(BigClientVersion.v1_8, 0x21), new Packet.ProtocollId(BigClientVersion.v1_9, 0x20), new Packet.ProtocollId(BigClientVersion.v1_10, 0x20));
+		//Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutMapChunkBulk.class, new Packet.ProtocollId(BigClientVersion.v1_8, 0x26));
+
+		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutUpdateHealth.class, new Packet.ProtocollId(BigClientVersion.v1_8, 0x06), new Packet.ProtocollId(BigClientVersion.v1_9, 0x3E), new Packet.ProtocollId(BigClientVersion.v1_10, 0x3E));
+		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutEntityTeleport.class, new Packet.ProtocollId(BigClientVersion.v1_8, 24), new Packet.ProtocollId(BigClientVersion.v1_9, 0x4A), new Packet.ProtocollId(ProtocollVersion.v1_9_2, 0x49), new Packet.ProtocollId(BigClientVersion.v1_10, 0x49)); //Change?
+		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutEntityProperties.class, new Packet.ProtocollId(BigClientVersion.v1_8, 0x20), new Packet.ProtocollId(BigClientVersion.v1_9, 0x4B) , new Packet.ProtocollId(ProtocollVersion.v1_9_2, 0x4A), new Packet.ProtocollId(ProtocollVersion.v1_9_3, 0x4A), new Packet.ProtocollId(ProtocollVersion.v1_9_4, 0x4A), new Packet.ProtocollId(BigClientVersion.v1_10, 0x4A)); //Change?
+		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutUpdateSign.class, new Packet.ProtocollId(BigClientVersion.v1_8, 0x33), new Packet.ProtocollId(BigClientVersion.v1_9, 0x46), new Packet.ProtocollId(BigClientVersion.v1_10, 0x46));
+		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutSetExperience.class, new Packet.ProtocollId(BigClientVersion.v1_8, 0x1F), new Packet.ProtocollId(BigClientVersion.v1_9, 0x3D), new Packet.ProtocollId(BigClientVersion.v1_10, 0x3D));
+
+		if (!WorldFileReader.isWorld(new File(conf.getString("server.afk.world")))) {
 			System.out.println("§cCant create AFK server!");
-		}
-		else
-		{
-			System.out.println("§aLoading world!");
-			PacketLib.addHandler(new AfkListener(new ServerConfiguration("§cDu bist AFK", "", "§aDu bist AFK", Arrays.asList("","","","","§aDU bist AFK!"), Arrays.asList("",""), WorldFileReader.read(new File(conf.getString("server.afk.world"))), conf.getInt("server.chunksize")))); //Afk Server
+		} else {
+			System.out.println("§aLoading AFK world!");
+			PacketLib.addHandler(new AfkListener(new ServerConfiguration("§cDu bist AFK", "", "§aDu bist AFK", Arrays.asList("", "", "", "", "§aDu bist AFK!"), Arrays.asList("", ""), WorldFileReader.read(new File(conf.getString("server.afk.world"))), conf.getInt("server.chunksize")))); //Afk Server
 			System.out.println("§aAFK-Server loaded!");
 		}
-		
+		if (!WorldFileReader.isWorld(new File(conf.getString("server.banned.world")))) {
+			System.out.println("§cCant create Ban server!");
+		} else {
+			System.out.println("§aLoading Ban world!");
+			PacketLib.addHandler(new BannedServerListener());
+			BannedServerManager.setInstance(new BannedServerManager(WorldFileReader.read(new File(conf.getString("server.banned.world"))), conf.getInt("server.chunksize")));
+			System.out.println("§aBan-Server loaded!");
+		}
+		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new BanServerMessageListener());
+
 		Main.skins = new SkinCacheManager();
 		Main.info = new ActionBarInformation(1000, 5000);
 		Main.info.start();
@@ -390,17 +398,18 @@ public class Bootstrap {
 			HashMap<String, Command> old = (HashMap<String, Command>) commandMap.get(BungeeCord.getInstance().getPluginManager());
 			CommandHashMap _new = new CommandHashMap();
 			commandMap.set(BungeeCord.getInstance().getPluginManager(), (Map<String, Command>) _new);
-			for(Entry<String, Command> cmd : old.entrySet())
+			for (Entry<String, Command> cmd : old.entrySet())
 				_new.put(cmd.getKey(), cmd.getValue());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		PrefixCommandRegistry.getInstance().registerCommandListener("~", new ConsoleTeamMessageListener());
 	}
+
 	public static void main(String[] args) {
 		int i = 0x00;
 		Integer x = i;
-		System.out.println((x == null)+" - "+x.intValue()+" - "+PacketPlayOutKeepAlive.class);
+		System.out.println((x == null) + " - " + x.intValue() + " - " + PacketPlayOutKeepAlive.class);
 	}
 }

@@ -9,7 +9,9 @@ import java.util.concurrent.TimeUnit;
 
 import dev.wolveringer.BungeeUtil.ClientVersion;
 import dev.wolveringer.BungeeUtil.ClientVersion.BigClientVersion;
+import dev.wolveringer.BungeeUtil.Player;
 import dev.wolveringer.arrays.CachedArrayList;
+import dev.wolveringer.ban.BannedServerManager;
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.bs.information.InformationManager;
 import dev.wolveringer.bs.login.LoginManager;
@@ -26,10 +28,12 @@ import dev.wolveringer.permission.PermissionManager;
 import dev.wolveringer.bukkit.permissions.PermissionType;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.UserConnection;
+import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.event.PreLoginEvent;
 import net.md_5.bungee.api.event.ServerConnectEvent;
+import net.md_5.bungee.api.event.ServerConnectedEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
@@ -123,6 +127,8 @@ public class PlayerJoinListener implements Listener {
 				e.setCancelReason("§cAn error happened while joining.\n§cWe cant check your premium state.\nTry again in 10-30 seconds");
 				return;
 			}
+			
+			/*
 			List<BanEntity> entries = player.getBanStats(e.getConnection().getAddress().getHostString(),1).getSync();
 			if (entries.size() > 0 && entries.get(0).isActive()) {
 				BanEntity response = entries.get(0);
@@ -134,8 +140,9 @@ public class PlayerJoinListener implements Listener {
 				}
 				e.setCancelled(true);
 				e.setCancelReason(Main.getTranslationManager().translate("event.join.kickBan", player, new Object[] { time, response.getReson(),response.getLevel() }));
-				;
+				return;
 			}
+			*/
 			if ("true".equalsIgnoreCase(InformationManager.getManager().getInfo("whitelistActive")) && !PermissionManager.getManager().hasPermission(player.getPlayerId(), "epicpvp.whitelist.bypass")) {
 				String message = InformationManager.getManager().getInfo("whitelistMessage"); //
 				if (message == null)
@@ -180,22 +187,47 @@ public class PlayerJoinListener implements Listener {
 
 	@EventHandler
 	public void a(ServerConnectEvent e) {
-		if ((e.getPlayer().getServer() == null && !inQueue.contains(e.getPlayer())) || e.getTarget().getName().equalsIgnoreCase("hub")) {
-			Queue<String> joinQueue;
-			inQueue.add(e.getPlayer());
-			if (e.getPlayer().getPendingConnection().isOnlineMode() || LoginManager.getManager().isLoggedIn(e.getPlayer())) {
-				LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(e.getPlayer().getUniqueId());
-				MessageManager.getmanager(player.getLanguageSync());
-				if (PermissionManager.getManager().hasPermission(e.getPlayer(), PermissionType.PREMIUM_LOBBY, false))
-					joinQueue = ServerManager.getManager().buildPremiumQueue();
-				else
-					joinQueue = ServerManager.getManager().buildLobbyQueue();
-			} else {
-				joinQueue = ServerManager.getManager().buildLoginQueue();
+		try{
+			if(e.getPlayer().getServer() == null && ((UserConnection)e.getPlayer()).getPendingConnects().size() == 0){
+				e.setTarget(ServerManager.DEFAULT_HUB);
 			}
-			e.setTarget(BungeeCord.getInstance().getServerInfo(((LinkedList<String>) joinQueue).removeFirst()));
-			((UserConnection) e.getPlayer()).setServerJoinQueue(joinQueue);
+			if (e.getTarget().getName().equalsIgnoreCase("hub")) {
+				if(e.getPlayer().getServer() == null){
+					List<BanEntity> entries = Main.getDatenServer().getClient().getPlayerAndLoad(e.getPlayer().getName()).getBanStats(e.getPlayer().getPendingConnection().getAddress().getHostString(), 1).getSync();
+					if (entries.size() > 0 && entries.get(0).isActive()) {
+						BannedServerManager.getInstance().joinServer((Player) e.getPlayer(), entries.get(0));
+						e.setCancelled(true);
+						return;
+					}
+				}
+				Queue<String> joinQueue;
+				inQueue.add(e.getPlayer());
+				if (e.getPlayer().getPendingConnection().isOnlineMode() || LoginManager.getManager().isLoggedIn(e.getPlayer())) {
+					LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(e.getPlayer().getUniqueId());
+					MessageManager.getmanager(player.getLanguageSync());
+					if (PermissionManager.getManager().hasPermission(e.getPlayer(), PermissionType.PREMIUM_LOBBY, false))
+						joinQueue = ServerManager.getManager().buildPremiumQueue();
+					else
+						joinQueue = ServerManager.getManager().buildLobbyQueue();
+				} else {
+					joinQueue = ServerManager.getManager().buildLoginQueue();
+				}
+				e.setTarget(BungeeCord.getInstance().getServerInfo(((LinkedList<String>) joinQueue).removeFirst()));
+				((UserConnection) e.getPlayer()).setServerJoinQueue(joinQueue);
+			}
+		}catch(Exception ex){
+			e.setCancelled(true);
+			ex.printStackTrace();
+			if(ex != null)
+				((Player)e.getPlayer()).disconnect(ex);
+			else
+				System.out.println("Empty ex?!");
 		}
+	}
+	
+	@EventHandler
+	public void a(ServerConnectedEvent e){
+		BungeeCord.getInstance().createTitle().title(new ComponentBuilder("").create()).subTitle(new ComponentBuilder("").create()).fadeIn(0).stay(0).fadeOut(0).send(e.getPlayer());
 	}
 
 	public static String getDurationBreakdown(long millis) {

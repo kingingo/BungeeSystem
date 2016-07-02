@@ -4,13 +4,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
+import com.google.common.util.concurrent.Service.State;
+
 import dev.wolveringer.BungeeUtil.Player;
 import dev.wolveringer.BungeeUtil.item.Item;
 import dev.wolveringer.api.inventory.Inventory;
 import dev.wolveringer.booster.GuiIntegerSelect;
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.client.Callback;
+import dev.wolveringer.client.connection.ClientType;
 import dev.wolveringer.client.threadfactory.ThreadFactory;
+import dev.wolveringer.dataserver.gamestats.StatsKey;
+import dev.wolveringer.dataserver.protocoll.DataBuffer;
 import dev.wolveringer.dataserver.protocoll.packets.PacketOutPacketStatus;
 import dev.wolveringer.dataserver.protocoll.packets.PacketInStatsEdit.Action;
 import dev.wolveringer.dataserver.protocoll.packets.PacketOutPacketStatus.Error;
@@ -31,7 +36,7 @@ public class RoulettGui implements HistoryListener {
 	private int bankBalance = -1;
 
 	private Item[] wheelItems;
-	private int wheelIndex;
+	private int wheelIndex = 0;
 
 	private boolean wheelActive;
 
@@ -41,7 +46,7 @@ public class RoulettGui implements HistoryListener {
 		wheelItems = new Item[WHEEL_LENGTH + 1];
 		for (int i = 0; i <= WHEEL_LENGTH; i++)
 			wheelItems[i] = buildWheelItem(i).build();
-		wheelIndex = (int) System.currentTimeMillis();
+		wheelIndex = Math.abs((int) System.currentTimeMillis());
 		inv = new Inventory(54, "§6Roulett");
 		for(int i = 0;i<inv.getSlots();i++)
 			inv.setItem(i, ItemBuilder.create(160).durbility(7).name("§7").build());
@@ -145,6 +150,7 @@ public class RoulettGui implements HistoryListener {
 						Main.getDatenServer().getClient().getPlayerAndLoad(player.getName()).changeGems(Action.REMOVE, number).getAsync(new Callback<PacketOutPacketStatus.Error[]>() {
 							@Override
 							public void call(PacketOutPacketStatus.Error[] obj, Throwable exception) {
+								Main.getDatenServer().getClient().sendServerMessage(ClientType.ALL, "money", new DataBuffer().writeInt(StatsKey.GEMS.ordinal()).writeInt(Main.getDatenServer().getClient().getPlayerAndLoad(player.getName()).getPlayerId()));
 								rebuildCurruntBalance();
 							}
 						});
@@ -259,6 +265,7 @@ public class RoulettGui implements HistoryListener {
 					Main.getDatenServer().getClient().getPlayerAndLoad(player.getName()).changeGems(Action.ADD, puts[winIndex] * multiply[winIndex]).getAsync(new Callback<PacketOutPacketStatus.Error[]>() {
 						@Override
 						public void call(Error[] obj, Throwable exception) {
+							Main.getDatenServer().getClient().sendServerMessage(ClientType.ALL, "money", new DataBuffer().writeInt(StatsKey.GEMS.ordinal()).writeInt(Main.getDatenServer().getClient().getPlayerAndLoad(player.getName()).getPlayerId()));
 							rebuildCurruntBalance();
 						}
 					});

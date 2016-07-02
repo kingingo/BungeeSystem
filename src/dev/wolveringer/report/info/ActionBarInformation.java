@@ -1,5 +1,7 @@
 package dev.wolveringer.report.info;
 
+import dev.wolveringer.BungeeUtil.Player;
+import dev.wolveringer.ban.BannedServerManager;
 import dev.wolveringer.booster.BoosterManager;
 import dev.wolveringer.booster.BoosterType;
 import dev.wolveringer.bs.Main;
@@ -63,7 +65,7 @@ public class ActionBarInformation {
 			return;
 		String message = "§c§lEs gibt momentan "+buildReportColor()+"§l"+openReports+" §c§loffene Reports!";
 		for(ProxiedPlayer p : BungeeCord.getInstance().getPlayers())
-			if(p != null)
+			if(p != null && !BannedServerManager.getInstance().isBanned((Player) p))
 				if(PermissionManager.getManager().hasPermission(p, "bungee.report.info") && openReports != 0){
 					p.unsafe().sendPacket(new Chat("{\"text\": \"" + message + "\"}", (byte) 2));
 				}
