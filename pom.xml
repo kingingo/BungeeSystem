@@ -78,8 +78,15 @@
 				<configuration>
 				 <artifactSet>
 	                <includes>
+	                	<include>dev.wolveringer.datenserver:definitions</include>
+	                	<include>dev.wolveringer.datenserver:packets</include>
+	                	<include>dev.wolveringer:DatenClient</include>
 	                	<include>dev.wolveringer:BungeeCordSystem</include>
+	                	<include>org.apache.commons:commons-io</include>
+	                	<include>org.apache.commons:commons-lang3</include>
 	                	<include>dev.wolveringer:AFK-Server</include>
+	                	<groupId>org.apache.commons</groupId>
+	                	<groupId></groupId>
 	                </includes>
 	              </artifactSet>
 					<finalName>${project.artifactId}-all</finalName>
@@ -101,6 +108,14 @@
 								<exclude>**/*.java</exclude>
 							</excludes>
 						</filter>
+						<filter>
+							<artifact>dev.wolveringer:DatenClient</artifact>
+							<excludes>
+								<exclude>dev/wolveringer/client/BungeePlugin.*</exclude>
+								<exclude>dev/wolveringer/client/BukkitPlugin.*</exclude>
+								<exclude>**.yml</exclude>
+							</excludes>
+						</filter>
 					</filters>
 				</configuration>
 			</plugin>
@@ -118,12 +133,6 @@
 
 	</repositories>
 	<dependencies>
-		<dependency>
-			<groupId>dev.wolveringer</groupId>
-			<artifactId>DatenClient</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-			<type>jar</type>
-		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -156,6 +165,32 @@
 			<groupId>dev.wolveringer</groupId>
 			<artifactId>AFK-Server</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>dev.wolveringer</groupId>
+			<artifactId>DatenClient</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>dev.wolveringer.datenserver</groupId>
+			<artifactId>definitions</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>dev.wolveringer.datenserver</groupId>
+			<artifactId>packets</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>1.3.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.4</version>
 		</dependency>
 	</dependencies>
 </project>

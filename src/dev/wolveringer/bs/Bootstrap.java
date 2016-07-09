@@ -2,6 +2,7 @@ package dev.wolveringer.bs;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.Thread.State;
 import java.lang.reflect.Field;
 import java.net.InetSocketAddress;
 import java.util.Arrays;
@@ -13,6 +14,7 @@ import dev.wolveringer.BungeeUtil.AsyncCatcher;
 import dev.wolveringer.BungeeUtil.ClientVersion.BigClientVersion;
 import dev.wolveringer.BungeeUtil.ClientVersion.ProtocollVersion;
 import dev.wolveringer.BungeeUtil.PacketLib;
+import dev.wolveringer.BungeeUtil.exception.ExceptionUtils;
 import dev.wolveringer.BungeeUtil.packets.Packet;
 import dev.wolveringer.BungeeUtil.packets.PacketPlayOutChat;
 import dev.wolveringer.BungeeUtil.packets.PacketPlayOutEntityProperties;
@@ -38,6 +40,7 @@ import dev.wolveringer.bs.commands.CommandClient;
 import dev.wolveringer.bs.commands.CommandCreative;
 import dev.wolveringer.bs.commands.CommandEvent;
 import dev.wolveringer.bs.commands.CommandGList;
+import dev.wolveringer.bs.commands.CommandGilde;
 import dev.wolveringer.bs.commands.CommandGunGame;
 import dev.wolveringer.bs.commands.CommandHub;
 import dev.wolveringer.bs.commands.CommandKicken;
@@ -90,6 +93,7 @@ import dev.wolveringer.events.Event;
 import dev.wolveringer.events.EventConditions;
 import dev.wolveringer.events.EventType;
 import dev.wolveringer.events.player.PlayerServerSwitchEvent;
+import dev.wolveringer.gilde.GildManager;
 import dev.wolveringer.mysql.MySQL;
 import dev.wolveringer.permission.PermissionManager;
 import dev.wolveringer.report.commands.CMD_Report;
@@ -134,17 +138,38 @@ public class Bootstrap {
 			public ThreadRunner createThread(Runnable run) {
 				return new ThreadRunner() {
 					ScheduledTask task;
-
+					Thread current;
 					@Override
 					public void stop() {
-						task.cancel();
+						if(task != null){
+							task.cancel();
+							try{
+								current.interrupt();
+							}catch(Exception e){
+								e.printStackTrace();
+							}
+							if(current.getState() != State.TERMINATED)
+								try{
+									current.stop();
+								}catch(Exception e){
+									e.printStackTrace();
+								}
+						}
+						else
+							System.err.println("Try to cancel an not started task...");
+						task = null;
 					}
 
 					@Override
 					public void start() {
+						if(task != null){
+							System.err.println("Try to start a task twice!");
+							throw new RuntimeException("Task is alredy runnings");
+						}
 						task = BungeeCord.getInstance().getScheduler().runAsync(Main.getInstance(), new Runnable() {
 							@Override
 							public void run() {
+								current = Thread.currentThread();
 								try {
 									run.run();
 								} catch (Exception e) {
@@ -319,7 +344,8 @@ public class Bootstrap {
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CMD_Report());
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CMD_BOOSTER());
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandRoulett());
-
+		//BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandGilde());
+		
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), InformationManager.getManager());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), ServerManager.getManager());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), RoulettHistory.history);
@@ -369,6 +395,7 @@ public class Bootstrap {
 		Main.info = new ActionBarInformation(1000, 5000);
 		Main.info.start();
 
+		Main.gildeManager = new GildManager(Main.data.getClient());
 		System.out.println("Event hander");
 		EventManager emanager = Main.getDatenServer().getClient().getHandle().getEventManager();
 

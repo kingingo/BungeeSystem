@@ -11,6 +11,7 @@ import dev.wolveringer.client.external.BungeeCordActionListener;
 import dev.wolveringer.client.threadfactory.ThreadFactory;
 import dev.wolveringer.dataserver.player.Setting;
 import dev.wolveringer.dataserver.protocoll.DataBuffer;
+import dev.wolveringer.gilde.GildManager;
 import dev.wolveringer.permission.PermissionManager;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ChatColor;

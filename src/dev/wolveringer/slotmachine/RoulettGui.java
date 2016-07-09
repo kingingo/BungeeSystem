@@ -47,7 +47,7 @@ public class RoulettGui implements HistoryListener {
 		for (int i = 0; i <= WHEEL_LENGTH; i++)
 			wheelItems[i] = buildWheelItem(i).build();
 		wheelIndex = Math.abs((int) System.currentTimeMillis());
-		inv = new Inventory(54, "§6Roulett");
+		inv = new Inventory(54, "§6Roulette");
 		for(int i = 0;i<inv.getSlots();i++)
 			inv.setItem(i, ItemBuilder.create(160).durbility(7).name("§7").build());
 	}

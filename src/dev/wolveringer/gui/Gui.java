@@ -20,8 +20,12 @@ import net.md_5.bungee.BungeeCord;
 @AllArgsConstructor
 public abstract class Gui {
 	@Getter
-	@Setter
 	private Player player;
+	public Gui setPlayer(Player player){
+		this.player = player;
+		return this;
+	}
+	
 	@Getter
 	protected Inventory inv;
 	private ItemContainer container;

@@ -6,6 +6,7 @@ import dev.wolveringer.BungeeUtil.Material;
 import dev.wolveringer.BungeeUtil.item.Item;
 import dev.wolveringer.BungeeUtil.item.ItemStack;
 import dev.wolveringer.BungeeUtil.item.ItemStack.Click;
+import dev.wolveringer.BungeeUtil.item.SyncHandle;
 
 public class ItemBuilder {
 	@FunctionalInterface
@@ -81,6 +82,16 @@ public class ItemBuilder {
 
 	public ItemBuilder listener(ItemClickListener run) {
 		this.listener = run;
+		return this;
+	}
+	
+	public ItemBuilder listener(Runnable run) {
+		this.listener = new ItemClickListener() {
+			@Override
+			public void click(Click c) {
+				run.run();
+			}
+		};
 		return this;
 	}
 

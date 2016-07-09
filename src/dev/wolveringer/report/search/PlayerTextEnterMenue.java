@@ -5,11 +5,17 @@ import dev.wolveringer.BungeeUtil.Player;
 import dev.wolveringer.api.gui.AnvilGui;
 import dev.wolveringer.api.gui.AnvilGuiListener;
 import dev.wolveringer.item.ItemBuilder;
+import lombok.Getter;
+import lombok.Setter;
 
 public abstract class PlayerTextEnterMenue implements AnvilGuiListener {
+	@Getter
 	private AnvilGui gui;
 
 	private boolean active = false;
+	@Getter
+	@Setter
+	private String backGround = "";
 	
 	public PlayerTextEnterMenue(Player player) {
 		this.gui = new AnvilGui(player);
@@ -20,7 +26,7 @@ public abstract class PlayerTextEnterMenue implements AnvilGuiListener {
 		active = true;
 		gui.open();
 		gui.setBackgroundMaterial(Material.PAPER);
-		gui.setBackgroundMessage("");
+		gui.setBackgroundMessage(backGround);
 	}
 
 

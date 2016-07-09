@@ -22,7 +22,8 @@ public class CommandClient extends Command implements Listener {
 		if (args.length == 0) {
 			p.sendMessage(Main.getTranslationManager().translate("prefix", p) + Main.getTranslationManager().translate("command.client.help.info", p));
 			p.sendMessage(Main.getTranslationManager().translate("prefix", p) + Main.getTranslationManager().translate("command.client.help.reconnect", p));
-		}else{
+			p.sendMessage(Main.getTranslationManager().translate("prefix", p) + "/client blocktraffic <in/out/both> §7| §aSimulate a traffic block.");
+		} else {
 			if (args[0].equalsIgnoreCase("info")) {
 				p.sendMessage(Main.getTranslationManager().translate("prefix", p) + (Main.getDatenServer().getClient().getHandle().isConnected() ? Main.getTranslationManager().translate("command.client.info.connected", p) : Main.getTranslationManager().translate("command.client.info.disconnected", p)));
 				p.sendMessage(Main.getTranslationManager().translate("prefix", p) + Main.getTranslationManager().translate("command.client.info.ping", p, Main.getDatenServer().getClient().getHandle().getPingManager().getPing()));
@@ -53,6 +54,20 @@ public class CommandClient extends Command implements Listener {
 						reconnecting = false;
 					}
 				});
+			}
+			if (args.length == 2) {
+				if (args[0].equalsIgnoreCase("blocktraffic")) {
+					if(!args[1].equalsIgnoreCase("out")){
+						p.sendMessage("§aStopping reader thread.");
+						Main.getDatenServer().getClient().getHandle().unsave().getReaderThread().unsave().getThread().stop();
+						p.sendMessage("§aStopped reader thread!");
+					}
+					if(!args[1].equalsIgnoreCase("in")){
+						p.sendMessage("§aStopping writer thread.");
+						Main.getDatenServer().getClient().getHandle().unsave().getWriterThread().unsave().getThread().stop();
+						p.sendMessage("§aStopped writer thread!");
+					}
+				}
 			}
 		}
 	}

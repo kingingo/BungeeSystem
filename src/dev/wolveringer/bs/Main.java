@@ -2,9 +2,11 @@ package dev.wolveringer.bs;
 
 import dev.wolveringer.booster.BoosterManager;
 import dev.wolveringer.bs.client.BungeecordDatenClient;
+import dev.wolveringer.gilde.GildManager;
 import dev.wolveringer.report.info.ActionBarInformation;
 import dev.wolveringer.skin.SkinCacheManager;
 import lombok.Getter;
+import lombok.Setter;
 import me.kingingo.kBungeeCord.Language.TranslationHandler;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.plugin.Plugin;
@@ -24,6 +26,9 @@ public class Main extends Plugin{
 	protected static ActionBarInformation info;
 	@Getter
 	protected static BoosterManager boosterManager;
+	@Getter
+	@Setter
+	protected static GildManager gildeManager;
 	public static Main getInstance(){
 		return main;
 	}
@@ -34,25 +39,7 @@ public class Main extends Plugin{
 	public void onEnable() {
 		main = this;
 		BungeeCord.getInstance().getPluginManager().registerListener(this, new PreLoadedLoginListener());
-		BungeeCord.getInstance().getScheduler().runAsync(Main.getInstance(), new Runnable() {
-			@Override
-			public void run() {
-				Plugin plugin;
-				Class<?> clazz = null;
-				while ((plugin = BungeeCord.getInstance().getPluginManager().getPlugin("DatenClient")) == null || clazz == null) {
-					try {
-						Thread.sleep(100);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-					try{
-						clazz = Class.forName("dev.wolveringer.client.LoadedPlayer");
-					}catch(Exception e){};
-				}
-				plugin = null;
-				new Bootstrap(Main.getInstance().getDataFolder()).onEnable();
-			}
-		});
+		new Bootstrap(Main.getInstance().getDataFolder()).onEnable(); //Directly all loaded
 	}
 	
 	@Override

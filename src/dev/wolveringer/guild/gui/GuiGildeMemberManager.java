@@ -2,6 +2,7 @@ package dev.wolveringer.guild.gui;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import dev.wolveringer.BungeeUtil.Material;
 import dev.wolveringer.BungeeUtil.item.Item;
@@ -13,9 +14,12 @@ import dev.wolveringer.gilde.GildPermissionGroup;
 import dev.wolveringer.gilde.GildSectionPermission;
 import dev.wolveringer.gilde.GildePermissions;
 import dev.wolveringer.gui.Gui;
+import dev.wolveringer.guild.gui.section.GuiGildeSection;
+import dev.wolveringer.guild.gui.section.SectionRegestry;
 import dev.wolveringer.item.ItemBuilder;
 
 public class GuiGildeMemberManager extends Gui{
+	private static final List<String> FINAL_GROUPS = Arrays.asList("owner");
 	private static final Item EMPTY_GROUP = ItemBuilder.create(Material.IRON_FENCE).name("§7").build();
 	private static final Item ARROW_UP_DOWN = ItemBuilder.create(Material.ARROW).name("§7» §6Hock/Runter").lore("§c").lore("§eLinksklick§7: §a︽").lore("§eRechtsklick§7: §a︾").build();
 	private static final Item ARROW_LEFT_RIGHT = ItemBuilder.create(Material.ARROW).name("§7» §6Hock/Runter").lore("§c").lore("§eLinksklick§7: §a«").lore("§eRechtsklick§7: §a»").build();
@@ -47,7 +51,7 @@ public class GuiGildeMemberManager extends Gui{
 		buildMemberRow();
 		
 		inv.setItem(46, groupArrowItem);
-		inv.setItem(0, ItemBuilder.create(Material.BARRIER).name("§cZurück").listener((Click c) -> switchToGui(new GuiGildeSection(permission.getHandle()))).build());
+		inv.setItem(0, ItemBuilder.create(Material.BARRIER).name("§cZurück").listener((Click c) -> switchToGui(SectionRegestry.getInstance().createGildeSection(permission.getHandle().getType(), permission.getHandle()))).build());
 		fill(ItemBuilder.create(160).durbility(7).name("§7").build());
 	}
 
@@ -75,6 +79,8 @@ public class GuiGildeMemberManager extends Gui{
 			int memberLoopIndex = 0;
 			for(LoadedPlayer player : players){
 				ItemBuilder memberItemBuilder = ItemBuilder.create(Material.SKULL_ITEM).name("§6"+player.getName());
+				if(FINAL_GROUPS.contains(group.getName()))
+					memberItemBuilder.glow();
 				if(permission.hasPermission(handlePlayer,GildePermissions.MEMBER_EDIT)){
 					memberItemBuilder.lore("§aKlicke um ins Member-Menue zu kommen.");
 					memberItemBuilder.listener((c)->{
@@ -121,7 +127,7 @@ public class GuiGildeMemberManager extends Gui{
 		}).build();
 		
 		groupIndex = 0;
-		memberIndex = new int[groupItems.length];
+		memberIndex = new int[GROUPS_PER_COLUMN];
 		Arrays.fill(memberIndex, 0);
 	}
 	
@@ -143,9 +149,11 @@ public class GuiGildeMemberManager extends Gui{
 		for(int i = 0;i<items.length;i++){
 			Item[] members = items[i];
 			Item[] drawItems = new Item[MEMBER_PER_ROW];
-			System.arraycopy(members, memberIndex[i], drawItems, 0, Math.min(memberItems[i].length-memberIndex[i], MEMBER_PER_ROW));
-			for(int j = 0;j < drawItems.length; j++)
-				inv.setItem(i*9+11+i, drawItems[j]);
+			if(memberItems.length > i && memberItems[i] != null && memberIndex.length > i)
+				System.arraycopy(members, memberIndex[i], drawItems, 0, Math.min(memberItems[i].length-memberIndex[i], MEMBER_PER_ROW));
+			for(int j = 0;j < drawItems.length; j++){
+				inv.setItem(i*9+11+j, drawItems[j]);
+			}
 		}
 	}
 	

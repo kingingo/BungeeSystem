@@ -13,13 +13,13 @@ import net.md_5.bungee.api.plugin.Command;
 public class CommandRoulett extends Command {
 
 	public CommandRoulett() {
-		super("roulett");
+		super("roulette");
 	}
 
 	@Override
 	public void execute(CommandSender cs, String[] args) {
 		if (cs instanceof Player) {
-			if(args.length == 1 && PermissionManager.getManager().hasPermission(cs, "roulet.toggle") && args[0].equalsIgnoreCase("toggle")){
+			if(args.length == 1 && PermissionManager.getManager().hasPermission(cs, "roulette.toggle") && args[0].equalsIgnoreCase("toggle")){
 				if(RoulettHistory.active)
 					cs.sendMessage("§cDu hast das roulett ausgestellt.");
 				else
