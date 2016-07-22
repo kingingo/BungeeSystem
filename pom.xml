@@ -163,7 +163,7 @@
 		</dependency>
 		<dependency>
 			<groupId>dev.wolveringer</groupId>
-			<artifactId>AFK-Server</artifactId>
+			<artifactId>CostumServer</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>

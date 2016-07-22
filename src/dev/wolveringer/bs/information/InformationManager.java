@@ -97,4 +97,5 @@ public class InformationManager implements Listener{
 			}
 		}
 	}
+	
 }

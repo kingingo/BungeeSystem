@@ -14,7 +14,6 @@ import dev.wolveringer.BungeeUtil.AsyncCatcher;
 import dev.wolveringer.BungeeUtil.ClientVersion.BigClientVersion;
 import dev.wolveringer.BungeeUtil.ClientVersion.ProtocollVersion;
 import dev.wolveringer.BungeeUtil.PacketLib;
-import dev.wolveringer.BungeeUtil.exception.ExceptionUtils;
 import dev.wolveringer.BungeeUtil.packets.Packet;
 import dev.wolveringer.BungeeUtil.packets.PacketPlayOutChat;
 import dev.wolveringer.BungeeUtil.packets.PacketPlayOutEntityProperties;
@@ -24,6 +23,7 @@ import dev.wolveringer.BungeeUtil.packets.PacketPlayOutSetExperience;
 import dev.wolveringer.BungeeUtil.packets.PacketPlayOutSpawnPostition;
 import dev.wolveringer.BungeeUtil.packets.PacketPlayOutUpdateHealth;
 import dev.wolveringer.BungeeUtil.packets.PacketPlayOutUpdateSign;
+import dev.wolveringer.actionbar.ActionBar;
 import dev.wolveringer.afk.AfkListener;
 import dev.wolveringer.ban.BanServerMessageListener;
 import dev.wolveringer.ban.BannedServerListener;
@@ -40,7 +40,6 @@ import dev.wolveringer.bs.commands.CommandClient;
 import dev.wolveringer.bs.commands.CommandCreative;
 import dev.wolveringer.bs.commands.CommandEvent;
 import dev.wolveringer.bs.commands.CommandGList;
-import dev.wolveringer.bs.commands.CommandGilde;
 import dev.wolveringer.bs.commands.CommandGunGame;
 import dev.wolveringer.bs.commands.CommandHub;
 import dev.wolveringer.bs.commands.CommandKicken;
@@ -85,6 +84,7 @@ import dev.wolveringer.bs.login.LoginManager;
 import dev.wolveringer.bs.login.PlayerDisconnectListener;
 import dev.wolveringer.bs.message.MessageManager;
 import dev.wolveringer.bs.servermanager.ServerManager;
+import dev.wolveringer.chat.ChatManager;
 import dev.wolveringer.client.threadfactory.ThreadFactory;
 import dev.wolveringer.client.threadfactory.ThreadRunner;
 import dev.wolveringer.event.EventListener;
@@ -101,7 +101,6 @@ import dev.wolveringer.report.info.ActionBarInformation;
 import dev.wolveringer.server.ServerConfiguration;
 import dev.wolveringer.server.packets.PacketPlayInKeepAlive;
 import dev.wolveringer.server.packets.PacketPlayOutMapChunk;
-import dev.wolveringer.server.packets.PacketPlayOutMapChunkBulk;
 import dev.wolveringer.server.world.WorldFileReader;
 import dev.wolveringer.skin.SkinCacheManager;
 import dev.wolveringer.slotmachine.RoulettHistory;
@@ -216,6 +215,9 @@ public class Bootstrap {
 		}
 		final Configuration configuration = conf;
 
+		ActionBar.setInstance(new ActionBar());
+		ChatManager.setInstance(new ChatManager());
+		
 		Main.data = new BungeecordDatenClient(Main.getInstance().serverId, new InetSocketAddress(configuration.getString("datenserver.host"), configuration.getInt("datenserver.port")));
 		Main.data.setPassword(configuration.getString("datenserver.passwort"));
 		BungeeCord.getInstance().getScheduler().runAsync(Main.getInstance(), new Runnable() {
@@ -359,7 +361,8 @@ public class Bootstrap {
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new InvalidChatListener());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new PlayerDisconnectListener());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new TimeListener());
-
+		
+		
 		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutChat.class, new Packet.ProtocollId(BigClientVersion.v1_8, 0x02), new Packet.ProtocollId(BigClientVersion.v1_9, 0x0F), new Packet.ProtocollId(BigClientVersion.v1_10, 0x0F));
 		Packet.registerPacket(Protocol.GAME, Direction.TO_SERVER, PacketPlayInKeepAlive.class, new Packet.ProtocollId(BigClientVersion.v1_8, 0), new Packet.ProtocollId(BigClientVersion.v1_9, 0x1F), new Packet.ProtocollId(BigClientVersion.v1_10, 0x1F));
 
@@ -373,7 +376,8 @@ public class Bootstrap {
 		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutEntityProperties.class, new Packet.ProtocollId(BigClientVersion.v1_8, 0x20), new Packet.ProtocollId(BigClientVersion.v1_9, 0x4B) , new Packet.ProtocollId(ProtocollVersion.v1_9_2, 0x4A), new Packet.ProtocollId(ProtocollVersion.v1_9_3, 0x4A), new Packet.ProtocollId(ProtocollVersion.v1_9_4, 0x4A), new Packet.ProtocollId(BigClientVersion.v1_10, 0x4A)); //Change?
 		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutUpdateSign.class, new Packet.ProtocollId(BigClientVersion.v1_8, 0x33), new Packet.ProtocollId(BigClientVersion.v1_9, 0x46), new Packet.ProtocollId(BigClientVersion.v1_10, 0x46));
 		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutSetExperience.class, new Packet.ProtocollId(BigClientVersion.v1_8, 0x1F), new Packet.ProtocollId(BigClientVersion.v1_9, 0x3D), new Packet.ProtocollId(BigClientVersion.v1_10, 0x3D));
-
+		PacketLib.addHandler(ChatManager.getInstance());
+		
 		if (!WorldFileReader.isWorld(new File(conf.getString("server.afk.world")))) {
 			System.out.println("§cCant create AFK server!");
 		} else {
