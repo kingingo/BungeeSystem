@@ -3,6 +3,7 @@ package dev.wolveringer.bs.commands;
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.bs.client.event.ServerMessageEvent;
 import dev.wolveringer.client.connection.ClientType;
+import dev.wolveringer.dataserver.player.LanguageType;
 import dev.wolveringer.dataserver.protocoll.DataBuffer;
 import dev.wolveringer.permission.PermissionManager;
 import dev.wolveringer.bukkit.permissions.PermissionType;
@@ -15,6 +16,10 @@ import net.md_5.bungee.event.EventHandler;
 
 public class CommandPerformance extends Command implements Listener {
 
+	static {
+		Main.getTranslationManager().registerFallback(LanguageType.ENGLISH, "command.performance.info", "§7BungeeCord: §b%s0 §7Players: §b%s1 §7AVG-Ping: §b%s2 §7Memory: §b%s3mb§7/§c%s4mb");
+	}
+	
 	public CommandPerformance(String name) {
 		super(name);
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), this);
@@ -44,7 +49,7 @@ public class CommandPerformance extends Command implements Listener {
 				if (args.length == 0) {
 					Runtime run = Runtime.getRuntime();
 					//"§7Bungeecord: §b%s0§7 Player Online: %s1§7 Avg-Ping:§b%s2 §7Ram:§b%bs3§7/§c%s4" [Bungeecord,Playersonline,Avg ping,Ram,Max ram]
-					p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.performance.information", sender,Main.getInstance().getServerId(),BungeeCord.getInstance().getOnlineCount(),getAvgPing(),((run.totalMemory()-run.freeMemory()) / 1048576L),run.maxMemory()));
+					p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.performance.info", sender,Main.getInstance().getServerId(),BungeeCord.getInstance().getOnlineCount(),getAvgPing(),(run.totalMemory()-run.freeMemory()) / (1024*1024),run.maxMemory()/(1024*1024)));
 					Main.getDatenServer().getClient().sendServerMessage(ClientType.BUNGEECORD, "performance", new DataBuffer().writeInt(Main.getDatenServer().getClient().getPlayerAndLoad(p.getName()).getPlayerId()));
 				}
 			}
@@ -56,7 +61,7 @@ public class CommandPerformance extends Command implements Listener {
 		if (e.getChannel().equalsIgnoreCase("performance")) {
 			int sender = e.getBuffer().readInt();
 			Runtime run = Runtime.getRuntime();
-			Main.getDatenServer().getClient().sendMessage(sender, Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.performance.information", sender,Main.getInstance().getServerId(),BungeeCord.getInstance().getOnlineCount(),getAvgPing(),((run.totalMemory()-run.freeMemory()) / 1048576L),run.maxMemory()));
+			Main.getDatenServer().getClient().sendMessage(sender, Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.performance.info", sender,Main.getInstance().getServerId(),BungeeCord.getInstance().getOnlineCount(),getAvgPing(),(run.totalMemory()-run.freeMemory()) / (1024*1024),run.maxMemory()/(1024*1024)));
 		}
 	}
 }

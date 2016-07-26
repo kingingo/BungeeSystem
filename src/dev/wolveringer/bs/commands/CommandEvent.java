@@ -52,7 +52,7 @@ public class CommandEvent extends Command implements Listener, CachedArrayList.U
 
 	private static class ChatBoxInvite extends ChatManager.ChatBoxModifier {
 		public ChatBoxInvite(Player player, ChatManager handle, String inviter) {
-			super(player, handle, getInviteMessage(player, inviter));
+			super("event", 150, player, handle, getInviteMessage(player, inviter));
 		}
 
 		private static List<IChatBaseComponent> getInviteMessage(Player player, String inviter) {
@@ -100,7 +100,7 @@ public class CommandEvent extends Command implements Listener, CachedArrayList.U
 					return;
 				}
 				if (this.invites.contains(sender)) {
-					ChatManager.getInstance().setChatBoxModifier((Player) p, null);
+					ChatManager.getInstance().removeChatBoxModifier((Player) p, "event");
 					this.invites.remove(sender);
 				}
 				this.connections.add(UUID.randomUUID());
@@ -146,7 +146,7 @@ public class CommandEvent extends Command implements Listener, CachedArrayList.U
 			if (args[1].equalsIgnoreCase("accept")) {
 				BungeeCord.getInstance().getPluginManager().dispatchCommand(sender, "event");
 			} else {
-				ChatManager.getInstance().setChatBoxModifier((Player) p, null);
+				ChatManager.getInstance().removeChatBoxModifier((Player) p, "event");
 				this.invites.remove((Player) p);
 			}
 		} else if ((args[0].equalsIgnoreCase("invite")) && (PermissionManager.getManager().hasPermission(p, PermissionType.ALL_PERMISSION, true))) {
@@ -193,11 +193,11 @@ public class CommandEvent extends Command implements Listener, CachedArrayList.U
 			return;
 		}
 		this.invites.add(player);
-		ChatManager.getInstance().setChatBoxModifier(player, new ChatBoxInvite(player, ChatManager.getInstance(), inviter));
+		ChatManager.getInstance().addChatBoxModifier(player, new ChatBoxInvite(player, ChatManager.getInstance(), inviter));
 	}
 
 	public boolean canUnload(Player element) {
-		ChatManager.getInstance().setChatBoxModifier(element, null);
+		ChatManager.getInstance().removeChatBoxModifier(element, "event");
 		return true;
 	}
 }

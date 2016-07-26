@@ -81,10 +81,10 @@
 	                	<include>dev.wolveringer.datenserver:definitions</include>
 	                	<include>dev.wolveringer.datenserver:packets</include>
 	                	<include>dev.wolveringer:DatenClient</include>
+	                	<include>dev.wolveringer:CostumServer</include>
 	                	<include>dev.wolveringer:BungeeCordSystem</include>
 	                	<include>org.apache.commons:commons-io</include>
 	                	<include>org.apache.commons:commons-lang3</include>
-	                	<include>dev.wolveringer:AFK-Server</include>
 	                	<groupId>org.apache.commons</groupId>
 	                	<groupId></groupId>
 	                </includes>
@@ -151,6 +151,12 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<artifactId>bungeecord-chat</artifactId>
+			<groupId>net.md-5</groupId>
+			<version>1.9-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
 			<artifactId>bungeecord-proxy</artifactId>
 			<groupId>net.md-5</groupId>
 			<version>1.9-SNAPSHOT</version>
@@ -159,12 +165,7 @@
 		<dependency>
 			<groupId>dev.wolveringer</groupId>
 			<artifactId>BungeeUtil</artifactId>
-			<version>1.6.7.4.1</version>
-		</dependency>
-		<dependency>
-			<groupId>dev.wolveringer</groupId>
-			<artifactId>CostumServer</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>1.6.7.6</version>
 		</dependency>
 		<dependency>
 			<groupId>dev.wolveringer</groupId>
@@ -191,6 +192,11 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 			<version>3.4</version>
+		</dependency>
+		<dependency>
+			<groupId>dev.wolveringer</groupId>
+			<artifactId>CostumServer</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>

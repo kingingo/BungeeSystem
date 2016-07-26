@@ -11,7 +11,6 @@ import dev.wolveringer.client.external.BungeeCordActionListener;
 import dev.wolveringer.client.threadfactory.ThreadFactory;
 import dev.wolveringer.dataserver.player.Setting;
 import dev.wolveringer.dataserver.protocoll.DataBuffer;
-import dev.wolveringer.gilde.GildManager;
 import dev.wolveringer.permission.PermissionManager;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ChatColor;
@@ -21,7 +20,6 @@ public class ClientExternalHandler implements BungeeCordActionListener{
 
 	@Override
 	public void sendMessage(int player, String message) {
-		System.out.println("Sendmessage: "+player+" Message: "+message);
 		LoadedPlayer lp = Main.getDatenServer().getClient().getPlayerAndLoad(player);
 		ProxiedPlayer p = BungeeCord.getInstance().getPlayer(lp.getName());
 		if(p != null)
@@ -48,13 +46,15 @@ public class ClientExternalHandler implements BungeeCordActionListener{
 
 	@Override
 	public void disconnected() {
+		if(Main.isRestarting())
+			return;
 		ThreadFactory.getFactory().createThread(new Runnable() {
 			@Override
 			public void run() {
 				BungeeCord.getInstance().getConsole().sendMessage("§5Clientlistener §7> §cDatenclient disconnected!");
 				for(ProxiedPlayer p : BungeeCord.getInstance().getPlayers()){
 					try{
-						if(PermissionManager.getManager().hasPermission(p, "epicpvp.bc.dataserver"))
+						if(p.hasPermission("epicpvp.bc.dataserver"))
 							p.sendMessage(Main.getTranslationManager().translate("prefix", p)+"§eClientListener §7>> §cDatenclient disconnected");
 					}catch(Exception ex){ }
 				}
@@ -67,7 +67,7 @@ public class ClientExternalHandler implements BungeeCordActionListener{
 				}
 				BungeeCord.getInstance().getConsole().sendMessage("§5Clientlistener §7> §aReconnect sucessfull!");
 			}
-		}).start();;
+		}).start();
 	}
 
 	@Override

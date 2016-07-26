@@ -14,7 +14,6 @@ import dev.wolveringer.skin.Skin;
 import dev.wolveringer.skin.SteveSkin;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import net.md_5.bungee.BungeeCord;
 
 @AllArgsConstructor

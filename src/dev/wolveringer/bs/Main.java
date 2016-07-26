@@ -12,7 +12,8 @@ import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.plugin.Plugin;
 
 public class Main extends Plugin{
-	public static boolean restart = false;
+	@Getter
+	private static boolean restarting = false;
 	public static boolean loaded = false;
 	@Getter
 	protected static TranslationHandler translationManager;
@@ -23,7 +24,6 @@ public class Main extends Plugin{
 		return skins;
 	}
 	protected static SkinCacheManager skins;
-	protected static ActionBarInformation info;
 	@Getter
 	protected static BoosterManager boosterManager;
 	@Getter
@@ -44,6 +44,7 @@ public class Main extends Plugin{
 	
 	@Override
 	public void onDisable() {
+		restarting = true;
 		data.getClient().getHandle().disconnect("Bungeecord stopped");
 	}
 	

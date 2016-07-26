@@ -89,8 +89,10 @@ public class ChatListener implements Listener {
 			if (time.containsKey(e.getSender())) {
 				if (time.get(e.getSender()) > System.currentTimeMillis()) {
 					if ((((ProxiedPlayer) e.getSender()).getServer().getInfo().getName().toLowerCase().contains("hub") || ((ProxiedPlayer) e.getSender()).getServer().getInfo().getName().toLowerCase().contains("lobby")) && !e.getMessage().startsWith("/")) {
-						//§cYou are able to Chat here in §e%s0§c!
-						((ProxiedPlayer) e.getSender()).sendMessage(Main.getTranslationManager().translate("prefix", p) + Main.getTranslationManager().translate("event.chat.timewait", p, formatMili((time.get(e.getSender()) - System.currentTimeMillis()))));//formatMili((time.get(e.getSender()) - System.currentTimeMillis())
+						// §cYou are able to Chat here in §e%s0§c!
+						((ProxiedPlayer) e.getSender()).sendMessage(Main.getTranslationManager().translate("prefix", p) + Main.getTranslationManager().translate("event.chat.timewait", p, formatMili((time.get(e.getSender()) - System.currentTimeMillis()))));// formatMili((time.get(e.getSender())
+																																																																// -
+																																																																// System.currentTimeMillis())
 						e.setCancelled(true);
 					}
 				} else
@@ -102,14 +104,11 @@ public class ChatListener implements Listener {
 					e.setCancelled(true);
 					String player = e.getMessage().split(" ")[0].substring(1);
 
-					if (player.equalsIgnoreCase(p.getName())) {
-						p.sendMessage("§cYou cant write with yourself.\n\n§cIf you want write with yourself then you must add yourself on Whatsapp.\n§cThis server doesn't support even talks.\n§cYours truly §aWolverinDEV");
-						return;
-					}
 					if (player.length() + 2 > e.getMessage().length()) {
 						p.sendMessage("Please provide a message.");
 						return;
 					}
+					
 					String message = e.getMessage().substring(player.length() + 2);
 					if (player.isEmpty()) {
 						if (!lastTarget.containsKey(p)) {
@@ -119,19 +118,36 @@ public class ChatListener implements Listener {
 						player = lastTarget.get(p);
 					} else
 						lastTarget.put(p, player);
-
+					
 					if (message.isEmpty()) {
 						p.sendMessage("§cPlease provide a message.");
 						return;
 					}
-					if (BungeeCord.getInstance().getPlayer(player) != null) {
-						BungeeCord.getInstance().getPlayer(player).sendMessage("§8[§6»§o " + p.getName() + "§8] §7" + message);
-						p.sendMessage("§8[§6§o" + player + " §6»§8] §7" + message);
+					
+					LoadedPlayer target = Main.getDatenServer().getClient().getPlayerAndLoad(player);
+					boolean targetOnline = target.isOnlineSync();
+					if(target.hasNickname() && !PermissionManager.getManager().hasPermission(p, "sendmassege.to.unnicked") && targetOnline)
+						target = null;
+					if(target != null && !targetOnline){
+						for(String s : Main.getDatenServer().getPlayers())
+							if(Main.getDatenServer().getClient().getPlayerAndLoad(s).getNickname().equalsIgnoreCase(player)){
+								target = Main.getDatenServer().getClient().getPlayerAndLoad(s);
+								player = target.getName();
+							}
+					}
+					
+					if (player.equalsIgnoreCase(p.getName())) {
+						p.sendMessage("§cYou cant write with yourself.\n\n§cIf you want write with yourself then you must add yourself on Whatsapp.\n§cThis server doesn't support even talks.\n§cYours truly §aWolverinDEV");
+						return;
+					}
+					
+					if (target != null && BungeeCord.getInstance().getPlayer(player) != null) {
+						BungeeCord.getInstance().getPlayer(player).sendMessage("§8[§6»§o {player_" + p.getName() + "}§8] §7" + message);
+						p.sendMessage("§8[§6§o{player_" + player + "} §6»§8] §7" + message);
 					} else {
-						LoadedPlayer target = Main.getDatenServer().getClient().getPlayerAndLoad(player);
-						if (target.getServer().getSync() != null) {
-							p.sendMessage("§8[§6§o" + player + " §6»§8] §7" + message);
-							Main.getDatenServer().getClient().sendMessage(target.getPlayerId(), "§8[§o§6» " + p.getName() + "§8] §7" + message);
+						if (target != null && targetOnline) {
+							p.sendMessage("§8[§6§o{player_" + player + "} §6»§8] §7" + message);
+							Main.getDatenServer().getClient().sendMessage(target.getPlayerId(), "§8[§o§6» {player_" + p.getName() + "}§8] §7" + message);
 						} else
 							p.sendMessage("§cTarget player isnt online.");
 					}
@@ -147,14 +163,22 @@ public class ChatListener implements Listener {
 			e.getSuggestions().clear();
 
 			if (nameStart.length() >= 2) {
-				for (String s : Main.getDatenServer().getPlayers()){
-					if(s==null){
+				boolean unnickedNames = PermissionManager.getManager().hasPermission((ProxiedPlayer) e.getSender(), "tabcomplete.unnicked");
+				for (String s : Main.getDatenServer().getPlayers()) {
+					if (s == null) {
 						System.err.println("[ChatListener]: TabCompleteEvent s == NULL !?");
 						continue;
 					}
-					if (s.toLowerCase().startsWith(nameStart.toLowerCase()))
-						e.getSuggestions().add("@" + s);
+					LoadedPlayer splayer = Main.getDatenServer().getClient().getPlayerAndLoad(s);
+					if(unnickedNames){
+						if (s.toLowerCase().startsWith(splayer.getName().toLowerCase()))
+							if(splayer.hasNickname())
+								e.getSuggestions().add("@" + splayer.getName());
+					}
+					if ((splayer.hasNickname() ? splayer.getNickname().toLowerCase() : splayer.getName()).toLowerCase().startsWith(nameStart.toLowerCase()))
+						e.getSuggestions().add("@" + (splayer.hasNickname() ? splayer.getNickname() : splayer.getName()));
 				}
+				System.out.println("Suggestions: "+e.getSuggestions());
 			}
 		}
 	}
@@ -194,4 +218,4 @@ public class ChatListener implements Listener {
 	}
 }
 
-//event.chat.timewait - §cYou are able to Chat here in §e%s0§c! [time]
+// event.chat.timewait - §cYou are able to Chat here in §e%s0§c! [time]

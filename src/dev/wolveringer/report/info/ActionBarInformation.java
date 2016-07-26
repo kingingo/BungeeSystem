@@ -1,43 +1,75 @@
 package dev.wolveringer.report.info;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import dev.wolveringer.BungeeUtil.Player;
-import dev.wolveringer.ban.BannedServerManager;
-import dev.wolveringer.booster.BoosterType;
+import dev.wolveringer.actionbar.ActionBar;
+import dev.wolveringer.actionbar.ActionBar.ActionBarMessage;
 import dev.wolveringer.bs.Main;
+import dev.wolveringer.chat.ChatManager;
+import dev.wolveringer.chat.IChatBaseComponent;
+import dev.wolveringer.chat.ChatManager.ChatBoxModifier;
 import dev.wolveringer.client.threadfactory.ThreadFactory;
 import dev.wolveringer.client.threadfactory.ThreadRunner;
 import dev.wolveringer.dataserver.protocoll.packets.PacketReportRequest.RequestType;
-import dev.wolveringer.permission.PermissionManager;
 import dev.wolveringer.report.ReportEntity;
-import net.md_5.bungee.BungeeCord;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.protocol.packet.Chat;
+import lombok.Getter;
+import lombok.Setter;
 
 public class ActionBarInformation {
-	private ThreadRunner thread;
+	@Getter
+	@Setter
+	private static ActionBarInformation instance;
 	private ThreadRunner updater;
-	private int intervall;
-	private int updateIntervall;
 	private boolean active = false;
 	
 	private int openReports = 0;
 	
+	private static class ActionBarInstance extends ActionBarMessage {
+		private ActionBarInformation handle;
+		public ActionBarInstance(ActionBarInformation handle) {
+			super("report.info", null, 100, "bungee.report.info");
+			this.handle = handle;
+		}
+		@Override
+		public String getMessage() {
+			if(handle.openReports == 0)
+				return null;
+			return "§c§lEs gibt momentan "+buildReportColor()+"§l"+handle.openReports+" §c§loffene Reports!";
+		}
+		private String buildReportColor(){
+			if(handle.openReports < 5)
+				return "§a";
+			else if(handle.openReports < 15)
+				return "§e";
+			else if(handle.openReports < 25)
+				return "§6";
+			else 
+				return "§4";
+		}
+	}
+	
+	public static class ChatBoxMessage extends ChatBoxModifier{
+		private ActionBarInformation handle;
+		public ChatBoxMessage(Player player, ChatManager cm, ActionBarInformation handle) {
+			super("report", 100, player, cm, Arrays.asList("§e-------------------------------------------","§cEs gibt zu viele offene Reports! Bitte bearbeiten!","§e-------------------------------------------"), false);
+			this.handle = handle;
+		}
+		
+		@Override
+		public int getImportance() {
+			return handle.openReports > 10 ? 100 : -1;
+		}
+		
+		@Override
+		public boolean isKeepChatVisiable() {
+			return true;
+		}
+	}
+	
 	public ActionBarInformation(int intervall, int updateIntervall) {
-		this.intervall = intervall;
-		this.updateIntervall = updateIntervall;
-		thread = ThreadFactory.getFactory().createThread(()->{
-			while (active) {
-				try {
-					Thread.sleep(intervall);
-				} catch (Exception e) {
-				}
-				try {
-					sendBar();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
 		updater = ThreadFactory.getFactory().createThread(()->{
 			while (active) {
 				try {
@@ -66,44 +98,8 @@ public class ActionBarInformation {
 	
 	public void start(){
 		active = true;
-		thread.start();
 		updater.start();
-	}
-	
-	private void sendBar(){
-		if(!Main.getDatenServer().isActive())
-			return;
-		String message = "§c§lEs gibt momentan "+buildReportColor()+"§l"+openReports+" §c§loffene Reports!";
-		for(ProxiedPlayer p : BungeeCord.getInstance().getPlayers())
-			if(p != null && !BannedServerManager.getInstance().isBanned((Player) p))
-				if(PermissionManager.getManager().hasPermission(p, "bungee.report.info") && openReports != 0){
-					p.unsafe().sendPacket(new Chat("{\"text\": \"" + message + "\"}", (byte) 2));
-				}
-				else
-				{
-					if(Main.getBoosterManager().getBooster(BoosterType.ARCADE).isActive())
-						if(p.getServer().getInfo().getName().startsWith("a")){
-							String m = "§a§lDouble-Coin Booster wurde aktiviert von §e§l"+Main.getDatenServer().getClient().getPlayerAndLoad(Main.getBoosterManager().getBooster(BoosterType.ARCADE).getPlayer()).getName();
-							p.unsafe().sendPacket(new Chat("{\"text\": \"" + m + "\"}", (byte) 2));
-						}
-					if(Main.getBoosterManager().getBooster(BoosterType.SKY).isActive())
-						if(p.getServer().getInfo().getName().equalsIgnoreCase("sky")){
-							String m = "§a§lFarm Booster wurde aktiviert von §e§l"+Main.getDatenServer().getClient().getPlayerAndLoad(Main.getBoosterManager().getBooster(BoosterType.ARCADE).getPlayer()).getName();
-							p.unsafe().sendPacket(new Chat("{\"text\": \"" + m + "\"}", (byte) 2));
-						}
-				}
-		
-	
-	}
-	private String buildReportColor(){
-		if(openReports < 5)
-			return "§a";
-		else if(openReports < 15)
-			return "§e";
-		else if(openReports < 25)
-			return "§6";
-		else 
-			return "§4";
+		ActionBar.getInstance().addMessage(new ActionBarInstance(this));
 	}
 }
 //http://hastebin.com/qusoqofepu.avrasm

@@ -11,12 +11,14 @@ public class GuiReportConfirm extends Gui{
 	private String target;
 	private String reson;
 	private String moreInfo;
+	private String targetNickname;
 	
-	public GuiReportConfirm(String target, String reson, String moreInfo) {
-		super(1, "§aReporte §a"+target);
+	public GuiReportConfirm(String target,String targetNickname, String reson, String moreInfo) {
+		super(1, "§aReporte §a"+targetNickname);
 		this.target = target;
 		this.reson = reson;
 		this.moreInfo = moreInfo;
+		this.targetNickname = targetNickname;
 	}
 
 	@Override
@@ -27,7 +29,7 @@ public class GuiReportConfirm extends Gui{
 				getPlayer().closeInventory();
 			}
 		});
-		inv.setItem(1, loadSkin(ItemBuilder.create(Material.SKULL_ITEM).durbility(1).name("§6"+target).lore("§aGrund » §e"+reson).lore("§aWeitere Info » §e"+(moreInfo== null ? "§cNone":moreInfo)).build(), target));
+		inv.setItem(1, loadSkin(ItemBuilder.create(Material.SKULL_ITEM).durbility(1).name("§6"+targetNickname).lore("§aGrund » §e"+reson).lore("§aWeitere Info » §e"+(moreInfo== null ? "§cNone":moreInfo)).build(), targetNickname));
 		inv.setItem(4, ItemBuilder.create(Material.ANVIL).name("§c§lAchtung!").lore("§cTicket-Missbrach kann zum Ban führen!").build());
 		
 		inv.setItem(7, new ItemStack(ItemBuilder.create(159).name("§cAbbrechen").durbility(14).build()){
@@ -60,8 +62,8 @@ public class GuiReportConfirm extends Gui{
 					public void click(Click c) {
 						getPlayer().closeInventory();
 						Main.getDatenServer().getClient().createReport(Main.getDatenServer().getClient().getPlayerAndLoad(c.getPlayer().getName()).getPlayerId(), Main.getDatenServer().getClient().getPlayerAndLoad(target).getPlayerId(), reson, moreInfo);
-						getPlayer().sendMessage("§aDu hast den Spieler §e"+target+" §areportet!");
-						Main.getDatenServer().getClient().broadcastMessage("report.alert", "§aDer Spieler §e"+c.getPlayer().getName()+" §ahat den Spieler §e"+target+" §awegen §6"+reson+" "+(moreInfo == null ? "":"("+moreInfo+") reportet!"));
+						getPlayer().sendMessage("§aDu hast den Spieler §e{player_"+target+"} §areportet!");
+						Main.getDatenServer().getClient().broadcastMessage("report.alert", "§aDer Spieler §e{player_"+c.getPlayer().getName()+"} §ahat den Spieler §e{player_"+target+"} §awegen §6"+reson+" "+(moreInfo == null ? "":"("+moreInfo+") reportet!"));
 					}
 				});
 			}

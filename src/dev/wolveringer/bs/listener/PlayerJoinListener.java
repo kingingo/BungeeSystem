@@ -25,7 +25,10 @@ import dev.wolveringer.dataserver.player.Setting;
 import dev.wolveringer.dataserver.protocoll.packets.PacketInChangePlayerSettings;
 import dev.wolveringer.dataserver.protocoll.packets.PacketVersion;
 import dev.wolveringer.permission.PermissionManager;
+import dev.wolveringer.report.info.ActionBarInformation;
 import dev.wolveringer.bukkit.permissions.PermissionType;
+import dev.wolveringer.chat.ChatManager;
+import dev.wolveringer.chat.ChatManager.ChatBoxModifier;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.UserConnection;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -42,10 +45,6 @@ public class PlayerJoinListener implements Listener {
 
 	@EventHandler
 	public void a(PreLoginEvent e) {
-		//e.getConnection().getName()
-		//48-57
-		//65-90
-		//97-122
 		if(!Main.getDatenServer().isActive()){
 			e.setCancelReason("§cCant connect to §eServer-Chef§c. Protocoll version: §a" + PacketVersion.PROTOCOLL_VERSION + "\nPlease try again in 10-30 seconds");
 			e.setCancelled(true);
@@ -86,8 +85,9 @@ public class PlayerJoinListener implements Listener {
 			 */
 			if(Main.getDatenServer().getClient().getPlayer(e.getConnection().getName()) != null)
 				Main.getDatenServer().getClient().clearCacheForPlayer(Main.getDatenServer().getClient().getPlayer(e.getConnection().getName()));
-			if(Main.getDatenServer().getClient().getPlayer(e.getConnection().getUniqueId()) != null)
-				Main.getDatenServer().getClient().clearCacheForPlayer(Main.getDatenServer().getClient().getPlayer(e.getConnection().getUniqueId()));
+			if(e.getConnection().getUniqueId() != null)
+				if(Main.getDatenServer().getClient().getPlayer(e.getConnection().getUniqueId()) != null)
+					Main.getDatenServer().getClient().clearCacheForPlayer(Main.getDatenServer().getClient().getPlayer(e.getConnection().getUniqueId()));
 			
 			LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(e.getConnection().getName());
 			System.out.println("Connect: Real name: " + e.getConnection().getName() + " Player: " + player.getName() + " UUID: " + player.getUUID());
@@ -183,13 +183,16 @@ public class PlayerJoinListener implements Listener {
 			MessageManager.getmanager(lang).playTitles(e.getPlayer());
 	}
 
-	private CachedArrayList<ProxiedPlayer> inQueue = new CachedArrayList<>(5, TimeUnit.SECONDS);
-
 	@EventHandler
 	public void a(ServerConnectEvent e) {
 		try{
 			if(e.getPlayer().getServer() == null && ((UserConnection)e.getPlayer()).getPendingConnects().size() == 0){
 				e.setTarget(ServerManager.DEFAULT_HUB);
+				//ActionBarInformation
+				if(PermissionManager.getManager().hasPermission(e.getPlayer(), "report.info") && !PermissionManager.getManager().hasPermission(e.getPlayer(), "report.info.ignore")){
+					if(ChatManager.getInstance().getChatBoxModifier((Player) e.getPlayer(), "report") == null)
+						ChatManager.getInstance().addChatBoxModifier((Player) e.getPlayer(), new ActionBarInformation.ChatBoxMessage((Player) e.getPlayer(), ChatManager.getInstance(), ActionBarInformation.getInstance()));
+				}
 			}
 			if (e.getTarget().getName().equalsIgnoreCase("hub")) {
 				if(e.getPlayer().getServer() == null){
@@ -201,7 +204,6 @@ public class PlayerJoinListener implements Listener {
 					}
 				}
 				Queue<String> joinQueue;
-				inQueue.add(e.getPlayer());
 				if (e.getPlayer().getPendingConnection().isOnlineMode() || LoginManager.getManager().isLoggedIn(e.getPlayer())) {
 					LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(e.getPlayer().getUniqueId());
 					MessageManager.getmanager(player.getLanguageSync());

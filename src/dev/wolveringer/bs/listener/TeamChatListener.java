@@ -12,7 +12,7 @@ public class TeamChatListener implements Listener{
 	@EventHandler
 	public void a(ChatEvent e){
 		if(e.getSender() instanceof ProxiedPlayer && e.getMessage().startsWith("~") && PermissionManager.getManager().hasPermission((ProxiedPlayer) e.getSender(), PermissionType.TEAM_MESSAGE,false)){
-			String message = "§3[Teamchat] §6"+((ProxiedPlayer)e.getSender()).getName()+": §5"+e.getMessage().substring(1);
+			String message = "§cTeamchat §8| §a"+((ProxiedPlayer)e.getSender()).getName()+" §8» §f"+e.getMessage().substring(1);
 			Main.getDatenServer().teamMessage(message);
 			e.setCancelled(true);
 		}

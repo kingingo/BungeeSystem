@@ -4,7 +4,6 @@ import dev.wolveringer.BungeeUtil.PacketHandleEvent;
 import dev.wolveringer.BungeeUtil.PacketHandler;
 import dev.wolveringer.BungeeUtil.Player;
 import dev.wolveringer.BungeeUtil.packets.Abstract.PacketPlayOut;
-import dev.wolveringer.BungeeUtil.packets.Packet;
 import dev.wolveringer.BungeeUtil.packets.PacketPlayOutChat;
 import dev.wolveringer.arrays.CachedArrayList;
 import dev.wolveringer.chat.ChatComponentText;
@@ -12,12 +11,12 @@ import dev.wolveringer.chat.IChatBaseComponent;
 import dev.wolveringer.client.threadfactory.ThreadFactory;
 import dev.wolveringer.client.threadfactory.ThreadRunner;
 import dev.wolveringer.hashmaps.InitHashMap;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.beans.ConstructorProperties;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -30,9 +29,9 @@ import net.md_5.bungee.event.EventHandler;
 
 public class ChatManager implements PacketHandler<PacketPlayOutChat> {
 	private static ChatManager instance;
-	private static final int LINE_HISTORY_SIZE = 20;
+	private static final int LINE_HISTORY_SIZE = 40;
 	private HashMap<Player, ChatHistory> histories;
-	private HashMap<Player, ChatBoxModifier> chatBoxes;
+	private HashMap<Player, List<ChatBoxModifier>> chatBoxes;
 	private ThreadRunner chatResender;
 	private CachedArrayList<PacketPlayOutChat> ignorePackets;
 
@@ -44,19 +43,22 @@ public class ChatManager implements PacketHandler<PacketPlayOutChat> {
 				return new ChatHistory();
 			}
 		};
-		this.chatBoxes = new InitHashMap<Player, ChatBoxModifier>() {
+		this.chatBoxes = new InitHashMap<Player, List<ChatBoxModifier>>() {
 
 			@Override
-			public ChatBoxModifier defaultValue(Player key) {
-				return new DefaultChatBoxModifier(key, ChatManager.this);
+			public List<ChatBoxModifier> defaultValue(Player key) {
+				ArrayList<ChatBoxModifier> out = new ArrayList<>();
+				out.add(new DefaultChatBoxModifier(key, ChatManager.this));
+				return out;
 			}
 		};
 		this.chatResender = ThreadFactory.getFactory().createThread(() -> {
 			do {
 				for (ProxiedPlayer p : BungeeCord.getInstance().getPlayers()) {
-					if (!this.chatBoxes.get((Object) ((Player) p)).isKeepChatVisiable())
+					ChatBoxModifier mod = getChatBoxModifier((Player) p);
+					if (!mod.isKeepChatVisiable())
 						continue;
-					this.chatBoxes.get((Object) ((Player) p)).redraw();
+					mod.redraw();
 				}
 				try {
 					Thread.sleep(1500);
@@ -68,17 +70,43 @@ public class ChatManager implements PacketHandler<PacketPlayOutChat> {
 		this.chatResender.start();
 	}
 
-	public void setChatBoxModifier(Player player, ChatBoxModifier modifier) {
-		if (modifier == null) {
-			this.chatBoxes.remove((Object) player);
-			return;
-		}
-		this.chatBoxes.put(player, modifier);
+	public void addChatBoxModifier(Player player, ChatBoxModifier modifier) {
+		this.chatBoxes.get(player).add(modifier);
 		modifier.redraw();
+	}
+	
+	public void removeChatBoxModifier(Player player, String modifier) {
+		List<ChatBoxModifier> mods = this.chatBoxes.get(player);
+		for(ChatBoxModifier m : new ArrayList<>(mods))
+			if(m.getName() != null)
+				if(m.getName().equalsIgnoreCase(modifier))
+					mods.remove(m);
 	}
 
 	public ChatBoxModifier getChatBoxModifier(Player player) {
-		return this.chatBoxes.get((Object) player);
+		Collections.sort(this.chatBoxes.get((Object) player), new Comparator<ChatBoxModifier>() {
+			@Override
+			public int compare(ChatBoxModifier o1, ChatBoxModifier o2) {
+				return Integer.compare(o2.getImportance(), o1.getImportance());
+			}
+		});
+		Iterator<ChatBoxModifier> modifiers = this.chatBoxes.get((Object) player).iterator();
+		while (modifiers.hasNext()) {
+			ChatBoxModifier modifier = modifiers.next();
+			if(modifier.getPermission() == null || player.hasPermission(modifier.getPermission()))
+				return modifier;
+		}
+		return null;
+	}
+	
+	public ChatBoxModifier getChatBoxModifier(Player player,String name) {
+		Iterator<ChatBoxModifier> modifiers = this.chatBoxes.get((Object) player).iterator();
+		while (modifiers.hasNext()) {
+			ChatBoxModifier modifier = modifiers.next();
+			if(modifier.getName().equalsIgnoreCase(name))
+				return modifier;
+		}
+		return null;
 	}
 
 	@EventHandler
@@ -104,12 +132,24 @@ public class ChatManager implements PacketHandler<PacketPlayOutChat> {
 		if (((PacketPlayOutChat) e.getPacket()).getModus() == 2 || this.ignorePackets.contains((Object) e.getPacket())) {
 			return;
 		}
-		this.histories.get((Object) e.getPlayer()).addMessage(((PacketPlayOutChat) e.getPacket()).getMessage());
-		if (this.chatBoxes.get((Object) e.getPlayer()) instanceof DefaultChatBoxModifier) {
+		ChatBoxModifier mod = getChatBoxModifier(e.getPlayer());
+		
+		ThreadFactory.getFactory().createThread(()->{
+			try {
+				Thread.sleep(5);
+			} catch (Exception e1) {}
+			synchronized (histories) {
+				this.histories.get((Object) e.getPlayer()).addMessage(((PacketPlayOutChat) e.getPacket()).getMessage());
+			}
+			if (mod instanceof DefaultChatBoxModifier) {
+				return;
+			}
+			mod.redraw();
+		}).start(); //Invoke after event fiered!
+		if (mod instanceof DefaultChatBoxModifier) {
 			return;
 		}
 		e.setCancelled(true);
-		this.chatBoxes.get((Object) e.getPlayer()).redraw();
 	}
 
 	public static ChatManager getInstance() {
@@ -122,15 +162,21 @@ public class ChatManager implements PacketHandler<PacketPlayOutChat> {
 
 	private static final class DefaultChatBoxModifier extends ChatBoxModifier {
 		public DefaultChatBoxModifier(Player player, ChatManager handle) {
-			super(player, handle, new ArrayList<IChatBaseComponent>());
+			super("default", 0 ,player, handle, new ArrayList<IChatBaseComponent>());
 		}
 	}
 
 	@RequiredArgsConstructor
 	public static class ChatBoxModifier {
+		@Getter
+		private final String name;
+		@Getter
+		private final int importance;
 		protected final Player player;
 		private final ChatManager handle;
 		private final List<IChatBaseComponent> footer;
+		@Getter
+		private String permission;
 		private boolean keepChatVisiable;
 
 		public void redraw() {
@@ -139,6 +185,8 @@ public class ChatManager implements PacketHandler<PacketPlayOutChat> {
 				this.handle.sendMessage(this.player, s);
 			}
 		}
+		
+		
 
 		public Player getPlayer() {
 			return this.player;
@@ -159,13 +207,24 @@ public class ChatManager implements PacketHandler<PacketPlayOutChat> {
 		public void setKeepChatVisiable(boolean keepChatVisiable) {
 			this.keepChatVisiable = keepChatVisiable;
 		}
+
+		public ChatBoxModifier(String name, int importance, Player player, ChatManager handle, List<String> footer, boolean unused) {
+			super();
+			this.name = name;
+			this.importance = importance;
+			this.player = player;
+			this.handle = handle;
+			this.footer = new ArrayList<>();
+			for(String m : footer)
+				this.footer.add(ChatSerializer.fromMessage(m));
+		}
 	}
 
 	private static class ChatHistory {
-		private LinkedList<IChatBaseComponent> stack = new LinkedList();
+		private LinkedList<IChatBaseComponent> stack = new LinkedList<IChatBaseComponent>();
 
 		public ChatHistory() {
-			for (int i = 0; i < 20; ++i) {
+			for (int i = 0; i < LINE_HISTORY_SIZE; ++i) {
 				this.stack.add((IChatBaseComponent) new ChatComponentText(""));
 			}
 		}

@@ -45,6 +45,7 @@ import dev.wolveringer.bs.commands.CommandHub;
 import dev.wolveringer.bs.commands.CommandKicken;
 import dev.wolveringer.bs.commands.CommandMOTD;
 import dev.wolveringer.bs.commands.CommandNews;
+import dev.wolveringer.bs.commands.CommandNick;
 import dev.wolveringer.bs.commands.CommandPerformance;
 import dev.wolveringer.bs.commands.CommandPermission;
 import dev.wolveringer.bs.commands.CommandPremium;
@@ -95,6 +96,7 @@ import dev.wolveringer.events.EventType;
 import dev.wolveringer.events.player.PlayerServerSwitchEvent;
 import dev.wolveringer.gilde.GildManager;
 import dev.wolveringer.mysql.MySQL;
+import dev.wolveringer.nick.NickHandler;
 import dev.wolveringer.permission.PermissionManager;
 import dev.wolveringer.report.commands.CMD_Report;
 import dev.wolveringer.report.info.ActionBarInformation;
@@ -128,10 +130,12 @@ public class Bootstrap {
 		onEnable0();
 	}
 
-	@SuppressWarnings("serial")
 	public void onEnable0() {
 		AsyncCatcher.disableAll();
-		UtilBungeeCord.class.getName(); //Keep loaded in memory
+		try {
+			Class.forName(UtilBungeeCord.class.getName());
+		} catch (ClassNotFoundException ex) {
+		}
 		ThreadFactory.setFactory(new ThreadFactory() {
 			@Override
 			public ThreadRunner createThread(Runnable run) {
@@ -223,7 +227,7 @@ public class Bootstrap {
 		BungeeCord.getInstance().getScheduler().runAsync(Main.getInstance(), new Runnable() {
 			@Override
 			public void run() {
-				while (true) {
+				while (!Main.isRestarting()) {
 					while (!Main.data.isActive()) {
 						if (Main.data.isConnecting()) {
 							System.out.println("§6Connecting to datenserver....");
@@ -234,6 +238,8 @@ public class Bootstrap {
 							}
 							continue;
 						}
+						if(Main.isRestarting())
+							return;
 						System.out.println("§aTry to connect to dataserver");
 						try {
 							Main.data.start();
@@ -298,8 +304,8 @@ public class Bootstrap {
 		ServerManager.setManager(new ServerManager());
 		ServerManager.getManager().loadServers();
 		MessageManager.start();
+		NickHandler.setInstance(new NickHandler());
 		RoulettHistory.history = new RoulettHistory();
-
 		BungeeCord.getInstance().getScheduler().runAsync(Main.getInstance(), new Runnable() {
 			public void run() {
 				PermissionManager.getManager().loadGroups();
@@ -346,6 +352,7 @@ public class Bootstrap {
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CMD_Report());
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CMD_BOOSTER());
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandRoulett());
+		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandNick());
 		//BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandGilde());
 		
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), InformationManager.getManager());
@@ -362,6 +369,7 @@ public class Bootstrap {
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new PlayerDisconnectListener());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new TimeListener());
 		
+		ActionBar.getInstance().start();
 		
 		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutChat.class, new Packet.ProtocollId(BigClientVersion.v1_8, 0x02), new Packet.ProtocollId(BigClientVersion.v1_9, 0x0F), new Packet.ProtocollId(BigClientVersion.v1_10, 0x0F));
 		Packet.registerPacket(Protocol.GAME, Direction.TO_SERVER, PacketPlayInKeepAlive.class, new Packet.ProtocollId(BigClientVersion.v1_8, 0), new Packet.ProtocollId(BigClientVersion.v1_9, 0x1F), new Packet.ProtocollId(BigClientVersion.v1_10, 0x1F));
@@ -376,6 +384,7 @@ public class Bootstrap {
 		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutEntityProperties.class, new Packet.ProtocollId(BigClientVersion.v1_8, 0x20), new Packet.ProtocollId(BigClientVersion.v1_9, 0x4B) , new Packet.ProtocollId(ProtocollVersion.v1_9_2, 0x4A), new Packet.ProtocollId(ProtocollVersion.v1_9_3, 0x4A), new Packet.ProtocollId(ProtocollVersion.v1_9_4, 0x4A), new Packet.ProtocollId(BigClientVersion.v1_10, 0x4A)); //Change?
 		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutUpdateSign.class, new Packet.ProtocollId(BigClientVersion.v1_8, 0x33), new Packet.ProtocollId(BigClientVersion.v1_9, 0x46), new Packet.ProtocollId(BigClientVersion.v1_10, 0x46));
 		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutSetExperience.class, new Packet.ProtocollId(BigClientVersion.v1_8, 0x1F), new Packet.ProtocollId(BigClientVersion.v1_9, 0x3D), new Packet.ProtocollId(BigClientVersion.v1_10, 0x3D));
+		PacketLib.addHandler(NickHandler.getInstance()); //Register before chat log!
 		PacketLib.addHandler(ChatManager.getInstance());
 		
 		if (!WorldFileReader.isWorld(new File(conf.getString("server.afk.world")))) {
@@ -396,8 +405,8 @@ public class Bootstrap {
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new BanServerMessageListener());
 
 		Main.skins = new SkinCacheManager();
-		Main.info = new ActionBarInformation(1000, 5000);
-		Main.info.start();
+		ActionBarInformation.setInstance(new ActionBarInformation(1000, 5000));
+		ActionBarInformation.getInstance().start();
 
 		Main.gildeManager = new GildManager(Main.data.getClient());
 		System.out.println("Event hander");

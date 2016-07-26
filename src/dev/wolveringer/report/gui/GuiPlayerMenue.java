@@ -2,6 +2,8 @@ package dev.wolveringer.report.gui;
 
 import dev.wolveringer.BungeeUtil.Material;
 import dev.wolveringer.BungeeUtil.item.ItemStack;
+import dev.wolveringer.bs.Main;
+import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.gui.Gui;
 import dev.wolveringer.item.ItemBuilder;
 import dev.wolveringer.permission.PermissionManager;
@@ -26,7 +28,8 @@ public class GuiPlayerMenue extends Gui {
 							getPlayer().sendMessage("§cYou cant report yourself!");
 							return;
 						}
-						GuiSelectPlayerReportReson gui = new GuiSelectPlayerReportReson(name);
+						LoadedPlayer splayer = Main.getDatenServer().getClient().getPlayerAndLoad(name);
+						GuiSelectPlayerReportReson gui = new GuiSelectPlayerReportReson(name, splayer.hasNickname() ? PermissionManager.getManager().hasPermission(getPlayer(), "report.viewname") ? splayer.getName() : splayer.getNickname() : splayer.getName());
 						gui.setPlayer(getPlayer());
 						gui.openGui();
 					}

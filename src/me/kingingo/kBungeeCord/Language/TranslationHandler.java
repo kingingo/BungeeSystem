@@ -27,19 +27,19 @@ public class TranslationHandler {
 	}
 	
 	public String translate(String key, ProxiedPlayer player, Object... args) {
-		return manager.translate(key, Main.getDatenServer().getClient().getPlayer(player.getName()), args);
+		return manager.translate(key, Main.getDatenServer().getClient().getPlayerAndLoad(player.getName()), args);
 	}
 
 	public String translate(String key, CommandSender cs, Object... args) {
 		if(cs instanceof ProxiedPlayer)
-			return manager.translate(key, Main.getDatenServer().getClient().getPlayer(cs.getName()), args);
+			return manager.translate(key, Main.getDatenServer().getClient().getPlayerAndLoad(cs.getName()), args);
 		else
 			return translate(key, LanguageType.ENGLISH, args);
 	}
 	
 	public String translateWithPrefix(String key, CommandSender cs, Object... args) {
 		if(cs instanceof ProxiedPlayer)
-			return Main.getTranslationManager().translate("prefix",cs)+manager.translate(key, Main.getDatenServer().getClient().getPlayer(cs.getName()), args);
+			return Main.getTranslationManager().translate("prefix",cs)+manager.translate(key, Main.getDatenServer().getClient().getPlayerAndLoad(cs.getName()), args);
 		else
 			return Main.getTranslationManager().translate("prefix",cs)+translate(key, LanguageType.ENGLISH, args);
 	}
@@ -53,6 +53,8 @@ public class TranslationHandler {
 	}
 
 	public LanguageType getLanguage(ProxiedPlayer player) {
+		if(!Main.getDatenServer().isActive())
+			return LanguageType.ENGLISH;
 		return manager.getLanguage(Main.getDatenServer().getClient().getPlayerAndLoad(player.getName()));
 	}
 	public void registerFallback(LanguageType type,String key,String message){

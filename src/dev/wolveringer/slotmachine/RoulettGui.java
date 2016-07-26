@@ -238,6 +238,8 @@ public class RoulettGui implements HistoryListener {
 					}
 				
 				int winIndex = calculateWinIndex();
+				
+				/*
 				if(puts[winIndex] != 0 && rnd.nextDouble() <= 0.5D){
 					System.out.println("Skipping whin for player "+player.getName());
 					while (winIndex != looseIndex && puts[winIndex] != 0) {
@@ -249,6 +251,7 @@ public class RoulettGui implements HistoryListener {
 						winIndex = calculateWinIndex();
 					}
 				}
+				*/
 				int all = 0;
 				int index = 0;
 				for (int i : puts) {
