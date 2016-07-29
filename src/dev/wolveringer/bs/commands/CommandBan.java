@@ -1,12 +1,14 @@
 package dev.wolveringer.bs.commands;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 import dev.wolveringer.ban.BanServerMessageListener;
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.client.Callback;
 import dev.wolveringer.client.LoadedPlayer;
+import dev.wolveringer.dataserver.ban.BanEntity;
 import dev.wolveringer.dataserver.player.Setting;
 import dev.wolveringer.dataserver.protocoll.packets.PacketOutPlayerSettings.SettingValue;
 import dev.wolveringer.permission.PermissionManager;
@@ -56,6 +58,11 @@ public class CommandBan extends Command{
 			
 			LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(args[0]);
 			cs.sendMessage(Main.getTranslationManager().translate("prefix",cs)+Main.getTranslationManager().translate("command.ban.status.loadingstats", cs));
+			List<BanEntity> bans = player.getBanStats("", 1).getSync();
+			if(bans.size() > 0 && bans.get(0).isActive() && !PermissionManager.getManager().hasPermission(cs, "ban.overban",false)){
+				cs.sendMessage("§cYou cant overban an Player!");
+				return;
+			}
 			String server;
 			String curruntIp = "undefined";
 			if((server = player.getServer().getSyncSave()) != null){

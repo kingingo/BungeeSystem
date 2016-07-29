@@ -56,63 +56,67 @@ public class AfkListener implements PacketHandler<Packet> {
 
 	@Override
 	public void handle(PacketHandleEvent<Packet> e) {
-		if (e.getPacket() instanceof PacketPlayInFlying) {
-			if(BannedServerManager.getInstance().isBanned(e.getPlayer()))
-				return;
-			if (ignore.contains(e.getPlayer()))
-				return;
-			PacketPlayInFlying packet = (PacketPlayInFlying) e.getPacket();
-			if (packet.hasPos()) {
-				CostumServer server;
-				if ((server = CostumServer.getServer(e.getPlayer())) != null) {
-					Location center = server.getConfig().getWorld().getWorldSpawn();
-					
-					if (center.getBlockY() < 0 || center.distanceSquared(packet.getLocation()) > MAX_MOVEAWAY*MAX_MOVEAWAY) {
-						moveBack(e.getPlayer());
-						return;
+		try{
+			if (e.getPacket() instanceof PacketPlayInFlying) {
+				if(BannedServerManager.getInstance().isBanned(e.getPlayer()))
+					return;
+				if (ignore.contains(e.getPlayer()))
+					return;
+				PacketPlayInFlying packet = (PacketPlayInFlying) e.getPacket();
+				if (packet.hasPos()) {
+					CostumServer server;
+					if ((server = CostumServer.getServer(e.getPlayer())) != null) {
+						Location center = server.getConfig().getWorld().getWorldSpawn();
+						
+						if (center.getBlockY() < 0 || center.distanceSquared(packet.getLocation()) > MAX_MOVEAWAY*MAX_MOVEAWAY) {
+							moveBack(e.getPlayer());
+							return;
+						}
+					} else {
+						lastLocation.lock();
+						if (!lastLocation.containsKey(e.getPlayer()))
+							lastLocation.put(e.getPlayer(), new Location(0, 0, 0));
+						if (lastLocation.get(e.getPlayer()).distanceSquared(packet.getLocation()) < 0.5)
+							return;
+						if (!timeoutObject.contains(e.getPlayer())){
+							timeoutObject.add(e.getPlayer());
+						}
+						timeoutObject.resetTime(e.getPlayer());
+						lastLocation.put(e.getPlayer(), packet.getLocation());
+						lastLocation.unlock();
 					}
-				} else {
-					lastLocation.lock();
-					if (!lastLocation.containsKey(e.getPlayer()))
-						lastLocation.put(e.getPlayer(), new Location(0, 0, 0));
-					if (lastLocation.get(e.getPlayer()).distanceSquared(packet.getLocation()) < 1)
+				}
+			} else if (e.getPacket() instanceof PacketPlayInChat) {
+				if(BannedServerManager.getInstance().isBanned(e.getPlayer()))
+					return;
+				if (CostumServer.getServer(e.getPlayer()) != null) {
+					if (ignore.contains(e.getPlayer()))
 						return;
+					moveBack(e.getPlayer());
+					return;
+				} else {
 					if (!timeoutObject.contains(e.getPlayer())){
 						timeoutObject.add(e.getPlayer());
 					}
 					timeoutObject.resetTime(e.getPlayer());
-					lastLocation.put(e.getPlayer(), packet.getLocation());
-					lastLocation.unlock();
 				}
-			}
-		} else if (e.getPacket() instanceof PacketPlayInChat) {
-			if(BannedServerManager.getInstance().isBanned(e.getPlayer()))
-				return;
-			if (CostumServer.getServer(e.getPlayer()) != null) {
+			} else if (e.getPacket() instanceof PacketPlayInBlockDig || e.getPacket() instanceof PacketPlayInBlockPlace) {
+				if(BannedServerManager.getInstance().isBanned(e.getPlayer()))
+					return;
 				if (ignore.contains(e.getPlayer()))
 					return;
-				moveBack(e.getPlayer());
-				return;
-			} else {
-				if (!timeoutObject.contains(e.getPlayer())){
-					timeoutObject.add(e.getPlayer());
+				if (CostumServer.getServer(e.getPlayer()) != null) {
+					moveBack(e.getPlayer());
+					return;
+				} else {
+					if (!timeoutObject.contains(e.getPlayer())){
+						timeoutObject.add(e.getPlayer());
+					}
+					timeoutObject.resetTime(e.getPlayer());
 				}
-				timeoutObject.resetTime(e.getPlayer());
 			}
-		} else if (e.getPacket() instanceof PacketPlayInBlockDig || e.getPacket() instanceof PacketPlayInBlockPlace) {
-			if(BannedServerManager.getInstance().isBanned(e.getPlayer()))
-				return;
-			if (ignore.contains(e.getPlayer()))
-				return;
-			if (CostumServer.getServer(e.getPlayer()) != null) {
-				moveBack(e.getPlayer());
-				return;
-			} else {
-				if (!timeoutObject.contains(e.getPlayer())){
-					timeoutObject.add(e.getPlayer());
-				}
-				timeoutObject.resetTime(e.getPlayer());
-			}
+		}catch(Exception ex){
+			ex.printStackTrace();
 		}
 	}
 

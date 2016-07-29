@@ -28,9 +28,10 @@ import java.util.concurrent.TimeUnit;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
+import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
-public class ChatManager implements PacketHandler {
+public class ChatManager implements PacketHandler, Listener {
 	private static ChatManager instance;
 	private static final int LINE_HISTORY_SIZE = 30;
 	private HashMap<Player, ChatHistory> histories;

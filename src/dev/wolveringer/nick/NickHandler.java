@@ -362,7 +362,7 @@ public class NickHandler implements PacketHandler<Packet>, Listener {
 				if(i.getName() != null)
 					i.setName(replaceNames(i.getName(), PermissionManager.getManager().hasPermission(e.getPlayer(), "tab.nick.see")));
 				if(i.getGameprofile() != null && i.getGameprofile().getName() != null){
-					i.getGameprofile().setName(replaceNames(i.getGameprofile().getName(), PermissionManager.getManager().hasPermission(e.getPlayer(), "nametag.nick.see")));
+					i.getGameprofile().setName(replaceNames(i.getGameprofile().getName(), PermissionManager.getManager().hasPermission(e.getPlayer(), "nametag.nick.see"), 16));
 				}
 			}
 		}
@@ -376,7 +376,7 @@ public class NickHandler implements PacketHandler<Packet>, Listener {
 				}
 				if(sync){
 					for(int i = 0;i<team.getPlayers().length;i++){
-						team.getPlayers()[i] = replaceNames(team.getPlayers()[i], PermissionManager.getManager().hasPermission(e.getPlayer(), "nametag.nick.see"));
+						team.getPlayers()[i] = replaceNames(team.getPlayers()[i], PermissionManager.getManager().hasPermission(e.getPlayer(), "nametag.nick.see"), 40);
 					}
 				}
 				else
@@ -384,7 +384,7 @@ public class NickHandler implements PacketHandler<Packet>, Listener {
 					e.setCancelled(true);
 					ThreadFactory.getFactory().createThread(()->{
 						for(int i = 0;i<team.getPlayers().length;i++){
-							team.getPlayers()[i] = replaceNames(team.getPlayers()[i], PermissionManager.getManager().hasPermission(e.getPlayer(), "nametag.nick.see"));
+							team.getPlayers()[i] = replaceNames(team.getPlayers()[i], PermissionManager.getManager().hasPermission(e.getPlayer(), "nametag.nick.see"), 40);
 						}
 						sendPacket(e.getPlayer(), team);
 					}).start();
@@ -394,7 +394,7 @@ public class NickHandler implements PacketHandler<Packet>, Listener {
 		else if(e.getPacket() instanceof PacketPlayOutScoreboardScore){
 			PacketPlayOutScoreboardScore score = (PacketPlayOutScoreboardScore) e.getPacket();
 			if(score.getScoreName() != null){
-				score.setObjektiveName(replaceNames(score.getObjektiveName(), PermissionManager.getManager().hasPermission(e.getPlayer(), "scoreboard.nick.see")));
+				score.setObjektiveName(replaceNames(score.getObjektiveName(), PermissionManager.getManager().hasPermission(e.getPlayer(), "scoreboard.nick.see"), 40));
 			}
 		}
 		else if(e.getPacket() instanceof PacketPlayOutTitle){
@@ -412,11 +412,22 @@ public class NickHandler implements PacketHandler<Packet>, Listener {
 
 	
 	private static String replaceNames(String str,boolean info){
+		return replaceNames(str, info, -1);
+	}
+	
+	private static String replaceNames(String str,boolean info, int maxlength){
 		Matcher m = PATTERN.matcher(str);
 		while (m.find()) {
-			LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(m.group(1));
-			str = str.replace("{player_"+m.group(1)+"}", player.hasNickname() ? info ? player.getName() : player.getNickname() : player.getName());
+			LoadedPlayer player = Main.getDatenServer().getClient().getPlayer(m.group(1));
+			if(player.isLoaded())
+				str = str.replace("{player_"+m.group(1)+"}", player.hasNickname() ? info ? player.getName() : player.getNickname() : player.getName());
+			else{
+				System.err.println("Cant replace nickname (Player not loaded in replaceNames(String,boolean,int), Player: "+m.group(1)+")");
+				str = str.replace("{player_"+m.group(1)+"}", m.group(1));
+			}
 		}
+		if(maxlength != -1 && str.length()> maxlength)
+			str = str.substring(0, maxlength);
 		return str;
 	}
 
@@ -441,11 +452,16 @@ public class NickHandler implements PacketHandler<Packet>, Listener {
 				add.setText(text.substring(0, m.start()));
 				out.add(add);
 				
-				LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(m.group(1));
+				LoadedPlayer player = Main.getDatenServer().getClient().getPlayer(m.group(1));
 				
 				TextComponent nickname = new TextComponent(comp); //Copy Style
-				nickname.setText(!player.hasNickname() ? m.group(1) : info ? player.getName() : player.getNickname());
-				if(player.hasNickname() && info){
+				if(player.isLoaded())
+					nickname.setText(!player.hasNickname() ? m.group(1) : info ? player.getName() : player.getNickname());
+				else{
+					nickname.setText(m.group(1));
+					System.err.println("Cant replace nickname (Player not loaded in replaceNames(BaseComponent,boolean), Player: "+m.group(1)+")");
+				}
+				if(player.isLoaded() && player.hasNickname() && info){
 					nickname.setItalic(true);
 					nickname.setHoverEvent(new HoverEvent(Action.SHOW_TEXT, new ComponentBuilder("§aDer Spieler §e"+player.getName()+" §aist genickt als §b"+player.getNickname()).create()));
 				}

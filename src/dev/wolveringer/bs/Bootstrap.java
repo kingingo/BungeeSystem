@@ -374,6 +374,7 @@ public class Bootstrap {
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), ServerManager.getManager());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), RoulettHistory.history);
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), NickHandler.getInstance());
+		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), ChatManager.getInstance());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new ChatListener());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new PingListener());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new PlayerJoinListener());

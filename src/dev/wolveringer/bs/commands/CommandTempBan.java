@@ -2,6 +2,7 @@ package dev.wolveringer.bs.commands;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -9,6 +10,7 @@ import dev.wolveringer.ban.BanServerMessageListener;
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.client.Callback;
 import dev.wolveringer.client.LoadedPlayer;
+import dev.wolveringer.dataserver.ban.BanEntity;
 import dev.wolveringer.dataserver.player.Setting;
 import dev.wolveringer.dataserver.protocoll.packets.PacketOutPlayerSettings.SettingValue;
 import dev.wolveringer.permission.PermissionManager;
@@ -40,10 +42,12 @@ public class CommandTempBan extends Command {
 		if (args.length >= 4) {
 			if (!isNumber(args[2])) {
 				cs.sendMessage("§cBan-Level is not a number!");
+				return;
 			}
 			int level = Integer.parseInt(args[2]);
 			if (level < 1 || level > 5) {
 				cs.sendMessage("§cBan-Level out of bounds! [1-5]");
+				return;
 			}
 			switch (level) { //Ban-Level 1 alredy tested
 			case 2:
@@ -78,7 +82,7 @@ public class CommandTempBan extends Command {
 					if(!timeActive)
 						identifier += new String(new char[]{s.charAt(i)});
 				}
-				if(!timeConverts.containsKey(identifier)){
+				if(!timeConverts.containsKey(identifier.toUpperCase())){
 					cs.sendMessage("§cCant find timeconverter for identifier '"+identifier+"'");
 					return;
 				}
@@ -86,7 +90,7 @@ public class CommandTempBan extends Command {
 					cs.sendMessage("§cTime '"+stime+"' isnt a number!");
 					return;
 				}
-				time+=timeConverts.get(identifier).toMillis(Integer.parseInt(stime));
+				time+=timeConverts.get(identifier.toUpperCase()).toMillis(Integer.parseInt(stime));
 			}
 			if(TimeUnit.DAYS.toMillis(14)<time){
 				cs.sendMessage("§cToo long ban time. Maximal temp-time 14D");
@@ -97,6 +101,11 @@ public class CommandTempBan extends Command {
 
 			LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(args[0]);
 			cs.sendMessage("§aChecking player online state.");
+			List<BanEntity> bans = player.getBanStats("", 1).getSync();
+			if(bans.size() > 0 && bans.get(0).isActive() && !PermissionManager.getManager().hasPermission(cs, "ban.overban",false)){
+				cs.sendMessage("§cYou cant overban an Player!");
+				return;
+			}
 			String server;
 			String curruntIp = "undefined";
 			if ((server = player.getServer().getSyncSave()) != null) {
