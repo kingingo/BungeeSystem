@@ -5,13 +5,13 @@ import java.util.ArrayList;
 import dev.wolveringer.BungeeUtil.Material;
 import dev.wolveringer.BungeeUtil.item.Item;
 import dev.wolveringer.BungeeUtil.item.ItemStack.Click;
-import dev.wolveringer.client.threadfactory.ThreadFactory;
 import dev.wolveringer.gamestats.Statistic;
 import dev.wolveringer.gilde.GildSection;
 import dev.wolveringer.gui.Gui;
 import dev.wolveringer.guild.gui.GuiGildeMemberManager;
 import dev.wolveringer.guild.gui.GuiPlayerGildeOverview;
 import dev.wolveringer.item.ItemBuilder;
+import dev.wolveringer.thread.ThreadFactory;
 
 public class GuiGildeSection extends Gui {
 	private GildSection section;

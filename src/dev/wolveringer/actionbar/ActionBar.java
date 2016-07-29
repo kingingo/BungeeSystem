@@ -1,9 +1,10 @@
 package dev.wolveringer.actionbar;
 
 import dev.wolveringer.BungeeUtil.Player;
-import dev.wolveringer.client.threadfactory.ThreadFactory;
-import dev.wolveringer.client.threadfactory.ThreadRunner;
 import dev.wolveringer.permission.PermissionManager;
+import dev.wolveringer.thread.ThreadFactory;
+import dev.wolveringer.thread.ThreadRunner;
+
 import java.beans.ConstructorProperties;
 import java.util.ArrayList;
 import java.util.Collections;

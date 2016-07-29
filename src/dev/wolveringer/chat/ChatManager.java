@@ -4,13 +4,15 @@ import dev.wolveringer.BungeeUtil.PacketHandleEvent;
 import dev.wolveringer.BungeeUtil.PacketHandler;
 import dev.wolveringer.BungeeUtil.Player;
 import dev.wolveringer.BungeeUtil.packets.Abstract.PacketPlayOut;
+import dev.wolveringer.BungeeUtil.packets.Packet;
 import dev.wolveringer.BungeeUtil.packets.PacketPlayOutChat;
 import dev.wolveringer.arrays.CachedArrayList;
 import dev.wolveringer.chat.ChatComponentText;
 import dev.wolveringer.chat.IChatBaseComponent;
-import dev.wolveringer.client.threadfactory.ThreadFactory;
-import dev.wolveringer.client.threadfactory.ThreadRunner;
 import dev.wolveringer.hashmaps.InitHashMap;
+import dev.wolveringer.nick.NickHandler;
+import dev.wolveringer.thread.ThreadFactory;
+import dev.wolveringer.thread.ThreadRunner;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -21,17 +23,18 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.event.EventHandler;
 
-public class ChatManager implements PacketHandler<PacketPlayOutChat> {
+public class ChatManager implements PacketHandler {
 	private static ChatManager instance;
-	private static final int LINE_HISTORY_SIZE = 40;
+	private static final int LINE_HISTORY_SIZE = 30;
 	private HashMap<Player, ChatHistory> histories;
-	private HashMap<Player, List<ChatBoxModifier>> chatBoxes;
+	private HashMap<Player, CopyOnWriteArrayList<ChatBoxModifier>> chatBoxes;
 	private ThreadRunner chatResender;
 	private CachedArrayList<PacketPlayOutChat> ignorePackets;
 
@@ -43,11 +46,11 @@ public class ChatManager implements PacketHandler<PacketPlayOutChat> {
 				return new ChatHistory();
 			}
 		};
-		this.chatBoxes = new InitHashMap<Player, List<ChatBoxModifier>>() {
+		this.chatBoxes = new InitHashMap<Player, CopyOnWriteArrayList<ChatBoxModifier>>() {
 
 			@Override
-			public List<ChatBoxModifier> defaultValue(Player key) {
-				ArrayList<ChatBoxModifier> out = new ArrayList<>();
+			public CopyOnWriteArrayList<ChatBoxModifier> defaultValue(Player key) {
+				CopyOnWriteArrayList<ChatBoxModifier> out = new CopyOnWriteArrayList<>();
 				out.add(new DefaultChatBoxModifier(key, ChatManager.this));
 				return out;
 			}
@@ -74,12 +77,12 @@ public class ChatManager implements PacketHandler<PacketPlayOutChat> {
 		this.chatBoxes.get(player).add(modifier);
 		modifier.redraw();
 	}
-	
+
 	public void removeChatBoxModifier(Player player, String modifier) {
 		List<ChatBoxModifier> mods = this.chatBoxes.get(player);
-		for(ChatBoxModifier m : new ArrayList<>(mods))
-			if(m.getName() != null)
-				if(m.getName().equalsIgnoreCase(modifier))
+		for (ChatBoxModifier m : new ArrayList<>(mods))
+			if (m.getName() != null)
+				if (m.getName().equalsIgnoreCase(modifier))
 					mods.remove(m);
 	}
 
@@ -93,17 +96,17 @@ public class ChatManager implements PacketHandler<PacketPlayOutChat> {
 		Iterator<ChatBoxModifier> modifiers = this.chatBoxes.get((Object) player).iterator();
 		while (modifiers.hasNext()) {
 			ChatBoxModifier modifier = modifiers.next();
-			if(modifier.getPermission() == null || player.hasPermission(modifier.getPermission()))
+			if (modifier.getPermission() == null || player.hasPermission(modifier.getPermission()))
 				return modifier;
 		}
 		return null;
 	}
-	
-	public ChatBoxModifier getChatBoxModifier(Player player,String name) {
+
+	public ChatBoxModifier getChatBoxModifier(Player player, String name) {
 		Iterator<ChatBoxModifier> modifiers = this.chatBoxes.get((Object) player).iterator();
 		while (modifiers.hasNext()) {
 			ChatBoxModifier modifier = modifiers.next();
-			if(modifier.getName().equalsIgnoreCase(name))
+			if (modifier.getName().equalsIgnoreCase(name))
 				return modifier;
 		}
 		return null;
@@ -116,40 +119,52 @@ public class ChatManager implements PacketHandler<PacketPlayOutChat> {
 	}
 
 	private void resendHistory(Player player) {
-		Iterator<IChatBaseComponent> comps = this.histories.get((Object) player).getLines().iterator();
-		while (comps.hasNext()) {
-			this.sendMessage(player, comps.next());
+		try {
+			Iterator<IChatBaseComponent> comps = this.histories.get((Object) player).getLines().iterator();
+			while (comps.hasNext()) {
+				this.sendMessage(player, comps.next());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
 	private void sendMessage(Player player, IChatBaseComponent comp) {
 		PacketPlayOutChat packet = new PacketPlayOutChat(comp);
 		this.ignorePackets.add(packet);
+		//NickHandler.whitelist.add(packet);
 		player.sendPacket((PacketPlayOut) packet);
 	}
 
-	public void handle(PacketHandleEvent<PacketPlayOutChat> e) {
+	public void handle(PacketHandleEvent e) {
+		e.setCancelled(handle0(e));
+	}
+	
+	public boolean handle0(PacketHandleEvent e) {
+		if (!(e.getPacket() instanceof PacketPlayOutChat))
+			return false;
+		System.out.println("handle chat packet");
 		if (((PacketPlayOutChat) e.getPacket()).getModus() == 2 || this.ignorePackets.contains((Object) e.getPacket())) {
-			return;
+			return false;
 		}
 		ChatBoxModifier mod = getChatBoxModifier(e.getPlayer());
-		
-		ThreadFactory.getFactory().createThread(()->{
-			try {
-				Thread.sleep(5);
-			} catch (Exception e1) {}
-			synchronized (histories) {
-				this.histories.get((Object) e.getPlayer()).addMessage(((PacketPlayOutChat) e.getPacket()).getMessage());
-			}
-			if (mod instanceof DefaultChatBoxModifier) {
-				return;
-			}
-			mod.redraw();
-		}).start(); //Invoke after event fiered!
-		if (mod instanceof DefaultChatBoxModifier) {
-			return;
+
+		//		ThreadFactory.getFactory().createThread(()->{
+		//			try {
+		//				Thread.sleep(5);
+		//			} catch (Exception e1) {}
+		synchronized (histories) {
+			this.histories.get((Object) e.getPlayer()).addMessage(((PacketPlayOutChat) e.getPacket()).getMessage());
 		}
-		e.setCancelled(true);
+		if (mod instanceof DefaultChatBoxModifier) {
+			return false;
+		}
+		mod.redraw();
+		//		}).start(); //Invoke after event fiered!
+		//		if (mod instanceof DefaultChatBoxModifier) {
+		//			return;
+		//		}
+		return true;
 	}
 
 	public static ChatManager getInstance() {
@@ -162,7 +177,7 @@ public class ChatManager implements PacketHandler<PacketPlayOutChat> {
 
 	private static final class DefaultChatBoxModifier extends ChatBoxModifier {
 		public DefaultChatBoxModifier(Player player, ChatManager handle) {
-			super("default", 0 ,player, handle, new ArrayList<IChatBaseComponent>());
+			super("default", 0, player, handle, new ArrayList<IChatBaseComponent>());
 		}
 	}
 
@@ -185,8 +200,6 @@ public class ChatManager implements PacketHandler<PacketPlayOutChat> {
 				this.handle.sendMessage(this.player, s);
 			}
 		}
-		
-		
 
 		public Player getPlayer() {
 			return this.player;
@@ -215,7 +228,7 @@ public class ChatManager implements PacketHandler<PacketPlayOutChat> {
 			this.player = player;
 			this.handle = handle;
 			this.footer = new ArrayList<>();
-			for(String m : footer)
+			for (String m : footer)
 				this.footer.add(ChatSerializer.fromMessage(m));
 		}
 	}
@@ -231,7 +244,7 @@ public class ChatManager implements PacketHandler<PacketPlayOutChat> {
 
 		public void addMessage(IChatBaseComponent message) {
 			this.stack.add(message);
-			if (this.stack.size() > 20) {
+			if (this.stack.size() > LINE_HISTORY_SIZE) {
 				this.stack.pollFirst();
 			}
 		}

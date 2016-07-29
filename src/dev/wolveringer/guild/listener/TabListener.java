@@ -16,7 +16,6 @@ import dev.wolveringer.chat.ChatMessage;
 import dev.wolveringer.chat.ChatSerializer;
 import dev.wolveringer.chat.IChatBaseComponent;
 import dev.wolveringer.client.LoadedPlayer;
-import dev.wolveringer.client.threadfactory.ThreadFactory;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.plugin.PluginManager;

@@ -9,7 +9,6 @@ import dev.wolveringer.BungeeUtil.item.Item;
 import dev.wolveringer.BungeeUtil.item.ItemStack.Click;
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.client.LoadedPlayer;
-import dev.wolveringer.client.threadfactory.ThreadFactory;
 import dev.wolveringer.gilde.Gilde;
 import dev.wolveringer.gilde.GildeType;
 import dev.wolveringer.gui.Gui;
@@ -17,6 +16,7 @@ import dev.wolveringer.gui.GuiStatusPrint;
 import dev.wolveringer.gui.GuiWaiting;
 import dev.wolveringer.guild.gui.section.SectionRegestry;
 import dev.wolveringer.item.ItemBuilder;
+import dev.wolveringer.thread.ThreadFactory;
 
 public class GuiGildeAdminOverview extends Gui{
 	private static HashMap<GildeType, Integer> itemMapping = new HashMap<>();

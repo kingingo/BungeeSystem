@@ -8,10 +8,10 @@ import dev.wolveringer.bs.client.event.ServerMessageEvent;
 import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.client.connection.State;
 import dev.wolveringer.client.external.BungeeCordActionListener;
-import dev.wolveringer.client.threadfactory.ThreadFactory;
 import dev.wolveringer.dataserver.player.Setting;
 import dev.wolveringer.dataserver.protocoll.DataBuffer;
 import dev.wolveringer.permission.PermissionManager;
+import dev.wolveringer.thread.ThreadFactory;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -118,5 +118,10 @@ public class ClientExternalHandler implements BungeeCordActionListener{
 	public void error(State state, Exception e) {
 		System.out.println("§cError while "+state);
 		e.printStackTrace();
+	}
+	
+	@Override
+	public boolean isOnline(String name) {
+		return BungeeCord.getInstance().getPlayer(name) != null && BungeeCord.getInstance().getPlayer(name).isConnected();
 	}
 }

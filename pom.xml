@@ -85,6 +85,7 @@
 	                	<include>dev.wolveringer:BungeeCordSystem</include>
 	                	<include>org.apache.commons:commons-io</include>
 	                	<include>org.apache.commons:commons-lang3</include>
+	                	<include>dev.wolveringer:ThreadManager</include>
 	                	<groupId>org.apache.commons</groupId>
 	                	<groupId></groupId>
 	                </includes>
@@ -197,6 +198,11 @@
 			<groupId>dev.wolveringer</groupId>
 			<artifactId>CostumServer</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			 <groupId>dev.wolveringer</groupId>
+ 			 <artifactId>ThreadManager</artifactId>
+  			 <version>1.0</version>
 		</dependency>
 	</dependencies>
 </project>

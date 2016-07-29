@@ -2,6 +2,7 @@ package dev.wolveringer.bs.commands;
 
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.bs.client.event.ServerMessageEvent;
+import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.client.connection.ClientType;
 import dev.wolveringer.dataserver.player.LanguageType;
 import dev.wolveringer.dataserver.protocoll.DataBuffer;
@@ -60,8 +61,9 @@ public class CommandPerformance extends Command implements Listener {
 	public void a(ServerMessageEvent e) {
 		if (e.getChannel().equalsIgnoreCase("performance")) {
 			int sender = e.getBuffer().readInt();
+			LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(sender);
 			Runtime run = Runtime.getRuntime();
-			Main.getDatenServer().getClient().sendMessage(sender, Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.performance.info", sender,Main.getInstance().getServerId(),BungeeCord.getInstance().getOnlineCount(),getAvgPing(),(run.totalMemory()-run.freeMemory()) / (1024*1024),run.maxMemory()/(1024*1024)));
+			Main.getDatenServer().getClient().sendMessage(sender, Main.getTranslationManager().translate("prefix", player)+Main.getTranslationManager().translate("command.performance.info", player,Main.getInstance().getServerId(),BungeeCord.getInstance().getOnlineCount(),getAvgPing(),(run.totalMemory()-run.freeMemory()) / (1024*1024),run.maxMemory()/(1024*1024)));
 		}
 	}
 }

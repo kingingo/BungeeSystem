@@ -7,6 +7,7 @@ import java.util.List;
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.bukkit.permissions.PermissionType;
 import dev.wolveringer.client.ClientWrapper;
+import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.client.connection.Client;
 import dev.wolveringer.dataserver.protocoll.packets.PacketOutServerStatus;
 import net.md_5.bungee.BungeeCord;
@@ -111,7 +112,9 @@ public class BungeecordDatenClient {
 		});
 		System.out.println("Loading players");
 		for (ProxiedPlayer player : BungeeCord.getInstance().getPlayers()) {
-			Main.getDatenServer().getClient().getPlayerAndLoad(player.getName()).setServerSync(player.getServer().getInfo().getName()); //Loading player
+			LoadedPlayer lplayer = Main.getDatenServer().getClient().getPlayerAndLoad(player.getName());
+			lplayer.setServerSync(player.getServer().getInfo().getName()); //Loading player
+			lplayer.setIp(player.getPendingConnection().getAddress().getAddress().getHostAddress());
 		}
 		System.out.println("players loaded");
 	}

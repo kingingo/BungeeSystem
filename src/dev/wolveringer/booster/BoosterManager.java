@@ -5,11 +5,11 @@ import java.util.HashMap;
 import dev.wolveringer.actionbar.ActionBar;
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.bs.listener.PlayerJoinListener;
-import dev.wolveringer.client.threadfactory.ThreadFactory;
 import dev.wolveringer.event.EventListener;
 import dev.wolveringer.events.Event;
 import dev.wolveringer.events.booster.BoosterStatusChangeEvent;
 import dev.wolveringer.hashmaps.InitHashMap;
+import dev.wolveringer.thread.ThreadFactory;
 import net.md_5.bungee.BungeeCord;
 
 public class BoosterManager implements EventListener {

@@ -58,6 +58,7 @@ import dev.wolveringer.bs.commands.CommandServer;
 import dev.wolveringer.bs.commands.CommandSkin;
 import dev.wolveringer.bs.commands.CommandSky;
 import dev.wolveringer.bs.commands.CommandTBuild;
+import dev.wolveringer.bs.commands.CommandTeamspeak;
 import dev.wolveringer.bs.commands.CommandTempBan;
 import dev.wolveringer.bs.commands.CommandUnban;
 import dev.wolveringer.bs.commands.CommandVersus;
@@ -86,8 +87,6 @@ import dev.wolveringer.bs.login.PlayerDisconnectListener;
 import dev.wolveringer.bs.message.MessageManager;
 import dev.wolveringer.bs.servermanager.ServerManager;
 import dev.wolveringer.chat.ChatManager;
-import dev.wolveringer.client.threadfactory.ThreadFactory;
-import dev.wolveringer.client.threadfactory.ThreadRunner;
 import dev.wolveringer.event.EventListener;
 import dev.wolveringer.event.EventManager;
 import dev.wolveringer.events.Event;
@@ -106,6 +105,9 @@ import dev.wolveringer.server.packets.PacketPlayOutMapChunk;
 import dev.wolveringer.server.world.WorldFileReader;
 import dev.wolveringer.skin.SkinCacheManager;
 import dev.wolveringer.slotmachine.RoulettHistory;
+import dev.wolveringer.teamspeak.TeamspeakListener;
+import dev.wolveringer.thread.ThreadFactory;
+import dev.wolveringer.thread.ThreadRunner;
 import dev.wolveringer.util.UtilReflection;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -120,6 +122,7 @@ import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
 import net.md_5.bungee.protocol.Protocol;
 import net.md_5.bungee.protocol.ProtocolConstants.Direction;
+import net.md_5.bungee.protocol.packet.Team;
 
 @AllArgsConstructor
 public class Bootstrap {
@@ -136,12 +139,13 @@ public class Bootstrap {
 			Class.forName(UtilBungeeCord.class.getName());
 		} catch (ClassNotFoundException ex) {
 		}
-		ThreadFactory.setFactory(new ThreadFactory() {
+		ThreadFactory.setInstance(new ThreadFactory() {
 			@Override
 			public ThreadRunner createThread(Runnable run) {
 				return new ThreadRunner() {
 					ScheduledTask task;
 					Thread current;
+					
 					@Override
 					public void stop() {
 						if(task != null){
@@ -181,6 +185,16 @@ public class Bootstrap {
 								}
 							}
 						});
+					}
+					
+					@Override
+					public String toString() {
+						return current != null ? current.toString()+"/RUNNING" : super.toString()+"/STOPPED";
+					}
+
+					@Override
+					public Thread getThread() {
+						return current;
 					}
 				};
 			}
@@ -353,11 +367,13 @@ public class Bootstrap {
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CMD_BOOSTER());
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandRoulett());
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandNick());
+		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandTeamspeak());
 		//BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandGilde());
 		
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), InformationManager.getManager());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), ServerManager.getManager());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), RoulettHistory.history);
+		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), NickHandler.getInstance());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new ChatListener());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new PingListener());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new PlayerJoinListener());
@@ -384,8 +400,8 @@ public class Bootstrap {
 		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutEntityProperties.class, new Packet.ProtocollId(BigClientVersion.v1_8, 0x20), new Packet.ProtocollId(BigClientVersion.v1_9, 0x4B) , new Packet.ProtocollId(ProtocollVersion.v1_9_2, 0x4A), new Packet.ProtocollId(ProtocollVersion.v1_9_3, 0x4A), new Packet.ProtocollId(ProtocollVersion.v1_9_4, 0x4A), new Packet.ProtocollId(BigClientVersion.v1_10, 0x4A)); //Change?
 		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutUpdateSign.class, new Packet.ProtocollId(BigClientVersion.v1_8, 0x33), new Packet.ProtocollId(BigClientVersion.v1_9, 0x46), new Packet.ProtocollId(BigClientVersion.v1_10, 0x46));
 		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutSetExperience.class, new Packet.ProtocollId(BigClientVersion.v1_8, 0x1F), new Packet.ProtocollId(BigClientVersion.v1_9, 0x3D), new Packet.ProtocollId(BigClientVersion.v1_10, 0x3D));
-		PacketLib.addHandler(NickHandler.getInstance()); //Register before chat log!
-		PacketLib.addHandler(ChatManager.getInstance());
+		PacketLib.addHandler(NickHandler.getInstance(), 100); //Register before chat log! Use chat handle self
+		//PacketLib.addHandler(ChatManager.getInstance(), 50);
 		
 		if (!WorldFileReader.isWorld(new File(conf.getString("server.afk.world")))) {
 			System.out.println("§cCant create AFK server!");
@@ -427,7 +443,9 @@ public class Bootstrap {
 				}
 			}
 		});
-
+		
+		emanager.getEventManager(EventType.TEAMSPEAK_LINK_REQUEST).setEventEnabled(true);
+		emanager.registerListener(new TeamspeakListener());
 		//PacketLib.addHandler(new TabListener());
 
 		Main.loaded = true;

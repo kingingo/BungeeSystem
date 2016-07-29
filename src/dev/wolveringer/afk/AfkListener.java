@@ -17,10 +17,10 @@ import dev.wolveringer.ban.BannedServerManager;
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.bs.message.MessageManager;
 import dev.wolveringer.bs.servermanager.ServerManager;
-import dev.wolveringer.client.threadfactory.ThreadFactory;
 import dev.wolveringer.hashmaps.CachedHashMap;
 import dev.wolveringer.server.CostumServer;
 import dev.wolveringer.server.ServerConfiguration;
+import dev.wolveringer.thread.ThreadFactory;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.event.ServerConnectEvent;
 

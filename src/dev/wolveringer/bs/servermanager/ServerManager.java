@@ -14,6 +14,7 @@ import dev.wolveringer.mysql.MySQL;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.BungeeServerInfo;
 import net.md_5.bungee.api.config.ServerInfo;
+import net.md_5.bungee.api.connection.Server;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
@@ -229,5 +230,8 @@ public class ServerManager implements Listener{
 				delServer(name);
 			}
 		}
+	}
+	public boolean isLobbyServer(Server server) {
+		return server.getInfo().getName().startsWith("hub") || server.getInfo().getName().startsWith("premium") || server.getInfo().getName().startsWith("login");
 	}
 }

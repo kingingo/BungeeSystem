@@ -3,8 +3,8 @@ package dev.wolveringer.gui;
 import dev.wolveringer.BungeeUtil.Player;
 import dev.wolveringer.api.inventory.Inventory;
 import dev.wolveringer.api.inventory.ItemContainer;
-import dev.wolveringer.client.threadfactory.ThreadFactory;
-import dev.wolveringer.client.threadfactory.ThreadRunner;
+import dev.wolveringer.thread.ThreadFactory;
+import dev.wolveringer.thread.ThreadRunner;
 
 public abstract class GuiUpdating extends Gui{
 	private ThreadRunner pid;

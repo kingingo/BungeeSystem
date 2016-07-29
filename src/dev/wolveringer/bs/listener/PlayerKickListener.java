@@ -15,10 +15,10 @@ public class PlayerKickListener implements Listener{
 	@EventHandler
 	public void onServerKickEvent(ServerKickEvent ev) {
 		if (ev.getKickReason().contains("Es joinen grad zu viele Spieler bitte versuch es später erneut") || ev.getKickedFrom().getName().startsWith("login")) {
-			ev.getPlayer().disconnect(ev.getKickReason());
+			ev.getPlayer().disconnect(ev.getKickReasonComponent());
 			return;
 		}
-		if (ev.getKickReason().toLowerCase().contains("wartungsmodus") || ev.getKickReason().toLowerCase().contains("version") || ev.getKickReason().toLowerCase().contains("outdated")) {
+		if (ev.getPlayer().getServer() == null) {
 			ev.getPlayer().disconnect(ev.getKickReasonComponent());
 			return;
 		}
@@ -36,7 +36,8 @@ public class PlayerKickListener implements Listener{
 		}
 
 		ev.setCancelled(true);
-
+		if(ServerManager.getManager().isLobbyServer(ev.getPlayer().getServer()))
+			return;
 		if (!LoginManager.getManager().isLoggedIn(ev.getPlayer())) {
 			ev.setCancelServer(ServerManager.getManager().nextLoginLobby());
 			ev.getPlayer().sendMessage("§c[Login-Fallback] Server: " + ev.getCancelServer().getName());

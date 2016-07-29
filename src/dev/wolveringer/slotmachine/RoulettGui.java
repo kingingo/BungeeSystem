@@ -13,7 +13,6 @@ import dev.wolveringer.booster.GuiIntegerSelect;
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.client.Callback;
 import dev.wolveringer.client.connection.ClientType;
-import dev.wolveringer.client.threadfactory.ThreadFactory;
 import dev.wolveringer.dataserver.gamestats.StatsKey;
 import dev.wolveringer.dataserver.protocoll.DataBuffer;
 import dev.wolveringer.dataserver.protocoll.packets.PacketOutPacketStatus;
@@ -22,6 +21,7 @@ import dev.wolveringer.dataserver.protocoll.packets.PacketOutPacketStatus.Error;
 import dev.wolveringer.item.ItemBuilder;
 import dev.wolveringer.slotmachine.RoulettHistory.HistoryItem;
 import dev.wolveringer.slotmachine.RoulettHistory.HistoryListener;
+import dev.wolveringer.thread.ThreadFactory;
 
 public class RoulettGui implements HistoryListener {
 	private static final String BANK_NAME = "WolverinDEV";
@@ -206,7 +206,7 @@ public class RoulettGui implements HistoryListener {
 		ArrayList<HistoryItem> out = new ArrayList<>(RoulettHistory.getHistory().getList());
 		Collections.reverse(out);
 		for (HistoryItem item : out) {
-			builder.lore("§e" + Main.getDatenServer().getClient().getPlayerAndLoad(item.getPlayerId()).getName() + " §7put §b" + item.getPut() + " Gems §7on " + getBetType(item.getBetOn()) + " §7and " + (item.getBalance() > 0 ? "§awon " + item.getBalance() + " Gems" : "§cloose " + (item.getBalance() * -1) + " Gems") + "§7.");
+			builder.lore("§e" + item.getPlayer() + " §7put §b" + item.getPut() + " Gems §7on " + getBetType(item.getBetOn()) + " §7and " + (item.getBalance() > 0 ? "§awon " + item.getBalance() + " Gems" : "§cloose " + (item.getBalance() * -1) + " Gems") + "§7.");
 		}
 		inv.setItem(0, builder.build());
 	}
@@ -256,7 +256,7 @@ public class RoulettGui implements HistoryListener {
 				int index = 0;
 				for (int i : puts) {
 					if (i != 0)
-						RoulettHistory.getHistory().add(Main.getDatenServer().getClient().getPlayerAndLoad(player.getName()).getPlayerId(), index, i, i * (index == winIndex ? multiply[winIndex] : -1));
+						RoulettHistory.getHistory().add(Main.getDatenServer().getClient().getPlayerAndLoad(player.getName()).getNickname(), index, i, i * (index == winIndex ? multiply[winIndex] : -1));
 					all += i;
 					index++;
 				}

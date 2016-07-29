@@ -5,12 +5,12 @@ import java.util.Random;
 import dev.wolveringer.BungeeUtil.Player;
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.client.LoadedPlayer;
-import dev.wolveringer.client.threadfactory.ThreadFactory;
 import dev.wolveringer.dataserver.protocoll.packets.PacketReportRequest.RequestType;
 import dev.wolveringer.permission.PermissionManager;
 import dev.wolveringer.report.ReportEntity;
 import dev.wolveringer.report.ReportState;
 import dev.wolveringer.report.gui.GuiPlayerMenue;
+import dev.wolveringer.thread.ThreadFactory;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.plugin.Command;
 

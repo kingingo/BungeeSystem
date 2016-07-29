@@ -30,7 +30,7 @@ public class RoulettHistory implements Listener {
 	@AllArgsConstructor
 	@Getter
 	public static class HistoryItem {
-		private int playerId;
+		private String player;
 		private int betOn;
 		private int put;
 		private int balance;
@@ -39,8 +39,8 @@ public class RoulettHistory implements Listener {
 	private LinkedList<HistoryItem> list = new LinkedList<>();
 	private ArrayList<HistoryListener> listener = new ArrayList<>();
 	
-	public void add(int player,int betOn,int put,int balance){
-		Main.getDatenServer().getClient().sendServerMessage(ClientType.BUNGEECORD, "roulett", new DataBuffer().writeInt(player).writeInt(betOn).writeInt(put).writeInt(balance));
+	public void add(String player,int betOn,int put,int balance){
+		Main.getDatenServer().getClient().sendServerMessage(ClientType.BUNGEECORD, "roulett", new DataBuffer().writeString(player).writeInt(betOn).writeInt(put).writeInt(balance));
 		list.add(new HistoryItem(player, betOn, put, balance));
 		if(list.size() > 10)
 			list.pollFirst();
@@ -63,7 +63,7 @@ public class RoulettHistory implements Listener {
 	@EventHandler
 	public void a(ServerMessageEvent e) {
 		if (e.getChannel().equalsIgnoreCase("roulett")) {
-			list.add(new HistoryItem(e.getBuffer().readInt(), e.getBuffer().readInt(), e.getBuffer().readInt(), e.getBuffer().readInt()));
+			list.add(new HistoryItem(e.getBuffer().readString(), e.getBuffer().readInt(), e.getBuffer().readInt(), e.getBuffer().readInt()));
 			if(list.size() > 10)
 				list.pollFirst();
 			for(HistoryListener l : listener)

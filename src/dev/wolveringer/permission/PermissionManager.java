@@ -292,7 +292,7 @@ public class PermissionManager implements Listener {
 						}
 						out.writeString(g.getPrefix());
 						out.writeInt(g.getImportance());
-						System.out.print("Requesting group permission "+player.getName()+" Action "+action);
+						System.out.print("Requesting group permissions for group "+group);
 						sendToBukkit(packetUUID, out, player.getServer().getInfo()); //Response (Permissions) [UUID (packet)] [INT perms-Length] [STRING[] perms] [STRING name]
 					}
 				}

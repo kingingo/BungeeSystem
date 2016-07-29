@@ -11,10 +11,10 @@ import dev.wolveringer.bs.Main;
 import dev.wolveringer.chat.ChatManager;
 import dev.wolveringer.chat.IChatBaseComponent;
 import dev.wolveringer.chat.ChatManager.ChatBoxModifier;
-import dev.wolveringer.client.threadfactory.ThreadFactory;
-import dev.wolveringer.client.threadfactory.ThreadRunner;
 import dev.wolveringer.dataserver.protocoll.packets.PacketReportRequest.RequestType;
 import dev.wolveringer.report.ReportEntity;
+import dev.wolveringer.thread.ThreadFactory;
+import dev.wolveringer.thread.ThreadRunner;
 import lombok.Getter;
 import lombok.Setter;
 
