@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -332,10 +334,14 @@ public class NickHandler implements PacketHandler<Packet>, Listener {
 	@Setter
 	private static NickHandler instance;
 	private CachedArrayList<Packet> whitelist = new CachedArrayList<>(1, TimeUnit.SECONDS);
-			
+	private ReentrantLock whitelistLock = new ReentrantLock(true);
+
 	@Override
 	public void handle(PacketHandleEvent<Packet> e) {
-		if(whitelist.contains(e.getPacket()))
+		whitelistLock.lock();
+		boolean contains = whitelist.contains(e.getPacket());
+		whitelistLock.unlock();
+		if(contains)
 			return;
 		if (e.getPacket() instanceof PacketPlayOutChat) {
 			PacketPlayOutChat chat = (PacketPlayOutChat) e.getPacket();
@@ -406,7 +412,9 @@ public class NickHandler implements PacketHandler<Packet>, Listener {
 	}
 	
 	public void sendPacket(Player player, Packet packet) {
+		whitelistLock.lock();
 		whitelist.add(packet);
+		whitelistLock.unlock();
 		player.getInitialHandler().sendPacket(packet);
 	}
 
@@ -422,7 +430,7 @@ public class NickHandler implements PacketHandler<Packet>, Listener {
 			if(player.isLoaded())
 				str = str.replace("{player_"+m.group(1)+"}", player.hasNickname() ? info ? player.getName() : player.getNickname() : player.getName());
 			else{
-				System.err.println("Cant replace nickname (Player not loaded in replaceNames(String,boolean,int), Player: "+m.group(1)+")");
+//				System.err.println("Cant replace nickname (Player not loaded in replaceNames(String,boolean,int), Player: "+m.group(1)+")");
 				str = str.replace("{player_"+m.group(1)+"}", m.group(1));
 			}
 		}
@@ -459,7 +467,7 @@ public class NickHandler implements PacketHandler<Packet>, Listener {
 					nickname.setText(!player.hasNickname() ? m.group(1) : info ? player.getName() : player.getNickname());
 				else{
 					nickname.setText(m.group(1));
-					System.err.println("Cant replace nickname (Player not loaded in replaceNames(BaseComponent,boolean), Player: "+m.group(1)+")");
+//					System.err.println("Cant replace nickname (Player not loaded in replaceNames(BaseComponent,boolean), Player: "+m.group(1)+")");
 				}
 				if(player.isLoaded() && player.hasNickname() && info){
 					nickname.setItalic(true);

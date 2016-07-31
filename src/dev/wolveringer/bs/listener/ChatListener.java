@@ -129,7 +129,8 @@ public class ChatListener implements Listener {
 					if(target.hasNickname() && !PermissionManager.getManager().hasPermission(p, "sendmassege.to.unnicked") && targetOnline)
 						target = null;
 					if(target != null && !targetOnline){
-						for(String s : Main.getDatenServer().getPlayers())
+						List<String> players = new ArrayList<>(Main.getDatenServer().getPlayers());
+						for(String s : players)
 							if(Main.getDatenServer().getClient().getPlayerAndLoad(s).getNickname().equalsIgnoreCase(player)){
 								target = Main.getDatenServer().getClient().getPlayerAndLoad(s);
 								player = target.getName();

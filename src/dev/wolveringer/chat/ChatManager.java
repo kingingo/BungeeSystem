@@ -144,7 +144,7 @@ public class ChatManager implements PacketHandler, Listener {
 	public boolean handle0(PacketHandleEvent e) {
 		if (!(e.getPacket() instanceof PacketPlayOutChat))
 			return false;
-		System.out.println("handle chat packet");
+//		System.out.println("handle chat packet");
 		if (((PacketPlayOutChat) e.getPacket()).getModus() == 2 || this.ignorePackets.contains((Object) e.getPacket())) {
 			return false;
 		}

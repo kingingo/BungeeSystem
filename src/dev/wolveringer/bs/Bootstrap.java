@@ -139,6 +139,7 @@ public class Bootstrap {
 			Class.forName(UtilBungeeCord.class.getName());
 		} catch (ClassNotFoundException ex) {
 		}
+		if (false)
 		ThreadFactory.setInstance(new ThreadFactory() {
 			@Override
 			public ThreadRunner createThread(Runnable run) {
