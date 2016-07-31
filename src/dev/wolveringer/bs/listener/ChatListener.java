@@ -165,7 +165,8 @@ public class ChatListener implements Listener {
 
 			if (nameStart.length() >= 2) {
 				boolean unnickedNames = PermissionManager.getManager().hasPermission((ProxiedPlayer) e.getSender(), "tabcomplete.unnicked");
-				for (String s : Main.getDatenServer().getPlayers()) {
+				List<String> players = new ArrayList<>(Main.getDatenServer().getPlayers());
+				for (String s : players) {
 					if (s == null) {
 						System.err.println("[ChatListener]: TabCompleteEvent s == NULL !?");
 						continue;

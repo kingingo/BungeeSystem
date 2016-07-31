@@ -122,7 +122,6 @@ import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
 import net.md_5.bungee.protocol.Protocol;
 import net.md_5.bungee.protocol.ProtocolConstants.Direction;
-import net.md_5.bungee.protocol.packet.Team;
 
 @AllArgsConstructor
 public class Bootstrap {

@@ -7,7 +7,6 @@ import java.util.concurrent.TimeUnit;
 import dev.wolveringer.BungeeUtil.Player;
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.bs.client.event.ServerMessageEvent;
-import dev.wolveringer.bs.servermanager.ServerManager;
 import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.client.PacketHandleErrorException;
 import dev.wolveringer.client.ProgressFuture;
@@ -20,7 +19,6 @@ import dev.wolveringer.dataserver.protocoll.DataBuffer;
 import dev.wolveringer.maps.CachedHashMap;
 import lombok.Getter;
 import net.md_5.bungee.BungeeCord;
-import net.md_5.bungee.api.event.ServerConnectEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
@@ -56,12 +54,13 @@ public class BanServerMessageListener implements Listener{
 	
 	public void updateBan(LoadedPlayer player,boolean active){
 		List<BanEntity> entries = player.getBanStats(player.getSettings(Setting.CURRUNT_IP).getSync()[0].getValue(),1).getSync();
-		if (entries.size() > 0 && entries.get(0).isActive()) {
-			BannedServerManager.getInstance().joinServer((Player) BungeeCord.getInstance().getPlayer(player.getName()), entries.get(0));
+		Player plr = (Player) BungeeCord.getInstance().getPlayer(player.getName());
+		if (plr != null && plr.isConnected()) {
+			if (!entries.isEmpty() && entries.get(0).isActive()) {
+				BannedServerManager.getInstance().joinServer(plr, entries.get(0));
+			} else if (BannedServerManager.getInstance().isBanned(plr))
+				BannedServerManager.getInstance().unban(plr);
 		}
-		else
-			if(BannedServerManager.getInstance().isBanned((Player) BungeeCord.getInstance().getPlayer(player.getName())))
-				BannedServerManager.getInstance().unban((Player) BungeeCord.getInstance().getPlayer(player.getName()));
 	}
 	
 	public ProgressFuture<Boolean> movePlayer(LoadedPlayer player,boolean active){
