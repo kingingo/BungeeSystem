@@ -143,12 +143,12 @@ public class ChatListener implements Listener {
 					}
 					
 					if (target != null && BungeeCord.getInstance().getPlayer(player) != null) {
-						BungeeCord.getInstance().getPlayer(player).sendMessage("§8[§6»§o {player_" + p.getName() + "}§8] §7" + message);
-						p.sendMessage("§8[§6§o{player_" + player + "} §6»§8] §7" + message);
+						BungeeCord.getInstance().getPlayer(player).sendMessage("§8[§6»§o " + p.getName() + "§8] §7" + message);
+						p.sendMessage("§8[§6§o" + player + " §6»§8] §7" + message);
 					} else {
 						if (target != null && targetOnline) {
-							p.sendMessage("§8[§6§o{player_" + player + "} §6»§8] §7" + message);
-							Main.getDatenServer().getClient().sendMessage(target.getPlayerId(), "§8[§o§6» {player_" + p.getName() + "}§8] §7" + message);
+							p.sendMessage("§8[§6§o" + player + " §6»§8] §7" + message);
+							Main.getDatenServer().getClient().sendMessage(target.getPlayerId(), "§8[§o§6» " + p.getName() + "§8] §7" + message);
 						} else
 							p.sendMessage("§cTarget player isnt online.");
 					}

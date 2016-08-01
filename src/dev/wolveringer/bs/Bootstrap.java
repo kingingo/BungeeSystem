@@ -333,7 +333,7 @@ public class Bootstrap {
 		ServerManager.setManager(new ServerManager());
 		ServerManager.getManager().loadServers();
 		MessageManager.start();
-		NickHandler.setInstance(new NickHandler());
+//		NickHandler.setInstance(new NickHandler());
 		RoulettHistory.history = new RoulettHistory();
 		BungeeCord.getInstance().getScheduler().runAsync(Main.getInstance(), new Runnable() {
 			public void run() {
@@ -388,7 +388,7 @@ public class Bootstrap {
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), InformationManager.getManager());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), ServerManager.getManager());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), RoulettHistory.history);
-		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), NickHandler.getInstance());
+//		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), NickHandler.getInstance());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), ChatManager.getInstance());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new ChatListener());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new PingListener());
@@ -416,7 +416,7 @@ public class Bootstrap {
 		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutEntityProperties.class, new Packet.ProtocollId(BigClientVersion.v1_8, 0x20), new Packet.ProtocollId(BigClientVersion.v1_9, 0x4B) , new Packet.ProtocollId(ProtocollVersion.v1_9_2, 0x4A), new Packet.ProtocollId(ProtocollVersion.v1_9_3, 0x4A), new Packet.ProtocollId(ProtocollVersion.v1_9_4, 0x4A), new Packet.ProtocollId(BigClientVersion.v1_10, 0x4A)); //Change?
 		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutUpdateSign.class, new Packet.ProtocollId(BigClientVersion.v1_8, 0x33), new Packet.ProtocollId(BigClientVersion.v1_9, 0x46), new Packet.ProtocollId(BigClientVersion.v1_10, 0x46));
 		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutSetExperience.class, new Packet.ProtocollId(BigClientVersion.v1_8, 0x1F), new Packet.ProtocollId(BigClientVersion.v1_9, 0x3D), new Packet.ProtocollId(BigClientVersion.v1_10, 0x3D));
-		PacketLib.addHandler(NickHandler.getInstance(), 100); //Register before chat log! Use chat handle self
+//		PacketLib.addHandler(NickHandler.getInstance(), 100); //Register before chat log! Use chat handle self
 		//PacketLib.addHandler(ChatManager.getInstance(), 50);
 		
 		if (!WorldFileReader.isWorld(new File(conf.getString("server.afk.world")))) {
