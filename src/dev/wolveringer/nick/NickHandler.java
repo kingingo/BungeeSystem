@@ -333,13 +333,18 @@ public class NickHandler implements PacketHandler<Packet>, Listener {
 	@Getter
 	@Setter
 	private static NickHandler instance;
-	public static CachedArrayList<Packet> whitelist = new CachedArrayList<>(1, TimeUnit.SECONDS);
+	public static dev.wolveringer.maps.CachedArrayList<Packet> whitelist = new CachedArrayList<>(1, TimeUnit.SECONDS);
 	private ReentrantLock whitelistLock = new ReentrantLock(true);
 
 	@Override
 	public void handle(PacketHandleEvent<Packet> e) {
 		whitelistLock.lock();
-		boolean contains = whitelist.contains(e.getPacket());
+		boolean contains = false;
+		synchronized (whitelist) {
+			contains = whitelist.contains(e.getPacket());
+			if(contains)
+				whitelist.remove(e.getPacket());
+		}
 		whitelistLock.unlock();
 		if(contains)
 			return;
