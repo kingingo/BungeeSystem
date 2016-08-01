@@ -87,6 +87,7 @@ import dev.wolveringer.bs.login.PlayerDisconnectListener;
 import dev.wolveringer.bs.message.MessageManager;
 import dev.wolveringer.bs.servermanager.ServerManager;
 import dev.wolveringer.chat.ChatManager;
+import dev.wolveringer.client.debug.Debugger;
 import dev.wolveringer.event.EventListener;
 import dev.wolveringer.event.EventManager;
 import dev.wolveringer.events.Event;
@@ -134,6 +135,20 @@ public class Bootstrap {
 
 	public void onEnable0() {
 		AsyncCatcher.disableAll();
+		Debugger.setFilter(s -> {
+			s = s.toLowerCase();
+			if (s.startsWith("readed packet in "))
+				return false;
+			if (s.startsWith("write packet "))
+				return false;
+			if (s.startsWith("packet successfull handled ("))
+				return false;
+			if (s.startsWith("skin data: "))
+				return false;
+			if (s.startsWith("reciving "))
+				return false;
+			return true;
+		});
 		try {
 			Class.forName(UtilBungeeCord.class.getName());
 		} catch (ClassNotFoundException ex) {
