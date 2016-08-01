@@ -133,7 +133,7 @@ public class ChatManager implements PacketHandler, Listener {
 	private void sendMessage(Player player, IChatBaseComponent comp) {
 		PacketPlayOutChat packet = new PacketPlayOutChat(comp);
 		this.ignorePackets.add(packet);
-		//NickHandler.whitelist.add(packet);
+		NickHandler.whitelist.add(packet);
 		player.sendPacket((PacketPlayOut) packet);
 	}
 

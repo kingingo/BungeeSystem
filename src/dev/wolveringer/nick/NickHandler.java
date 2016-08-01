@@ -333,7 +333,7 @@ public class NickHandler implements PacketHandler<Packet>, Listener {
 	@Getter
 	@Setter
 	private static NickHandler instance;
-	private CachedArrayList<Packet> whitelist = new CachedArrayList<>(1, TimeUnit.SECONDS);
+	public static CachedArrayList<Packet> whitelist = new CachedArrayList<>(1, TimeUnit.SECONDS);
 	private ReentrantLock whitelistLock = new ReentrantLock(true);
 
 	@Override
