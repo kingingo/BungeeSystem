@@ -1,7 +1,8 @@
 package dev.wolveringer.bs.consolencommand;
 
+import org.apache.commons.lang3.StringUtils;
+
 import dev.wolveringer.hashmaps.InitHashMap;
-import dev.wolveringer.util.apache.StringUtils;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.plugin.Command;
 

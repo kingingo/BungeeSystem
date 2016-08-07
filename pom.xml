@@ -138,6 +138,9 @@
 			<url>https://oss.sonatype.org/content/groups/public/</url>
 		</repository>
 	</repositories>
+	<properties>
+		<bungeecord.version>1.10-SNAPSHOT</bungeecord.version>
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -153,25 +156,25 @@
 		<dependency>
 			<artifactId>bungeecord-api</artifactId>
 			<groupId>net.md-5</groupId>
-			<version>1.9-SNAPSHOT</version>
+			<version>${bungeecord.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<artifactId>bungeecord-chat</artifactId>
 			<groupId>net.md-5</groupId>
-			<version>1.9-SNAPSHOT</version>
+			<version>${bungeecord.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<artifactId>bungeecord-proxy</artifactId>
 			<groupId>net.md-5</groupId>
-			<version>1.9-SNAPSHOT</version>
+			<version>${bungeecord.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>dev.wolveringer</groupId>
 			<artifactId>BungeeUtil</artifactId>
-			<version>1.6.7.6</version>
+			<version>1.6.7.10</version>
 		</dependency>
 		<dependency>
 			<groupId>dev.wolveringer</groupId>

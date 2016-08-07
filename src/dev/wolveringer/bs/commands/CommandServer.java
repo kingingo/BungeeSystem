@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.common.collect.Lists;
 
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.permission.PermissionManager;
-import dev.wolveringer.util.apache.StringUtils;
 import dev.wolveringer.bukkit.permissions.PermissionType;
 import dev.wolveringer.client.Callback;
 import dev.wolveringer.client.PacketHandleErrorException;
@@ -108,7 +109,7 @@ public class CommandServer extends Command implements TabExecutor {
 								return;
 							}
 							sender.sendMessage("§aServerID: §e"+obj.getServerId());
-							sender.sendMessage("§aSlots: §e"+obj.getPlayer()+"/"+obj.getMaxPlayers());
+							sender.sendMessage("§aSlots: §sse"+obj.getPlayer()+"/"+obj.getMaxPlayers());
 							sender.sendMessage("§aGame: §e"+(obj.getGames() != null && obj.getGames().length > 0 ? obj.getGames()[0] : "§7undefined"));
 							sender.sendMessage("§aGamestate: §e"+obj.getState());
 							sender.sendMessage("§aPlayers: §7(§b"+obj.getPlayers().size()+"§7)");
