@@ -9,6 +9,7 @@ import dev.wolveringer.bukkit.permissions.PermissionType;
 import dev.wolveringer.client.ClientWrapper;
 import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.client.connection.Client;
+import dev.wolveringer.client.debug.Debugger;
 import dev.wolveringer.dataserver.protocoll.packets.PacketOutServerStatus;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -95,7 +96,12 @@ public class BungeecordDatenClient {
 						if (count % 3 == 0) { //Update player names only all 4.5 seconds!
 							PacketOutServerStatus r = wclient.getServerStatus(PacketOutServerStatus.Action.GENERAL, null, true).getSync();
 							onlineCount = r.getPlayer();
-							players = r.getPlayers();
+							List<String> playerList = r.getPlayers();
+							if (playerList != null) {
+								players = playerList;
+							} else {
+								Debugger.debug("Got a strange null for the playerlist");
+							}
 						} else {
 							onlineCount = wclient.getServerStatus(PacketOutServerStatus.Action.GENERAL, null, false).getSync().getPlayer();
 						}
