@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Predicate;
 
 import dev.wolveringer.BungeeUtil.AsyncCatcher;
 import dev.wolveringer.BungeeUtil.ClientVersion.BigClientVersion;
@@ -38,6 +39,7 @@ import dev.wolveringer.bs.commands.CommandBuild;
 import dev.wolveringer.bs.commands.CommandClearChat;
 import dev.wolveringer.bs.commands.CommandClient;
 import dev.wolveringer.bs.commands.CommandCreative;
+import dev.wolveringer.bs.commands.CommandBDebug;
 import dev.wolveringer.bs.commands.CommandEvent;
 import dev.wolveringer.bs.commands.CommandGList;
 import dev.wolveringer.bs.commands.CommandGunGame;
@@ -128,6 +130,22 @@ import net.md_5.bungee.protocol.ProtocolConstants.Direction;
 public class Bootstrap {
 	@Getter
 	File dataFolder;
+	public static final Predicate<String> DEBUGGER_FILTER = s -> {
+		s = s.toLowerCase();
+		if (s.startsWith("readed packet in "))
+			return false;
+		if (s.startsWith("write packet "))
+			return false;
+		if (s.startsWith("packet sucessfull handled ("))
+			return false;
+		if (s.startsWith("skin data: "))
+			return false;
+		if (s.startsWith("reciving "))
+			return false;
+		if (s.startsWith("handeling "))
+			return false;
+		return true;
+	};
 
 	public void onEnable() {
 		onEnable0();
@@ -142,22 +160,7 @@ public class Bootstrap {
 
 	public void onEnable0() {
 		AsyncCatcher.disableAll();
-		Debugger.setFilter(s -> {
-			s = s.toLowerCase();
-			if (s.startsWith("readed packet in "))
-				return false;
-			if (s.startsWith("write packet "))
-				return false;
-			if (s.startsWith("packet sucessfull handled ("))
-				return false;
-			if (s.startsWith("skin data: "))
-				return false;
-			if (s.startsWith("reciving "))
-				return false;
-			if (s.startsWith("handeling "))
-				return false;
-			return true;
-		});
+		Debugger.setFilter(DEBUGGER_FILTER);
 		//unregister unused packets
 		//particle
 		unregisterPacket(Protocol.GAME, Direction.TO_CLIENT, new Packet.ProtocollId(BigClientVersion.v1_8, 0x2A), new Packet.ProtocollId(BigClientVersion.v1_9, 0x22), new Packet.ProtocollId(BigClientVersion.v1_10, 0x22));
@@ -368,6 +371,7 @@ public class Bootstrap {
 		Main.boosterManager = new BoosterManager();
 		Main.getBoosterManager().init();
 
+		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandBDebug("bdebug"));
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandCreative("creative"));
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandNews("news"));
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandBroad("broad"));
