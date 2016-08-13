@@ -89,7 +89,7 @@ public class Main extends Plugin{
 			for (ProxiedPlayer plr : getProxy().getPlayers()) {
 				try {
 					LoadedPlayer player = getDatenServer().getClient().getPlayer(plr.getUniqueId());
-					if (player == null || player.isPremiumSync()) {
+					if (player == null || plr.getServer().getInfo().getName().startsWith("loginhub") || player.isPremiumSync()) {
 						continue;
 					}
 					player.getStats(GameType.WARZ).getAsync((statistics, throwable) -> {
