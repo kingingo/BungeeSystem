@@ -10,7 +10,6 @@ public class PreLoadedLoginListener implements Listener{
 		if (!Main.loaded) {
 			e.setCancelled(true);
 			e.setCancelReason("§cBungeecord isnt fully loaded");
-			return;
 		}
 	}
 }

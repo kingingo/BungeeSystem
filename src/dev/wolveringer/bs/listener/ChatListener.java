@@ -156,33 +156,51 @@ public class ChatListener implements Listener {
 			}
 		}
 	}
+	
+	private static final boolean TABCOMPLETE_NICKS = false;
 
 	@EventHandler
 	public void a(TabCompleteEvent e) {
-		if (e.getCursor().startsWith("@") && !e.getCursor().contains(" ")) {
-			String nameStart = e.getCursor().substring(1, e.getCursor().length());
-			e.getSuggestions().clear();
+		if (!e.getCursor().startsWith("@") || e.getCursor().contains(" ")) {
+			return;
+		}
+		List<String> suggestions = e.getSuggestions();
+		suggestions.clear();
+		String nameStart = e.getCursor().substring(1, e.getCursor().length());
+		if (nameStart.length() < 2) {
+			return;
+		}
+		String nameStartLowerCase = nameStart.toLowerCase();
 
-			if (nameStart.length() >= 2) {
-				boolean unnickedNames = PermissionManager.getManager().hasPermission((ProxiedPlayer) e.getSender(), "tabcomplete.unnicked");
-				List<String> players = new ArrayList<>(Main.getDatenServer().getPlayers());
-				for (String s : players) {
-					if (s == null) {
-						System.err.println("[ChatListener]: TabCompleteEvent s == NULL !?");
-						continue;
-					}
-					LoadedPlayer splayer = Main.getDatenServer().getClient().getPlayerAndLoad(s);
-					if(unnickedNames){
-						if (s.toLowerCase().startsWith(splayer.getName().toLowerCase()))
-							if(splayer.hasNickname())
-								e.getSuggestions().add("@" + splayer.getName());
-					}
-					if ((splayer.hasNickname() ? splayer.getNickname().toLowerCase() : splayer.getName()).toLowerCase().startsWith(nameStart.toLowerCase()))
-						e.getSuggestions().add("@" + (splayer.hasNickname() ? splayer.getNickname() : splayer.getName()));
+		if (TABCOMPLETE_NICKS) {
+			boolean unnickedNames = PermissionManager.getManager().hasPermission((ProxiedPlayer) e.getSender(), "tabcomplete.unnicked");
+			List<String> players = new ArrayList<>(Main.getDatenServer().getPlayers());
+			for (String s : players) {
+				if (s == null) {
+					System.err.println("[ChatListener]: TabCompleteEvent s == NULL !?");
+					continue;
 				}
-				System.out.println("Suggestions: "+e.getSuggestions());
+				LoadedPlayer splayer = Main.getDatenServer().getClient().getPlayerAndLoad(s);
+				if (unnickedNames) {
+					if (s.toLowerCase().startsWith(splayer.getName().toLowerCase())) {
+						if (splayer.hasNickname()) {
+							suggestions.add("@" + splayer.getName());
+						}
+					}
+				}
+				if ((splayer.hasNickname() ? splayer.getNickname().toLowerCase() : splayer.getName()).toLowerCase().startsWith(nameStartLowerCase)) {
+					suggestions.add("@" + (splayer.hasNickname() ? splayer.getNickname() : splayer.getName()));
+				}
+			}
+		} else {
+			List<String> players = new ArrayList<>(Main.getDatenServer().getPlayers());
+			for (String s : players) {
+				if (s.toLowerCase().startsWith(nameStartLowerCase)) {
+					suggestions.add("@" + s);
+				}
 			}
 		}
+		System.out.println("Suggestions: " + suggestions);
 	}
 
 	public static final long DAY = 86400000L;
