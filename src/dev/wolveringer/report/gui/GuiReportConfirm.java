@@ -49,8 +49,8 @@ public class GuiReportConfirm extends Gui{
 		BungeeCord.getInstance().getScheduler().runAsync(Main.getInstance(), new Runnable() {
 			public void run() {
 				int loop = 6;
-				while (loop-->0) {
-					inv.setItem(8, ItemBuilder.create(159).name("§a§mBestätigen").lore("§cBitte warte noch "+loop+" secunden bevor du").lore("§cden Report bestätigen kannst.").durbility(11).build());
+				while (--loop>0) {
+					inv.setItem(8, ItemBuilder.create(159).name("§a§mBestätigen").lore("§cBitte warte noch "+loop+" Sekunden bevor du").lore("§cden Report bestätigen kannst.").durbility(11).build());
 					try {
 						Thread.sleep(1000);
 					} catch (InterruptedException e) {
@@ -63,7 +63,7 @@ public class GuiReportConfirm extends Gui{
 						getPlayer().closeInventory();
 						Main.getDatenServer().getClient().createReport(Main.getDatenServer().getClient().getPlayerAndLoad(c.getPlayer().getName()).getPlayerId(), Main.getDatenServer().getClient().getPlayerAndLoad(target).getPlayerId(), reason, moreInfo);
 						getPlayer().sendMessage("§aDu hast den Spieler §e{player_"+target+"} §areportet!");
-						Main.getDatenServer().getClient().broadcastMessage("report.alert", "§aDer Spieler §e{player_"+c.getPlayer().getName()+"} §ahat den Spieler §e{player_"+target+"} §awegen §6"+ reason +" "+(moreInfo == null ? "":"("+moreInfo+") reportet!"));
+						Main.getDatenServer().getClient().broadcastMessage("report.alert", "§aDer Spieler §e{player_"+c.getPlayer().getName()+"} §ahat den Spieler §e{player_"+target+"} §awegen §6"+ reason + (moreInfo == null ? " ":" ("+moreInfo+")") + " reportet!");
 					}
 				});
 			}
