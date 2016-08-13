@@ -10,12 +10,14 @@ import dev.wolveringer.bs.Main;
 import dev.wolveringer.bs.login.LoginManager;
 import dev.wolveringer.client.Callback;
 import dev.wolveringer.client.LoadedPlayer;
+import dev.wolveringer.client.debug.Debugger;
 import dev.wolveringer.dataserver.gamestats.GameType;
 import dev.wolveringer.dataserver.protocoll.packets.PacketVersion;
 import dev.wolveringer.gamestats.Statistic;
 import dev.wolveringer.hashmaps.CachedHashMap;
 import dev.wolveringer.permission.PermissionManager;
 import net.md_5.bungee.BungeeCord;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ChatEvent;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
@@ -156,8 +158,6 @@ public class ChatListener implements Listener {
 			}
 		}
 	}
-	
-	private static final boolean TABCOMPLETE_NICKS = false;
 
 	@EventHandler
 	public void a(TabCompleteEvent e) {
@@ -172,35 +172,31 @@ public class ChatListener implements Listener {
 		}
 		String nameStartLowerCase = nameStart.toLowerCase();
 
-		if (TABCOMPLETE_NICKS) {
-			boolean unnickedNames = PermissionManager.getManager().hasPermission((ProxiedPlayer) e.getSender(), "tabcomplete.unnicked");
-			List<String> players = new ArrayList<>(Main.getDatenServer().getPlayers());
-			for (String s : players) {
-				if (s == null) {
-					System.err.println("[ChatListener]: TabCompleteEvent s == NULL !?");
-					continue;
-				}
-				LoadedPlayer splayer = Main.getDatenServer().getClient().getPlayerAndLoad(s);
-				if (unnickedNames) {
-					if (s.toLowerCase().startsWith(splayer.getName().toLowerCase())) {
-						if (splayer.hasNickname()) {
-							suggestions.add("@" + splayer.getName());
-						}
-					}
-				}
-				if ((splayer.hasNickname() ? splayer.getNickname().toLowerCase() : splayer.getName()).toLowerCase().startsWith(nameStartLowerCase)) {
-					suggestions.add("@" + (splayer.hasNickname() ? splayer.getNickname() : splayer.getName()));
-				}
+		boolean unnickedNames = PermissionManager.getManager().hasPermission((ProxiedPlayer) e.getSender(), "tabcomplete.unnicked");
+		List<String> players = new ArrayList<>(Main.getDatenServer().getPlayers());
+		for (String playerName : players) {
+			if (playerName == null) {
+				System.err.println("[ChatListener]: TabCompleteEvent playerName == NULL !?");
+				continue;
 			}
-		} else {
-			List<String> players = new ArrayList<>(Main.getDatenServer().getPlayers());
-			for (String s : players) {
-				if (s.toLowerCase().startsWith(nameStartLowerCase)) {
-					suggestions.add("@" + s);
-				}
+			LoadedPlayer splayer = Main.getDatenServer().getClient().getPlayer(playerName);
+			if (!splayer.isLoaded() && !splayer.isLoading()) {
+				ProxyServer.getInstance().getScheduler().runAsync(Main.getInstance(), splayer::loadPlayer);
+				continue;
 			}
+			boolean splayerNicknamed = splayer.hasNickname();
+			if (unnickedNames && splayerNicknamed) {
+				suggestIfFitting(suggestions, splayer.getName(), nameStartLowerCase);
+			}
+			suggestIfFitting(suggestions, splayer.getNickname(), nameStartLowerCase);
 		}
-		System.out.println("Suggestions: " + suggestions);
+		Debugger.debug("Suggestions: " + suggestions);
+	}
+	
+	public static void suggestIfFitting(List<String> suggestions, String name, String lowercaseInput) {
+		if (name.toLowerCase().startsWith(lowercaseInput)) {
+			suggestions.add(name);
+		}
 	}
 
 	public static final long DAY = 86400000L;
