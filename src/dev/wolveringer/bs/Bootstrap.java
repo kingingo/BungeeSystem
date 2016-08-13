@@ -16,19 +16,13 @@ import dev.wolveringer.BungeeUtil.ClientVersion.ProtocollVersion;
 import dev.wolveringer.BungeeUtil.PacketLib;
 import dev.wolveringer.BungeeUtil.packets.Packet;
 import dev.wolveringer.BungeeUtil.packets.PacketPlayOutChat;
-import dev.wolveringer.BungeeUtil.packets.PacketPlayOutEntityHeadRotation;
 import dev.wolveringer.BungeeUtil.packets.PacketPlayOutEntityProperties;
 import dev.wolveringer.BungeeUtil.packets.PacketPlayOutEntityTeleport;
 import dev.wolveringer.BungeeUtil.packets.PacketPlayOutKeepAlive;
-import dev.wolveringer.BungeeUtil.packets.PacketPlayOutPlayerListHeaderFooter;
-import dev.wolveringer.BungeeUtil.packets.PacketPlayOutPluginMessage;
-import dev.wolveringer.BungeeUtil.packets.PacketPlayOutPosition;
 import dev.wolveringer.BungeeUtil.packets.PacketPlayOutSetExperience;
 import dev.wolveringer.BungeeUtil.packets.PacketPlayOutSpawnPostition;
-import dev.wolveringer.BungeeUtil.packets.PacketPlayOutStatistic;
 import dev.wolveringer.BungeeUtil.packets.PacketPlayOutUpdateHealth;
 import dev.wolveringer.BungeeUtil.packets.PacketPlayOutUpdateSign;
-import dev.wolveringer.BungeeUtil.packets.PacketPlayOutWorldParticles;
 import dev.wolveringer.actionbar.ActionBar;
 import dev.wolveringer.afk.AfkListener;
 import dev.wolveringer.ban.BanServerMessageListener;
@@ -179,8 +173,6 @@ public class Bootstrap {
 //		unregisterPacket(Protocol.GAME, Direction.TO_SERVER, new Packet.ProtocollId(BigClientVersion.v1_8, 0x3F), new Packet.ProtocollId(BigClientVersion.v1_9, 0x18), new Packet.ProtocollId(BigClientVersion.v1_10, 0x18));
 		//PacketPlayOutStatistic
 //		unregisterPacket(Protocol.GAME, Direction.TO_CLIENT, new Packet.ProtocollId(BigClientVersion.v1_8, 0x37), new Packet.ProtocollId(BigClientVersion.v1_9, 0x07), new Packet.ProtocollId(BigClientVersion.v1_10, 0x07)); // -> 0x07
-
-
 
 		try {
 			Class.forName(UtilBungeeCord.class.getName());
