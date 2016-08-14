@@ -3,3 +3,5 @@
 *.iml
 .idea/
 *.orig
+*.jar
+src/dev/wolveringer/server
