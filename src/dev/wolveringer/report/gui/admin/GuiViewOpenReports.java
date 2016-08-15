@@ -155,7 +155,15 @@ public class GuiViewOpenReports extends Gui implements Runnable{
 		if(playerId == -1)
 			return ItemBuilder.create(160).durbility(14).name("§cPlayerId -> "+playerId).build();
 		String player = Main.getDatenServer().getClient().getPlayerAndLoad(playerId).getName();
-		return loadSkin(ItemBuilder.create(Material.SKULL_ITEM).name("§a"+reports.size()+" Report"+(reports.size()==1?"":"s")+" gegen §e"+player).amouth(reports.size()).listener((c)-> switchToGui(new GuiViewPlayerReport(player, reports))).lore("§aOffen seit: "+PlayerJoinListener.getDurationBreakdown(System.currentTimeMillis()-minTime)).build(), player);
+		ItemBuilder builder = ItemBuilder.create(Material.SKULL_ITEM)
+				.name("§a" + reports.size() + " Report" + (reports.size() == 1 ? "" : "s") + " gegen §e" + player)
+				.amouth(reports.size())
+				.listener((c) -> switchToGui(new GuiViewPlayerReport(player, reports)))
+				.lore("§aOffen seit: " + PlayerJoinListener.getDurationBreakdown(System.currentTimeMillis() - minTime))
+				.lore("§aBearbeiter: " + reports.get(0).getWorkers().size());
+		for (ReportEntity report : reports)
+			builder.lore("§6" + report.getReson()).lore("§a  Reporter §7» §e" + Main.getDatenServer().getClient().getPlayerAndLoad(report.getReporter()).getName());
+		return loadSkin(builder.build(), player);
 	}
 	
 	@Override
