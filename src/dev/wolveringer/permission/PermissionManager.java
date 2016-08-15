@@ -83,10 +83,10 @@ public class PermissionManager implements Listener {
 	}
 
 	public boolean hasPermission(ProxiedPlayer player, String permission) {
-		return hasPermission(player.getUniqueId(), permission);
+		return hasPermission(player.getName(), permission);
 	}
 	public boolean hasPermission(ProxiedPlayer player, PermissionType teamMessage) {
-		return hasPermission(player.getUniqueId(), teamMessage.getPermissionToString());
+		return hasPermission(player.getName(), teamMessage.getPermissionToString());
 	}
 	public boolean hasPermission(ProxiedPlayer player, PermissionType teamMessage,boolean message) {
 		return hasPermission(player, teamMessage.getPermissionToString(), message);
@@ -108,7 +108,7 @@ public class PermissionManager implements Listener {
 	public boolean hasPermission(ProxiedPlayer player, String permission, boolean message) {
 		if (!LoginManager.getManager().isLoggedIn(player) || BannedServerManager.getInstance().isBanned((Player)player))
 			return false; //Not logged in Player cant have perms
-		boolean perm = hasPermission(player.getUniqueId(), permission);
+		boolean perm = hasPermission(player.getName(), permission);
 		if (message && !perm) 
 			player.sendMessage(Main.getTranslationManager().translate("prefix", player)+ "§cYou don't have permission to do that.");
 		return perm;
@@ -122,11 +122,21 @@ public class PermissionManager implements Listener {
 		LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(uuid);
 		return hasPermission(player.getPlayerId(), permission);
 	}
+
+	public boolean hasPermission(String name, PermissionType permission) {
+		return hasPermission(name, permission.getPermissionToString());
+	}
+
+	public boolean hasPermission(String name, String permission) {
+		LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(name);
+		return hasPermission(player.getPlayerId(), permission);
+	}
 	
 	public boolean hasPermission(Integer playerId, String permission) {
-		if(!user.containsKey(playerId))
-			user.put(playerId, new PermissionPlayer(this, playerId));
-		return user.get(playerId).hasPermission(permission);
+		PermissionPlayer pplayer = user.get(playerId);
+		if(pplayer == null)
+			user.put(playerId, pplayer = new PermissionPlayer(this, playerId));
+		return pplayer.hasPermission(permission);
 	}
 
 	public Group getGroup(String name) {

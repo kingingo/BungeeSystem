@@ -126,9 +126,17 @@ public class ChatListener implements Listener {
 						return;
 					}
 					
-					LoadedPlayer target = Main.getDatenServer().getClient().getPlayerAndLoad(player);
+					LoadedPlayer target;
+					try {
+						target = Main.getDatenServer().getClient().getPlayerAndLoad(player);
+					} catch (Exception ex) {
+						ex.printStackTrace();
+						p.sendMessage("§cEs ist ein Fehler beim Bearbeiten der Privatnachricht aufgetreten.");
+						e.setCancelled(true);
+						return;
+					}
 					boolean targetOnline = target.isOnlineSync();
-					if(target.hasNickname() && !PermissionManager.getManager().hasPermission(p, "sendmassege.to.unnicked") && targetOnline)
+					if(target.hasNickname() && targetOnline && !PermissionManager.getManager().hasPermission(p, "sendmassege.to.unnicked"))
 						target = null;
 					if(target != null && !targetOnline){
 						List<String> players = new ArrayList<>(Main.getDatenServer().getPlayers());
