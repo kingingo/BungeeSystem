@@ -1,10 +1,5 @@
 package dev.wolveringer.bs.commands;
 
-import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
 import dev.wolveringer.BungeeUtil.Player;
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.client.LoadedPlayer;
@@ -16,7 +11,6 @@ import dev.wolveringer.permission.PermissionManager;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
-import org.apache.commons.codec.digest.MessageDigestAlgorithms;
 
 public class CommandPwChange extends Command {
 
@@ -35,15 +29,9 @@ public class CommandPwChange extends Command {
 		if(args.length == 3 && PermissionManager.getManager().hasPermission(sender, "command.pwchange.other") && args[0].equalsIgnoreCase("set")){
 			LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(args[1]);
 			sender.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.pwchange.changeing", sender,player.getName()));
-			String newpw = args[2];
-			String newpwHashed = hashPassword(newpw, player.getName());
-			if (newpwHashed == null) {
-				sender.sendMessage("§cAn error occurred while trying to set the password of the player. Please report this issue together with the code 1 and the current time.");
-				return;
-			}
-			player.setPasswordSync(newpw);
+			player.setPasswordSync(args[2]);
 			player.setStats(new PacketInStatsEdit.EditStats(GameType.WARZ, PacketInStatsEdit.Action.SET, StatsKey.KILLS, 1));
-			sender.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.pwchange.changed", sender,player.getName(), newpw));
+			sender.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.pwchange.changed", sender,player.getName(),args[2]));
 			return;
 		}
 		if(args.length == 2){
@@ -51,7 +39,7 @@ public class CommandPwChange extends Command {
 				sender.sendMessage("§cPlayer only");
 				return;
 			}
-			String oldpw = args[0];
+			String old = args[0];
 			String newpw = args[1];
 			
 			LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(((ProxiedPlayer)sender).getUniqueId());
@@ -59,24 +47,13 @@ public class CommandPwChange extends Command {
 				sender.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.pwchange.error.premium", sender));
 				return;
 			}
-			String oldpwHashed = hashPassword(oldpw, player.getName());
-			if (oldpwHashed == null) {
-				sender.sendMessage("§cAn error occurred while trying to set your password. Please report this issue together with the code 1 and the current time.");
+			if(!old.equals(player.getPasswordSync())){
+				((ProxiedPlayer)sender).sendMessage(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.pwchange.error.oldNotMatch", sender));
 				return;
 			}
-			String oldSavedPw = player.getPasswordSync();
-			if(!oldpw.equals(oldSavedPw) && !oldpwHashed.equals(oldSavedPw)){
-				sender.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.pwchange.error.oldNotMatch", sender));
-				return;
-			}
-			String newpwHashed = hashPassword(newpw, player.getName());
-			if (newpwHashed == null) {
-				sender.sendMessage("§cAn error occurred while trying to set your password. Please report this issue together with the code 2 and the current time.");
-				return;
-			}
-			player.setPasswordSync(newpwHashed);
+			player.setPasswordSync(newpw);
 			player.setStats(new PacketInStatsEdit.EditStats(GameType.WARZ, PacketInStatsEdit.Action.SET, StatsKey.KILLS, 1));
-			sender.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.pwchange.changed", sender));
+			((ProxiedPlayer)sender).sendMessage(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.pwchange.changed", sender));
 			return;
 		}
 		
@@ -84,26 +61,6 @@ public class CommandPwChange extends Command {
 			sender.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.pwchange.help", sender));
 			if(PermissionManager.getManager().hasPermission(sender, "command.pwchange.other"))
 				sender.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.pwchange.help.other", sender));
-		}
-	}
-
-	/**
-	 * Salts the password with the username, then hashes the utf8 bytes of the string
-	 * @param password the password to hash. its lowercased automatically
-	 * @param username the username to hash. its lowercased automatically
-	 * @return the hashed password with a § sign infront to make it impossible that anyone can type a hashed password
-	 */
-	public static String hashPassword(String password, String username) {
-		password = password.toLowerCase();
-		username = username.toLowerCase();
-		String toDigest = password + username;
-		try {
-			MessageDigest md = MessageDigest.getInstance(MessageDigestAlgorithms.SHA_256); //Using this field instead of a string directly because I hate string constants not in fields
-			byte[] digest = md.digest(toDigest.getBytes(StandardCharsets.UTF_8));
-			return "§" + String.format("%064x", new BigInteger(1, digest)); //stackoverflow says this puts the bytes into the known string representation of sha256
-		} catch (NoSuchAlgorithmException ex) {
-			ex.printStackTrace();
-			return null;
 		}
 	}
 
