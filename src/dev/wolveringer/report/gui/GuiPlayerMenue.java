@@ -9,6 +9,7 @@ import dev.wolveringer.item.ItemBuilder;
 import dev.wolveringer.permission.PermissionManager;
 import dev.wolveringer.report.gui.admin.GuiViewOpenReports;
 import dev.wolveringer.report.search.PlayerSearchMenue;
+import dev.wolveringer.thread.ThreadFactory;
 import net.md_5.bungee.api.ProxyServer;
 
 public class GuiPlayerMenue extends Gui {
@@ -23,7 +24,7 @@ public class GuiPlayerMenue extends Gui {
 			@Override
 			public void click(Click c) {
 				inv.setItem(2, ItemBuilder.create(372).name("§aPlease wait while we're loading all the players.").lore("§aBitte warte, während wir alle Spieler laden.").glow().build());
-				ProxyServer.getInstance().getScheduler().runAsync(Main.getInstance(), () -> {
+				ThreadFactory.getFactory().createThread(() -> {
 					PlayerSearchMenue m = new PlayerSearchMenue(getPlayer()) {
 						@Override
 						public void playerEntered(String name) {
@@ -41,7 +42,7 @@ public class GuiPlayerMenue extends Gui {
 						public void canceled() {}
 					};
 					m.open();
-				});
+				}).start();
 			}
 		});
 		

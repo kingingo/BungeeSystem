@@ -75,8 +75,7 @@ public class ActionBar {
 		}
 
 		public String toString() {
-			return "ActionBarMessage [key=" + getKey() + ", message=" + getMessage() + ", importance=" + getImportance()
-					+ ", permission=" + getPermission() + "]";
+			return "ActionBarMessage [key=" + getKey() + ", message=" + getMessage() + ", importance=" + getImportance() + ", permission=" + getPermission() + "]";
 		}
 	}
 
@@ -125,8 +124,7 @@ public class ActionBar {
 							Iterator<ActionBar.ActionBarMessage> message = ActionBar.this.getDisplayMessage((Player) p);
 							while (message.hasNext()) {
 								ActionBar.ActionBarMessage c = (ActionBar.ActionBarMessage) message.next();
-								if ((c.getMessage() != null) && ((c.getPermission() == null)
-										|| (PermissionManager.getManager().hasPermission(p, c.getPermission())))) {
+								if ((c.getMessage() != null) && ((c.getPermission() == null) || (PermissionManager.getManager().hasPermission(p, c.getPermission())))) {
 									ActionBar.this.sendActionBar((Player) p, c);
 									break;
 								}
@@ -148,8 +146,7 @@ public class ActionBar {
 		if ((message == null) || (message.getMessage() == null)) {
 			return;
 		}
-		if ((message.getPermission() == null)
-				|| (PermissionManager.getManager().hasPermission(p, message.getPermission()))) {
+		if ((message.getPermission() == null) || (PermissionManager.getManager().hasPermission(p, message.getPermission()))) {
 			p.unsafe().sendPacket(new Chat("{\"text\": \"" + message.getMessage() + "\"}", (byte) 2));
 		}
 	}

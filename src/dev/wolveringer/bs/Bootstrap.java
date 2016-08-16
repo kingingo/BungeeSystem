@@ -509,10 +509,4 @@ public class Bootstrap {
 
 		PrefixCommandRegistry.getInstance().registerCommandListener("~", new ConsoleTeamMessageListener());
 	}
-
-	public static void main(String[] args) {
-		int i = 0x00;
-		Integer x = i;
-		System.out.println((x == null) + " - " + x.intValue() + " - " + PacketPlayOutKeepAlive.class);
-	}
 }
