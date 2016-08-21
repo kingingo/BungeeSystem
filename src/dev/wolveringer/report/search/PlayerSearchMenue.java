@@ -20,7 +20,7 @@ public abstract class PlayerSearchMenue extends SearchMenue {
 		ArrayList<String> out = new ArrayList<>();
 		boolean unnicked = PermissionManager.getManager().hasPermission(player, "searchplayer.unnicked");
 		ArrayList<String> loadafter = new ArrayList<>();
-		
+
 		for(String s : Main.getDatenServer().getPlayers()){
 			LoadedPlayer lp = Main.getDatenServer().getClient().getPlayer(s);
 			if(lp.isLoaded()){
@@ -32,13 +32,14 @@ public abstract class PlayerSearchMenue extends SearchMenue {
 				}
 				else
 					out.add(lp.getName());
-			}else 
+			}else
 				loadafter.add(s);
 		}
-		
+
 		setAvariableEntities(out);
-		
+
 		ThreadFactory.getFactory().createThread(()->{
+			int i = 0;
 			for(String s : loadafter){
 				LoadedPlayer lp = Main.getDatenServer().getClient().getPlayerAndLoad(s);
 				if(lp.hasNickname()){
@@ -49,6 +50,12 @@ public abstract class PlayerSearchMenue extends SearchMenue {
 				}
 				else
 					out.add(lp.getName());
+				i++;
+				if (i >= 10) {
+					i = 0;
+					PlayerSearchMenue.this.updateSelection();
+					PlayerSearchMenue.this.redrawInventory();
+				}
 			}
 			PlayerSearchMenue.this.updateSelection();
 			PlayerSearchMenue.this.redrawInventory();
