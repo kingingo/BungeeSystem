@@ -32,7 +32,7 @@ public class Main extends Plugin{
 	protected static TranslationHandler translationManager;
 	protected static Main main;
 	protected static BungeecordDatenClient data;
-	
+
 	public static SkinCacheManager getSkinManager() {
 		return skins;
 	}
@@ -45,7 +45,7 @@ public class Main extends Plugin{
 	public static Main getInstance(){
 		return main;
 	}
-	
+
 	protected String serverId;
 
 	private static final net.md_5.bungee.api.chat.BaseComponent[] PASSWORD_CHANGE_MESSAGE = new ComponentBuilder("")
@@ -89,7 +89,7 @@ public class Main extends Plugin{
 			for (ProxiedPlayer plr : getProxy().getPlayers()) {
 				try {
 					LoadedPlayer player = getDatenServer().getClient().getPlayer(plr.getUniqueId());
-					if (player == null || plr.getServer().getInfo().getName().startsWith("loginhub") || player.isPremiumSync()) {
+					if (player == null || plr.getServer().getInfo().getName().toLowerCase().startsWith("loginhub") || plr.getServer().getInfo().getName().equalsIgnoreCase("proxylobby") || player.isPremiumSync()) {
 						continue;
 					}
 					player.getStats(GameType.WARZ).getAsync((statistics, throwable) -> {
@@ -110,13 +110,13 @@ public class Main extends Plugin{
 			}
 		}, 1, 15, TimeUnit.MINUTES);
 	}
-	
+
 	@Override
 	public void onDisable() {
 		restarting = true;
 		data.getClient().getHandle().disconnect("Bungeecord stopped");
 	}
-	
+
 	public static BungeecordDatenClient getDatenServer() {
 		return data;
 	}
