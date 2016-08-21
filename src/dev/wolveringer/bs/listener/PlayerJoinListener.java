@@ -43,12 +43,12 @@ public class PlayerJoinListener implements Listener {
 			e.setCancelReason("§cTo many people logging in.");
 			return;
 		}
-		
-		
+
 		ClientVersion version = ClientVersion.fromProtocoll(e.getConnection().getVersion());
-		if(version.getBigVersion() != BigClientVersion.v1_8 && version.getBigVersion() != BigClientVersion.v1_9 && version != ClientVersion.v1_10_0){
+		if((version.getBigVersion() != BigClientVersion.v1_8 && version.getBigVersion() != BigClientVersion.v1_9 && version != ClientVersion.v1_10_0)
+				|| version == ClientVersion.v1_9_1 || version == ClientVersion.v1_9_2 || version == ClientVersion.v1_9_3){
 			e.setCancelled(true);
-			e.setCancelReason("§cYour minecraft versions issnt supportted. Please use 1.8.X or 1.9.X");
+			e.setCancelReason("§cYour minecraft versions issnt supportted. Please use 1.8.X, 1.9.0, 1.9.4 or 1.10");
 			System.out.println("Player "+e.getConnection().getName()+" try to connect with an outdated version ("+e.getConnection().getVersion()+")");
 			return;
 		}
@@ -112,7 +112,7 @@ public class PlayerJoinListener implements Listener {
 						e.setCancelReason("§cAn error happened while joining.\n§cWe cant check your premium state.\nTry again in 10-30 seconds");
 						return;
 					}
-			
+
 					/*
 					List<BanEntity> entries = player.getBanStats(e.getConnection().getAddress().getHostString(),1).getSync();
 					if (entries.size() > 0 && entries.get(0).isActive()) {
