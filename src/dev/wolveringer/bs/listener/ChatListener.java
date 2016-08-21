@@ -110,7 +110,7 @@ public class ChatListener implements Listener {
 						p.sendMessage("Please provide a message.");
 						return;
 					}
-					
+
 					String message = e.getMessage().substring(player.length() + 2);
 					if (player.isEmpty()) {
 						if (!lastTarget.containsKey(p)) {
@@ -120,12 +120,12 @@ public class ChatListener implements Listener {
 						player = lastTarget.get(p);
 					} else
 						lastTarget.put(p, player);
-					
+
 					if (message.isEmpty()) {
 						p.sendMessage("§cPlease provide a message.");
 						return;
 					}
-					
+
 					LoadedPlayer target;
 					try {
 						target = Main.getDatenServer().getClient().getPlayerAndLoad(player);
@@ -146,12 +146,12 @@ public class ChatListener implements Listener {
 								player = target.getName();
 							}
 					}
-					
+
 					if (player.equalsIgnoreCase(p.getName())) {
 						p.sendMessage("§cYou cant write with yourself.\n\n§cIf you want write with yourself then you must add yourself on Whatsapp.\n§cThis server doesn't support even talks.\n§cYours truly §aWolverinDEV");
 						return;
 					}
-					
+
 					if (target != null && BungeeCord.getInstance().getPlayer(player) != null) {
 						BungeeCord.getInstance().getPlayer(player).sendMessage("§8[§6»§o {player_" + p.getName() + "}§8] §7" + message);
 						p.sendMessage("§8[§6§o{player_" + player + "} §6»§8] §7" + message);
@@ -200,10 +200,10 @@ public class ChatListener implements Listener {
 		}
 		Debugger.debug("Suggestions: " + suggestions);
 	}
-	
+
 	public static void suggestIfFitting(List<String> suggestions, String name, String lowercaseInput) {
 		if (name.toLowerCase().startsWith(lowercaseInput)) {
-			suggestions.add(name);
+			suggestions.add('@' + name);
 		}
 	}
 
