@@ -188,17 +188,20 @@ public class ChatListener implements Listener {
 				continue;
 			}
 			LoadedPlayer splayer = Main.getDatenServer().getClient().getPlayer(playerName);
-			if (!splayer.isLoaded() && !splayer.isLoading()) {
-				ProxyServer.getInstance().getScheduler().runAsync(Main.getInstance(), splayer::loadPlayer);
+//			if (!splayer.isLoaded() && !splayer.isLoading()) { //Load by the report system
+//				ProxyServer.getInstance().getScheduler().runAsync(Main.getInstance(), splayer::loadPlayer);
+//				continue;
+//			}
+			if(!splayer.isLoaded())
 				continue;
-			}
+			
 			boolean splayerNicknamed = splayer.hasNickname();
 			if (unnickedNames && splayerNicknamed) {
 				suggestIfFitting(suggestions, splayer.getName(), nameStartLowerCase);
 			}
 			suggestIfFitting(suggestions, splayer.getNickname(), nameStartLowerCase);
 		}
-		Debugger.debug("Suggestions: " + suggestions);
+		Debugger.debug("Tab compĺete suggestions for '"+e.getCursor()+"' -> " + suggestions);
 	}
 
 	public static void suggestIfFitting(List<String> suggestions, String name, String lowercaseInput) {
