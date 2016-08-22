@@ -1,47 +1,30 @@
 package dev.wolveringer.bs.listener;
 
 import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import dev.wolveringer.BungeeUtil.ClientVersion;
 import dev.wolveringer.BungeeUtil.ClientVersion.BigClientVersion;
-import dev.wolveringer.BungeeUtil.Player;
 import dev.wolveringer.arrays.CachedArrayList;
-import dev.wolveringer.ban.BannedServerManager;
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.bs.information.InformationManager;
-import dev.wolveringer.bs.login.LoginManager;
 import dev.wolveringer.bs.message.MessageManager;
-import dev.wolveringer.bs.servermanager.ServerManager;
 import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.client.PacketHandleErrorException;
-import dev.wolveringer.dataserver.ban.BanEntity;
 import dev.wolveringer.dataserver.player.LanguageType;
 import dev.wolveringer.dataserver.player.Setting;
 import dev.wolveringer.dataserver.protocoll.packets.PacketInChangePlayerSettings;
 import dev.wolveringer.dataserver.protocoll.packets.PacketVersion;
 import dev.wolveringer.permission.PermissionManager;
-import dev.wolveringer.report.info.ActionBarInformation;
-import dev.wolveringer.bukkit.permissions.PermissionType;
-import dev.wolveringer.chat.ChatManager;
-import dev.wolveringer.chat.ChatManager.ChatBoxModifier;
-import net.md_5.bungee.BungeeCord;
-import net.md_5.bungee.UserConnection;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.event.PreLoginEvent;
-import net.md_5.bungee.api.event.ServerConnectEvent;
-import net.md_5.bungee.api.event.ServerConnectedEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
 public class PlayerJoinListener implements Listener {
-	private CachedArrayList<UUID> connections = new CachedArrayList<>(1, TimeUnit.SECONDS);
+	private CachedArrayList<Object> connections = new CachedArrayList<>(1, TimeUnit.SECONDS);
 
 	@EventHandler
 	public void a(PreLoginEvent e) {
@@ -60,12 +43,12 @@ public class PlayerJoinListener implements Listener {
 			e.setCancelReason("§cTo many people logging in.");
 			return;
 		}
-		
-		
+
 		ClientVersion version = ClientVersion.fromProtocoll(e.getConnection().getVersion());
-		if(version.getBigVersion() != BigClientVersion.v1_8 && version.getBigVersion() != BigClientVersion.v1_9 && version != ClientVersion.v1_10_0){
+		if((version.getBigVersion() != BigClientVersion.v1_8 && version.getBigVersion() != BigClientVersion.v1_9 && version != ClientVersion.v1_10_0)
+				|| version == ClientVersion.v1_9_1 || version == ClientVersion.v1_9_2 || version == ClientVersion.v1_9_3){
 			e.setCancelled(true);
-			e.setCancelReason("§cYour minecraft versions issnt supportted. Please use 1.8.X or 1.9.X");
+			e.setCancelReason("§cYour minecraft versions issnt supportted. Please use 1.8.X, 1.9.0, 1.9.4 or 1.10");
 			System.out.println("Player "+e.getConnection().getName()+" try to connect with an outdated version ("+e.getConnection().getVersion()+")");
 			return;
 		}
@@ -76,93 +59,102 @@ public class PlayerJoinListener implements Listener {
 				return;
 			}
 		}
-		connections.add(UUID.randomUUID());
+		connections.add(new Object());
 
-		long start = System.currentTimeMillis();
+		e.registerIntent(Main.getInstance());
 		try {
-			/*
-			 * Clean up old cache
-			 */
-			if(Main.getDatenServer().getClient().getPlayer(e.getConnection().getName()) != null)
-				Main.getDatenServer().getClient().clearCacheForPlayer(Main.getDatenServer().getClient().getPlayer(e.getConnection().getName()));
-			if(e.getConnection().getUniqueId() != null)
-				if(Main.getDatenServer().getClient().getPlayer(e.getConnection().getUniqueId()) != null)
-					Main.getDatenServer().getClient().clearCacheForPlayer(Main.getDatenServer().getClient().getPlayer(e.getConnection().getUniqueId()));
-			
-			LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(e.getConnection().getName());
-			System.out.println("Connect: Real name: " + e.getConnection().getName() + " Player: " + player.getName() + " UUID: " + player.getUUID());
-			if(Main.getDatenServer().getClient().getPlayer(e.getConnection().getName()) != null)
-				Main.getDatenServer().getClient().clearCacheForPlayer(Main.getDatenServer().getClient().getPlayer(e.getConnection().getName()));
-			/*//TODO cant get playerId before premium login
-			try{
-				LoadedPlayer playerUUID = Main.getDatenServer().getClient().getPlayerAndLoad(UUID.fromString(e.getConnection().getUUID()));
-				if(playerUUID != null && !playerUUID.getName().equalsIgnoreCase(e.getConnection().getName())){
-					if(playerUUID.isOnlineSync()){
-						player.setName(player.getName()+"_old_player_overwridden_by_"+e.getConnection().getName());
-						playerUUID.setName(e.getConnection().getName());
-						player = playerUUID;
-					}
-				}
-			}catch(Exception ex){
-				ex.printStackTrace();
-			}
-			*/
-			System.out.println("Player loaded");
-			try {
-				if (player.isPremiumSync()) {
-					e.getConnection().setUniqueId(player.getUUID());
-					e.getConnection().setOnlineMode(true);
-					System.out.println("Player premium");
-				} else {
-					e.getConnection().setUniqueId(player.getUUID());
-					e.getConnection().setOnlineMode(false);
-					System.out.println("Player cracked");
-				}
+			ProxyServer.getInstance().getScheduler().runAsync(Main.getInstance(), () -> {
+				long start = System.currentTimeMillis();
+				try {
+					/*
+					 * Clean up old cache
+					 */
+					if (Main.getDatenServer().getClient().getPlayer(e.getConnection().getName()) != null)
+						Main.getDatenServer().getClient().clearCacheForPlayer(Main.getDatenServer().getClient().getPlayer(e.getConnection().getName()));
+					if (e.getConnection().getUniqueId() != null)
+						if (Main.getDatenServer().getClient().getPlayer(e.getConnection().getUniqueId()) != null)
+							Main.getDatenServer().getClient().clearCacheForPlayer(Main.getDatenServer().getClient().getPlayer(e.getConnection().getUniqueId()));
 
-			} catch (PacketHandleErrorException ex) {
-				for (dev.wolveringer.dataserver.protocoll.packets.PacketOutPacketStatus.Error er : ex.getErrors())
-					System.out.println(er.getId() + ":" + er.getMessage());
-				ex.printStackTrace();
-				e.setCancelled(true);
-				e.setCancelReason("§cAn error happened while joining.\n§cWe cant check your premium state.\nTry again in 10-30 seconds");
-				return;
-			}
-			
-			/*
-			List<BanEntity> entries = player.getBanStats(e.getConnection().getAddress().getHostString(),1).getSync();
-			if (entries.size() > 0 && entries.get(0).isActive()) {
-				BanEntity response = entries.get(0);
-				String time;
-				if (response.isTempBanned()) {
-					time = getDurationBreakdown(response.getEnd() - System.currentTimeMillis());
-				} else {
-					time = "§cPermanent";
+					LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(e.getConnection().getName());
+					System.out.println("Connect: Real name: " + e.getConnection().getName() + " Player: " + player.getName() + " UUID: " + player.getUUID());
+					if (Main.getDatenServer().getClient().getPlayer(e.getConnection().getName()) != null)
+						Main.getDatenServer().getClient().clearCacheForPlayer(Main.getDatenServer().getClient().getPlayer(e.getConnection().getName()));
+					/*//TODO cant get playerId before premium login
+					try{
+						LoadedPlayer playerUUID = Main.getDatenServer().getClient().getPlayerAndLoad(UUID.fromString(e.getConnection().getUUID()));
+						if(playerUUID != null && !playerUUID.getName().equalsIgnoreCase(e.getConnection().getName())){
+							if(playerUUID.isOnlineSync()){
+								player.setName(player.getName()+"_old_player_overwridden_by_"+e.getConnection().getName());
+								playerUUID.setName(e.getConnection().getName());
+								player = playerUUID;
+							}
+						}
+					}catch(Exception ex){
+						ex.printStackTrace();
+					}
+					*/
+					System.out.println("Player loaded");
+					try {
+						if (player.isPremiumSync()) {
+							e.getConnection().setUniqueId(player.getUUID());
+							e.getConnection().setOnlineMode(true);
+							System.out.println("Player premium");
+						} else {
+							e.getConnection().setUniqueId(player.getUUID());
+							e.getConnection().setOnlineMode(false);
+							System.out.println("Player cracked");
+						}
+					} catch (PacketHandleErrorException ex) {
+						for (dev.wolveringer.dataserver.protocoll.packets.PacketOutPacketStatus.Error er : ex.getErrors())
+							System.out.println(er.getId() + ":" + er.getMessage());
+						ex.printStackTrace();
+						e.setCancelled(true);
+						e.setCancelReason("§cAn error happened while joining.\n§cWe cant check your premium state.\nTry again in 10-30 seconds");
+						return;
+					}
+
+					/*
+					List<BanEntity> entries = player.getBanStats(e.getConnection().getAddress().getHostString(),1).getSync();
+					if (entries.size() > 0 && entries.get(0).isActive()) {
+						BanEntity response = entries.get(0);
+						String time;
+						if (response.isTempBanned()) {
+							time = getDurationBreakdown(response.getEnd() - System.currentTimeMillis());
+						} else {
+							time = "§cPermanent";
+						}
+						e.setCancelled(true);
+						e.setCancelReason(Main.getTranslationManager().translate("event.join.kickBan", player, new Object[] { time, response.getReson(),response.getLevel() }));
+						return;
+					}
+					*/
+					if ("true".equalsIgnoreCase(InformationManager.getManager().getInfo("whitelistActive")) && !PermissionManager.getManager().hasPermission(player.getPlayerId(), "epicpvp.whitelist.bypass")) {
+						String message = InformationManager.getManager().getInfo("whitelistMessage"); //
+						if (message == null)
+							message = "§cWhitelist is active!";
+						e.setCancelled(true);
+						e.setCancelReason(message);
+						return;
+					}
+					player.setIp(e.getConnection().getAddress().getAddress().getHostAddress());
+				} catch (Throwable t) {
+					t.printStackTrace();
+					e.setCancelled(true);
+					if (t.getMessage() != null && t.getMessage().toLowerCase().contains("timeout")) {
+						e.setCancelReason("§cCant connect to §eServer-Chef§c. Protocoll version: §a" + PacketVersion.PROTOCOLL_VERSION + "\nPlease try again in 10-30 seconds");
+					} else
+						e.setCancelReason("§cAn error happened while joining.\nTry again in 10-30 seconds");
+				} finally {
+					e.completeIntent(Main.getInstance());
 				}
-				e.setCancelled(true);
-				e.setCancelReason(Main.getTranslationManager().translate("event.join.kickBan", player, new Object[] { time, response.getReson(),response.getLevel() }));
-				return;
-			}
-			*/
-			if ("true".equalsIgnoreCase(InformationManager.getManager().getInfo("whitelistActive")) && !PermissionManager.getManager().hasPermission(player.getPlayerId(), "epicpvp.whitelist.bypass")) {
-				String message = InformationManager.getManager().getInfo("whitelistMessage"); //
-				if (message == null)
-					message = "§cWhitelist is active!";
-				e.setCancelled(true);
-				e.setCancelReason(message);
-				return;
-			}
-			player.setIp(e.getConnection().getAddress().getAddress().getHostAddress());
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			e.setCancelled(true);
-			if (ex.getMessage() != null && ex.getMessage().toLowerCase().contains("timeout")) {
-				e.setCancelReason("§cCant connect to §eServer-Chef§c. Protocoll version: §a" + PacketVersion.PROTOCOLL_VERSION + "\nPlease try again in 10-30 seconds");
-			} else
-				e.setCancelReason("§cAn error happened while joining.\nTry again in 10-30 seconds");
+				long end = System.currentTimeMillis();
+				if (end - start > 500)
+					System.out.println("LoginEvent for player " + e.getConnection().getName() + " needed more than 500ms (" + (end - start) + ")");
+			});
+		} catch (Throwable t) {
+			e.completeIntent(Main.getInstance());
+			throw t;
 		}
-		long end = System.currentTimeMillis();
-		if (end - start > 500)
-			System.out.println("LoginEvent for player " + e.getConnection().getName() + " needed more than 500ms (" + (end - start) + ")");
 	}
 
 	@EventHandler

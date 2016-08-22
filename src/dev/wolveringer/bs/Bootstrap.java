@@ -9,20 +9,26 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Predicate;
 
 import dev.wolveringer.BungeeUtil.AsyncCatcher;
 import dev.wolveringer.BungeeUtil.ClientVersion.BigClientVersion;
 import dev.wolveringer.BungeeUtil.ClientVersion.ProtocollVersion;
 import dev.wolveringer.BungeeUtil.PacketLib;
 import dev.wolveringer.BungeeUtil.packets.Packet;
+import dev.wolveringer.BungeeUtil.packets.Packet.ProtocollId;
 import dev.wolveringer.BungeeUtil.packets.PacketPlayOutChat;
+import dev.wolveringer.BungeeUtil.packets.PacketPlayOutEntityHeadRotation;
 import dev.wolveringer.BungeeUtil.packets.PacketPlayOutEntityProperties;
 import dev.wolveringer.BungeeUtil.packets.PacketPlayOutEntityTeleport;
 import dev.wolveringer.BungeeUtil.packets.PacketPlayOutKeepAlive;
+import dev.wolveringer.BungeeUtil.packets.PacketPlayOutPlayerListHeaderFooter;
 import dev.wolveringer.BungeeUtil.packets.PacketPlayOutSetExperience;
 import dev.wolveringer.BungeeUtil.packets.PacketPlayOutSpawnPostition;
+import dev.wolveringer.BungeeUtil.packets.PacketPlayOutStatistic;
 import dev.wolveringer.BungeeUtil.packets.PacketPlayOutUpdateHealth;
 import dev.wolveringer.BungeeUtil.packets.PacketPlayOutUpdateSign;
+import dev.wolveringer.BungeeUtil.packets.PacketPlayOutWorldParticles;
 import dev.wolveringer.actionbar.ActionBar;
 import dev.wolveringer.afk.AfkListener;
 import dev.wolveringer.ban.BanServerMessageListener;
@@ -31,6 +37,7 @@ import dev.wolveringer.ban.BannedServerManager;
 import dev.wolveringer.booster.BoosterManager;
 import dev.wolveringer.booster.CMD_BOOSTER;
 import dev.wolveringer.bs.client.BungeecordDatenClient;
+import dev.wolveringer.bs.commands.CommandBDebug;
 import dev.wolveringer.bs.commands.CommandBan;
 import dev.wolveringer.bs.commands.CommandBanInfo;
 import dev.wolveringer.bs.commands.CommandBroad;
@@ -87,6 +94,7 @@ import dev.wolveringer.bs.login.PlayerDisconnectListener;
 import dev.wolveringer.bs.message.MessageManager;
 import dev.wolveringer.bs.servermanager.ServerManager;
 import dev.wolveringer.chat.ChatManager;
+import dev.wolveringer.client.debug.Debugger;
 import dev.wolveringer.event.EventListener;
 import dev.wolveringer.event.EventManager;
 import dev.wolveringer.events.Event;
@@ -127,13 +135,43 @@ import net.md_5.bungee.protocol.ProtocolConstants.Direction;
 public class Bootstrap {
 	@Getter
 	File dataFolder;
+	public static final Predicate<String> DEBUGGER_FILTER = s -> {
+		s = s.toLowerCase();
+		if (s.startsWith("readed packet in "))
+			return false;
+		if (s.startsWith("write packet "))
+			return false;
+		if (s.startsWith("packet sucessfull handled ("))
+			return false;
+		if (s.startsWith("skin data: "))
+			return false;
+		if (s.startsWith("reciving "))
+			return false;
+		if (s.startsWith("handeling "))
+			return false;
+		return true;
+	};
 
 	public void onEnable() {
 		onEnable0();
 	}
 
+	public void unregisterPacket(Protocol p, Direction d, Class clazz, ProtocollId... ids) {
+		for (ProtocollId id : ids) {
+			Packet.unregisterPacket(id.getVersion(), p, d, id.getId());
+			System.out.println("Unregistered packet " + id.getId() + " for " + id.getVersion() + " in dir " + d);
+		}
+	}
+
 	public void onEnable0() {
 		AsyncCatcher.disableAll();
+		Debugger.setFilter(DEBUGGER_FILTER);
+		//unregister unused packets
+		unregisterPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutWorldParticles.class, new ProtocollId(BigClientVersion.v1_8, 0x2A), new ProtocollId(BigClientVersion.v1_9, 0x22), new ProtocollId(BigClientVersion.v1_10, 0x22));
+		unregisterPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutPlayerListHeaderFooter.class, new ProtocollId(BigClientVersion.v1_8, 0x47), new ProtocollId(BigClientVersion.v1_9, 0x48), new ProtocollId(ProtocollVersion.v1_9_4, 0x47), new ProtocollId(BigClientVersion.v1_10, 0x47));// ->0x48
+		unregisterPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutEntityHeadRotation.class, new ProtocollId(BigClientVersion.v1_8, 0x19), new ProtocollId(BigClientVersion.v1_9, 0x34), new ProtocollId(BigClientVersion.v1_10, 0x34));
+		unregisterPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutStatistic.class, new ProtocollId(BigClientVersion.v1_8, 0x37), new ProtocollId(BigClientVersion.v1_9, 0x07), new ProtocollId(BigClientVersion.v1_10, 0x07)); // -> 0x07
+
 		try {
 			Class.forName(UtilBungeeCord.class.getName());
 		} catch (ClassNotFoundException ex) {
@@ -145,7 +183,7 @@ public class Bootstrap {
 				return new ThreadRunner() {
 					ScheduledTask task;
 					Thread current;
-					
+
 					@Override
 					public void stop() {
 						if(task != null){
@@ -186,7 +224,7 @@ public class Bootstrap {
 							}
 						});
 					}
-					
+
 					@Override
 					public String toString() {
 						return current != null ? current.toString()+"/RUNNING" : super.toString()+"/STOPPED";
@@ -235,7 +273,7 @@ public class Bootstrap {
 
 		ActionBar.setInstance(new ActionBar());
 		ChatManager.setInstance(new ChatManager());
-		
+
 		Main.data = new BungeecordDatenClient(Main.getInstance().serverId, new InetSocketAddress(configuration.getString("datenserver.host"), configuration.getInt("datenserver.port")));
 		Main.data.setPassword(configuration.getString("datenserver.passwort"));
 		BungeeCord.getInstance().getScheduler().runAsync(Main.getInstance(), new Runnable() {
@@ -328,6 +366,7 @@ public class Bootstrap {
 		Main.boosterManager = new BoosterManager();
 		Main.getBoosterManager().init();
 
+		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandBDebug("bdebug"));
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandCreative("creative"));
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandNews("news"));
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandBroad("broad"));
@@ -369,7 +408,7 @@ public class Bootstrap {
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandNick());
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandTeamspeak());
 		//BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandGilde());
-		
+
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), InformationManager.getManager());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), ServerManager.getManager());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), RoulettHistory.history);
@@ -385,25 +424,23 @@ public class Bootstrap {
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new InvalidChatListener());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new PlayerDisconnectListener());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new TimeListener());
-		
+
 		ActionBar.getInstance().start();
-		
-		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutChat.class, new Packet.ProtocollId(BigClientVersion.v1_8, 0x02), new Packet.ProtocollId(BigClientVersion.v1_9, 0x0F), new Packet.ProtocollId(BigClientVersion.v1_10, 0x0F));
-		Packet.registerPacket(Protocol.GAME, Direction.TO_SERVER, PacketPlayInKeepAlive.class, new Packet.ProtocollId(BigClientVersion.v1_8, 0), new Packet.ProtocollId(BigClientVersion.v1_9, 0x1F), new Packet.ProtocollId(BigClientVersion.v1_10, 0x1F));
 
-		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutKeepAlive.class, new Packet.ProtocollId(BigClientVersion.v1_8, 0x00), new Packet.ProtocollId(BigClientVersion.v1_9, 0x1F), new Packet.ProtocollId(BigClientVersion.v1_10, 0x1F));
-		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutSpawnPostition.class, new Packet.ProtocollId(BigClientVersion.v1_8, 0x05), new Packet.ProtocollId(BigClientVersion.v1_9, 0x43), new Packet.ProtocollId(BigClientVersion.v1_10, 0x43));
-		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutMapChunk.class, new Packet.ProtocollId(BigClientVersion.v1_8, 0x21), new Packet.ProtocollId(BigClientVersion.v1_9, 0x20), new Packet.ProtocollId(BigClientVersion.v1_10, 0x20));
+		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutChat.class, new ProtocollId(BigClientVersion.v1_8, 0x02), new ProtocollId(BigClientVersion.v1_9, 0x0F), new ProtocollId(BigClientVersion.v1_10, 0x0F));
+		Packet.registerPacket(Protocol.GAME, Direction.TO_SERVER, PacketPlayInKeepAlive.class, new ProtocollId(BigClientVersion.v1_8, 0), new ProtocollId(BigClientVersion.v1_9, 0x1F), new ProtocollId(BigClientVersion.v1_10, 0x1F));
+		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutKeepAlive.class, new ProtocollId(BigClientVersion.v1_8, 0x00), new ProtocollId(BigClientVersion.v1_9, 0x1F), new ProtocollId(BigClientVersion.v1_10, 0x1F));
+		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutSpawnPostition.class, new ProtocollId(BigClientVersion.v1_8, 0x05), new ProtocollId(BigClientVersion.v1_9, 0x43), new ProtocollId(BigClientVersion.v1_10, 0x43));
+		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutMapChunk.class, new ProtocollId(BigClientVersion.v1_8, 0x21), new ProtocollId(BigClientVersion.v1_9, 0x20), new ProtocollId(BigClientVersion.v1_10, 0x20));
 		//Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutMapChunkBulk.class, new Packet.ProtocollId(BigClientVersion.v1_8, 0x26));
-
-		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutUpdateHealth.class, new Packet.ProtocollId(BigClientVersion.v1_8, 0x06), new Packet.ProtocollId(BigClientVersion.v1_9, 0x3E), new Packet.ProtocollId(BigClientVersion.v1_10, 0x3E));
-		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutEntityTeleport.class, new Packet.ProtocollId(BigClientVersion.v1_8, 24), new Packet.ProtocollId(BigClientVersion.v1_9, 0x4A), new Packet.ProtocollId(ProtocollVersion.v1_9_2, 0x49), new Packet.ProtocollId(BigClientVersion.v1_10, 0x49)); //Change?
-		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutEntityProperties.class, new Packet.ProtocollId(BigClientVersion.v1_8, 0x20), new Packet.ProtocollId(BigClientVersion.v1_9, 0x4B) , new Packet.ProtocollId(ProtocollVersion.v1_9_2, 0x4A), new Packet.ProtocollId(ProtocollVersion.v1_9_3, 0x4A), new Packet.ProtocollId(ProtocollVersion.v1_9_4, 0x4A), new Packet.ProtocollId(BigClientVersion.v1_10, 0x4A)); //Change?
-		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutUpdateSign.class, new Packet.ProtocollId(BigClientVersion.v1_8, 0x33), new Packet.ProtocollId(BigClientVersion.v1_9, 0x46), new Packet.ProtocollId(BigClientVersion.v1_10, 0x46));
-		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutSetExperience.class, new Packet.ProtocollId(BigClientVersion.v1_8, 0x1F), new Packet.ProtocollId(BigClientVersion.v1_9, 0x3D), new Packet.ProtocollId(BigClientVersion.v1_10, 0x3D));
+		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutUpdateHealth.class, new ProtocollId(BigClientVersion.v1_8, 0x06), new ProtocollId(BigClientVersion.v1_9, 0x3E), new ProtocollId(BigClientVersion.v1_10, 0x3E));
+		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutEntityTeleport.class, new ProtocollId(BigClientVersion.v1_8, 24), new ProtocollId(BigClientVersion.v1_9, 0x4A), new ProtocollId(ProtocollVersion.v1_9_2, 0x49), new ProtocollId(BigClientVersion.v1_10, 0x49)); //Change?
+		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutEntityProperties.class, new ProtocollId(BigClientVersion.v1_8, 0x20), new ProtocollId(BigClientVersion.v1_9, 0x4B) , new ProtocollId(ProtocollVersion.v1_9_2, 0x4A), new ProtocollId(ProtocollVersion.v1_9_3, 0x4A), new ProtocollId(ProtocollVersion.v1_9_4, 0x4A), new ProtocollId(BigClientVersion.v1_10, 0x4A)); //Change?
+		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutUpdateSign.class, new ProtocollId(BigClientVersion.v1_8, 0x33), new ProtocollId(BigClientVersion.v1_9, 0x46), new ProtocollId(BigClientVersion.v1_10, 0x46));
+		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutSetExperience.class, new ProtocollId(BigClientVersion.v1_8, 0x1F), new ProtocollId(BigClientVersion.v1_9, 0x3D), new ProtocollId(BigClientVersion.v1_10, 0x3D));
 		PacketLib.addHandler(NickHandler.getInstance(), 100); //Register before chat log! Use chat handle self
 		//PacketLib.addHandler(ChatManager.getInstance(), 50);
-		
+
 		if (!WorldFileReader.isWorld(new File(conf.getString("server.afk.world")))) {
 			System.out.println("§cCant create AFK server!");
 		} else {
@@ -444,7 +481,7 @@ public class Bootstrap {
 				}
 			}
 		});
-		
+
 		emanager.getEventManager(EventType.TEAMSPEAK_LINK_REQUEST).setEventEnabled(true);
 		emanager.registerListener(new TeamspeakListener());
 		//PacketLib.addHandler(new TabListener());
@@ -464,11 +501,5 @@ public class Bootstrap {
 		}
 
 		PrefixCommandRegistry.getInstance().registerCommandListener("~", new ConsoleTeamMessageListener());
-	}
-
-	public static void main(String[] args) {
-		int i = 0x00;
-		Integer x = i;
-		System.out.println((x == null) + " - " + x.intValue() + " - " + PacketPlayOutKeepAlive.class);
 	}
 }

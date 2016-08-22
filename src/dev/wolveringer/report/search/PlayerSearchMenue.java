@@ -11,6 +11,7 @@ import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.gui.SearchMenue;
 import dev.wolveringer.item.ItemBuilder;
 import dev.wolveringer.permission.PermissionManager;
+import dev.wolveringer.thread.ThreadFactory;
 
 public abstract class PlayerSearchMenue extends SearchMenue {
 	private HashMap<String, String> nicks = new HashMap<>();
@@ -18,18 +19,47 @@ public abstract class PlayerSearchMenue extends SearchMenue {
 		super(player);
 		ArrayList<String> out = new ArrayList<>();
 		boolean unnicked = PermissionManager.getManager().hasPermission(player, "searchplayer.unnicked");
+		ArrayList<String> loadafter = new ArrayList<>();
+
 		for(String s : Main.getDatenServer().getPlayers()){
-			LoadedPlayer lp = Main.getDatenServer().getClient().getPlayerAndLoad(s);
-			if(lp.hasNickname()){
-				out.add(lp.getNickname());
-				if(unnicked)
+			LoadedPlayer lp = Main.getDatenServer().getClient().getPlayer(s);
+			if(lp.isLoaded()){
+				if(lp.hasNickname()){
+					out.add(lp.getNickname());
+					if(unnicked)
+						out.add(lp.getName());
+					nicks.put(lp.getNickname(), lp.getName());
+				}
+				else
 					out.add(lp.getName());
-				nicks.put(lp.getNickname(), lp.getName());
-			}
-			else
-				out.add(lp.getName());
+			}else
+				loadafter.add(s);
 		}
+
 		setAvariableEntities(out);
+
+		ThreadFactory.getFactory().createThread(()->{
+			int i = 0;
+			for(String s : loadafter){
+				LoadedPlayer lp = Main.getDatenServer().getClient().getPlayerAndLoad(s);
+				if(lp.hasNickname()){
+					out.add(lp.getNickname());
+					if(unnicked)
+						out.add(lp.getName());
+					nicks.put(lp.getNickname(), lp.getName());
+				}
+				else
+					out.add(lp.getName());
+				i++;
+				if (i >= 10) {
+					i = 0;
+					PlayerSearchMenue.this.updateSelection();
+					PlayerSearchMenue.this.redrawInventory();
+				}
+			}
+			PlayerSearchMenue.this.updateSelection();
+			PlayerSearchMenue.this.redrawInventory();
+		}).start();
 	}
 
 	@Override

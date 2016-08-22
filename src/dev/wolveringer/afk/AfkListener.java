@@ -107,7 +107,6 @@ public class AfkListener implements PacketHandler<Packet> {
 					return;
 				if (CostumServer.getServer(e.getPlayer()) != null) {
 					moveBack(e.getPlayer());
-					return;
 				} else {
 					if (!timeoutObject.contains(e.getPlayer())){
 						timeoutObject.add(e.getPlayer());
@@ -134,6 +133,9 @@ public class AfkListener implements PacketHandler<Packet> {
 	
 	private synchronized void moveBack(Player player){
 		ignore.add(player);
+		if (!timeoutObject.contains(player)){
+			timeoutObject.add(player);
+		}
 		CostumServer.getServer(player).switchTo(BungeeCord.getInstance().getPluginManager().callEvent(new ServerConnectEvent(player, ServerManager.DEFAULT_HUB)).getTarget());
 		MessageManager.getmanager(Main.getTranslationManager().getLanguage(player)).playTitles(player);
 	}

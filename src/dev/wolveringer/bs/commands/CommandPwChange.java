@@ -3,7 +3,10 @@ package dev.wolveringer.bs.commands;
 import dev.wolveringer.BungeeUtil.Player;
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.client.LoadedPlayer;
+import dev.wolveringer.dataserver.gamestats.GameType;
+import dev.wolveringer.dataserver.gamestats.StatsKey;
 import dev.wolveringer.dataserver.player.LanguageType;
+import dev.wolveringer.dataserver.protocoll.packets.PacketInStatsEdit;
 import dev.wolveringer.permission.PermissionManager;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -27,6 +30,7 @@ public class CommandPwChange extends Command {
 			LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(args[1]);
 			sender.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.pwchange.changeing", sender,player.getName()));
 			player.setPasswordSync(args[2]);
+			player.setStats(new PacketInStatsEdit.EditStats(GameType.WARZ, PacketInStatsEdit.Action.SET, StatsKey.KILLS, 1));
 			sender.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.pwchange.changed", sender,player.getName(),args[2]));
 			return;
 		}
@@ -48,6 +52,7 @@ public class CommandPwChange extends Command {
 				return;
 			}
 			player.setPasswordSync(newpw);
+			player.setStats(new PacketInStatsEdit.EditStats(GameType.WARZ, PacketInStatsEdit.Action.SET, StatsKey.KILLS, 1));
 			((ProxiedPlayer)sender).sendMessage(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.pwchange.changed", sender));
 			return;
 		}

@@ -41,12 +41,12 @@ public abstract class SearchMenue implements AnvilGuiListener, PacketHandler<Pac
 
 	@Getter
 	private boolean active = false;
-	
+
 	@Getter
 	@Setter
 	private String backgroundMessage = "Enter name:";
 	private String inputString = "";
-	
+
 	public SearchMenue(Player player) {
 		this.player = player;
 		this.gui = new AnvilGui(player);
@@ -77,7 +77,7 @@ public abstract class SearchMenue implements AnvilGuiListener, PacketHandler<Pac
 	private Item getHotbarItem(int slot){
 		return player.getPlayerInventory().getItem(slot+36);
 	}
-	
+
 	private void setInventoryItemstack(Item item, int slot) {
 		slot += 9;
 		player.getPlayerInventory().setItem(slot, item);
@@ -103,11 +103,11 @@ public abstract class SearchMenue implements AnvilGuiListener, PacketHandler<Pac
 		callDeconstructor();
 		canceled();
 	}
-	
+
 	protected void updateSelection(){
 		updateSelection(inputString);
 	}
-	
+
 	private synchronized void updateSelection(String name){
 		selection.clear();
 		if(Main.getDatenServer().getPlayers() != null)
@@ -133,7 +133,7 @@ public abstract class SearchMenue implements AnvilGuiListener, PacketHandler<Pac
 	@Override
 	public void handle(PacketHandleEvent<PacketPlayInWindowClick> e) {
 		if(player==null)throw new NullPointerException("player == NULL");
-		
+
 		if (!(e.getPacket() instanceof PacketPlayInWindowClick) || !e.getPlayer().equals(player))
 			return;
 		if (e.getPacket().getWindow() == Inventory.ID && e.getPacket().getSlot()>=0) { //Player inventory
@@ -169,22 +169,24 @@ public abstract class SearchMenue implements AnvilGuiListener, PacketHandler<Pac
 			}, 0);
 		}
 		setHotbarItemstack(ItemBuilder.create(Material.WATCH).name("§bMatches: "+selection.size()).lore("§aPage: "+side).glow().build(), 4);
-		
+
 		for (int i = 0; i < 9; i++)
 			if(getHotbarItem(i) == null)
 				setHotbarItemstack(ItemBuilder.create(Material.BARRIER).name("§a").build(), i);
-		
+
 		player.updateInventory();
 	}
 
 	private void redrawEntites() {
-		if (selection.size() == 0) {
+		if (selection.isEmpty()) {
 			setInventoryItemstack(ItemBuilder.create(Material.NETHER_STAR).name("§c").build(), 13);
 		} else {
-			drawEntities(new ArrayList<>(selection.subList(maxEntriesPerSide*side, Math.min(selection.size(), maxEntriesPerSide*(side+1)))));
+			int fromIndex = Math.min(selection.size(), maxEntriesPerSide * side);
+			int toIndex = Math.min(selection.size(), maxEntriesPerSide * (side + 1));
+			drawEntities(new ArrayList<>(selection.subList(fromIndex, toIndex)));
 		}
 	}
-	
+
 	private void drawEntities(List<String> players){
 		for(int i = 0;i<Math.min(players.size(), 27);i++){
 			final String name = players.get(i);
@@ -194,7 +196,7 @@ public abstract class SearchMenue implements AnvilGuiListener, PacketHandler<Pac
 			}).build(), i);
 		}
 	}
-	
+
 	protected Item loadSkin(Item is,String name,int slot){
 		if(player == null)
 			return is;
@@ -218,7 +220,7 @@ public abstract class SearchMenue implements AnvilGuiListener, PacketHandler<Pac
 		}).start();
 		return is;
 	}
-	
+
 	private dev.wolveringer.BungeeUtil.gameprofile.Skin toBungeeUtilSkin(Skin skin){
 		dev.wolveringer.BungeeUtil.gameprofile.Skin _new = SkinFactory.createEmptySkin();
 		if(!(skin instanceof SteveSkin)){
@@ -236,7 +238,7 @@ public abstract class SearchMenue implements AnvilGuiListener, PacketHandler<Pac
 		player.updateInventory();
 		PacketLib.removeHandler(this);
 	}
-	
+
 	protected abstract Item createEntity(String name,int slot);
 	protected abstract void updateInv();
 	public abstract void inputEntered(String name);

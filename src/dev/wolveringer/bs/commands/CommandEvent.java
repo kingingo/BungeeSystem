@@ -56,13 +56,13 @@ public class CommandEvent extends Command implements Listener, CachedArrayList.U
 		}
 
 		private static List<IChatBaseComponent> getInviteMessage(Player player, String inviter) {
-			ArrayList<IChatBaseComponent> out = new ArrayList();
+			ArrayList<IChatBaseComponent> out = new ArrayList<>();
 			out.add(ChatSerializer.fromMessage("§7-----------------------------------------------"));
 			out.add(ChatSerializer.fromMessage("§aDu wurdest von §e" + inviter + " §ain das Event eingeladen!"));
-			IChatBaseComponent comp = new ChatComponentText("§aWillst du der einladung folgen: ");
-			comp.addSibling(new ChatComponentText("Ja").setChatModifier(new ChatModifier().setColor(ChatColor.GREEN).setBold(Boolean.valueOf(true)).setChatClickable(new ChatClickable(EnumClickAction.RUN_COMMAND, "/event invite accept")).setHover(new ChatHoverable(EnumHoverAction.SHOW_TEXT, ChatSerializer.fromMessage("§aKlick mich f§r ja")))));
+			IChatBaseComponent comp = new ChatComponentText("§aMöchtest du der Einladung folgen: ");
+			comp.addSibling(new ChatComponentText("Ja").setChatModifier(new ChatModifier().setColor(ChatColor.GREEN).setBold(true).setChatClickable(new ChatClickable(EnumClickAction.RUN_COMMAND, "/event invite accept")).setHover(new ChatHoverable(EnumHoverAction.SHOW_TEXT, ChatSerializer.fromMessage("§aKlick mich für ja")))));
 			comp.addSibling(new ChatComponentText(" §7| "));
-			comp.addSibling(new ChatComponentText("Nein").setChatModifier(new ChatModifier().setColor(ChatColor.RED).setBold(Boolean.valueOf(true)).setChatClickable(new ChatClickable(EnumClickAction.RUN_COMMAND, "/event invite deny")).setHover(new ChatHoverable(EnumHoverAction.SHOW_TEXT, ChatSerializer.fromMessage("§cKlick mich f§r nein")))));
+			comp.addSibling(new ChatComponentText("Nein").setChatModifier(new ChatModifier().setColor(ChatColor.RED).setBold(true).setChatClickable(new ChatClickable(EnumClickAction.RUN_COMMAND, "/event invite deny")).setHover(new ChatHoverable(EnumHoverAction.SHOW_TEXT, ChatSerializer.fromMessage("§cKlick mich für nein")))));
 			out.add(comp);
 			out.add(ChatSerializer.fromMessage("§7-----------------------------------------------"));
 			return out;
@@ -76,9 +76,9 @@ public class CommandEvent extends Command implements Listener, CachedArrayList.U
 	private ServerInfo server = null;
 	private boolean active = false;
 	private int time = 2000;
-	private CachedArrayList<UUID> connections = new CachedArrayList(2000, TimeUnit.MILLISECONDS);
+	private CachedArrayList<UUID> connections = new CachedArrayList<>(2000, TimeUnit.MILLISECONDS);
 	private int connectionsLimit = 10;
-	private CachedArrayList<Player> invites = new CachedArrayList(1, TimeUnit.MINUTES);
+	private CachedArrayList<Player> invites = new CachedArrayList<>(1, TimeUnit.MINUTES);
 
 	public CommandEvent(String name) {
 		super(name);
@@ -92,7 +92,7 @@ public class CommandEvent extends Command implements Listener, CachedArrayList.U
 		if (args.length == 0) {
 			if ((this.active) && (this.server != null)) {
 				if (p.getServer().getInfo().equals(this.server)) {
-					p.sendMessage("§cDu bist bereitz auf dem Event-Server!");
+					p.sendMessage("§cDu bist bereits auf dem Event-Server!");
 					return;
 				}
 				if (this.connections.size() >= this.connectionsLimit) {
@@ -134,7 +134,7 @@ public class CommandEvent extends Command implements Listener, CachedArrayList.U
 				sender.sendMessage(Main.getTranslationManager().translate("prefix", sender, new Object[0]) + Main.getTranslationManager().translate("command.event.help.climit", sender, new Object[0]));
 				return;
 			}
-			this.connections = new CachedArrayList(this.time = Integer.parseInt(args[2]), TimeUnit.MILLISECONDS);
+			this.connections = new CachedArrayList<>(this.time = Integer.parseInt(args[2]), TimeUnit.MILLISECONDS);
 			this.connectionsLimit = Integer.parseInt(args[1]);
 			Main.getDatenServer().getClient().sendServerMessage(ClientType.BUNGEECORD, "eventServer", new DataBuffer().writeByte(2).writeInt(this.connectionsLimit).writeInt(Integer.parseInt(args[2])));
 			sender.sendMessage(Main.getTranslationManager().translate("prefix", sender, new Object[0]) + Main.getTranslationManager().translate("command.event.climit.set", sender, new Object[] { Integer.valueOf(this.connectionsLimit), args[2] }));

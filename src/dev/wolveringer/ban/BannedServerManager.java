@@ -11,8 +11,6 @@ import dev.wolveringer.bs.Main;
 import dev.wolveringer.bs.listener.PlayerJoinListener;
 import dev.wolveringer.bs.message.MessageManager;
 import dev.wolveringer.bs.servermanager.ServerManager;
-import dev.wolveringer.chat.ChatSerializer;
-import dev.wolveringer.chat.IChatBaseComponent;
 import dev.wolveringer.dataserver.ban.BanEntity;
 import dev.wolveringer.dataserver.player.LanguageType;
 import dev.wolveringer.nick.ReplaceUtils;
@@ -27,28 +25,25 @@ import lombok.Setter;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.chat.HoverEvent.Action;
 import net.md_5.bungee.api.event.ServerConnectEvent;
-import net.md_5.bungee.chat.ComponentSerializer;
 
 public class BannedServerManager {
 	private static HashMap<Integer, Integer> buycraftBanLevelMapping = new HashMap<>();
-	
+
 	static {
 		Main.getTranslationManager().registerFallback(LanguageType.ENGLISH, "server.banned.title", "§cYou are banned!");
 		Main.getTranslationManager().registerFallback(LanguageType.ENGLISH, "server.banned.subtitle.permanent", "§cYou are permanently banned level %s0!");
 		Main.getTranslationManager().registerFallback(LanguageType.ENGLISH, "server.banned.actionbar.permanent", "§a§lYour ban reason: §c§l%s0");
 		Main.getTranslationManager().registerFallback(LanguageType.ENGLISH, "server.banned.tab.permanent.header", "§cYou are permanently banned level %s0!");
 		Main.getTranslationManager().registerFallback(LanguageType.ENGLISH, "server.banned.tab.permanent.footer", "§aYour ban reason: §c%s0");
-		
+
 		Main.getTranslationManager().registerFallback(LanguageType.ENGLISH, "server.banned.chat", "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n§eDu wurdest vom dem §6ClashMC §eNetzwerk %s3 wegen\n"
 				+ "§b%s0§e von§b %s1 §eauf der Stufe§c %s2 §egebannt.\n"
 				+ "§eFalls du wieder spielen möchtest, dann kannst\n"
 				+ "§edu dir eine Entsperrung in unserem Onlineshop\n"
-				+ "§eunter§b {buycraft_unban_%s0}§e kaufen.\n" //shop.ClashMC.de
+				+ "§eunter§b {buycraft_unban_%s2}§e kaufen.\n" //shop.ClashMC.de
 				+ "§a▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n"
 				+ "§eFalls du Fragen zu deinem Ban hast,\n"
 				+ "§emelde dich bitte auf unserem Teamspeak 3 Server unter§7\n"
@@ -59,13 +54,13 @@ public class BannedServerManager {
 		Main.getTranslationManager().registerFallback(LanguageType.ENGLISH, "server.banned.actionbar.temporary", "§a§lYour ban reason: §c§l%s0");
 		Main.getTranslationManager().registerFallback(LanguageType.ENGLISH, "server.banned.tab.temporary.header", "§cYou are permanently banned for %s0!");
 		Main.getTranslationManager().registerFallback(LanguageType.ENGLISH, "server.banned.tab.temporary.footer", "§aYour ban reason: §c%s0");
-	
+
 		buycraftBanLevelMapping.put(1, 920583);
 		buycraftBanLevelMapping.put(2, 1224528);
 		buycraftBanLevelMapping.put(3, 1224529);
 		buycraftBanLevelMapping.put(4, 1224531);
 		/*
-Entsperrung Lvl. 1 
+Entsperrung Lvl. 1
 http://shop.clashMC.eu/checkout/packages?action=add&package=920583&ign=<PLAYERNAME>
 Entsperrung Lvl. 2
 http://shop.clashMC.eu/checkout/packages?action=add&package=1224528&ign=<PLAYERNAME>
@@ -85,7 +80,7 @@ http://shop.clashMC.eu/checkout/packages?action=add&package=1224531&ign=<PLAYERN
 			}
 		});
 	 */
-	
+
 	public static BaseComponent[] getChatMessage(String in,String player){
 		return ReplaceUtils.replaceNames(ReplaceUtils.BUYCRAFT_UNBAN_PATTERN, TextComponent.fromLegacyText(in), new Replacer() {
 			@Override
@@ -104,17 +99,17 @@ http://shop.clashMC.eu/checkout/packages?action=add&package=1224531&ign=<PLAYERN
 			}
 		});
 	}
-	
-	
+
+
 	@Setter
 	@Getter
 	private static BannedServerManager instance;
-	
+
 	private final World world;
 	private final int render;
 	private HashMap<Player, CostumServer> server = new HashMap<>();
 	private ArrayList<Runnable> updates = new ArrayList<>();
-	
+
 	public BannedServerManager(World world, int render) {
 		this.world = world;
 		this.render = render;
@@ -134,7 +129,7 @@ http://shop.clashMC.eu/checkout/packages?action=add&package=1224531&ign=<PLAYERN
 			}
 		}).start();
 	}
-	
+
 	public void joinServer(Player player,BanEntity ban){
 		ServerConfigurationBuilder cfgBuilder = ServerConfiguration.builder();
 		cfgBuilder.title(Main.getTranslationManager().translate("server.banned.title",player));
@@ -189,12 +184,12 @@ http://shop.clashMC.eu/checkout/packages?action=add&package=1224531&ign=<PLAYERN
 			}
 		});
 	}
-	
+
 	public void playerQuit(Player player){
 		if(isBanned(player))
 			server.remove(player);
 	}
-	
+
 	public boolean isBanned(Player player){
 		return server.get(player) != null;
 	}

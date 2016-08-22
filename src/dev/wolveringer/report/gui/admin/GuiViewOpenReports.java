@@ -30,7 +30,7 @@ public class GuiViewOpenReports extends Gui implements Runnable{
 	private List<Entry<Integer, ArrayList<ReportEntity>>> reportEntities;
 	private HashMap<Integer, Long> minTimes;
 	private int side;
-	
+
 	public GuiViewOpenReports() {
 		super(6, "§aOpen reports");
 	}
@@ -43,12 +43,12 @@ public class GuiViewOpenReports extends Gui implements Runnable{
 				switchToGui(new GuiPlayerMenue());
 			}
 		});
-		
+
 		inv.setItem(4, is = ItemBuilder.create(Material.EMERALD).name("§6Open reports: Loading....").build());
 		//11 13 15
 		//29 31 33
 		//47 49 51
-		
+
 		fill(fillItem, 0, 6*9);
 		BungeeCord.getInstance().getScheduler().runAsync(Main.getInstance(), new Runnable() {
 			@Override
@@ -70,13 +70,13 @@ public class GuiViewOpenReports extends Gui implements Runnable{
 			}
 		});
 	}
-	
+
 	private void afterload(ReportEntity...entities){
 		is.setType(Material.DIAMOND);
 		is.getItemMeta().setDisplayName("§6Open reports: "+entities.length);
 		setItemLater(4, ItemBuilder.create(Material.DIAMOND).name("§6Open reports: "+entities.length).build());
 		this.entites = entities;
-		
+
 		HashMap<Integer, ArrayList<ReportEntity>> amauths = new InitHashMap<Integer, ArrayList<ReportEntity>>() {
 			@Override
 			public ArrayList<ReportEntity> defaultValue(Integer key) {
@@ -87,7 +87,7 @@ public class GuiViewOpenReports extends Gui implements Runnable{
 			amauths.get(e.getTarget()).add(e);
 		List<Entry<Integer, ArrayList<ReportEntity>>> reports = new ArrayList<>(amauths.entrySet());
 		minTimes = new HashMap<>();
-		
+
 		//Calculate -> open until
 		for(Entry<Integer, ArrayList<ReportEntity>> e : reports){
 			long min = System.currentTimeMillis();
@@ -96,7 +96,7 @@ public class GuiViewOpenReports extends Gui implements Runnable{
 					min = re.getTime();
 			minTimes.put(e.getKey(), min);
 		}
-		
+
 		//Sort
 		Collections.sort(reports, new Comparator<Entry<Integer, ArrayList<ReportEntity>>>() {
 			@Override
@@ -109,7 +109,7 @@ public class GuiViewOpenReports extends Gui implements Runnable{
 			}
 		});
 		this.reportEntities = reports;
-		
+
 		printReportItems();
 	}
 	private void printReportItems(){
@@ -117,7 +117,7 @@ public class GuiViewOpenReports extends Gui implements Runnable{
 			return;
 		inv.disableUpdate();
 
-		
+
 		int start = 9;
 		int pos = 0;
 		List<Entry<Integer, ArrayList<ReportEntity>>> reports = reportEntities.subList(side*REPORTS_PER_SIDE, Math.min(((side+1)*REPORTS_PER_SIDE), reportEntities.size()));
@@ -127,7 +127,7 @@ public class GuiViewOpenReports extends Gui implements Runnable{
 			pos++;
 		}
 		fill(fillItem, start+pos, inv.getSlots()-10, true);
-		
+
 		setItemLater(45, new ItemStack(ItemBuilder.create(Material.ARROW).name("§aVorherige seite").build()){
 			@Override
 			public void click(Click c) {
@@ -148,16 +148,25 @@ public class GuiViewOpenReports extends Gui implements Runnable{
 				}
 			}
 		});
-		
+
 		inv.enableUpdate();
 	}
 	private Item createReportInfo(int playerId,ArrayList<ReportEntity> reports,long minTime){
 		if(playerId == -1)
 			return ItemBuilder.create(160).durbility(14).name("§cPlayerId -> "+playerId).build();
 		String player = Main.getDatenServer().getClient().getPlayerAndLoad(playerId).getName();
-		return loadSkin(ItemBuilder.create(Material.SKULL_ITEM).name("§a"+reports.size()+" Report"+(reports.size()==1?"":"s")+" gegen §e"+player).amouth(reports.size()).listener((c)-> switchToGui(new GuiViewPlayerReport(player, reports))).lore("§aOffen seit: "+PlayerJoinListener.getDurationBreakdown(System.currentTimeMillis()-minTime)).build(), player);
+		int workerAmount = reports.get(0).getWorkers().size();
+		ItemBuilder builder = ItemBuilder.create(Material.SKULL_ITEM)
+				.name("§a" + reports.size() + " Report" + (reports.size() == 1 ? "" : "s") + " gegen §e" + player)
+				.amouth(reports.size())
+				.listener((c) -> switchToGui(new GuiViewPlayerReport(player, reports)))
+				.lore("§aOffen seit: §e" + PlayerJoinListener.getDurationBreakdown(System.currentTimeMillis() - minTime))
+				.lore("§aBearbeiter: " + (workerAmount == 0 ? "§ckeine" : "§e" + workerAmount));
+		for (ReportEntity report : reports)
+			builder.lore("§6" + report.getReson()).lore("§a  Reporter §7» §e" + Main.getDatenServer().getClient().getPlayerAndLoad(report.getReporter()).getName());
+		return loadSkin(builder.build(), player);
 	}
-	
+
 	@Override
 	public void run() {
 		while (isActive()) {
@@ -169,7 +178,7 @@ public class GuiViewOpenReports extends Gui implements Runnable{
 				printReportItems();
 		}
 	}
-	
+
 	@Override
 	public void active() {
 		pid = BungeeCord.getInstance().getScheduler().runAsync(Main.getInstance(), this);

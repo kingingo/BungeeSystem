@@ -1,6 +1,7 @@
 package dev.wolveringer.bs.commands;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -32,7 +33,10 @@ public class CommandServer extends Command implements TabExecutor {
 	}
 
 	@Override
-	public Iterable<String> onTabComplete(CommandSender arg0, String[] args) {
+	public Iterable<String> onTabComplete(CommandSender sender, String[] args) {
+		if (!PermissionManager.getManager().hasPermission((ProxiedPlayer) sender, PermissionType.SERVER, false)) {
+			return Collections.emptyList();
+		}
 		List<String> list = new ArrayList<>();
 		if (args.length == 1) {
 			for (String s : BungeeCord.getInstance().getServers().keySet()) {
@@ -56,27 +60,27 @@ public class CommandServer extends Command implements TabExecutor {
 				if(args[0].equalsIgnoreCase("list")){
 					Iterator<String> serverss = BungeeCord.getInstance().getServers().keySet().iterator();
 					List<BaseComponent[]> servers = Lists.newArrayList();
-					ComponentBuilder currunt = new ComponentBuilder("");
+					ComponentBuilder current = new ComponentBuilder("");
 					int count = 0;
-					for (;serverss.hasNext();) {
+					while (serverss.hasNext()) {
 						String s = serverss.next();
 						if (!serverss.hasNext()) {
-							currunt.append("§9" + s).color(ChatColor.BLUE).underlined(false).event(new ClickEvent(Action.RUN_COMMAND, "/server " + s)).event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§9Klicke hier um auf §e" + s + " §9Zu Connecten!").create()));
+							current.append("§9" + s).color(ChatColor.BLUE).underlined(false).event(new ClickEvent(Action.RUN_COMMAND, "/server " + s)).event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§9Klicke hier um auf §e" + s + "§9 zu joinen!").create()));
 						} else {
-							currunt.append("§9" + s + "§7,").color(ChatColor.BLUE).underlined(false).event(new ClickEvent(Action.RUN_COMMAND, "/server " + s)).event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§9Klicke hier um auf §e" + s + " §9Zu Connecten!").create()));
+							current.append("§9" + s + "§7,").color(ChatColor.BLUE).underlined(false).event(new ClickEvent(Action.RUN_COMMAND, "/server " + s)).event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§9Klicke hier um auf §e" + s + "§9 zu joinen!").create()));
 						}
 						count++;
 						if(count>5){
-							servers.add(currunt.create());
-							currunt = new ComponentBuilder("");
+							servers.add(current.create());
+							current = new ComponentBuilder("");
 							count = 0;
 						}
 					}
-					sender.sendMessage(new ComponentBuilder("§7----------------------------------------------------").create());
-					sender.sendMessage(new ComponentBuilder("§6Servers: ").create());
+					sender.sendMessage(new ComponentBuilder("----------------------------------------------------").color(ChatColor.GRAY).create());
+					sender.sendMessage(new ComponentBuilder("Servers: ").color(ChatColor.GOLD).create());
 					for (BaseComponent[] comp : servers)
 						sender.sendMessage(comp);
-					sender.sendMessage(new ComponentBuilder("§7----------------------------------------------------").create());
+					sender.sendMessage(new ComponentBuilder("----------------------------------------------------").color(ChatColor.GRAY).create());
 					return;
 				}
 				
@@ -120,7 +124,7 @@ public class CommandServer extends Command implements TabExecutor {
 				}
 			}
 			sender.sendMessage("§a/server list §7| §bListe alle Server auf.");
-			sender.sendMessage("§a/server <name> §7| §bJoine einem Servers.");
+			sender.sendMessage("§a/server <name> §7| §bVerbinde dich mit dem angegebenen Server.");
 			sender.sendMessage("§a/server info <name> §7| §bListe die Serverinformationen auf.");
 		}
 	}

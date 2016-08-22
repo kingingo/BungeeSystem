@@ -9,6 +9,8 @@ import dev.wolveringer.item.ItemBuilder;
 import dev.wolveringer.permission.PermissionManager;
 import dev.wolveringer.report.gui.admin.GuiViewOpenReports;
 import dev.wolveringer.report.search.PlayerSearchMenue;
+import dev.wolveringer.thread.ThreadFactory;
+import net.md_5.bungee.api.ProxyServer;
 
 public class GuiPlayerMenue extends Gui {
 
@@ -21,23 +23,26 @@ public class GuiPlayerMenue extends Gui {
 		inv.setItem(2, new ItemStack(ItemBuilder.create(372).name("§aReport a player").lore("§7Click to report a player.").glow().build()) {
 			@Override
 			public void click(Click c) {
-				PlayerSearchMenue m = new PlayerSearchMenue(getPlayer()) {
-					@Override
-					public void playerEntered(String name) {
-						if(name.equalsIgnoreCase(getPlayer().getName())){
-							getPlayer().sendMessage("§cYou cant report yourself!");
-							return;
+				inv.setItem(2, ItemBuilder.create(372).name("§aPlease wait while we're loading all the players.").lore("§aBitte warte, während wir alle Spieler laden.").glow().build());
+				ThreadFactory.getFactory().createThread(() -> {
+					PlayerSearchMenue m = new PlayerSearchMenue(getPlayer()) {
+						@Override
+						public void playerEntered(String name) {
+							if(name.equalsIgnoreCase(getPlayer().getName())){
+								getPlayer().sendMessage("§cYou cant report yourself!");
+								return;
+							}
+							LoadedPlayer splayer = Main.getDatenServer().getClient().getPlayerAndLoad(name);
+							GuiSelectPlayerReportReson gui = new GuiSelectPlayerReportReson(name, splayer.hasNickname() ? PermissionManager.getManager().hasPermission(getPlayer(), "report.viewname") ? splayer.getName() : splayer.getNickname() : splayer.getName());
+							gui.setPlayer(getPlayer());
+							gui.openGui();
 						}
-						LoadedPlayer splayer = Main.getDatenServer().getClient().getPlayerAndLoad(name);
-						GuiSelectPlayerReportReson gui = new GuiSelectPlayerReportReson(name, splayer.hasNickname() ? PermissionManager.getManager().hasPermission(getPlayer(), "report.viewname") ? splayer.getName() : splayer.getNickname() : splayer.getName());
-						gui.setPlayer(getPlayer());
-						gui.openGui();
-					}
-					
-					@Override
-					public void canceled() {}
-				};
-				m.open();
+
+						@Override
+						public void canceled() {}
+					};
+					m.open();
+				}).start();
 			}
 		});
 		
