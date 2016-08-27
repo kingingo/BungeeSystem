@@ -20,6 +20,7 @@ public class CommandWhitelist extends Command implements Listener{
 		super("bwhitelist");
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	public void execute(CommandSender cs, String[] args) {
 		if(!PermissionManager.getManager().hasPermission(cs, PermissionType.COMMAND_WHITELIST,true)) return;

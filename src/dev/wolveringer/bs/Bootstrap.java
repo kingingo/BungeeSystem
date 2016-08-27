@@ -423,7 +423,8 @@ public class Bootstrap {
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new SkinListener());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new InvalidChatListener());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new PlayerDisconnectListener());
-		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new TimeListener());
+		TimeListener.setInstance(new TimeListener());
+		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), TimeListener.getInstance());
 
 		ActionBar.getInstance().start();
 
