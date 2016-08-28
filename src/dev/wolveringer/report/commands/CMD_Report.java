@@ -25,6 +25,9 @@ public class CMD_Report extends Command{
 			cs.sendMessage("§cYou arent an instance of a Player!");
 			return;
 		}
+		
+		
+		
 		if(args.length == 1 && args[0].equalsIgnoreCase("closeAll") && PermissionManager.getManager().hasPermission(cs, "report.closeall")){
 			cs.sendMessage("§aClosing....");
 			ThreadFactory.getFactory().createThread(new Runnable() {

@@ -2,6 +2,7 @@ package dev.wolveringer.bs.listener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 import dev.wolveringer.BungeeUtil.Player;
 import dev.wolveringer.bs.Main;
@@ -14,6 +15,7 @@ import dev.wolveringer.dataserver.gamestats.StatsKey;
 import dev.wolveringer.dataserver.protocoll.packets.PacketInStatsEdit.Action;
 import dev.wolveringer.dataserver.protocoll.packets.PacketInStatsEdit.EditStats;
 import dev.wolveringer.gamestats.Statistic;
+import dev.wolveringer.hashmaps.CachedHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import net.md_5.bungee.BungeeCord;
@@ -35,7 +37,8 @@ public class TimeListener implements Listener {
 	private HashMap<Integer, Counter> players = new HashMap<>();
 	private final long MINUTE = 60000L;
 	private static boolean active = false;
-
+	private CachedHashMap<Player, Long> alltimings = new CachedHashMap<>(2, TimeUnit.MINUTES);
+	
 	public TimeListener() {
 		init();
 	}
@@ -47,7 +50,7 @@ public class TimeListener implements Listener {
 		players.remove(loadedplayer.getPlayerId());
 	}
 
-	@EventHandler
+	@EventHandler(priority=0)
 	public void a(PostLoginEvent ev) {
 		LoadedPlayer loadedplayer = Main.getDatenServer().getClient().getPlayerAndLoad(ev.getPlayer().getName());
 		players.put(loadedplayer.getPlayerId(), new Counter());
@@ -71,6 +74,18 @@ public class TimeListener implements Listener {
 
 	public ProgressFuture<Long> getTime(Player player){
 		LoadedPlayer loadedplayer = Main.getDatenServer().getClient().getPlayerAndLoad(player.getName());
+		synchronized (alltimings) {
+			alltimings.lock();
+			if(alltimings.containsKey(player)){
+				ValueProgressFuture<Long> out = new ValueProgressFuture<>();
+				long playedTime = alltimings.get(player);
+				if(players.containsKey(loadedplayer.getPlayerId()))
+					playedTime += System.currentTimeMillis()-players.get(loadedplayer.getPlayerId()).timestamp;
+				out.applayValue(playedTime);
+				return out;
+			}
+			alltimings.unlock();
+		}
 		ValueProgressFuture<Long> future = new ValueProgressFuture<Long>();
 		loadedplayer.getStats(GameType.TIME).getAsync(new Callback<Statistic[]>() {
 			@Override
@@ -106,7 +121,7 @@ public class TimeListener implements Listener {
 					}
 
 					try {
-						Thread.sleep(1000 * 60 * 30);
+						Thread.sleep(30 * 60 * 1000);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
