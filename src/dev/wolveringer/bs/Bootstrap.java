@@ -58,6 +58,7 @@ import dev.wolveringer.bs.commands.CommandPermission;
 import dev.wolveringer.bs.commands.CommandPremium;
 import dev.wolveringer.bs.commands.CommandPvP;
 import dev.wolveringer.bs.commands.CommandPwChange;
+import dev.wolveringer.bs.commands.CommandResourcepack;
 import dev.wolveringer.bs.commands.CommandRestart;
 import dev.wolveringer.bs.commands.CommandRoulett;
 import dev.wolveringer.bs.commands.CommandSendServer;
@@ -89,9 +90,12 @@ import dev.wolveringer.bs.listener.ServerListener;
 import dev.wolveringer.bs.listener.SkinListener;
 import dev.wolveringer.bs.listener.TeamChatListener;
 import dev.wolveringer.bs.listener.TimeListener;
+import dev.wolveringer.bs.listener.WarzTexturePackListener;
 import dev.wolveringer.bs.login.LoginManager;
 import dev.wolveringer.bs.login.PlayerDisconnectListener;
 import dev.wolveringer.bs.message.MessageManager;
+import dev.wolveringer.bs.packets.PacketPlayInResourcepackStatus;
+import dev.wolveringer.bs.packets.PacketPlayOutResourcepack;
 import dev.wolveringer.bs.servermanager.ServerManager;
 import dev.wolveringer.chat.ChatManager;
 import dev.wolveringer.client.debug.Debugger;
@@ -407,6 +411,7 @@ public class Bootstrap {
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandRoulett());
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandNick());
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandTeamspeak());
+		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandResourcepack());
 		//BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandGilde());
 
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), InformationManager.getManager());
@@ -425,7 +430,9 @@ public class Bootstrap {
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new PlayerDisconnectListener());
 		TimeListener.setInstance(new TimeListener());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), TimeListener.getInstance());
-
+		WarzTexturePackListener.setInstance(new WarzTexturePackListener());
+		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), WarzTexturePackListener.getInstance());
+		
 		ActionBar.getInstance().start();
 
 		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutChat.class, new ProtocollId(BigClientVersion.v1_8, 0x02), new ProtocollId(BigClientVersion.v1_9, 0x0F), new ProtocollId(BigClientVersion.v1_10, 0x0F));
@@ -439,6 +446,9 @@ public class Bootstrap {
 		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutEntityProperties.class, new ProtocollId(BigClientVersion.v1_8, 0x20), new ProtocollId(BigClientVersion.v1_9, 0x4B) , new ProtocollId(ProtocollVersion.v1_9_2, 0x4A), new ProtocollId(ProtocollVersion.v1_9_3, 0x4A), new ProtocollId(ProtocollVersion.v1_9_4, 0x4A), new ProtocollId(BigClientVersion.v1_10, 0x4A)); //Change?
 		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutUpdateSign.class, new ProtocollId(BigClientVersion.v1_8, 0x33), new ProtocollId(BigClientVersion.v1_9, 0x46), new ProtocollId(BigClientVersion.v1_10, 0x46));
 		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutSetExperience.class, new ProtocollId(BigClientVersion.v1_8, 0x1F), new ProtocollId(BigClientVersion.v1_9, 0x3D), new ProtocollId(BigClientVersion.v1_10, 0x3D));
+		
+		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutResourcepack.class, new ProtocollId(BigClientVersion.v1_8, 0x48), new ProtocollId(BigClientVersion.v1_9, 0x32), new ProtocollId(BigClientVersion.v1_10, 0x32));
+		Packet.registerPacket(Protocol.GAME, Direction.TO_SERVER, PacketPlayInResourcepackStatus.class, new ProtocollId(BigClientVersion.v1_8, 0x19), new ProtocollId(BigClientVersion.v1_9, 0x16), new ProtocollId(BigClientVersion.v1_10, 0x16));
 		PacketLib.addHandler(NickHandler.getInstance(), 100); //Register before chat log! Use chat handle self
 		//PacketLib.addHandler(ChatManager.getInstance(), 50);
 
