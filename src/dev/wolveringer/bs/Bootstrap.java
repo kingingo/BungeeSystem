@@ -47,6 +47,7 @@ import dev.wolveringer.bs.commands.CommandClient;
 import dev.wolveringer.bs.commands.CommandCreative;
 import dev.wolveringer.bs.commands.CommandEvent;
 import dev.wolveringer.bs.commands.CommandGList;
+import dev.wolveringer.bs.commands.CommandGilde;
 import dev.wolveringer.bs.commands.CommandGunGame;
 import dev.wolveringer.bs.commands.CommandHub;
 import dev.wolveringer.bs.commands.CommandKicken;
@@ -126,12 +127,16 @@ import lombok.Getter;
 import me.kingingo.kBungeeCord.Language.TranslationHandler;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.event.ProxyPingEvent;
+import net.md_5.bungee.api.event.ServerConnectEvent;
 import net.md_5.bungee.api.plugin.Command;
+import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.PluginManager;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
+import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.protocol.Protocol;
 import net.md_5.bungee.protocol.ProtocolConstants.Direction;
 
@@ -412,7 +417,7 @@ public class Bootstrap {
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandNick());
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandTeamspeak());
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandResourcepack());
-		//BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandGilde());
+		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandGilde());
 
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), InformationManager.getManager());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), ServerManager.getManager());

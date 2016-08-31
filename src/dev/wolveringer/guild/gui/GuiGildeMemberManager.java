@@ -21,8 +21,8 @@ import dev.wolveringer.item.ItemBuilder;
 public class GuiGildeMemberManager extends Gui{
 	private static final List<String> FINAL_GROUPS = Arrays.asList("owner");
 	private static final Item EMPTY_GROUP = ItemBuilder.create(Material.IRON_FENCE).name("§7").build();
-	private static final Item ARROW_UP_DOWN = ItemBuilder.create(Material.ARROW).name("§7» §6Hock/Runter").lore("§c").lore("§eLinksklick§7: §a︽").lore("§eRechtsklick§7: §a︾").build();
-	private static final Item ARROW_LEFT_RIGHT = ItemBuilder.create(Material.ARROW).name("§7» §6Hock/Runter").lore("§c").lore("§eLinksklick§7: §a«").lore("§eRechtsklick§7: §a»").build();
+	private static final Item ARROW_UP_DOWN = ItemBuilder.create(Material.ARROW).name("§7» §6Hoch/Runter").lore("§c").lore("§eLinksklick§7: §a︽").lore("§eRechtsklick§7: §a︾").build();
+	private static final Item ARROW_LEFT_RIGHT = ItemBuilder.create(Material.ARROW).name("§7» §6Hoch/Runter").lore("§c").lore("§eLinksklick§7: §a«").lore("§eRechtsklick§7: §a»").build();
 	private static final int GROUPS_PER_COLUMN = 4;
 	private static final int MEMBER_PER_ROW = 6;
 	

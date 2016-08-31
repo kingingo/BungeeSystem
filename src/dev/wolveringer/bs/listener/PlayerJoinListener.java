@@ -212,8 +212,5 @@ public class PlayerJoinListener implements Listener {
 		}
 		return (sb.toString());
 	}
-	public static void main(String[] args) {
-		System.out.println(new Date(437015404));
-	}
 }
 //event.join.kickBan - §cYou were banned %s0 §cfrom the Network! \n§3Reason: §c%s1 \n \n§aYou can write an unban-request at §ewww.EpicPvP.org [length,reson]
