@@ -11,6 +11,8 @@ import dev.wolveringer.BungeeUtil.item.ItemStack.Click;
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.client.Callback;
 import dev.wolveringer.client.LoadedPlayer;
+import dev.wolveringer.dataserver.protocoll.packets.PacketGildActionResponse;
+import dev.wolveringer.dataserver.protocoll.packets.PacketGildActionResponse.Action;
 import dev.wolveringer.gilde.Gilde;
 import dev.wolveringer.gilde.GildeType;
 import dev.wolveringer.gui.Gui;
@@ -140,10 +142,10 @@ public class GuiPlayerGildeOverview extends Gui{
 							waiting.setPlayer(player);
 							waiting.openGui();
 							
-							Main.getDatenServer().getClient().createGilde(lplayer, name).getAsync(new Callback<UUID>() {
+							Main.getDatenServer().getClient().createGilde(lplayer, name).getAsync(new Callback<PacketGildActionResponse>() {
 								@Override
-								public void call(UUID obj, Throwable exception) {
-									if(obj == null){
+								public void call(PacketGildActionResponse obj, Throwable exception) {
+									if(obj == null || obj.getAction() == Action.ERROR){
 										new GuiStatusPrint(5,ItemBuilder.create().material(Material.REDSTONE_BLOCK).name("§cAn error happend while creating your gilde.").build()) {
 											@Override
 											public void onContinue() {
@@ -156,7 +158,7 @@ public class GuiPlayerGildeOverview extends Gui{
 										new GuiStatusPrint(5,ItemBuilder.create().material(Material.EMERALD).name("§aGilde successfull created!").build()) {
 											@Override
 											public void onContinue() {
-												new GuiGildeAdminOverview(player, Main.getGildeManager().getGilde(obj)).setPlayer(player).openGui();
+												new GuiGildeAdminOverview(player, Main.getGildeManager().getGilde(obj.getUuid())).setPlayer(player).openGui();
 											}
 										}.setPlayer(player).openGui();
 									}

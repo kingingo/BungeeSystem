@@ -1,19 +1,22 @@
 package dev.wolveringer.guild.gui;
 
 import java.util.HashMap;
-import java.util.UUID;
 
 import dev.wolveringer.BungeeUtil.Material;
 import dev.wolveringer.BungeeUtil.Player;
 import dev.wolveringer.BungeeUtil.item.Item;
 import dev.wolveringer.BungeeUtil.item.ItemStack.Click;
 import dev.wolveringer.bs.Main;
+import dev.wolveringer.client.Callback;
 import dev.wolveringer.client.LoadedPlayer;
+import dev.wolveringer.dataserver.protocoll.packets.PacketGildActionResponse;
+import dev.wolveringer.dataserver.protocoll.packets.PacketGildActionResponse.Action;
 import dev.wolveringer.gilde.Gilde;
 import dev.wolveringer.gilde.GildeType;
 import dev.wolveringer.gui.Gui;
 import dev.wolveringer.gui.GuiStatusPrint;
 import dev.wolveringer.gui.GuiWaiting;
+import dev.wolveringer.gui.GuiYesNo;
 import dev.wolveringer.guild.gui.section.SectionRegestry;
 import dev.wolveringer.item.ItemBuilder;
 import dev.wolveringer.thread.ThreadFactory;
@@ -47,10 +50,37 @@ public class GuiGildeAdminOverview extends Gui{
 		inv.disableUpdate();
 		fill(ItemBuilder.create(160).durbility(7).name("§7").build(), 0 , -1,true);	
 		inv.setItem(0, ItemBuilder.create(Material.BARRIER).name("§cSchließen").listener((Click c) -> c.getPlayer().closeInventory()).build());
-		inv.setItem(8, ItemBuilder.create(Material.BARRIER).name("§cGilde löschen").listener(new Runnable() {
+		inv.setItem(8, ItemBuilder.create(Material.LAVA_BUCKET).name("§cGilde löschen").listener(new Runnable() { //TODO check perms
 			@Override
 			public void run() {
-				
+				Gui question = new GuiYesNo("§cAre you shure?","§cYou cant recover your gilde!") {
+					@Override
+					public void onDicition(boolean flag) {
+						if(flag){
+							new GuiWaiting("§aPlease wait", "§aPerforming action").setPlayer(player).openGui();
+							Main.getGildeManager().deleteGilde(gilde, true).getAsync(new Callback<PacketGildActionResponse>() {
+								@Override
+								public void call(PacketGildActionResponse obj, Throwable exception) {
+									if(obj == null){
+										player.sendMessage("§cAn error happend while deleting your gilde.");
+										if(exception != null)
+											exception.printStackTrace();
+									}
+									else if(obj.getAction() == Action.ERROR){
+										player.sendMessage("§cAn error happend while deleting your gilde.");
+										System.out.println("An error happend while deleting gilde "+gilde.getName()+" ("+obj.getMessage()+")");
+									}
+									else
+									{
+										player.sendMessage("§aYour is gilde successfully deleted.");
+									}
+									player.closeInventory();
+								}
+							});;
+						}
+					}
+				};
+				question.setPlayer(player).openGui();
 			}
 		}).build());
 		inv.setItem(19, buildSection(GildeType.ARCADE));
