@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
 import dev.wolveringer.BungeeUtil.AsyncCatcher;
@@ -99,13 +100,17 @@ import dev.wolveringer.bs.packets.PacketPlayInResourcepackStatus;
 import dev.wolveringer.bs.packets.PacketPlayOutResourcepack;
 import dev.wolveringer.bs.servermanager.ServerManager;
 import dev.wolveringer.chat.ChatManager;
+import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.client.debug.Debugger;
+import dev.wolveringer.dataserver.gamestats.GameType;
+import dev.wolveringer.dataserver.gamestats.StatsKey;
 import dev.wolveringer.event.EventListener;
 import dev.wolveringer.event.EventManager;
 import dev.wolveringer.events.Event;
 import dev.wolveringer.events.EventConditions;
 import dev.wolveringer.events.EventType;
 import dev.wolveringer.events.player.PlayerServerSwitchEvent;
+import dev.wolveringer.gamestats.Statistic;
 import dev.wolveringer.gilde.GildManager;
 import dev.wolveringer.mysql.MySQL;
 import dev.wolveringer.nick.NickHandler;
@@ -517,5 +522,50 @@ public class Bootstrap {
 		}
 
 		PrefixCommandRegistry.getInstance().registerCommandListener("~", new ConsoleTeamMessageListener());
+		
+		
+		BungeeCord.getInstance().getScheduler().schedule(Main.getInstance(), new Runnable() {
+			private int lastAmount = -7;
+			@Override
+			public void run() {
+				int onlineCount =BungeeCord.getInstance().getOnlineCount();
+				if (lastAmount == -7) {
+					lastAmount = onlineCount;
+				}
+				int diff = onlineCount - lastAmount;
+				if (diff < 0) {
+					System.out.println("Spieler online: " + onlineCount + " " + diff);
+				} else if (diff > 0){
+					System.out.println("Spieler online: " + onlineCount + " +" + diff);
+				} else { //diff==0
+					System.out.println("Spieler online: " + onlineCount);
+				}
+				lastAmount = onlineCount;
+			}
+		}, 1, 10, TimeUnit.SECONDS);
+		BungeeCord.getInstance().getScheduler().schedule(Main.getInstance(), () -> {
+			for (ProxiedPlayer plr : BungeeCord.getInstance().getPlayers()) {
+				try {
+					LoadedPlayer player = Main.getDatenServer().getClient().getPlayer(plr.getUniqueId());
+					if (player == null || plr.getServer().getInfo().getName().toLowerCase().startsWith("loginhub") || plr.getServer().getInfo().getName().equalsIgnoreCase("proxylobby") || player.isPremiumSync()) {
+						continue;
+					}
+					player.getStats(GameType.WARZ).getAsync((statistics, throwable) -> {
+						if (throwable != null) {
+							throwable.printStackTrace();
+							return;
+						}
+						for (Statistic statistic : statistics) {
+							if (statistic.getStatsKey() == StatsKey.KILLS && statistic.asInt() == 0) {
+								plr.sendMessage(Main.PASSWORD_CHANGE_MESSAGE);
+								break;
+							}
+						}
+					});
+				} catch (Throwable t) {
+					t.printStackTrace();
+				}
+			}
+		}, 1, 15, TimeUnit.MINUTES);
 	}
 }
