@@ -21,6 +21,7 @@ public class GuiWaiting extends GuiUpdating{
 	public GuiWaiting(String message,String title) {
 		super(3, message);
 		this.message = message;
+		this.setWaitTime(150);
 	}
 	
 	int step = 0;

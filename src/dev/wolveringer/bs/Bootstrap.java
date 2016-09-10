@@ -74,6 +74,7 @@ import dev.wolveringer.bs.commands.CommandUnban;
 import dev.wolveringer.bs.commands.CommandVersus;
 import dev.wolveringer.bs.commands.CommandVorbau;
 import dev.wolveringer.bs.commands.CommandVote;
+import dev.wolveringer.bs.commands.CommandWarZ;
 import dev.wolveringer.bs.commands.CommandWhereIs;
 import dev.wolveringer.bs.commands.CommandWhitelist;
 import dev.wolveringer.bs.commands.CommandaddServer;
@@ -397,6 +398,7 @@ public class Bootstrap {
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandPvP("pvp"));
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandGunGame("gungame"));
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandSky("sky"));
+		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandWarZ("warz"));
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandHub("hub", "l", "tm", "lobby", "penis", "bigcock"));
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandWhereIs("whereis"));
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandVorbau("vorbau"));

@@ -13,6 +13,7 @@ import dev.wolveringer.bs.packets.PacketPlayInResourcepackStatus;
 import dev.wolveringer.bs.packets.PacketPlayInResourcepackStatus.Action;
 import dev.wolveringer.bs.packets.PacketPlayOutResourcepack;
 import dev.wolveringer.dataserver.player.LanguageType;
+import dev.wolveringer.thread.ThreadFactory;
 import lombok.Getter;
 import lombok.Setter;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
@@ -22,12 +23,12 @@ import net.md_5.bungee.event.EventHandler;
 
 public class WarzTexturePackListener implements Listener{
 	static {
-		Main.getTranslationManager().registerFallback(LanguageType.ENGLISH, "warz.resourcepack.warz.accept", "§7> §aThanks for accepting the resourcepack. The download has started.");
+		Main.getTranslationManager().registerFallback(LanguageType.ENGLISH, "warz.resourcepack.warz.accepted", "§7> §aThanks for accepting the resourcepack. The download has started.");
 		Main.getTranslationManager().registerFallback(LanguageType.ENGLISH, "warz.resourcepack.warz.download_failed", "§7> §aThe download failed, please try it again.");
 		Main.getTranslationManager().registerFallback(LanguageType.ENGLISH, "warz.resourcepack.warz.successfully_loaded", "§7> §aThe Texture-Pack is completly loaded. Thanks for using it.");
-		Main.getTranslationManager().registerFallback(LanguageType.ENGLISH, "warz.resourcepack.warz.declined", "§7> §6You denied our original WarZ-Texturepack. If you change your mind then you can use \"COMMAND\" to load the Texture-Pack.");
+		Main.getTranslationManager().registerFallback(LanguageType.ENGLISH, "warz.resourcepack.warz.declined", "§7> §6You denied our original WarZ-Texturepack. If you change your mind then you can use \"/rp\" to load the Texture-Pack.");
 		
-		Main.getTranslationManager().registerFallback(LanguageType.ENGLISH, "warz.resourcepack.default.accept", "§7> §aYou accepted the Reset-Texturepack.");
+		Main.getTranslationManager().registerFallback(LanguageType.ENGLISH, "warz.resourcepack.default.accepted", "§7> §aYou accepted the Reset-Texturepack.");
 		Main.getTranslationManager().registerFallback(LanguageType.ENGLISH, "warz.resourcepack.default.download_failed", "§7> §6The download of the Reset-Texturepack failed. Please try it again with \"\".");
 		Main.getTranslationManager().registerFallback(LanguageType.ENGLISH, "warz.resourcepack.default.successfully_loaded", "§7> §aThe Reset was successful.");
 		Main.getTranslationManager().registerFallback(LanguageType.ENGLISH, "warz.resourcepack.default.declined", "§7> §cYou denied the Reset-Texturepack.");
@@ -47,15 +48,16 @@ public class WarzTexturePackListener implements Listener{
 		PacketLib.addHandler(new PacketHandler<PacketPlayInResourcepackStatus>() {
 			@Override
 			public void handle(PacketHandleEvent<PacketPlayInResourcepackStatus> e) {
-				if(!e.getPacket().getHash().contentEquals(DEFAULT_HASH)){
+				System.out.println("Having packet: "+e.getPacket());
+				if(!e.getPacket().getHash().equalsIgnoreCase(DEFAULT_HASH)){
 					if(e.getPacket().getAction() == Action.SUCCESSFULLY_LOADED)
 						textureUsing.add(e.getPlayer());
-					Main.getTranslationManager().translate("warz.resourcepack.warz."+e.getPacket().getAction().name().toLowerCase(), e.getPlayer());
+					e.getPlayer().sendMessage(Main.getTranslationManager().translate("warz.resourcepack.warz."+e.getPacket().getAction().name().toLowerCase(), e.getPlayer()));;
 				}
 				else{
 					if(e.getPacket().getAction() == Action.SUCCESSFULLY_LOADED)
 						textureUsing.remove(e.getPlayer());
-					Main.getTranslationManager().translate("warz.resourcepack.default."+e.getPacket().getAction().name().toLowerCase(), e.getPlayer());
+					e.getPlayer().sendMessage(Main.getTranslationManager().translate("warz.resourcepack.default."+e.getPacket().getAction().name().toLowerCase(), e.getPlayer()));
 				}
 			}
 		});
@@ -69,12 +71,18 @@ public class WarzTexturePackListener implements Listener{
 	
 	@EventHandler
 	public void a(ServerSwitchEvent e){
-		if(e.getPlayer().getServer().getInfo().getName().equalsIgnoreCase("warz")){
-			((Player)e.getPlayer()).sendPacket(new PacketPlayOutResourcepack(WARZ_URL, WARZ_HASH)); //Hash of WarZ.zip xD
-		}
-		else if(textureUsing.contains(e.getPlayer())){
-			((Player)e.getPlayer()).sendPacket(new PacketPlayOutResourcepack(DEFAULT_URL, DEFAULT_HASH));
-		}
+		ThreadFactory.getFactory().createThread(()->{
+			try {
+				Thread.sleep(500);
+			} catch (Exception e1) {
+			}
+			if(e.getPlayer().getServer().getInfo().getName().equalsIgnoreCase("warz")){
+				((Player)e.getPlayer()).sendPacket(new PacketPlayOutResourcepack(WARZ_URL, WARZ_HASH)); //Hash of WarZ.zip xD
+			}
+			else if(textureUsing.contains(e.getPlayer())){
+				((Player)e.getPlayer()).sendPacket(new PacketPlayOutResourcepack(DEFAULT_URL, DEFAULT_HASH));
+			}
+		}).start();
 	}
 	
 	@EventHandler

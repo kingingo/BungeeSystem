@@ -45,7 +45,6 @@ public class Main extends Plugin {
 	@Override
 	public void onEnable() {
 		main = this;
-
 		try {
 			BungeeCord.getInstance().getPluginManager().registerListener(this, new PreLoadedLoginListener());
 			new Bootstrap(Main.getInstance().getDataFolder()).onEnable(); //Directly all loaded

@@ -44,7 +44,8 @@ public class ServerListener implements Listener{
 	public void disconnectPlayer(LoadedPlayer player){
 		while (player != null) {
 			try{
-				player.setServerSync(null); //disconnect
+				if(Main.getDatenServer().isActive())
+					player.setServerSync(null); //disconnect
 				player = null;
 			}catch(Exception e){
 				e.getMessage();

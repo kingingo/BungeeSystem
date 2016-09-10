@@ -1,6 +1,6 @@
 package dev.wolveringer.bs.listener;
 
-import java.util.Date;
+import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -24,6 +24,11 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
 public class PlayerJoinListener implements Listener {
+	static {
+		if(Main.getTranslationManager() != null)
+			Main.getTranslationManager().translate("proxy.join.full", "§cThe server is full!\n§6If you want to join everytime then You can buy a rank in ouer shop.");
+	}
+	
 	private CachedArrayList<Object> connections = new CachedArrayList<>(1, TimeUnit.SECONDS);
 
 	@EventHandler
@@ -93,6 +98,14 @@ public class PlayerJoinListener implements Listener {
 						ex.printStackTrace();
 					}
 					*/
+					
+					if(Main.getDatenServer().getPlayerCount() > Integer.parseInt(InformationManager.getManager().getInfo("maxPlayers"))){
+						if(!PermissionManager.getManager().hasPermission(player.getPlayerId(), "proxy.join.full")){
+							e.getConnection().disconnect(Main.getTranslationManager().translate("proxy.join.full",player));
+							return;
+						}
+					}
+					
 					System.out.println("Player loaded");
 					try {
 						if (player.isPremiumSync()) {
@@ -160,7 +173,8 @@ public class PlayerJoinListener implements Listener {
 	@EventHandler
 	public void a(PostLoginEvent e) {
 		LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(e.getPlayer().getName());
-		Main.getDatenServer().getPlayers().add(e.getPlayer().getName());
+		if(Main.getDatenServer().getPlayers() != null)
+			Main.getDatenServer().getPlayers().add(e.getPlayer().getName());
 		if (!player.getUUID().equals(e.getPlayer().getUniqueId())) {
 			if (player.getUUID().equals(UUID.nameUUIDFromBytes(("OfflinePlayer:" + e.getPlayer().getName()).getBytes()))) {
 				System.out.println("Switching players uuid (cracked uuid to premium) (But premium is set!)");
@@ -180,6 +194,12 @@ public class PlayerJoinListener implements Listener {
 		return getDurationBreakdown(millis, "now");
 	}
 	public static String getDurationBreakdown(long millis,String no) {
+		return getDurationBreakdown(millis, no, new HashMap<>());
+	}
+	public static String getDurationBreakdown(long millis,String no,HashMap<TimeUnit, String> mapping) {
+		return getDurationBreakdown(millis, no, new HashMap<>(), mapping);
+	}
+	public static String getDurationBreakdown(long millis,String no,HashMap<TimeUnit, String> plural,HashMap<TimeUnit, String> mapping) {
 		if (millis < 0) {
 			return "millis<0";
 		}
@@ -196,19 +216,19 @@ public class PlayerJoinListener implements Listener {
 		StringBuilder sb = new StringBuilder(64);
 		if (days > 0) {
 			sb.append(days);
-			sb.append(" day" + (days == 1 ? "" : "s") + " ");
+			sb.append(" "+mapping.getOrDefault(TimeUnit.DAYS, "day")+"" + (days == 1 ? "" : plural.getOrDefault(TimeUnit.DAYS, "s")) + " ");
 		}
 		if (hours > 0) {
 			sb.append(hours);
-			sb.append(" hour" + (hours == 1 ? "" : "s") + " ");
+			sb.append(" "+mapping.getOrDefault(TimeUnit.HOURS, "hour")+"" + (hours == 1 ? "" : plural.getOrDefault(TimeUnit.HOURS, "s")) + " ");
 		}
 		if (minutes > 0) {
 			sb.append(minutes);
-			sb.append(" minute" + (minutes == 1 ? "" : "s") + " ");
+			sb.append(" "+mapping.getOrDefault(TimeUnit.MINUTES, "minute")+"" + (minutes == 1 ? "" : plural.getOrDefault(TimeUnit.MINUTES, "s")) + " ");
 		}
 		if (seconds > 0) {
 			sb.append(seconds);
-			sb.append(" second" + (seconds == 1 ? "" : "s") + "");
+			sb.append(" "+mapping.getOrDefault(TimeUnit.SECONDS, "second")+"" + (seconds == 1 ? "" : plural.getOrDefault(TimeUnit.SECONDS, "s")) + "");
 		}
 		return (sb.toString());
 	}

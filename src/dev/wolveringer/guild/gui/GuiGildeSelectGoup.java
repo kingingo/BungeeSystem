@@ -2,6 +2,7 @@ package dev.wolveringer.guild.gui;
 
 import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.gilde.GildSection;
+import dev.wolveringer.gui.GuiItemSelect;
 import dev.wolveringer.item.ItemBuilder;
 
 public class GuiGildeSelectGoup extends GuiItemSelect{
@@ -12,6 +13,8 @@ public class GuiGildeSelectGoup extends GuiItemSelect{
 	
 	public GuiGildeSelectGoup(GildSection section, LoadedPlayer player) {
 		super("§a"+section.getType().getDisplayName()+" §6» §aMember §6» §aGroup");
+		this.section = section;
+		this.player = player;
 		groups = section.getPermission().getGroups().toArray(new String[0]);
 		String own = section.getPermission().getGroup(player).getName();
 		int index = 0;
@@ -31,5 +34,7 @@ public class GuiGildeSelectGoup extends GuiItemSelect{
 	}
 
 	@Override
-	public void cancel() {}
+	public void cancel() {
+		switchToGui(new GuiGildeMemberAdminPannel(section, player));
+	}
 }

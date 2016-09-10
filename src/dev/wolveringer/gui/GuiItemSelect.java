@@ -1,11 +1,10 @@
-package dev.wolveringer.guild.gui;
+package dev.wolveringer.gui;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import dev.wolveringer.BungeeUtil.Material;
 import dev.wolveringer.BungeeUtil.item.Item;
-import dev.wolveringer.gui.Gui;
 import dev.wolveringer.item.ItemBuilder;
 
 public abstract class GuiItemSelect extends Gui{
@@ -52,7 +51,7 @@ public abstract class GuiItemSelect extends Gui{
 		
 		inv.setItem(13, ItemBuilder.create().id(160).durbility(8).name("§6Currunt Selection").glow().build());
 		
-		Item cancel = ItemBuilder.create().id(160).durbility(5).name("§cCancel").listener((c)->{
+		Item cancel = ItemBuilder.create().id(160).durbility(14).name("§cCancel").listener((c)->{
 			cancel();
 		}).build();
 		for (int i = 5; i < 9; i++)

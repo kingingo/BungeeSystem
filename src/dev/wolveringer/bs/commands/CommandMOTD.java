@@ -18,10 +18,7 @@ public class CommandMOTD extends Command {
 
 	@Override
 	public void execute(CommandSender cs, String[] args) {
-		if (!(cs instanceof ProxiedPlayer))
-			return;
-		ProxiedPlayer player = (ProxiedPlayer) cs;
-		if (PermissionManager.getManager().hasPermission(player, PermissionType.MOTD, true)) {
+		if (PermissionManager.getManager().hasPermission(cs, PermissionType.MOTD, true)) {
 			if (args.length < 1) {
 				cs.sendMessage("§cWrong Syntax:");
 				cs.sendMessage("§a/motd set <line> <message>");
@@ -34,12 +31,12 @@ public class CommandMOTD extends Command {
 				if (line < 1 || line > 2) {
 					cs.sendMessage("§cLine out of bounds!");
 				}
-				
+
 				String message = "";
-				for(String s :  Arrays.copyOfRange(args, 2, args.length))
-					message+=s+" ";
-				
-				InformationManager.getManager().setInfo("motd" + line,message);
+				for (String s : Arrays.copyOfRange(args, 2, args.length))
+					message += s + " ";
+
+				InformationManager.getManager().setInfo("motd" + line, message);
 				cs.sendMessage("§aDu hast den MOTD erfolgrich gesetzt.");
 			} else if (args[0].equalsIgnoreCase("get")) {
 				cs.sendMessage("§aMotd:");

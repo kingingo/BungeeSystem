@@ -6,10 +6,12 @@ import dev.wolveringer.packet.PacketDataSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@ToString
 public class PacketPlayInResourcepackStatus extends Packet implements PacketPlayIn{
 	public static enum Action {
 		SUCCESSFULLY_LOADED,

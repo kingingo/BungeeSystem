@@ -92,7 +92,7 @@ public class GuiPlayerGildeOverview extends Gui{
 						@Override
 						public void gildeEntered(UUID gilde) {
 							c.getPlayer().closeInventory();
-							c.getPlayer().sendMessage("§cInvite-System not ready yet!");
+							c.getPlayer().sendMessage("§cInvite-System not ready yet! Selected gilde: " + gilde);
 						}
 					};
 					search.open();
@@ -194,7 +194,8 @@ public class GuiPlayerGildeOverview extends Gui{
 					ownerState = 1;
 					ownGilde = obj;
 				}
-				print();
+				if(isActive())
+					print();
 			}
 		});
 	}
@@ -211,7 +212,8 @@ public class GuiPlayerGildeOverview extends Gui{
 					Gilde gilde = Main.getGildeManager().getGilde(obj);
 					gilden.put(type, gilde);
 				}
-				print();
+				if(isActive())
+					print();
 			}
 		});
 	}

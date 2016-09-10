@@ -115,7 +115,7 @@ public class GuiGildeAdminOverview extends Gui{
 								public void onContinue() {
 									player.closeInventory();
 								}
-							}.setPlayer(player).active();
+							}.setPlayer(player).openGui();
 							return;
 						}
 						if(!gilde.getSelection(type).isActive()){
@@ -129,7 +129,7 @@ public class GuiGildeAdminOverview extends Gui{
 							public void onContinue() {
 								SectionRegestry.getInstance().createGildeSection(gilde.getSelection(type)).setPlayer(player).openGui();
 							}
-						}.setPlayer(player).active();
+						}.setPlayer(player).openGui();
 					}).start();
 				});
 			}

@@ -26,7 +26,7 @@ import net.md_5.bungee.api.event.ServerConnectEvent;
 
 public class AfkListener implements PacketHandler<Packet> {
 	private static final int MAX_MOVEAWAY = 100;
-	private CachedArrayList<Player> timeoutObject = new CachedArrayList<>(4, TimeUnit.MINUTES);
+	private CachedArrayList<Player> timeoutObject = new CachedArrayList<>(9, TimeUnit.MINUTES);
 	private CachedArrayList<Player> ignore = new CachedArrayList<>(20, TimeUnit.SECONDS);
 
 	private ServerConfiguration config;
