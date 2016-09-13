@@ -1,30 +1,25 @@
 package dev.wolveringer.chat;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
+
 import dev.wolveringer.BungeeUtil.PacketHandleEvent;
 import dev.wolveringer.BungeeUtil.PacketHandler;
 import dev.wolveringer.BungeeUtil.Player;
-import dev.wolveringer.BungeeUtil.packets.Abstract.PacketPlayOut;
-import dev.wolveringer.BungeeUtil.packets.Packet;
 import dev.wolveringer.BungeeUtil.packets.PacketPlayOutChat;
 import dev.wolveringer.arrays.CachedArrayList;
-import dev.wolveringer.chat.ChatComponentText;
-import dev.wolveringer.chat.IChatBaseComponent;
 import dev.wolveringer.hashmaps.InitHashMap;
 import dev.wolveringer.nick.NickHandler;
 import dev.wolveringer.thread.ThreadFactory;
 import dev.wolveringer.thread.ThreadRunner;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.TimeUnit;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
@@ -34,7 +29,7 @@ import net.md_5.bungee.event.EventHandler;
 public class ChatManager implements PacketHandler, Listener {
 	private static ChatManager instance;
 	private static final int LINE_HISTORY_SIZE = 30;
-	private HashMap<Player, ChatHistory> histories;
+	private final HashMap<Player, ChatHistory> histories;
 	private HashMap<Player, CopyOnWriteArrayList<ChatBoxModifier>> chatBoxes;
 	private ThreadRunner chatResender;
 	private CachedArrayList<PacketPlayOutChat> ignorePackets;
@@ -70,7 +65,7 @@ public class ChatManager implements PacketHandler, Listener {
 				}
 			} while (true);
 		});
-		this.ignorePackets = new CachedArrayList(1, TimeUnit.SECONDS);
+		this.ignorePackets = new CachedArrayList<>(1, TimeUnit.SECONDS);
 		this.chatResender.start();
 	}
 
@@ -88,15 +83,13 @@ public class ChatManager implements PacketHandler, Listener {
 	}
 
 	public ChatBoxModifier getChatBoxModifier(Player player) {
-		Collections.sort(this.chatBoxes.get((Object) player), new Comparator<ChatBoxModifier>() {
+		Collections.sort(this.chatBoxes.get(player), new Comparator<ChatBoxModifier>() {
 			@Override
 			public int compare(ChatBoxModifier o1, ChatBoxModifier o2) {
 				return Integer.compare(o2.getImportance(), o1.getImportance());
 			}
 		});
-		Iterator<ChatBoxModifier> modifiers = this.chatBoxes.get((Object) player).iterator();
-		while (modifiers.hasNext()) {
-			ChatBoxModifier modifier = modifiers.next();
+		for (ChatBoxModifier modifier : this.chatBoxes.get(player)) {
 			if (modifier.getPermission() == null || player.hasPermission(modifier.getPermission()))
 				return modifier;
 		}
@@ -104,26 +97,24 @@ public class ChatManager implements PacketHandler, Listener {
 	}
 
 	public ChatBoxModifier getChatBoxModifier(Player player, String name) {
-		Iterator<ChatBoxModifier> modifiers = this.chatBoxes.get((Object) player).iterator();
-		while (modifiers.hasNext()) {
-			ChatBoxModifier modifier = modifiers.next();
+		for (ChatBoxModifier modifier : this.chatBoxes.get(player)) {
 			if (modifier.getName().equalsIgnoreCase(name))
 				return modifier;
 		}
 		return null;
 	}
 
+	@SuppressWarnings("SuspiciousMethodCalls")
 	@EventHandler
 	public void a(PlayerDisconnectEvent e) {
-		this.histories.remove((Object) e.getPlayer());
-		this.chatBoxes.remove((Object) e.getPlayer());
+		this.histories.remove(e.getPlayer());
+		this.chatBoxes.remove(e.getPlayer());
 	}
 
 	private void resendHistory(Player player) {
 		try {
-			Iterator<IChatBaseComponent> comps = this.histories.get((Object) player).getLines().iterator();
-			while (comps.hasNext()) {
-				this.sendMessage(player, comps.next());
+			for (IChatBaseComponent iChatBaseComponent : this.histories.get(player).getLines()) {
+				this.sendMessage(player, iChatBaseComponent);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -133,19 +124,20 @@ public class ChatManager implements PacketHandler, Listener {
 	private void sendMessage(Player player, IChatBaseComponent comp) {
 		PacketPlayOutChat packet = new PacketPlayOutChat(comp);
 		this.ignorePackets.add(packet);
-		NickHandler.whitelist.add(packet);
-		player.sendPacket((PacketPlayOut) packet);
+		NickHandler.whitelist.add(System.identityHashCode(packet));
+		player.sendPacket(packet);
 	}
 
+	@Override
 	public void handle(PacketHandleEvent e) {
 		e.setCancelled(handle0(e));
 	}
-	
+
 	public boolean handle0(PacketHandleEvent e) {
 		if (!(e.getPacket() instanceof PacketPlayOutChat))
 			return false;
 //		System.out.println("handle chat packet");
-		if (((PacketPlayOutChat) e.getPacket()).getModus() == 2 || this.ignorePackets.contains((Object) e.getPacket())) {
+		if (((PacketPlayOutChat) e.getPacket()).getModus() == 2 || this.ignorePackets.contains(e.getPacket())) {
 			return false;
 		}
 		ChatBoxModifier mod = getChatBoxModifier(e.getPlayer());
@@ -155,7 +147,7 @@ public class ChatManager implements PacketHandler, Listener {
 		//				Thread.sleep(5);
 		//			} catch (Exception e1) {}
 		synchronized (histories) {
-			this.histories.get((Object) e.getPlayer()).addMessage(((PacketPlayOutChat) e.getPacket()).getMessage());
+			this.histories.get(e.getPlayer()).addMessage(((PacketPlayOutChat) e.getPacket()).getMessage());
 		}
 		if (mod instanceof DefaultChatBoxModifier) {
 			return false;
@@ -190,6 +182,7 @@ public class ChatManager implements PacketHandler, Listener {
 		private final int importance;
 		protected final Player player;
 		private final ChatManager handle;
+		@Getter
 		private final List<IChatBaseComponent> footer;
 		@Getter
 		private String permission;
@@ -208,10 +201,6 @@ public class ChatManager implements PacketHandler, Listener {
 
 		public ChatManager getHandle() {
 			return this.handle;
-		}
-
-		public List<IChatBaseComponent> getFooter() {
-			return this.footer;
 		}
 
 		public boolean isKeepChatVisiable() {
@@ -239,7 +228,7 @@ public class ChatManager implements PacketHandler, Listener {
 
 		public ChatHistory() {
 			for (int i = 0; i < LINE_HISTORY_SIZE; ++i) {
-				this.stack.add((IChatBaseComponent) new ChatComponentText(""));
+				this.stack.add(new ChatComponentText(""));
 			}
 		}
 

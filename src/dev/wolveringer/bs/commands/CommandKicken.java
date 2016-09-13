@@ -44,7 +44,7 @@ public class CommandKicken extends Command implements Listener{
 				try{
 					Main.getDatenServer().getClient().kickPlayer(Main.getDatenServer().getClient().getPlayerAndLoad(targetPlayer).getPlayerId(), "§cKick reason:§b "+grund);
 				}catch(Exception e){
-					sender.sendMessage("§xception: "+e.getMessage());
+					sender.sendMessage("Exception: "+e.getMessage());
 				}
 				Main.getDatenServer().teamMessage(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.kick.teammessage", sender,new String[]{targetPlayer,player.getName(),grund}));
 			}
