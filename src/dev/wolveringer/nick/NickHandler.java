@@ -333,7 +333,7 @@ public class NickHandler implements PacketHandler<Packet>, Listener {
 	@Getter
 	@Setter
 	private static NickHandler instance;
-	public static CachedArrayList<Packet> whitelist = new CachedArrayList<Packet>(1, TimeUnit.SECONDS);
+	public static final CachedArrayList<Integer> whitelist = new CachedArrayList<>(1, TimeUnit.SECONDS);
 	private ReentrantLock whitelistLock = new ReentrantLock(true);
 
 	@Override
@@ -341,9 +341,9 @@ public class NickHandler implements PacketHandler<Packet>, Listener {
 		whitelistLock.lock();
 		boolean contains = false;
 		synchronized (whitelist) {
-			contains = whitelist.contains(e.getPacket());
+			contains = whitelist.contains(System.identityHashCode(e.getPacket()));
 			if(contains)
-				whitelist.remove(e.getPacket());
+				whitelist.remove(System.identityHashCode(e.getPacket()));
 		}
 		whitelistLock.unlock();
 		if(contains)
@@ -418,7 +418,7 @@ public class NickHandler implements PacketHandler<Packet>, Listener {
 	
 	public void sendPacket(Player player, Packet packet) {
 		whitelistLock.lock();
-		whitelist.add(packet);
+		whitelist.add(System.identityHashCode(packet));
 		whitelistLock.unlock();
 		player.getInitialHandler().sendPacket(packet);
 	}
