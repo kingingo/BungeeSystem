@@ -17,7 +17,6 @@ import dev.wolveringer.gamestats.Statistic;
 import dev.wolveringer.hashmaps.CachedHashMap;
 import dev.wolveringer.permission.PermissionManager;
 import net.md_5.bungee.BungeeCord;
-import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ChatEvent;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
@@ -86,6 +85,10 @@ public class ChatListener implements Listener {
 					e.setCancelled(true);
 				else
 					return;
+			}
+
+			if (e.getMessage().equalsIgnoreCase("/aac") || e.getMessage().startsWith("/aac ") || e.getMessage().equalsIgnoreCase("/aac:aac") || e.getMessage().startsWith("/aac:aac ")) {
+				e.setMessage("///iAmACommandThatDoesNotExistAndShouldNeverExistKappa");
 			}
 
 			if (time.containsKey(e.getSender())) {
@@ -194,7 +197,7 @@ public class ChatListener implements Listener {
 //			}
 			if(!splayer.isLoaded())
 				continue;
-			
+
 			boolean splayerNicknamed = splayer.hasNickname();
 			if (unnickedNames && splayerNicknamed) {
 				suggestIfFitting(suggestions, splayer.getName(), nameStartLowerCase);

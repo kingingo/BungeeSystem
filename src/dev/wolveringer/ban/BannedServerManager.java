@@ -90,10 +90,10 @@ http://shop.clashMC.eu/checkout/packages?action=add&package=1224531&ign=<PLAYERN
 				styleCopy.setText("Click mich");
 				styleCopy.setBold(true);
 				if(level > 0 && buycraftBanLevelMapping.containsKey(level)){
-					styleCopy.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("§aClicke für um den Shop zu öffnen.")));
+					styleCopy.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("§aKlicke, um den Shop zu öffnen.")));
 					styleCopy.setClickEvent(new ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.OPEN_URL, "http://shop.clashMC.eu/checkout/packages?action=add&package="+buycraftBanLevelMapping.get(level)+"&ign="+player));
 				}else{
-					styleCopy.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("§cKeine möglichkeit einen umban zu kaufen!")));
+					styleCopy.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("§cEs gibt keine Möglichkeit, einen Unban zu kaufen!")));
 				}
 				return Arrays.asList(styleCopy);
 			}

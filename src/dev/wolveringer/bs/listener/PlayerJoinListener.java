@@ -28,7 +28,7 @@ public class PlayerJoinListener implements Listener {
 		if(Main.getTranslationManager() != null)
 			Main.getTranslationManager().translate("proxy.join.full", "§cThe server is full!\n§6If you want to join everytime then You can buy a rank in ouer shop.");
 	}
-	
+
 	private CachedArrayList<Object> connections = new CachedArrayList<>(1, TimeUnit.SECONDS);
 
 	@EventHandler
@@ -50,17 +50,23 @@ public class PlayerJoinListener implements Listener {
 		}
 
 		ClientVersion version = ClientVersion.fromProtocoll(e.getConnection().getVersion());
+		String name = e.getConnection().getName();
 		if((version.getBigVersion() != BigClientVersion.v1_8 && version.getBigVersion() != BigClientVersion.v1_9 && version != ClientVersion.v1_10_0)
 				|| version == ClientVersion.v1_9_1 || version == ClientVersion.v1_9_2 || version == ClientVersion.v1_9_3){
 			e.setCancelled(true);
 			e.setCancelReason("§cYour minecraft versions issnt supportted. Please use 1.8.X, 1.9.0, 1.9.4 or 1.10");
-			System.out.println("Player "+e.getConnection().getName()+" try to connect with an outdated version ("+e.getConnection().getVersion()+")");
+			System.out.println("Player "+ name +" try to connect with an outdated version ("+e.getConnection().getVersion()+")");
 			return;
 		}
-		for (char c : e.getConnection().getName().toCharArray()) {
+		if (name.length() < 3 || name.length() > 16) {
+			e.setCancelled(true);
+			e.setCancelReason("§cInvalid name length!");
+			return;
+		}
+		for (char c : name.toCharArray()) {
 			if ((('0' > c) || (c > '9')) && (('a' > c) || (c > 'z')) && (('A' > c) || (c > 'Z')) && (c != '_')){
 				e.setCancelled(true);
-				e.setCancelReason("§cInvalid caracters!");
+				e.setCancelReason("§cInvalid characters in name!");
 				return;
 			}
 		}
@@ -74,16 +80,16 @@ public class PlayerJoinListener implements Listener {
 					/*
 					 * Clean up old cache
 					 */
-					if (Main.getDatenServer().getClient().getPlayer(e.getConnection().getName()) != null)
-						Main.getDatenServer().getClient().clearCacheForPlayer(Main.getDatenServer().getClient().getPlayer(e.getConnection().getName()));
+					if (Main.getDatenServer().getClient().getPlayer(name) != null)
+						Main.getDatenServer().getClient().clearCacheForPlayer(Main.getDatenServer().getClient().getPlayer(name));
 					if (e.getConnection().getUniqueId() != null)
 						if (Main.getDatenServer().getClient().getPlayer(e.getConnection().getUniqueId()) != null)
 							Main.getDatenServer().getClient().clearCacheForPlayer(Main.getDatenServer().getClient().getPlayer(e.getConnection().getUniqueId()));
 
-					LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(e.getConnection().getName());
-					System.out.println("Connect: Real name: " + e.getConnection().getName() + " Player: " + player.getName() + " UUID: " + player.getUUID());
-					if (Main.getDatenServer().getClient().getPlayer(e.getConnection().getName()) != null)
-						Main.getDatenServer().getClient().clearCacheForPlayer(Main.getDatenServer().getClient().getPlayer(e.getConnection().getName()));
+					LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(name);
+					System.out.println("Connect: Real name: " + name + " Player: " + player.getName() + " UUID: " + player.getUUID());
+					if (Main.getDatenServer().getClient().getPlayer(name) != null)
+						Main.getDatenServer().getClient().clearCacheForPlayer(Main.getDatenServer().getClient().getPlayer(name));
 					/*//TODO cant get playerId before premium login
 					try{
 						LoadedPlayer playerUUID = Main.getDatenServer().getClient().getPlayerAndLoad(UUID.fromString(e.getConnection().getUUID()));
@@ -98,14 +104,14 @@ public class PlayerJoinListener implements Listener {
 						ex.printStackTrace();
 					}
 					*/
-					
+
 					if(Main.getDatenServer().getPlayerCount() > Integer.parseInt(InformationManager.getManager().getInfo("maxPlayers"))){
 						if(!PermissionManager.getManager().hasPermission(player.getPlayerId(), "proxy.join.full")){
 							e.getConnection().disconnect(Main.getTranslationManager().translate("proxy.join.full",player));
 							return;
 						}
 					}
-					
+
 					System.out.println("Player loaded");
 					try {
 						if (player.isPremiumSync()) {
@@ -162,7 +168,7 @@ public class PlayerJoinListener implements Listener {
 				}
 				long end = System.currentTimeMillis();
 				if (end - start > 500)
-					System.out.println("LoginEvent for player " + e.getConnection().getName() + " needed more than 500ms (" + (end - start) + ")");
+					System.out.println("LoginEvent for player " + name + " needed more than 500ms (" + (end - start) + ")");
 			});
 		} catch (Throwable t) {
 			e.completeIntent(Main.getInstance());
