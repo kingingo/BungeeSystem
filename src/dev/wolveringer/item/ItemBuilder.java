@@ -59,6 +59,14 @@ public class ItemBuilder {
 		this.lore.add(lore);
 		return this;
 	}
+	
+	public ItemBuilder lore(String[] lore) {
+		this.lore.clear();
+		if(lore != null)
+			for(String s : lore)
+				this.lore.add(s);
+		return this;
+	}
 
 	public ItemBuilder glow() {
 		this.glow = true;

@@ -13,8 +13,8 @@ import dev.wolveringer.gui.Gui;
 import dev.wolveringer.gui.GuiStatusPrint;
 import dev.wolveringer.gui.GuiWaiting;
 import dev.wolveringer.guild.gui.GuiGildeAdminOverview;
-import dev.wolveringer.guild.gui.GuiGildeGroupOverview;
 import dev.wolveringer.guild.gui.GuiGildeMemberManager;
+import dev.wolveringer.guild.gui.GuiGildePermissionGroupOverview;
 import dev.wolveringer.item.ItemBuilder;
 import dev.wolveringer.thread.ThreadFactory;
 
@@ -53,7 +53,7 @@ public class GuiGildeSection extends Gui {
 			}).build());
 		inv.setItem(19, ItemBuilder.create(Material.GOLD_BLOCK).name("§7» §6Clan Bank").lore("§aKlicke hier für weitere Infos").listener((Click c) -> c.getPlayer().sendMessage("§cNot implemented!")).build());
 		inv.setItem(21, ItemBuilder.create(Material.SKULL_ITEM).name("§7» §6Clan Mitglieder").lore("§aKlicke hier für weitere Infos").listener((Click c) -> switchToGui(new GuiGildeMemberManager(section.getPermission()))).build());
-		inv.setItem(23, ItemBuilder.create(Material.SKULL_ITEM).name("§7» §6Clan Gruppen").lore("§aKlicke hier für weitere Infos").listener((Click c) -> switchToGui(new GuiGildeGroupOverview(section))).build());
+		inv.setItem(23, ItemBuilder.create(Material.SKULL_ITEM).name("§7» §6Clan Gruppen").lore("§aKlicke hier für weitere Infos").listener((Click c) -> switchToGui(new GuiGildePermissionGroupOverview(section.getPermission()))).build());
 		
 		inv.setItem(0, ItemBuilder.create(Material.BARRIER).name("§cSchließen").listener((Click c) -> c.getPlayer().closeInventory()).build());
 		fill(ItemBuilder.create(160).durbility(7).name("§7").build());

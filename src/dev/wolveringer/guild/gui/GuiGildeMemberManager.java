@@ -14,7 +14,6 @@ import dev.wolveringer.gilde.GildPermissionGroup;
 import dev.wolveringer.gilde.GildSectionPermission;
 import dev.wolveringer.gilde.GildePermissions;
 import dev.wolveringer.gui.Gui;
-import dev.wolveringer.guild.gui.section.GuiGildeSection;
 import dev.wolveringer.guild.gui.section.SectionRegestry;
 import dev.wolveringer.item.ItemBuilder;
 
@@ -70,8 +69,8 @@ public class GuiGildeMemberManager extends Gui{
 			groupItemBuilder.name("§7» §6Clan Mitglieder");
 			groupItemBuilder.lore("§c").lore("§eRang§7: §a"+group.getName());
 			groupItemBuilder.lore("§c").lore("§eRechte:");
-			for(String r : group.getPermissions())
-				groupItemBuilder.lore("§7- §a"+GildPermissionMapping.getDisplayItem(r));
+			for(GildePermissions r : group.getEnumPermissions())
+				groupItemBuilder.lore("§7- §a"+r.getDisplayName());
 			groupItems[index] = groupItemBuilder.build();
 			
 			ArrayList<LoadedPlayer> players = group.getPlayers();

@@ -424,7 +424,7 @@ public class Bootstrap {
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandNick());
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandTeamspeak());
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandResourcepack());
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandGilde());
+		//BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandGilde());
 
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), InformationManager.getManager());
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), ServerManager.getManager());
