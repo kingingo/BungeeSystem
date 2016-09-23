@@ -14,6 +14,7 @@ import dev.wolveringer.gui.GuiStatusPrint;
 import dev.wolveringer.gui.GuiWaiting;
 import dev.wolveringer.guild.gui.GuiGildeAdminOverview;
 import dev.wolveringer.guild.gui.GuiGildeMemberManager;
+import dev.wolveringer.guild.gui.GuiGildeMoneyOverview;
 import dev.wolveringer.guild.gui.GuiGildePermissionGroupOverview;
 import dev.wolveringer.item.ItemBuilder;
 import dev.wolveringer.thread.ThreadFactory;
@@ -39,6 +40,16 @@ public class GuiGildeSection extends Gui {
 				GuiWaiting waiting = new GuiWaiting("§aActivate gild section", "§aPlease wait");
 				waiting.setPlayer(getPlayer()).openGui();
 				ThreadFactory.getFactory().createThread(()->{
+					if(lplayer.getPlayerId() != section.getHandle().getOwnerId()){
+						waiting.waitForMinwait(1500);
+						new GuiStatusPrint(5,ItemBuilder.create().material(Material.REDSTONE_BLOCK).name("§cYou must be the gilden owner!").build()) {
+							@Override
+							public void onContinue() {
+								switchToGui(new GuiGildeSection(section)); //REBUILD THE GUI :)
+							}
+						}.setPlayer(getPlayer()).openGui();
+						return;
+					}
 					if(section.isActive()){
 						section.setActive(false);
 					}
@@ -51,9 +62,13 @@ public class GuiGildeSection extends Gui {
 					}.setPlayer(getPlayer()).openGui();
 				}).start();
 			}).build());
-		inv.setItem(19, ItemBuilder.create(Material.GOLD_BLOCK).name("§7» §6Clan Bank").lore("§aKlicke hier für weitere Infos").listener((Click c) -> c.getPlayer().sendMessage("§cNot implemented!")).build());
+		//TODO sort
+		inv.setItem(19, ItemBuilder.create(Material.GOLD_BLOCK).name("§7» §6Clan Bank").lore("§aKlicke hier für weitere Infos").listener((Click c) -> switchToGui(new GuiGildeMoneyOverview(section.getMoney()))).build());
 		inv.setItem(21, ItemBuilder.create(Material.SKULL_ITEM).name("§7» §6Clan Mitglieder").lore("§aKlicke hier für weitere Infos").listener((Click c) -> switchToGui(new GuiGildeMemberManager(section.getPermission()))).build());
 		inv.setItem(23, ItemBuilder.create(Material.SKULL_ITEM).name("§7» §6Clan Gruppen").lore("§aKlicke hier für weitere Infos").listener((Click c) -> switchToGui(new GuiGildePermissionGroupOverview(section.getPermission()))).build());
+		
+		inv.setItem(25, ItemBuilder.create().name("§7» §6Lade die Clan Bank auf").lore("§cTODO inv").build());
+		inv.setItem(27, ItemBuilder.create().name("§7» §6Entnehme was von der Clan Bank").lore("§cTODO inv").build());
 		
 		inv.setItem(0, ItemBuilder.create(Material.BARRIER).name("§cSchließen").listener((Click c) -> c.getPlayer().closeInventory()).build());
 		fill(ItemBuilder.create(160).durbility(7).name("§7").build());

@@ -11,6 +11,7 @@ import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.client.connection.Client;
 import dev.wolveringer.client.debug.Debugger;
 import dev.wolveringer.dataserver.protocoll.packets.PacketOutServerStatus;
+import dev.wolveringer.gilde.GildManager;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
@@ -83,6 +84,8 @@ public class BungeecordDatenClient {
 		} finally {
 			tryConnecting = false;
 		}
+		if(Main.getGildeManager() != null)
+			Main.getGildeManager().clear();
 		active = true;
 		client.getInfoSender().setSleepTime(1000);// Beschleunigt die aktualisierung der Spielerzahl.
 

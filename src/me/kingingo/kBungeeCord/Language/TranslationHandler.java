@@ -30,6 +30,10 @@ public class TranslationHandler {
 		return manager.translate(key, Main.getDatenServer().getClient().getPlayerAndLoad(player.getName()), args);
 	}
 
+	public String translateOffline(String key, ProxiedPlayer player, Object... args) {
+		return manager.translate(key, args);
+	}
+	
 	public String translate(String key, CommandSender cs, Object... args) {
 		if(cs instanceof ProxiedPlayer)
 			return manager.translate(key, Main.getDatenServer().getClient().getPlayerAndLoad(cs.getName()), args);

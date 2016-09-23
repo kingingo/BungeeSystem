@@ -13,23 +13,30 @@ import dev.wolveringer.item.ItemBuilder;
 
 public class GuiGildePermissionGroupAdminPannel extends Gui{
 	private static class PermissionItem {
+		private boolean locked;
 		private Item item;
 		private GildPermissionGroup handle;
 		private GildePermissions perm;
+		private GuiGildePermissionGroupAdminPannel inv;
 		
 		private static Item buildItem(DisplayItem item){
 			return ItemBuilder.create(item.getId()).name(item.getName()).durbility(item.getDurbility()).lore(item.getLore()).build();
 		}
 		
-		public PermissionItem(GildPermissionGroup handle,GildePermissions perm) {
+		public PermissionItem(GuiGildePermissionGroupAdminPannel inv, GildPermissionGroup handle,GildePermissions perm) {
 			item = buildItem(perm.getDisplayItem());
 			this.handle = handle;
 			this.perm = perm;
+			this.inv = inv;
 		}
 		
 		public Item buildItem(){
-			return new ItemBuilder(item).glow(handle.getPermissions().contains(perm.getPermission())).listener((click)->{
+			return new ItemBuilder(item).glow(handle.getPermissions().contains(perm.getPermission())).listener((Click click)->{
 				//TODO check gild permission
+				if(locked){
+					click.getPlayer().sendMessage("§cYou cant modify this permission.");
+					return;
+				}
 				if(click.getItem().getItemMeta().hasGlow()){
 					click.getItem().getItemMeta().setGlow(false);
 					item.getItemMeta().setGlow(false);
@@ -41,6 +48,7 @@ public class GuiGildePermissionGroupAdminPannel extends Gui{
 					item.getItemMeta().setGlow(true);
 					handle.addPermission(perm.getPermission());
 				}
+				inv.inv.updateInventory(); //TODO maybe only update one slot
 			}).build();
 		}
 	}
@@ -88,10 +96,15 @@ public class GuiGildePermissionGroupAdminPannel extends Gui{
 	}
 	
 	private void buildItem(){
-		List<GildePermissions> permissions = group.getEnumPermissions();
+		List<GildePermissions> permissions = GildePermissions.getAvariablePermission(group.getHandle().getHandle().getType());
 		items = new PermissionItem[permissions.size()];
-		for(int i = 0;i<items.length;i++)
-			items[i] = new PermissionItem(group, permissions.get(0));
+		for(int i = 0;i<items.length;i++){
+			items[i] = new PermissionItem(this,group, permissions.get(i));
+			if(group.getName().equalsIgnoreCase("owner")){
+				items[i].locked = true;
+				items[i].item.getItemMeta().setGlow(true);
+			}
+		}
 	}
 	
 	public void displayPermissions(){

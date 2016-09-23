@@ -17,7 +17,7 @@ public class GuiGildePermissionGroupOverview extends Gui{
 	
 	GildSectionPermission permission;
 	public GuiGildePermissionGroupOverview(GildSectionPermission perms) {
-		super(4, "§a"+ perms.getHandle().getType().getDisplayName()+" §6» §aGroups");
+		super(3, "§a"+ perms.getHandle().getType().getDisplayName()+" §6» §aGroups");
 		this.permission =  perms;
 	}
 

@@ -2,6 +2,7 @@ package dev.wolveringer.bs.client;
 
 import java.util.UUID;
 
+import dev.wolveringer.BungeeUtil.Player;
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.bs.UtilBungeeCord;
 import dev.wolveringer.bs.client.event.ServerMessageEvent;
@@ -46,6 +47,12 @@ public class ClientExternalHandler implements BungeeCordActionListener{
 
 	@Override
 	public void disconnected() {
+		for(ProxiedPlayer player : BungeeCord.getInstance().getPlayers()){
+			if(((Player)player).getInventoryView() != null){
+				((Player)player).closeInventory();
+				((Player)player).sendMessage("§cLost connection to server cheef. Closing all Inventories.");
+			}
+		}
 		if(Main.isRestarting())
 			return;
 		ThreadFactory.getFactory().createThread(new Runnable() {
@@ -55,8 +62,10 @@ public class ClientExternalHandler implements BungeeCordActionListener{
 				for(ProxiedPlayer p : BungeeCord.getInstance().getPlayers()){
 					try{
 						if(p.hasPermission("epicpvp.bc.dataserver"))
-							p.sendMessage(Main.getTranslationManager().translate("prefix", p)+"§eClientListener §7>> §cDatenclient disconnected");
-					}catch(Exception ex){ }
+							p.sendMessage(Main.getTranslationManager().translateOffline("prefix", p)+"§eClientListener §7>> §cDatenclient disconnected");
+					}catch(Exception ex){
+						ex.printStackTrace();
+					}
 				}
 				try {
 					Main.getDatenServer().start();

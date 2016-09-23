@@ -16,6 +16,7 @@ import dev.wolveringer.gilde.GildePermissions;
 import dev.wolveringer.gui.Gui;
 import dev.wolveringer.guild.gui.section.SectionRegestry;
 import dev.wolveringer.item.ItemBuilder;
+import dev.wolveringer.thread.ThreadFactory;
 
 public class GuiGildeMemberManager extends Gui{
 	private static final List<String> FINAL_GROUPS = Arrays.asList("owner");
@@ -51,6 +52,11 @@ public class GuiGildeMemberManager extends Gui{
 		
 		inv.setItem(46, groupArrowItem);
 		inv.setItem(0, ItemBuilder.create(Material.BARRIER).name("§cZurück").listener((Click c) -> switchToGui(SectionRegestry.getInstance().createGildeSection(permission.getHandle().getType(), permission.getHandle()))).build());
+		inv.setItem(8, ItemBuilder.create(Material.SKULL_ITEM).durbility(3).name("§aMember requests (Loading)").build());
+		ThreadFactory.getFactory().createThread(()->{
+			int request = 0; //TODO
+			inv.setItem(8, ItemBuilder.create(Material.SKULL_ITEM).durbility(3).name("§aMember requests ("+request+")").build());
+		});
 		fill(ItemBuilder.create(160).durbility(7).name("§7").build());
 	}
 

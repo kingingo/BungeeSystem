@@ -92,6 +92,7 @@ public class GuiPlayerGildeOverview extends Gui{
 						@Override
 						public void gildeEntered(UUID gilde) {
 							c.getPlayer().closeInventory();
+							
 							c.getPlayer().sendMessage("§cInvite-System not ready yet! Selected gilde: " + gilde);
 						}
 					};
@@ -146,7 +147,7 @@ public class GuiPlayerGildeOverview extends Gui{
 								@Override
 								public void call(PacketGildActionResponse obj, Throwable exception) {
 									if(obj == null || obj.getAction() == Action.ERROR){
-										new GuiStatusPrint(5,ItemBuilder.create().material(Material.REDSTONE_BLOCK).name("§cAn error happend while creating your gilde.").build()) {
+										new GuiStatusPrint(5,ItemBuilder.create().material(Material.REDSTONE_BLOCK).name("§cAn error happend while creating your gilde. ("+(obj == null ? 1 : obj.getAction() == Action.ERROR ? 2 : 3)+")").lore(obj != null ? "§6Message: §7"+obj.getMessage() : "§c").build()) {
 											@Override
 											public void onContinue() {
 												player.closeInventory();
