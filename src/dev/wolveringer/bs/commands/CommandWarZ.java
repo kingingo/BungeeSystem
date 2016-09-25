@@ -17,8 +17,8 @@ public class CommandWarZ extends Command{
 	public void execute(CommandSender sender, String[] arg1) {
 		ProxiedPlayer p = (ProxiedPlayer) sender;
 
-		if (!PermissionManager.getManager().hasPermission(p, "command.server.warz", true))
-			return;
+//		if (!PermissionManager.getManager().hasPermission(p, "command.server.warz", true))
+//			return;
 
 		if (p.getServer().getInfo() != BungeeCord.getInstance().getServerInfo("warz")) {
 			p.connect(BungeeCord.getInstance().getServerInfo("warz"));
