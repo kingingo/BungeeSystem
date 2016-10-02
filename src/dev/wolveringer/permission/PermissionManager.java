@@ -21,6 +21,7 @@ import dev.wolveringer.client.connection.ClientType;
 import dev.wolveringer.dataserver.protocoll.DataBuffer;
 import dev.wolveringer.dataserver.protocoll.packets.PacketOutPacketStatus;
 import dev.wolveringer.mysql.MySQL;
+import lombok.Getter;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -40,6 +41,7 @@ public class PermissionManager implements Listener {
 		PermissionManager.manager = manager;
 	}
 
+	@Getter
 	private ArrayList<Group> groups = new ArrayList<>();
 	private HashMap<Integer, PermissionPlayer> user = new HashMap<>();
 
@@ -146,11 +148,13 @@ public class PermissionManager implements Listener {
 		return null;
 	}
 	
-	public void addGroup(String name){
+	public Group addGroup(String name){
 		for(Group g : groups)
 			if(g.getName().equalsIgnoreCase(name))
-				return;
-		groups.add(new Group(this,name));
+				return g;
+		Group g;
+		groups.add(g = new Group(this,name));
+		return g;
 	}
 	public void removeGroup(String name){
 		Group gg = null;

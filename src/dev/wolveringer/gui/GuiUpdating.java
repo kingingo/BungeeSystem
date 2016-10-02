@@ -28,8 +28,10 @@ public abstract class GuiUpdating extends Gui{
 						Thread.sleep(waitTime);
 					} catch (InterruptedException e) {
 					}
+					if(isActive())
 					updateInventory();
-				}		
+				}
+				System.out.println("Stop updating");
 			}
 		});
 		pid.start();

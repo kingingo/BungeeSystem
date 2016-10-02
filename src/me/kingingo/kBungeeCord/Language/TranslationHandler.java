@@ -55,7 +55,7 @@ public class TranslationHandler {
 	public void updateLanguage(LoadedPlayer player) {
 		manager.updateLanguage(player);
 	}
-
+	
 	public LanguageType getLanguage(ProxiedPlayer player) {
 		if(!Main.getDatenServer().isActive())
 			return LanguageType.ENGLISH;

@@ -39,6 +39,7 @@ public class CommandPwChange extends Command {
 				sender.sendMessage("§cPlayer only");
 				return;
 			}
+			
 			String old = args[0];
 			String newpw = args[1];
 			
@@ -52,7 +53,6 @@ public class CommandPwChange extends Command {
 				return;
 			}
 			player.setPasswordSync(newpw);
-			player.setStats(new PacketInStatsEdit.EditStats(GameType.WARZ, PacketInStatsEdit.Action.SET, StatsKey.KILLS, 1));
 			((ProxiedPlayer)sender).sendMessage(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.pwchange.changed", sender));
 			return;
 		}

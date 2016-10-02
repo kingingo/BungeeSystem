@@ -6,7 +6,6 @@ import java.util.HashMap;
 import dev.wolveringer.gilde.GildSection;
 import dev.wolveringer.gilde.GildeType;
 import lombok.Getter;
-import lombok.Setter;
 
 public class SectionRegestry {
 	@Getter
@@ -18,6 +17,7 @@ public class SectionRegestry {
 		instance.registerSection(GildeType.PVP, GuiGildeSection.class);
 		instance.registerSection(GildeType.SKY, GuiGildeSection.class);
 		instance.registerSection(GildeType.VERSUS, GuiGildeSection.class);
+		instance.registerSection(GildeType.WARZ, GuiGildeSection.class);
 	}
 	
 	private HashMap<GildeType, Class<? extends GuiGildeSection>> classes = new HashMap<>();
@@ -41,9 +41,5 @@ public class SectionRegestry {
 	}
 	public GuiGildeSection createGildeSection(GildSection section){
 		return createGildeSection(section.getType() ,section);
-	}
-	
-	public static void main(String[] args) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		System.out.println(instance.createGildeSection(GildeType.ARCADE, null)+" - "+GuiGildeSection.class.getConstructor(GildSection.class).newInstance(null));
 	}
 }

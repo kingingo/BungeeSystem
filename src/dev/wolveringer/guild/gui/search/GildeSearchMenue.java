@@ -27,6 +27,7 @@ public abstract class GildeSearchMenue extends SearchMenue {
 			@Override
 			public void call(HashMap<UUID, String> obj, Throwable exception) {
 				gilden = obj;
+				System.out.println(gilden);
 				ArrayList<String> uuids = new ArrayList<>();
 				for (UUID uuid : obj.keySet())
 					uuids.add(uuid.toString());
@@ -40,6 +41,11 @@ public abstract class GildeSearchMenue extends SearchMenue {
 	}
 
 	@Override
+	protected boolean filter(String input, String object) {
+		return super.filter(input, gilden.get(UUID.fromString(object))) || super.filter(input, object);
+	}
+	
+	@Override
 	protected void updateInv() {
 		gui.setCenterItem(ItemBuilder.create(Material.GOLDEN_APPLE).durbility(1).name("§eEnter the GildName").build());
 		gui.setColorPrefix("§a");
@@ -48,7 +54,7 @@ public abstract class GildeSearchMenue extends SearchMenue {
 
 	@Override
 	protected Item createEntity(String name, int slot) {
-		return ItemBuilder.create().id(370).name("§aGilde: §6" + gilden.get(name)).lore("§aGilden UUID: §6" + name).build();
+		return ItemBuilder.create().id(370).name("§aGilde: §6" + gilden.get(UUID.fromString(name))).lore("§aGilden UUID: §6" + name).build();
 	}
 
 	@Override

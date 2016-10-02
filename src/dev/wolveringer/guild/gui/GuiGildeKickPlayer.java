@@ -17,6 +17,8 @@ public class GuiGildeKickPlayer extends Gui {
 
 	public GuiGildeKickPlayer(GildSection section, LoadedPlayer player) {
 		super(2, "§a" + section.getType().getDisplayName() + " §6» §aKick Player");
+		this.section = section;
+		this.player = player;
 	}
 
 	@Override

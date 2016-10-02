@@ -1,8 +1,10 @@
 package dev.wolveringer.guild.gui;
 
+import dev.wolveringer.BungeeUtil.Material;
 import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.gilde.GildSection;
 import dev.wolveringer.gui.GuiItemSelect;
+import dev.wolveringer.gui.GuiStatusPrint;
 import dev.wolveringer.item.ItemBuilder;
 
 public class GuiGildeSelectGoup extends GuiItemSelect{
@@ -28,8 +30,26 @@ public class GuiGildeSelectGoup extends GuiItemSelect{
 
 	@Override
 	public void select(int select) {
+		if(groups[select].equalsIgnoreCase("owner")){
+			new GuiStatusPrint(6,ItemBuilder.create(Material.REDSTONE).name("§cDu kannst den Gildenbesitzer nicht ändern").build()) {
+				@Override
+				public void onContinue() {
+					new GuiGildeSelectGoup(section, player).setPlayer(getPlayer()).openGui();
+				}
+			};
+			return;
+		}
+		if(section.getPermission().getGroup(player).getName().equalsIgnoreCase("owner")){
+			new GuiStatusPrint(6,ItemBuilder.create(Material.REDSTONE).name("§cDu kannst den Gildenowner nicht heruntersetzen").build()) {
+				@Override
+				public void onContinue() {
+					new GuiGildeSelectGoup(section, player).setPlayer(getPlayer()).openGui();
+				}
+			};
+			return;
+		}
 		section.getPermission().setGroup(player, section.getPermission().getGroup(groups[select]));
-		getPlayer().sendMessage("§aDu hast die Gruppe von §e"+player.getName()+" auf "+groups[select]+" in der Section "+section.getType().getDisplayName()+" gesetzt.");
+		getPlayer().sendMessage("§aDu hast die Gruppe von §e"+player.getName()+"§a auf §e"+groups[select]+"§a in der Section §e"+section.getType().getDisplayName()+"§a gesetzt.");
 		getPlayer().closeInventory();
 	}
 

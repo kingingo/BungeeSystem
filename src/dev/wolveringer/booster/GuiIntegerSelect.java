@@ -17,8 +17,9 @@ public abstract class GuiIntegerSelect {
 	private String notPossible = "§cDiese Zahl ist nicht möglich!";
 	private int mode = 0;
 
-	public void setMode(int mode) {
+	public GuiIntegerSelect setMode(int mode) {
 		this.mode = mode;
+		return this;
 	}
 
 	public int getMode() {

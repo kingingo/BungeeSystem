@@ -17,6 +17,9 @@ import dev.wolveringer.gui.Gui;
 import dev.wolveringer.item.ItemBuilder;
 
 public class GuiGildeMoneyOverview extends Gui{
+	public static interface LogFilter {
+		public boolean accept(MoneyLogRecord record);
+	}
 	private static final SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy.MM.dd G 'at' HH:mm:ss");
 	
 	private static enum SortType {
@@ -33,11 +36,24 @@ public class GuiGildeMoneyOverview extends Gui{
 	
 	private int side = 0;
 	private List<MoneyLogRecord> records;
+	private LogFilter filter = null;
 	
 	public GuiGildeMoneyOverview(GildSectionMoney money) {
 		super(6,"§a"+money.getHandle().getType().getDisplayName()+" §6» §aMoney");
 		this.money = money;
 		this.records = new ArrayList<>(money.getHistory());
+	}
+	
+	public GuiGildeMoneyOverview(GildSectionMoney money,LogFilter filter) {
+		this(money);
+		this.filter = filter;
+		if(filter != null){
+			ArrayList<MoneyLogRecord> nr = new ArrayList<>();
+			for(MoneyLogRecord r : records)
+				if(filter.accept(r))
+					nr.add(r);
+			records = nr;
+		}
 	}
 
 	@Override
@@ -52,74 +68,80 @@ public class GuiGildeMoneyOverview extends Gui{
 	}
 	
 	private void drawBorder(){
-		fill(ItemBuilder.create(160).durbility(7).name("§7").build(),36,45);
-		inv.setItem(46, ItemBuilder.create(Material.ARROW).name("§7Previous side "+(side != 0 ? "("+(side-1)+")":"")).listener(()-> {
+		fill(ItemBuilder.create(160).durbility(7).name("§7").build(),36,44);
+		inv.setItem(45, ItemBuilder.create(Material.ARROW).name("§7Previous side "+(side != 0 ? "("+(side-1)+")":"")).listener(()-> {
 			if(side > 0){
 				side--;
 				updateInventory();
 			}
 		}).glow(side == 0).build());
 		
-		inv.setItem(48, ItemBuilder.create(175).name("§aShort elements by name").glow(type == SortType.NAME).listener((c)->{
+		inv.setItem(47, ItemBuilder.create(101).name("§aElemente nach Namen sortiert").glow(type == SortType.NAME).listener((c)->{
+			if(c.getItem() == null)
+				return;
 			if(!c.getItem().getItemMeta().hasGlow()){
 				updateSortType(SortType.NAME);
 				updateInventory();
-				c.getPlayer().sendMessage("§cTODO");
 			}
 		}).build());
 		
-		inv.setItem(49, ItemBuilder.create(175).name("§aShort elements by time (decrasing)").glow(type == SortType.TIME_DECREASING).listener((c)->{
+		inv.setItem(48, ItemBuilder.create(101).name("§aElemente nach Zeit sortiert (abnehmend)").glow(type == SortType.TIME_DECREASING).listener((c)->{
+			if(c.getItem() == null)
+				return;
 			if(!c.getItem().getItemMeta().hasGlow()){
 				updateSortType(SortType.TIME_DECREASING);
 				updateInventory();
 			}
 		}).build());
 		
-		inv.setItem(48, ItemBuilder.create(175).name("§aShort elements by time (increasing)").glow(type == SortType.TIME_INCREASING).listener((c)->{
+		inv.setItem(49, ItemBuilder.create(101).name("§aElemente nach Zeit sortiert (zunehmend)").glow(type == SortType.TIME_INCREASING).listener((c)->{
+			if(c.getItem() == null)
+				return;
 			if(!c.getItem().getItemMeta().hasGlow()){
 				updateSortType(SortType.TIME_INCREASING);
 				updateInventory();
 			}
 		}).build());
 		
-		inv.setItem(48, ItemBuilder.create(175).name("§aShort elements by money (decrasing)").glow(type == SortType.VALUE_DECREASING).listener((c)->{
+		inv.setItem(50, ItemBuilder.create(101).name("§aElemente nach Geld sortiert (abnehmend)").glow(type == SortType.VALUE_DECREASING).listener((c)->{
+			if(c.getItem() == null)
+				return;
 			if(!c.getItem().getItemMeta().hasGlow()){
 				updateSortType(SortType.VALUE_DECREASING);
 				updateInventory();
-				c.getPlayer().sendMessage("§cTODO");
 			}
 		}).build());
 		
-		inv.setItem(48, ItemBuilder.create(175).name("§aShort elements by money (increasing)").glow(type == SortType.VALUE_INCREASING).listener((c)->{
+		inv.setItem(51, ItemBuilder.create(101).name("§aElemente nach Geld sortiert (zunehmend)").glow(type == SortType.VALUE_INCREASING).listener((c)->{
+			if(c.getItem() == null)
+				return;
 			if(!c.getItem().getItemMeta().hasGlow()){
 				updateSortType(SortType.VALUE_INCREASING);
 				updateInventory();
-				c.getPlayer().sendMessage("§cTODO");
 			}
 		}).build());
 		
-		inv.setItem(54, ItemBuilder.create(Material.ARROW).name("§7Next side "+(side*4*9 > records.size() ? "("+(side+1)+")":"")).listener(()-> {
+		inv.setItem(53, ItemBuilder.create(Material.ARROW).name("§7Next side "+(side*4*9 > records.size() ? "("+(side+1)+")":"")).listener(()-> {
 			if(side > 0){
 				side++;
 				updateInventory();
 			}
-		}).glow(side*4*9 > records.size()).build());
+		}).glow((side+1)*4*9 > records.size()).build());
 	}
 	
 	private void drawSection(){
-		for(int i = 0;i<5*9;i++)
-			if(side*5*9 < records.size())
-				inv.setItem(i, buildItem(records.get(side*5*9+i)));
+		for(int i = 0;i<4*9;i++)
+			if(side*4*9+i < records.size())
+				inv.setItem(i, buildItem(records.get(side*4*9+i)));
 	}
 	
 	private Item buildItem(MoneyLogRecord record){
 		ItemBuilder builder = ItemBuilder.create(Material.SKULL_ITEM).durbility(3);
 		LoadedPlayer lp = Main.getDatenServer().getClient().getPlayerAndLoad(record.getPlayerId());
-		builder.name("§aPlayer: "+lp.getName());
-		builder.lore("§aAmount: "+record.getAmount());
-		builder.lore("§aDate: "+FORMAT.format(new Date(record.getDate())));
-		builder.lore("§aMessage: "+record.getMessage());
-		builder.lore("§cTODO format to fancy!"); //TODO
+		builder.name("§aPlayer: §b"+lp.getName());
+		builder.lore("§aAmount: §b"+record.getAmount());
+		builder.lore("§aDate: §b"+FORMAT.format(new Date(record.getDate())));
+		builder.lore("§aMessage: §b"+record.getMessage());
 		return loadSkin(builder.build(), lp.getName());
 	}
 	
@@ -132,7 +154,7 @@ public class GuiGildeMoneyOverview extends Gui{
 			Collections.sort(records,new Comparator<MoneyLogRecord>() {
 				@Override
 				public int compare(MoneyLogRecord o1, MoneyLogRecord o2) {
-					return Long.compare(o1.getDate(), o2.getDate());
+					return Long.compare(o2.getDate(), o1.getDate());
 				}
 			});
 			break;
@@ -140,11 +162,34 @@ public class GuiGildeMoneyOverview extends Gui{
 			Collections.sort(records,new Comparator<MoneyLogRecord>() {
 				@Override
 				public int compare(MoneyLogRecord o1, MoneyLogRecord o2) {
-					return Long.compare(o2.getDate(), o1.getDate());
+					return Long.compare(o1.getDate(), o2.getDate());
 				}
 			});
 			break;
-			//TODO add all other options
+		case NAME:
+			Collections.sort(records,new Comparator<MoneyLogRecord>() {
+				@Override
+				public int compare(MoneyLogRecord o1, MoneyLogRecord o2) {
+					return Main.getDatenServer().getClient().getPlayerAndLoad(o1.getPlayerId()).getName().compareTo(Main.getDatenServer().getClient().getPlayerAndLoad(o2.getPlayerId()).getName());
+				}
+			});
+			break;
+		case VALUE_DECREASING:
+			Collections.sort(records,new Comparator<MoneyLogRecord>() {
+				@Override
+				public int compare(MoneyLogRecord o1, MoneyLogRecord o2) {
+					return Long.compare(o2.getAmount(), o1.getAmount());		
+				}
+			});
+			break;
+		case VALUE_INCREASING:
+			Collections.sort(records,new Comparator<MoneyLogRecord>() {
+				@Override
+				public int compare(MoneyLogRecord o1, MoneyLogRecord o2) {
+					return Long.compare(o2.getAmount(), o1.getAmount());		
+				}
+			});
+			break;
 		default:
 			break;
 		}

@@ -14,6 +14,7 @@ import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.dataserver.protocoll.packets.PacketGildActionResponse;
 import dev.wolveringer.dataserver.protocoll.packets.PacketGildActionResponse.Action;
 import dev.wolveringer.gilde.Gilde;
+import dev.wolveringer.gilde.GildePermissions;
 import dev.wolveringer.gilde.GildeType;
 import dev.wolveringer.gui.Gui;
 import dev.wolveringer.gui.GuiStatusPrint;
@@ -22,6 +23,7 @@ import dev.wolveringer.guild.gui.search.GildeSearchMenue;
 import dev.wolveringer.guild.gui.section.SectionRegestry;
 import dev.wolveringer.item.ItemBuilder;
 import dev.wolveringer.report.search.PlayerTextEnterMenue;
+import dev.wolveringer.thread.ThreadFactory;
 
 public class GuiPlayerGildeOverview extends Gui{
 	
@@ -31,6 +33,7 @@ public class GuiPlayerGildeOverview extends Gui{
 		itemMapping.put(GildeType.PVP, 279);
 		itemMapping.put(GildeType.SKY, 3);
 		itemMapping.put(GildeType.VERSUS, 261);
+		itemMapping.put(GildeType.WARZ, 367);
 	}
 	
 	private Player player;
@@ -51,7 +54,7 @@ public class GuiPlayerGildeOverview extends Gui{
 		print();
 	}
 	
-	private void print(){
+	private synchronized void print(){
 		inv.disableUpdate();
 		fill(ItemBuilder.create(160).durbility(7).name("§7").build(), 0 , -1,true);	
 		inv.setItem(0, ItemBuilder.create(Material.BARRIER).name("§cSchließen").listener((Click c) -> c.getPlayer().closeInventory()).build());
@@ -71,9 +74,10 @@ public class GuiPlayerGildeOverview extends Gui{
 			else
 				inv.setItem(8, ItemBuilder.create(Material.NETHER_STAR).name("§aErstelle deine eigende Gilde").listener((Click c) -> 	createNewGilde(null)).build());
 		inv.setItem(19, buildSection(GildeType.ARCADE));
-		inv.setItem(21, buildSection(GildeType.PVP));
-		inv.setItem(23, buildSection(GildeType.SKY));
+		inv.setItem(30, buildSection(GildeType.PVP));
+		inv.setItem(32, buildSection(GildeType.SKY));
 		inv.setItem(25, buildSection(GildeType.VERSUS));
+		inv.setItem(13, buildSection(GildeType.WARZ));
 		inv.enableUpdate();
 	}
 	
@@ -90,10 +94,50 @@ public class GuiPlayerGildeOverview extends Gui{
 				item.listener((c)->{
 					GildeSearchMenue search = new GildeSearchMenue(c.getPlayer(), type) {
 						@Override
-						public void gildeEntered(UUID gilde) {
-							c.getPlayer().closeInventory();
-							
-							c.getPlayer().sendMessage("§cInvite-System not ready yet! Selected gilde: " + gilde);
+						public void gildeEntered(UUID ugilde) {
+							ThreadFactory.getFactory().createThread(()->{
+								GuiWaiting waiting = new GuiWaiting(Main.getTranslationManager().translate("waiting.title", getPlayer()), Main.getTranslationManager().translate("waiting.message", getPlayer()));
+								waiting.setWaitTime(150);
+								waiting.setPlayer(player);
+								waiting.openGui();
+								
+								Gilde gilde = Main.getGildeManager().getGilde(ugilde);
+								if(gilde == null || !gilde.getSelection(type).isActive()){
+									waiting.waitForMinwait(1500);
+									new GuiStatusPrint(6,ItemBuilder.create(Material.REDSTONE_BLOCK).name("§cAn error happed while requesting.").build()) {
+										@Override
+										public void onContinue() {
+											new GuiPlayerGildeOverview(getPlayer()).setPlayer(getPlayer()).openGui();
+										}
+									}.setPlayer(player).openGui();
+									return;
+								}
+								if(gilde.getSelection(type).getRequestedPlayer().contains(lplayer.getPlayerId())){
+									waiting.waitForMinwait(1500);
+									new GuiStatusPrint(6,ItemBuilder.create(Material.REDSTONE_BLOCK).name("§cDu hast in dieser Gilde bereits eine Mitgliedschaft angefordert!").build()) {
+										@Override
+										public void onContinue() {
+											new GuiPlayerGildeOverview(getPlayer()).setPlayer(getPlayer()).openGui();
+										}
+									}.setPlayer(player).openGui();
+									return;
+								}
+								gilde.getSelection(type).addRequest(lplayer);
+								ThreadFactory.getFactory().createThread(()->{
+									for(int players : gilde.getSelection(type).getPlayers()){
+										if(gilde.getSelection(type).getPermission().hasPermission(players, GildePermissions.MEMBER_ACCEPT))
+											Main.getDatenServer().getClient().sendMessage(players, "§aDer Spieler §e"+player.getName()+"§a hat die Mitgliedschaft in dem Bereich §e"+type.getDisplayName()+" §afür die Gilde §e"+gilde.getName()+"§a angefragt.");
+									}
+								}).start();
+								
+								waiting.waitForMinwait(1500);
+								new GuiStatusPrint(6,ItemBuilder.create(Material.EMERALD).name("§aMitglidschaft beantragt.").build()) {
+									@Override
+									public void onContinue() {
+										new GuiPlayerGildeOverview(getPlayer()).setPlayer(getPlayer()).openGui();
+									}
+								}.setPlayer(player).openGui();
+							}).start();
 						}
 					};
 					search.open();
@@ -117,57 +161,53 @@ public class GuiPlayerGildeOverview extends Gui{
 		PlayerTextEnterMenue name = new PlayerTextEnterMenue(player) {
 			@Override
 			public void textEntered(String name) {
-				GuiWaiting waiting = new GuiWaiting("§aChecking name availability", "§aPlease wait");
-				waiting.setWaitTime(150);
-				waiting.setPlayer(player);
-				waiting.openGui();
-				Main.getDatenServer().getClient().getAvailableGilde(GildeType.ALL).getAsync(new Callback<HashMap<UUID, String>>() {
-					@Override
-					public void call(HashMap<UUID, String> obj, Throwable exception) {
-						waiting.waitForMinwait((int) (1000+System.currentTimeMillis()%1200));
-						ArrayList<String> names = new ArrayList<>();
-						for (String name : obj.values())
-							names.add(name.toLowerCase());
-						if(names.contains(name)){
-							new GuiStatusPrint(5,ItemBuilder.create().material(Material.REDSTONE_BLOCK).name("§cName is alredy taken").lore("§6Click to select an other name.").lore("§6Close Inventory to cancel").build()) {
-								@Override
-								public void onContinue() {
-									createNewGilde(name);
-								}
-							}.setPlayer(player).openGui();
-						}
-						else
-						{
-							GuiWaiting waiting = new GuiWaiting("§aCreating gilde", "§aPlease wait");
-							waiting.setWaitTime(150);
-							waiting.setPlayer(player);
-							waiting.openGui();
-							
-							Main.getDatenServer().getClient().createGilde(lplayer, name).getAsync(new Callback<PacketGildActionResponse>() {
-								@Override
-								public void call(PacketGildActionResponse obj, Throwable exception) {
-									if(obj == null || obj.getAction() == Action.ERROR){
-										new GuiStatusPrint(5,ItemBuilder.create().material(Material.REDSTONE_BLOCK).name("§cAn error happend while creating your gilde. ("+(obj == null ? 1 : obj.getAction() == Action.ERROR ? 2 : 3)+")").lore(obj != null ? "§6Message: §7"+obj.getMessage() : "§c").build()) {
-											@Override
-											public void onContinue() {
-												player.closeInventory();
-											}
-										}.setPlayer(player).openGui();
+					GuiWaiting waiting = new GuiWaiting(Main.getTranslationManager().translate("waiting.title", getPlayer()), Main.getTranslationManager().translate("waiting.message", getPlayer()));
+					waiting.setWaitTime(150);
+					waiting.setPlayer(player);
+					waiting.openGui();
+					
+					Main.getDatenServer().getClient().getAvailableGilde(GildeType.ALL).getAsync(new Callback<HashMap<UUID, String>>() {
+						@Override
+						public void call(HashMap<UUID, String> obj, Throwable exception) {
+							waiting.waitForMinwait((int) (1000+System.currentTimeMillis()%1200));
+							ArrayList<String> names = new ArrayList<>();
+							for (String name : obj.values())
+								names.add(name.toLowerCase());
+							if(names.contains(name)){
+								new GuiStatusPrint(5,ItemBuilder.create().material(Material.REDSTONE_BLOCK).name("§cDieser Name wird bereits genutzt.").lore("§6Clicke hier um einen anderen Namen zu wählen").lore("§6Schließe das Inventar zum Abbrechen").build()) {
+									@Override
+									public void onContinue() {
+										createNewGilde(name);
 									}
-									else
-									{
-										new GuiStatusPrint(5,ItemBuilder.create().material(Material.EMERALD).name("§aGilde successfull created!").build()) {
-											@Override
-											public void onContinue() {
-												new GuiGildeAdminOverview(player, Main.getGildeManager().getGilde(obj.getUuid())).setPlayer(player).openGui();
-											}
-										}.setPlayer(player).openGui();
+								}.setPlayer(player).openGui();
+							}
+							else
+							{
+								Main.getDatenServer().getClient().createGilde(lplayer, name).getAsync(new Callback<PacketGildActionResponse>() {
+									@Override
+									public void call(PacketGildActionResponse obj, Throwable exception) {
+										if(obj == null || obj.getAction() == Action.ERROR){
+											new GuiStatusPrint(5,ItemBuilder.create().material(Material.REDSTONE_BLOCK).name("§cAn error happend while creating your gilde. ("+(obj == null ? 1 : obj.getAction() == Action.ERROR ? 2 : 3)+")").lore(obj != null ? "§6Message: §7"+obj.getMessage() : "§c").build()) {
+												@Override
+												public void onContinue() {
+													player.closeInventory();
+												}
+											}.setPlayer(player).openGui();
+										}
+										else
+										{
+											new GuiStatusPrint(5,ItemBuilder.create().material(Material.EMERALD).name("§aDeine Gilde wurde erfolgreich erstellt.").build()) {
+												@Override
+												public void onContinue() {
+													new GuiGildeAdminOverview(player, Main.getGildeManager().getGilde(obj.getUuid())).setPlayer(player).openGui();
+												}
+											}.setPlayer(player).openGui();
+										}
 									}
-								}
-							});;
+								});;
+							}
 						}
-					}
-				});
+					});
 			}
 			
 			@Override
@@ -184,6 +224,7 @@ public class GuiPlayerGildeOverview extends Gui{
 		loadData(GildeType.PVP);
 		loadData(GildeType.SKY);
 		loadData(GildeType.VERSUS);
+		loadData(GildeType.WARZ);
 		Main.getDatenServer().getClient().getOwnGilde(lplayer).getAsync(new Callback<UUID>() {
 			@Override
 			public void call(UUID obj, Throwable exception) {
@@ -212,6 +253,14 @@ public class GuiPlayerGildeOverview extends Gui{
 				{
 					Gilde gilde = Main.getGildeManager().getGilde(obj);
 					gilden.put(type, gilde);
+				}
+				//System.out.println("Having response: "+obj+" for "+type);
+				while (isInAnimation()) {
+					try {
+						Thread.sleep(50);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 				}
 				if(isActive())
 					print();

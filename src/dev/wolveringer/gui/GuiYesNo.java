@@ -9,6 +9,7 @@ public abstract class GuiYesNo extends Gui{
 	
 	public GuiYesNo(String question,String achtung) {
 		super(1, question);
+		this.attantion = achtung;
 	}
 
 	@Override

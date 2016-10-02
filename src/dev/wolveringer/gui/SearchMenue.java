@@ -112,11 +112,14 @@ public abstract class SearchMenue implements AnvilGuiListener, PacketHandler<Pac
 		selection.clear();
 		if(Main.getDatenServer().getPlayers() != null)
 			for(String s : avariableEntities){
-				if(s != null)
-					if(s.toLowerCase().startsWith(name.toLowerCase()))
+				if(filter(name, s))
 						selection.add(s);
 			}
 		inputString = name;
+	}
+	
+	protected boolean filter(String input,String object){
+		return input != null && object != null && object.toLowerCase().startsWith(input.toLowerCase());
 	}
 
 	@Override

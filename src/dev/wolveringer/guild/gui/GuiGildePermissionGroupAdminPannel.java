@@ -5,10 +5,13 @@ import java.util.List;
 import dev.wolveringer.BungeeUtil.Material;
 import dev.wolveringer.BungeeUtil.item.Item;
 import dev.wolveringer.BungeeUtil.item.ItemStack.Click;
+import dev.wolveringer.bs.Main;
 import dev.wolveringer.gilde.GildPermissionGroup;
 import dev.wolveringer.gilde.GildePermissions;
 import dev.wolveringer.gilde.GildePermissions.DisplayItem;
 import dev.wolveringer.gui.Gui;
+import dev.wolveringer.gui.GuiStatusPrint;
+import dev.wolveringer.gui.GuiWaiting;
 import dev.wolveringer.item.ItemBuilder;
 
 public class GuiGildePermissionGroupAdminPannel extends Gui{
@@ -32,9 +35,12 @@ public class GuiGildePermissionGroupAdminPannel extends Gui{
 		
 		public Item buildItem(){
 			return new ItemBuilder(item).glow(handle.getPermissions().contains(perm.getPermission())).listener((Click click)->{
-				//TODO check gild permission
 				if(locked){
-					click.getPlayer().sendMessage("§cYou cant modify this permission.");
+					click.getPlayer().sendMessage("§cDu kannst diese Permission nicht editieren.");
+					return;
+				}
+				if(!handle.getHandle().hasPermission(Main.getDatenServer().getClient().getPlayerAndLoad(click.getPlayer().getName()), perm)){
+					click.getPlayer().sendMessage("§cDu hast keine Berechtigungen um Permissions zu editieren.");
 					return;
 				}
 				if(click.getItem().getItemMeta().hasGlow()){
@@ -48,7 +54,7 @@ public class GuiGildePermissionGroupAdminPannel extends Gui{
 					item.getItemMeta().setGlow(true);
 					handle.addPermission(perm.getPermission());
 				}
-				inv.inv.updateInventory(); //TODO maybe only update one slot
+				inv.inv.updateInventory();
 			}).build();
 		}
 	}
@@ -73,8 +79,21 @@ public class GuiGildePermissionGroupAdminPannel extends Gui{
 		buildItem();
 		
 		inv.setItem(0, ItemBuilder.create(Material.BARRIER).name("§cZurück").listener((Click c) -> switchToGui(new GuiGildePermissionGroupOverview(group.getHandle()))).build());
+		if(!group.isDefaultGroup() || group.getName().equalsIgnoreCase("owner"))
+			inv.setItem(8, ItemBuilder.create(Material.LAVA_BUCKET).name("§cGruppe löschen").listener(()->{
+				GuiWaiting waiting = (GuiWaiting) new GuiWaiting("§a", "").setPlayer(getPlayer());
+				waiting.openGui();
+				
+				group.delete();
+				waiting.waitForMinwait(1500);
+				new GuiStatusPrint(6,ItemBuilder.create(Material.EMERALD).name("§aGruppe erfolgreich gelöscht").build()) {
+					@Override
+					public void onContinue() {
+						new GuiGildePermissionGroupOverview(group.getHandle()).setPlayer(getPlayer()).openGui();
+					}
+				};
+			}).build());
 		fill(ItemBuilder.create(160).durbility(7).name("§7").build());
-		
 		print();
 	}
 	

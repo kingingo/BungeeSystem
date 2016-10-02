@@ -1,5 +1,6 @@
 package dev.wolveringer.bs;
 
+import java.awt.geom.CubicCurve2D;
 import java.io.File;
 import java.io.IOException;
 import java.lang.Thread.State;
@@ -53,6 +54,7 @@ import dev.wolveringer.bs.commands.CommandGunGame;
 import dev.wolveringer.bs.commands.CommandHub;
 import dev.wolveringer.bs.commands.CommandKicken;
 import dev.wolveringer.bs.commands.CommandMOTD;
+import dev.wolveringer.bs.commands.CommandMoney;
 import dev.wolveringer.bs.commands.CommandNews;
 import dev.wolveringer.bs.commands.CommandNick;
 import dev.wolveringer.bs.commands.CommandPerformance;
@@ -101,10 +103,13 @@ import dev.wolveringer.bs.packets.PacketPlayInResourcepackStatus;
 import dev.wolveringer.bs.packets.PacketPlayOutResourcepack;
 import dev.wolveringer.bs.servermanager.ServerManager;
 import dev.wolveringer.chat.ChatManager;
+import dev.wolveringer.client.Callback;
 import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.client.debug.Debugger;
 import dev.wolveringer.dataserver.gamestats.GameType;
 import dev.wolveringer.dataserver.gamestats.StatsKey;
+import dev.wolveringer.dataserver.player.Setting;
+import dev.wolveringer.dataserver.protocoll.packets.PacketOutPlayerSettings.SettingValue;
 import dev.wolveringer.event.EventListener;
 import dev.wolveringer.event.EventManager;
 import dev.wolveringer.events.Event;
@@ -133,16 +138,12 @@ import lombok.Getter;
 import me.kingingo.kBungeeCord.Language.TranslationHandler;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.event.ProxyPingEvent;
-import net.md_5.bungee.api.event.ServerConnectEvent;
 import net.md_5.bungee.api.plugin.Command;
-import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.PluginManager;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
-import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.protocol.Protocol;
 import net.md_5.bungee.protocol.ProtocolConstants.Direction;
 
@@ -424,6 +425,7 @@ public class Bootstrap {
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandNick());
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandTeamspeak());
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandResourcepack());
+		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandMoney());
 		//BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandGilde());
 
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), InformationManager.getManager());
@@ -552,13 +554,13 @@ public class Bootstrap {
 					if (player == null || plr.getServer().getInfo().getName().toLowerCase().startsWith("loginhub") || plr.getServer().getInfo().getName().equalsIgnoreCase("proxylobby") || player.isPremiumSync()) {
 						continue;
 					}
-					player.getStats(GameType.WARZ).getAsync((statistics, throwable) -> {
+					player.getSettings(Setting.LAST_PASSWORD_CHANGED).getAsync((settings, throwable) -> {
 						if (throwable != null) {
 							throwable.printStackTrace();
 							return;
 						}
-						for (Statistic statistic : statistics) {
-							if (statistic.getStatsKey() == StatsKey.KILLS && statistic.asInt() == 0) {
+						for (SettingValue statistic : settings) {
+							if (statistic.getSetting() == Setting.LAST_PASSWORD_CHANGED && Long.parseLong(statistic.getValue()) + TimeUnit.DAYS.toMillis((long) (30.5*6)) < System.currentTimeMillis()) {
 								plr.sendMessage(Main.PASSWORD_CHANGE_MESSAGE);
 								break;
 							}

@@ -14,7 +14,7 @@ public class GuiGildeDeleteConfirm extends Gui{
 	private Gilde gilde;
 	
 	public GuiGildeDeleteConfirm(LoadedPlayer lplayer,Gilde gilde) {
-		super(1, "§cDelete your gilde");
+		super(1, "§cLösche eine Gilde");
 		this.lplayer = lplayer;
 		this.gilde = gilde;
 	}

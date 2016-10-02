@@ -117,13 +117,18 @@ public class Group {
 
 	public ArrayList<Permission> getPermissions() {
 		if (finalPermissions == null) {
-			finalPermissions = new ArrayList<>();
-			ploop: for (Permission p : permissions) {
-				for (Permission np : negativePerms) {
-					if (np.acceptPermission(p.getPermission()))
-						continue ploop;
+			try{
+				finalPermissions = new ArrayList<>();
+				ploop: for (Permission p : permissions) {
+					for (Permission np : negativePerms) {
+						if (np.acceptPermission(p.getPermission()))
+							continue ploop;
+					}
+					finalPermissions.add(p);
 				}
-				finalPermissions.add(p);
+			}catch(Exception e){
+				e.printStackTrace();
+				finalPermissions = null;
 			}
 		}
 
@@ -176,7 +181,7 @@ public class Group {
 			});
 	}
 
-	protected void initPerms() {
+	public void initPerms() {
 		ArrayList<String[]> query = MySQL.getInstance().querySync("SELECT `prefix`,`permission`,`grouptyp` FROM `game_perm` WHERE `pgroup`='" + name + "' AND `playerId`='-2'", -1);
 		for (String[] var : query) {
 			if (var[1].startsWith("epicpvp.perm.group.")) {

@@ -9,8 +9,10 @@ import dev.wolveringer.BungeeUtil.item.ItemStack.Click;
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.client.Callback;
 import dev.wolveringer.client.LoadedPlayer;
+import dev.wolveringer.dataserver.player.LanguageType;
 import dev.wolveringer.dataserver.protocoll.packets.PacketGildActionResponse;
 import dev.wolveringer.dataserver.protocoll.packets.PacketGildActionResponse.Action;
+import dev.wolveringer.dataserver.protocoll.packets.PacketOutPacketStatus;
 import dev.wolveringer.gilde.Gilde;
 import dev.wolveringer.gilde.GildeType;
 import dev.wolveringer.gui.Gui;
@@ -28,6 +30,17 @@ public class GuiGildeAdminOverview extends Gui{
 		itemMapping.put(GildeType.PVP, 279);
 		itemMapping.put(GildeType.SKY, 3);
 		itemMapping.put(GildeType.VERSUS, 261);
+		itemMapping.put(GildeType.WARZ, 367);
+		
+		Main.getTranslationManager().registerFallback(LanguageType.GERMAN, "inventory.item.close", "§cSchließen"); //
+		Main.getTranslationManager().registerFallback(LanguageType.GERMAN, "gilde.delete.item", "§cGilde löschen");
+		Main.getTranslationManager().registerFallback(LanguageType.GERMAN, "gilde.delete.title", "§cBist du sicher?");
+		Main.getTranslationManager().registerFallback(LanguageType.GERMAN, "gilde.delete.message", "§cDu kannst diese Aktion nicht mehr rückgänig machen!");
+		Main.getTranslationManager().registerFallback(LanguageType.GERMAN, "gilde.delete.error.message", "§cBei dem Löschen deiner Gilde gab es einen Fehler!");
+		Main.getTranslationManager().registerFallback(LanguageType.GERMAN, "gilde.delete.success", "§aDeine Gilde wurde erfolgreich gelöscht!");
+		
+		Main.getTranslationManager().registerFallback(LanguageType.GERMAN, "waiting.title", "§aBitte warte einen moment");
+		Main.getTranslationManager().registerFallback(LanguageType.GERMAN, "waiting.message", "§aAuftrag wird ausgeführt.");
 	}
 	
 	private Player player;
@@ -49,30 +62,30 @@ public class GuiGildeAdminOverview extends Gui{
 	private void print(){
 		inv.disableUpdate();
 		fill(ItemBuilder.create(160).durbility(7).name("§7").build(), 0 , -1,true);	
-		inv.setItem(0, ItemBuilder.create(Material.BARRIER).name("§cSchließen").listener((Click c) -> c.getPlayer().closeInventory()).build());
-		inv.setItem(8, ItemBuilder.create(Material.LAVA_BUCKET).name("§cGilde löschen").listener(new Runnable() { //TODO check perms
+		inv.setItem(0, ItemBuilder.create(Material.BARRIER).name(Main.getTranslationManager().translate("inventory.item.close", getPlayer())).listener((Click c) -> c.getPlayer().closeInventory()).build());
+		inv.setItem(8, ItemBuilder.create(Material.LAVA_BUCKET).name(Main.getTranslationManager().translate("gilde.delete.item", getPlayer())).listener(new Runnable() { //TODO check perms
 			@Override
 			public void run() {
-				Gui question = new GuiYesNo("§cAre you shure?","§cYou cant recover your gilde!") {
+				Gui question = new GuiYesNo(Main.getTranslationManager().translate("gilde.delete.title", getPlayer()),Main.getTranslationManager().translate("gilde.delete.message", getPlayer())) {
 					@Override
 					public void onDicition(boolean flag) {
 						if(flag){
-							new GuiWaiting("§aPlease wait", "§aPerforming action").setPlayer(player).openGui();
+							new GuiWaiting(Main.getTranslationManager().translate("waiting.title", getPlayer()), Main.getTranslationManager().translate("waiting.message", getPlayer())).setPlayer(player).openGui();
 							Main.getGildeManager().deleteGilde(gilde, true).getAsync(new Callback<PacketGildActionResponse>() {
 								@Override
 								public void call(PacketGildActionResponse obj, Throwable exception) {
 									if(obj == null){
-										player.sendMessage("§cAn error happend while deleting your gilde.");
+										player.sendMessage(Main.getTranslationManager().translate("gilde.delete.error.message", getPlayer()));
 										if(exception != null)
 											exception.printStackTrace();
 									}
 									else if(obj.getAction() == Action.ERROR){
-										player.sendMessage("§cAn error happend while deleting your gilde.");
+										player.sendMessage(Main.getTranslationManager().translate("gilde.delete.error.message", getPlayer()));
 										System.out.println("An error happend while deleting gilde "+gilde.getName()+" ("+obj.getMessage()+")");
 									}
 									else
 									{
-										player.sendMessage("§aYour is gilde successfully deleted.");
+										player.sendMessage(Main.getTranslationManager().translate("gilde.delete.error.message", getPlayer()));
 									}
 									player.closeInventory();
 								}
@@ -84,9 +97,10 @@ public class GuiGildeAdminOverview extends Gui{
 			}
 		}).build());
 		inv.setItem(19, buildSection(GildeType.ARCADE));
-		inv.setItem(21, buildSection(GildeType.PVP));
-		inv.setItem(23, buildSection(GildeType.SKY));
+		inv.setItem(30, buildSection(GildeType.PVP));
+		inv.setItem(32, buildSection(GildeType.SKY));
 		inv.setItem(25, buildSection(GildeType.VERSUS));
+		inv.setItem(13, buildSection(GildeType.WARZ));
 		inv.enableUpdate();
 	}
 	
@@ -104,13 +118,13 @@ public class GuiGildeAdminOverview extends Gui{
 		{
 			if(gilde.getOwnerId() == lplayer.getPlayerId()){
 				item.lore("§aDieser Gildenbereich ist deaktiviert.");
-				item.lore("§6Clicke hier um den bereich zu aktivieren.");
+				item.lore("§6Klicke hier um den bereich zu aktivieren.");
 				item.listener((c)->{
-					GuiWaiting waiting = new GuiWaiting("§aActivate gild section", "§aPlease wait");
+					GuiWaiting waiting = new GuiWaiting(Main.getTranslationManager().translate("waiting.title", getPlayer()), Main.getTranslationManager().translate("waiting.message", getPlayer()));
 					waiting.setPlayer(player).openGui();
 					ThreadFactory.getFactory().createThread(()->{
 						if(Main.getGildeManager().getGildeSync(lplayer, type) != null){
-							new GuiStatusPrint(5, ItemBuilder.create().material(Material.EMERALD).name("§cYou cant be the owner of this section").lore("§cand a member in an other gilde.").build()) {
+							new GuiStatusPrint(5, ItemBuilder.create().material(Material.EMERALD).name("§cDu kannst kein Owner dieses Bereichs sein,").lore("da du hier bereits in einer anderen Gilde bist.").build()) {
 								@Override
 								public void onContinue() {
 									player.closeInventory();
@@ -119,17 +133,30 @@ public class GuiGildeAdminOverview extends Gui{
 							return;
 						}
 						if(!gilde.getSelection(type).isActive()){
-							gilde.getSelection(type).setActive(true);
-							gilde.getSelection(type).addMemeber(lplayer);
-							gilde.getSelection(type).getPermission().setGroup(lplayer, gilde.getSelection(type).getPermission().getGroup("owner"));
+							gilde.getSelection(type).setActive(true).getAsync(new Callback<PacketOutPacketStatus.Error[]>() {
+								@Override
+								public void call(PacketOutPacketStatus.Error[] obj, Throwable exception) {
+									if(exception != null){
+										new GuiStatusPrint(5, ItemBuilder.create().material(Material.REDSTONE_BLOCK).name("§cEs ist ein Fehler aufgetreten ("+exception.getClass().getName()+" -> "+exception.getMessage()+")").build()) {
+											@Override
+											public void onContinue() {
+												SectionRegestry.getInstance().createGildeSection(gilde.getSelection(type)).setPlayer(player).openGui();
+											}
+										}.setPlayer(player).openGui();
+									}
+									gilde.getSelection(type).getMoney().init();
+									gilde.getSelection(type).addMemeber(lplayer);
+									gilde.getSelection(type).getPermission().setGroup(lplayer, gilde.getSelection(type).getPermission().getGroup("owner"));
+									waiting.waitForMinwait(1500);
+									new GuiStatusPrint(5, ItemBuilder.create().material(Material.EMERALD).name("§aDie Gildsection wurde activiert.").build()) {
+										@Override
+										public void onContinue() {
+											SectionRegestry.getInstance().createGildeSection(gilde.getSelection(type)).setPlayer(player).openGui();
+										}
+									}.setPlayer(player).openGui();
+								}
+							});;
 						}
-						waiting.waitForMinwait(1500);
-						new GuiStatusPrint(5, ItemBuilder.create().material(Material.EMERALD).name("§aGild-Section activiert.").build()) {
-							@Override
-							public void onContinue() {
-								SectionRegestry.getInstance().createGildeSection(gilde.getSelection(type)).setPlayer(player).openGui();
-							}
-						}.setPlayer(player).openGui();
 					}).start();
 				});
 			}

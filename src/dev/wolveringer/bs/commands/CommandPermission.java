@@ -86,6 +86,20 @@ public class CommandPermission extends Command implements Listener {
 				}
 				return;
 			}
+			else if(args[0].equalsIgnoreCase("groupReload")){
+				Group g = PermissionManager.getManager().getGroup(args[1]);
+				if(g != null){
+					PermissionManager.getManager().getGroups().remove(g);
+					g = PermissionManager.getManager().addGroup(args[1]);
+					g.initPerms();
+					cs.sendMessage("§aGroup reloaded");
+				}
+				else
+				{
+					cs.sendMessage("§cGroup not found.");
+				}
+				return;
+			}
 			else if(args[0].equalsIgnoreCase("addgroup")){
 				Group g = PermissionManager.getManager().getGroup(args[1]);
 				if(g != null){
@@ -206,6 +220,7 @@ public class CommandPermission extends Command implements Listener {
 		cs.sendMessage("§7/perm addGroup <Name>");
 		cs.sendMessage("§7/perm importance <Group> <importance>");
 		cs.sendMessage("§7/perm groupInfo <Group>");
+		cs.sendMessage("§7/perm groupReload <Group>");
 		cs.sendMessage("§7/perm userInfo <Player/UUID>");
 		
 		cs.sendMessage("§7/perm group addPerm <group> <permission>");

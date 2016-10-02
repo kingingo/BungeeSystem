@@ -16,7 +16,6 @@ import dev.wolveringer.gilde.GildePermissions;
 import dev.wolveringer.gui.Gui;
 import dev.wolveringer.guild.gui.section.SectionRegestry;
 import dev.wolveringer.item.ItemBuilder;
-import dev.wolveringer.thread.ThreadFactory;
 
 public class GuiGildeMemberManager extends Gui{
 	private static final List<String> FINAL_GROUPS = Arrays.asList("owner");
@@ -45,6 +44,7 @@ public class GuiGildeMemberManager extends Gui{
 
 	@Override
 	public void build() {
+		fill(ItemBuilder.create(160).durbility(7).name("§7").build());
 		buildItems();
 		buildArrows();
 		buildGroupColumn();
@@ -52,12 +52,6 @@ public class GuiGildeMemberManager extends Gui{
 		
 		inv.setItem(46, groupArrowItem);
 		inv.setItem(0, ItemBuilder.create(Material.BARRIER).name("§cZurück").listener((Click c) -> switchToGui(SectionRegestry.getInstance().createGildeSection(permission.getHandle().getType(), permission.getHandle()))).build());
-		inv.setItem(8, ItemBuilder.create(Material.SKULL_ITEM).durbility(3).name("§aMember requests (Loading)").build());
-		ThreadFactory.getFactory().createThread(()->{
-			int request = 0; //TODO
-			inv.setItem(8, ItemBuilder.create(Material.SKULL_ITEM).durbility(3).name("§aMember requests ("+request+")").build());
-		});
-		fill(ItemBuilder.create(160).durbility(7).name("§7").build());
 	}
 
 	private void buildItems(){
@@ -83,6 +77,7 @@ public class GuiGildeMemberManager extends Gui{
 			Item[] playerItems = new Item[players.size()];
 			int memberLoopIndex = 0;
 			for(LoadedPlayer player : players){
+				System.out.println(player.getName()+" - "+s);
 				ItemBuilder memberItemBuilder = ItemBuilder.create(Material.SKULL_ITEM).name("§6"+player.getName());
 				if(FINAL_GROUPS.contains(group.getName()))
 					memberItemBuilder.glow();
@@ -123,7 +118,7 @@ public class GuiGildeMemberManager extends Gui{
 				buildMemberRow();
 			}
 			else if(c.getMode() == PacketPlayInWindowClick.Mode.NORMAL_RIGHT_CLICK){
-				if(groupIndex+GROUPS_PER_COLUMN+1 < groupItems.length)
+				if(groupIndex+GROUPS_PER_COLUMN+1 <= groupItems.length)
 					groupIndex++;
 				buildArrows();
 				buildGroupColumn();
@@ -132,7 +127,7 @@ public class GuiGildeMemberManager extends Gui{
 		}).build();
 		
 		groupIndex = 0;
-		memberIndex = new int[GROUPS_PER_COLUMN];
+		memberIndex = new int[groups.size()];
 		Arrays.fill(memberIndex, 0);
 	}
 	
@@ -149,13 +144,21 @@ public class GuiGildeMemberManager extends Gui{
 	private void buildMemberRow(){
 		Item[][] items = new Item[GROUPS_PER_COLUMN][];
 		Arrays.fill(items, new Item[0]);
-		System.arraycopy(memberItems, groupIndex, items, 0, Math.min(groupItems.length-groupIndex, groupIndex+GROUPS_PER_COLUMN));
+		System.arraycopy(memberItems, groupIndex, items, 0, Math.min(groupItems.length-groupIndex, GROUPS_PER_COLUMN));
 		
-		for(int i = 0;i<items.length;i++){
-			Item[] members = items[i];
+		for(int i = 0;i<GROUPS_PER_COLUMN;i++){
 			Item[] drawItems = new Item[MEMBER_PER_ROW];
-			if(memberItems.length > i && memberItems[i] != null && memberIndex.length > i)
-				System.arraycopy(members, memberIndex[i], drawItems, 0, Math.min(memberItems[i].length-memberIndex[i], MEMBER_PER_ROW));
+			if(memberItems.length > groupIndex+i && memberItems[groupIndex+i] != null){
+				/*
+				System.out.println("Member in "+(groupIndex+"+"+i)+" are "+memberItems[groupIndex+i].length+"["+ memberIndex[groupIndex+i]+"] length: "+Math.min(memberItems[groupIndex+i].length-memberIndex[groupIndex+i], MEMBER_PER_ROW));
+				
+				System.out.println("Arg1: "+Arrays.toString(memberItems[groupIndex+i]));
+				System.out.println("Arg2: "+memberIndex[groupIndex+i]);
+				System.out.println("Arg3: "+drawItems);
+				System.out.println("Arg5: "+Math.min(memberItems[groupIndex+i].length-memberIndex[groupIndex+i], MEMBER_PER_ROW));
+				*/
+				System.arraycopy(memberItems[groupIndex+i], memberIndex[groupIndex+i], drawItems, 0, Math.min(memberItems[groupIndex+i].length-memberIndex[groupIndex+i], MEMBER_PER_ROW));
+			}
 			for(int j = 0;j < drawItems.length; j++){
 				inv.setItem(i*9+11+j, drawItems[j]);
 			}
