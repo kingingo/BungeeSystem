@@ -8,7 +8,7 @@ import net.md_5.bungee.api.plugin.Command;
 
 public class CommandMoney extends Command{ //TODO improve
 	public CommandMoney() {
-		super("money");
+		super("gmoney");
 	}
 	
 	public void execute(CommandSender cs, String[] args) {
