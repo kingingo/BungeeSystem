@@ -4,8 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 import dev.wolveringer.BungeeUtil.Player;
@@ -46,39 +46,39 @@ public class PermissionManager implements Listener {
 	private HashMap<Integer, PermissionPlayer> user = new HashMap<>();
 
 	public PermissionManager() {
-		if(BungeeCord.getInstance() != null){ //Testing Bungee=Null
+		if (BungeeCord.getInstance() != null) { //Testing Bungee=Null
 			BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), this);
 			BungeeCord.getInstance().registerChannel("permission");
 		}
 	}
-	
-	public void loadGroups(){
-		ArrayList<String[]> qurry = MySQL.getInstance().querySync("SELECT DISTINCT `pgroup` FROM `game_perm` WHERE `pgroup`!='none' AND `playerId`='-2' ",-1);
+
+	public void loadGroups() {
+		ArrayList<String[]> qurry = MySQL.getInstance().querySync("SELECT DISTINCT `pgroup` FROM `game_perm` WHERE `pgroup`!='none' AND `playerId`='-2' ", -1);
 		long start = System.currentTimeMillis();
 		System.out.println("Loading permission groups...");
-		for(String[] var : qurry)
-			groups.add(new Group(this,var[0]));
-		for(Group g : groups)
+		for (String[] var : qurry)
+			groups.add(new Group(this, var[0]));
+		for (Group g : groups)
 			g.initPerms();
-		System.out.println("Done ("+(System.currentTimeMillis()-start)+")");
+		System.out.println("Done (" + (System.currentTimeMillis() - start) + ")");
 	}
 
 	public void loadPlayer(Integer player) {
 		if (!user.containsKey(player))
 			user.put(player, new PermissionPlayer(this, player));
 	}
-	
+
 	public void loadPlayer(UUID player) {
 		LoadedPlayer p = Main.getDatenServer().getClient().getPlayerAndLoad(player);
 		loadPlayer(p.getPlayerId());
 	}
 
 	public PermissionPlayer getPlayer(Integer player) {
-		if(user.get(player) == null)
+		if (user.get(player) == null)
 			loadPlayer(player);
 		return user.get(player);
 	}
-	
+
 	public PermissionPlayer getPlayer(UUID player) {
 		LoadedPlayer p = Main.getDatenServer().getClient().getPlayerAndLoad(player);
 		return getPlayer(p.getPlayerId());
@@ -87,32 +87,37 @@ public class PermissionManager implements Listener {
 	public boolean hasPermission(ProxiedPlayer player, String permission) {
 		return hasPermission(player.getName(), permission);
 	}
+
 	public boolean hasPermission(ProxiedPlayer player, PermissionType teamMessage) {
 		return hasPermission(player.getName(), teamMessage.getPermissionToString());
 	}
-	public boolean hasPermission(ProxiedPlayer player, PermissionType teamMessage,boolean message) {
+
+	public boolean hasPermission(ProxiedPlayer player, PermissionType teamMessage, boolean message) {
 		return hasPermission(player, teamMessage.getPermissionToString(), message);
 	}
+
 	public boolean hasPermission(CommandSender player, String permission) {
 		return hasPermission(player, permission, false);
 	}
-	public boolean hasPermission(CommandSender player, String permission,boolean message) {
-		if(player instanceof ProxiedPlayer)
-			return hasPermission((ProxiedPlayer)player, permission, message);
+
+	public boolean hasPermission(CommandSender player, String permission, boolean message) {
+		if (player instanceof ProxiedPlayer)
+			return hasPermission((ProxiedPlayer) player, permission, message);
 		return true;
 	}
-	public boolean hasPermission(CommandSender player, PermissionType teamMessage,boolean message) {
-		if(player instanceof ProxiedPlayer)
-			return hasPermission((ProxiedPlayer)player, teamMessage.getPermissionToString(), message);
+
+	public boolean hasPermission(CommandSender player, PermissionType teamMessage, boolean message) {
+		if (player instanceof ProxiedPlayer)
+			return hasPermission((ProxiedPlayer) player, teamMessage.getPermissionToString(), message);
 		return true;
 	}
-	
+
 	public boolean hasPermission(ProxiedPlayer player, String permission, boolean message) {
-		if (!LoginManager.getManager().isLoggedIn(player) || BannedServerManager.getInstance().isBanned((Player)player))
+		if (!LoginManager.getManager().isLoggedIn(player) || BannedServerManager.getInstance().isBanned((Player) player))
 			return false; //Not logged in Player cant have perms
 		boolean perm = hasPermission(player.getName(), permission);
-		if (message && !perm) 
-			player.sendMessage(Main.getTranslationManager().translate("prefix", player)+ "§cYou don't have permission to do that.");
+		if (message && !perm)
+			player.sendMessage(Main.getTranslationManager().translate("prefix", player) + "§cYou don't have permission to do that.");
 		return perm;
 	}
 
@@ -133,106 +138,106 @@ public class PermissionManager implements Listener {
 		LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(name);
 		return hasPermission(player.getPlayerId(), permission);
 	}
-	
+
 	public boolean hasPermission(Integer playerId, String permission) {
 		PermissionPlayer pplayer = user.get(playerId);
-		if(pplayer == null)
+		if (pplayer == null)
 			user.put(playerId, pplayer = new PermissionPlayer(this, playerId));
 		return pplayer.hasPermission(permission);
 	}
 
 	public Group getGroup(String name) {
-		for(Group g : groups)
-			if(g.getName().equalsIgnoreCase(name))
+		for (Group g : groups)
+			if (g.getName().equalsIgnoreCase(name))
 				return g;
 		return null;
 	}
-	
-	public Group addGroup(String name){
-		for(Group g : groups)
-			if(g.getName().equalsIgnoreCase(name))
+
+	public Group addGroup(String name) {
+		for (Group g : groups)
+			if (g.getName().equalsIgnoreCase(name))
 				return g;
 		Group g;
-		groups.add(g = new Group(this,name));
+		groups.add(g = new Group(this, name));
 		return g;
 	}
-	public void removeGroup(String name){
+
+	public void removeGroup(String name) {
 		Group gg = null;
-		for(Group g : groups)
-			if(g.getName().equalsIgnoreCase(name))
+		for (Group g : groups)
+			if (g.getName().equalsIgnoreCase(name))
 				gg = g;
-		if(gg == null)
+		if (gg == null)
 			return;
 		groups.remove(gg);
 		gg.delete();
 	}
-	
+
 	@EventHandler
-	public void a(ServerMessageEvent e){
-		if(e.getChannel().equalsIgnoreCase("permission")){
+	public void onServerMessage(ServerMessageEvent e) {
+		if (e.getChannel().equalsIgnoreCase("permission")) {
 			byte action = e.getBuffer().readByte();
-			if(action == 2){
+			if (action == 2) {
 				int playerID = e.getBuffer().readInt();
 				PermissionPlayer player = PermissionManager.getManager().getPlayer(playerID);
 				String neededGroup = e.getBuffer().readString();
 				boolean hase = neededGroup == null;
-				for(Group g : new ArrayList<>(player.getGroups()))
-				{
-					if(g.getName().equalsIgnoreCase(neededGroup))
+				for (Group g : new ArrayList<>(player.getGroups())) {
+					if (g.getName().equalsIgnoreCase(neededGroup))
 						hase = true;
 					player.removeGroup(g.getName());
 				}
 				String group = e.getBuffer().readString();
-				System.out.println("Changing group from "+player.getPlayerId()+" to "+group);
-				if(hase)
+				System.out.println("Changing group from " + player.getPlayerId() + " to " + group);
+				if (hase)
 					player.addGroup(group);
-			}
-			else if(action == 3){
+			} else if (action == 3) {
 				int playerID = e.getBuffer().readInt();
 				PermissionPlayer player = PermissionManager.getManager().getPlayer(playerID);
 				String permission = e.getBuffer().readString();
 				GroupTyp type = GroupTyp.values()[e.getBuffer().readInt()];
-				
-				System.out.println("Adding permission "+permission+":"+type+" to "+player.getPlayerId());
-				player.addPermission(permission,type);
+
+				System.out.println("Adding permission " + permission + ":" + type + " to " + player.getPlayerId());
+				player.addPermission(permission, type);
 			}
 		}
-		if(e.getChannel().equalsIgnoreCase("bpermission")){
+		if (e.getChannel().equalsIgnoreCase("bpermission")) {
 			byte action = e.getBuffer().readByte();
-			if(action == 0){ //Remove cached player
+			if (action == 0) { //Remove cached player
 				int users;
 				user.remove(users = e.getBuffer().readInt());
-				System.out.println("Cleaning user: "+users);
-			}
-			else if(action == 1){
+				System.out.println("Cleaning user: " + users);
+			} else if (action == 1) {
 				String group = e.getBuffer().readString();
-				for(Group g : groups)
-					if(g.getName().equalsIgnoreCase(group)){
-						System.out.println("Reload permission group: "+g.getName());
+				for (Group g : groups)
+					if (g.getName().equalsIgnoreCase(group)) {
+						System.out.println("Reload permission group: " + g.getName());
 						g.reload();
 						g.initPerms();
 					}
 			}
 		}
 	}
-	
-	protected void updatePlayer(int player){
+
+	protected void updatePlayer(int player) {
 		Main.getDatenServer().getClient().sendServerMessage(ClientType.ALL, "bpermission", new DataBuffer().writeByte(0).writeInt(player)).getAsync(new Callback<PacketOutPacketStatus.Error[]>() {
 			@Override
-			public void call(PacketOutPacketStatus.Error[] obj,Throwable e) {
-				if(e != null){
+			public void call(PacketOutPacketStatus.Error[] obj, Throwable e) {
+				if (e != null) {
 					e.printStackTrace();
 					return;
 				}
 				Main.getDatenServer().getClient().sendServerMessage(ClientType.ALL, "permission", new DataBuffer().writeByte(0).writeInt(player));
 			}
-		});;
+		});
+		;
 	}
-	protected void updateGroup(Group group){
+
+	protected void updateGroup(Group group) {
 		Main.getDatenServer().getClient().sendServerMessage(ClientType.ALL, "bpermission", new DataBuffer().writeByte(1).writeString(group.getName())).getAsync(new Callback<PacketOutPacketStatus.Error[]>() {
 			@Override
-			public void call(PacketOutPacketStatus.Error[] obj,Throwable e) {
-				if(e != null){
+			public void call(PacketOutPacketStatus.Error[] obj, Throwable e) {
+				if (e != null) {
 					e.printStackTrace();
 					return;
 				}
@@ -240,64 +245,60 @@ public class PermissionManager implements Listener {
 			}
 		});
 	}
-	
+
 	@EventHandler
-	public void a(PluginMessageEvent e){
-		if(e.getSender() instanceof ProxiedPlayer && !e.getTag().startsWith("MC") && !e.getTag().startsWith("WECUI") && !e.getTag().startsWith("bungeecord")){
+	public void onPluginMessage(PluginMessageEvent e) {
+		if (e.getSender() instanceof ProxiedPlayer && !e.getTag().startsWith("MC") && !e.getTag().startsWith("WECUI") && !e.getTag().startsWith("bungeecord")) {
 			e.setCancelled(true);
-			System.out.print("Player "+((ProxiedPlayer)e.getSender()).getName()+" try to send a plugin message on Channel: "+e.getTag());
+			System.out.print("Player " + ((ProxiedPlayer) e.getSender()).getName() + " try to send a plugin message on Channel: " + e.getTag());
 			return;
 		}
- 		if(e.getTag().equalsIgnoreCase("permission")){
-			try{
+		if (e.getTag().equalsIgnoreCase("permission")) {
+			try {
 				DataInputStream stream = new DataInputStream(new ByteArrayInputStream(e.getData()));
 				//Aufbau ([UUID (Packet UUID)] [INTEGER (Action)] [Data (variable length)])
 				DataBuffer buffer = new DataBuffer(stream);
 				UUID packetUUID = buffer.readUUID();
-				
+
 				ProxiedPlayer player = (ProxiedPlayer) e.getReceiver();
 				int action = buffer.readByte();
-				if(action == 0){ //INFO Get player permissions ([UUID (player)])
+				if (action == 0) { //INFO Get player permissions ([UUID (player)])
 					PermissionPlayer p = getPlayer(buffer.readInt());
-					if(p == null)
-						sendToBukkit(packetUUID,new DataBuffer().writeInt(-1).writeString("Player not found"), player.getServer().getInfo()); //Response (Player not found) [UUID (packet)] [INT -1] [STRING reson]
-					else{
+					if (p == null)
+						sendToBukkit(packetUUID, new DataBuffer().writeInt(-1).writeString("Player not found"), player.getServer().getInfo()); //Response (Player not found) [UUID (packet)] [INT -1] [STRING reson]
+					else {
 						DataBuffer out = new DataBuffer();
-						out.writeInt(p.getGroups().size());
-						ArrayList<Group> groups = new ArrayList<>(p.getGroups());
-						Collections.sort(groups, new Comparator<Group>() {
-							@Override
-							public int compare(Group a, Group b) {
-								return Integer.compare(b.getImportance(),a.getImportance());
-							}
-						});
-						for(Group group : groups){
+						List<Group> groupsBase = new ArrayList<>(p.getGroups());
+						List<Group> groups = new ArrayList<>(groupsBase);
+						for (Group group : groupsBase) {
+							groups.addAll(group.getGroupsDeep());
+						}
+						out.writeInt(groups.size());
+						Collections.sort(groups, (a, b) -> Integer.compare(b.getImportance(), a.getImportance()));
+						for (Group group : groups) {
 							out.writeString(group.getName());
 						}
 						out.writeInt(p.getPermissions().size());
-						for(Permission perm : p.getPermissions()){
+						for (Permission perm : p.getPermissions()) {
 							out.writeString(perm.getPermission());
 							out.writeByte(perm.getGroup().ordinal());
 						}
-						System.out.print("Requesting permission "+player.getName()+" Action "+action);
+						System.out.print("Requesting permission " + player.getName() + " Action " + action);
 						sendToBukkit(packetUUID, out, player.getServer().getInfo()); //Response (Permissions) [UUID (packet)] [INT Group-Length] [STRING[] groups] [INT perms-Length] [STRING[] perms]
 					}
-					
-				}
-				else if(action == 1){//INFO Get group permissions ([String (group)])
+				} else if (action == 1) {//INFO Get group permissions ([String (group)])
 					String group = buffer.readString();
 					Group g = getGroup(group);
-					if(g == null)
-						sendToBukkit(packetUUID,new DataBuffer().writeInt(-1).writeString("Group not found"), player.getServer().getInfo()); //Response (Group not found) [UUID (packet)] [INT -1] [STRING reson]
-					else
-					{
+					if (g == null)
+						sendToBukkit(packetUUID, new DataBuffer().writeInt(-1).writeString("Group not found"), player.getServer().getInfo()); //Response (Group not found) [UUID (packet)] [INT -1] [STRING reson]
+					else {
 						DataBuffer out = new DataBuffer();
 						ArrayList<Permission> permissions = g.getPermissionsDeep();
 						out.writeInt(permissions.size());
-						
-						for(Permission perm : permissions){
-							if(perm == null || perm.getGroup() == null || perm.getPermission() == null){
-								System.err.println("Permissiongroupo for: "+perm+" is null!");
+
+						for (Permission perm : permissions) {
+							if (perm == null || perm.getGroup() == null || perm.getPermission() == null) {
+								System.err.println("Permissiongroupo for: " + perm + " is null!");
 								out.writeString("anUndefinedPermissionThankAnNullPointerException").writeByte(GroupTyp.ALL.ordinal());
 								continue;
 							}
@@ -306,46 +307,42 @@ public class PermissionManager implements Listener {
 						}
 						out.writeString(g.getPrefix());
 						out.writeInt(g.getImportance());
-						System.out.print("Requesting group permissions for group "+group);
+						System.out.print("Requesting group permissions for group " + group);
 						sendToBukkit(packetUUID, out, player.getServer().getInfo()); //Response (Permissions) [UUID (packet)] [INT perms-Length] [STRING[] perms] [STRING name]
 					}
-				}
-				else if(action == 2){
+				} else if (action == 2) {
 					Integer target = buffer.readInt();
 					PermissionPlayer p = getPlayer(target);
-					if(p == null){
-						sendToBukkit(packetUUID,new DataBuffer().writeInt(-1).writeString("Player not found"), player.getServer().getInfo()); //Response (Player not found) [UUID (packet)] [INT -1] [STRING reson]
+					if (p == null) {
+						sendToBukkit(packetUUID, new DataBuffer().writeInt(-1).writeString("Player not found"), player.getServer().getInfo()); //Response (Player not found) [UUID (packet)] [INT -1] [STRING reson]
 						return;
-					}else
-					{
-						p.addPermission(buffer.readString(),GroupTyp.values()[buffer.readByte()]);
+					} else {
+						p.addPermission(buffer.readString(), GroupTyp.values()[buffer.readByte()]);
 					}
 					sendToBukkit(packetUUID, new DataBuffer().writeInt(1), player.getServer().getInfo());
-				}
-				else if(action == 3){//setgroup <long[2] UUID> <string Group> <byte Grouptype>
+				} else if (action == 3) {//setgroup <long[2] UUID> <string Group> <byte Grouptype>
 					Integer target = buffer.readInt();
 					PermissionPlayer p = getPlayer(target);
-					if(true){
-						sendToBukkit(packetUUID,new DataBuffer().writeInt(-1).writeString("Error 001"), player.getServer().getInfo()); //Response (Player not found) [UUID (packet)] [INT -1] [STRING reson]
+					if (true) {
+						sendToBukkit(packetUUID, new DataBuffer().writeInt(-1).writeString("Error 001"), player.getServer().getInfo()); //Response (Player not found) [UUID (packet)] [INT -1] [STRING reson]
 						return;
 					}
-					if(p == null)
-						sendToBukkit(packetUUID,new DataBuffer().writeInt(-1).writeString("Player not found"), player.getServer().getInfo()); //Response (Player not found) [UUID (packet)] [INT -1] [STRING reson]
-					else
-					{
-						for(Group g : p.getGroups())
+					if (p == null)
+						sendToBukkit(packetUUID, new DataBuffer().writeInt(-1).writeString("Player not found"), player.getServer().getInfo()); //Response (Player not found) [UUID (packet)] [INT -1] [STRING reson]
+					else {
+						for (Group g : p.getGroups())
 							p.removeGroup(g.getName());
 						p.addGroup(buffer.readString());
 					}
 					sendToBukkit(packetUUID, new DataBuffer().writeInt(1), player.getServer().getInfo());
 				}
-			}catch(Exception ex){
+			} catch (Exception ex) {
 				System.out.print(e.getSender().getAddress());
 				ex.printStackTrace();
 			}
 		}
 	}
-	
+
 	public void sendToBukkit(UUID uuid, DataBuffer data, ServerInfo server) {
 		DataBuffer buffer = new DataBuffer();
 		buffer.writeUUID(uuid);
@@ -354,50 +351,16 @@ public class PermissionManager implements Listener {
 		System.arraycopy(data.array(), 0, cbuffer, 0, data.writerIndex());
 		buffer.writeBytes(cbuffer);
 		data.release();
-		
+
 		byte[] bbuffer = new byte[buffer.writerIndex()];
 		System.arraycopy(buffer.array(), 0, bbuffer, 0, buffer.writerIndex());
-		boolean success = server.sendData("permission", bbuffer,false); //Dont Queue
-		if(!success)
+		boolean success = server.sendData("permission", bbuffer, false); //Dont Queue
+		if (!success)
 			System.out.println("Cant send a plugin message...");
 		buffer.release();
 	}
-	
-	public static void main(String[] args) {
-		MySQL.setInstance(new MySQL("148.251.143.2", "3306", "games", "root", "55P_YHmK8MXlPiqEpGKuH_5WVlhsXT"));
-		PermissionManager manager = new PermissionManager();
-		manager.loadGroups();
 
-		System.out.println(manager.groups);
-		if(true)
-			return;
-		//manager.addGroup("tdev");
-		//manager.getGroup("tdev").setPrefix("��9Test-Dev ��7| ��9");
-		UUID name = UUID.fromString("94c432ae-2b50-4820-8da0-9e3e8832743b");
-		//name = UUID.nameUUIDFromBytes( ( "OfflinePlayer:" + "wolverindev" ).getBytes( Charsets.UTF_8 ) );
-		manager.loadPlayer(name);
-		PermissionPlayer player = manager.getPlayer(name);
-		//player.addGroup("tdev");
-		
-		System.out.println("Own permissions:");
-		for(Permission p : player.getPermissions())
-			System.out.println("  "+p.getPermission()+"-"+p.getGroup());
-		System.out.println("Group permissions:");
-		for(Group g : player.getGroups()){
-			if(g == null)
-				continue;
-			System.out.println("  Group: "+g.getName()+"["+g.getPrefix()+"]");
-			for(Group f1 : g.getInstances())
-				System.out.println("    "+f1.getName());
-		}
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	private static void printGroup(Group g,String premif){
-		
+	private static void printGroup(Group g, String premif) {
+
 	}
 }

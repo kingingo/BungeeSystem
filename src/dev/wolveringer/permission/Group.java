@@ -1,12 +1,16 @@
 package dev.wolveringer.permission;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import dev.wolveringer.bukkit.permissions.GroupTyp;
 import dev.wolveringer.mysql.MySQL;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 @SuppressWarnings("unchecked")
+@EqualsAndHashCode(of = "name")
 public class Group {
 
 	@Getter
@@ -19,7 +23,7 @@ public class Group {
 	private ArrayList<Permission> finalPermissions = null;
 	private ArrayList<Group> instances = new ArrayList<>();
 	private int importance = 0;
-	
+
 	private PermissionManager handle;
 
 	public Group(PermissionManager handle, String name) {
@@ -43,14 +47,13 @@ public class Group {
 				negativePerms.add(p);
 			else
 				permissions.add(new Permission(permission, type));
-			MySQL.getInstance().command("INSERT INTO `game_perm`(`playerId`,`prefix`, `permission`, `pgroup`, `grouptyp`) VALUES ('-2','none','" + permission + "','" + name + "','" + type.getName() + "')",new MySQL.Callback<Boolean>(){
+			MySQL.getInstance().command("INSERT INTO `game_perm`(`playerId`,`prefix`, `permission`, `pgroup`, `grouptyp`) VALUES ('-2','none','" + permission + "','" + name + "','" + type.getName() + "')", new MySQL.Callback<Boolean>() {
 				@Override
 				public void done(Boolean obj, Throwable ex) {
 					handle.updateGroup(Group.this);
 				}
 			});
-		}
-		else
+		} else
 			return false;
 		finalPermissions = null;
 		return true;
@@ -66,7 +69,7 @@ public class Group {
 			if ((type == GroupTyp.ALL || p.getGroup() == type) && p.getPermission().equalsIgnoreCase(permission)) {
 				permissions.remove(p);
 				negativePerms.remove(p);
-				MySQL.getInstance().command("DELETE FROM `game_perm` WHERE `pgroup`='" + name + "' AND `permission`='" + p.getPermission() + "' AND `grouptype`='" + p.getGroup().getName() + "'",new MySQL.Callback<Boolean>(){
+				MySQL.getInstance().command("DELETE FROM `game_perm` WHERE `pgroup`='" + name + "' AND `permission`='" + p.getPermission() + "' AND `grouptype`='" + p.getGroup().getName() + "'", new MySQL.Callback<Boolean>() {
 					@Override
 					public void done(Boolean obj, Throwable ex) {
 						handle.updateGroup(Group.this);
@@ -75,19 +78,19 @@ public class Group {
 				count++;
 			}
 		finalPermissions = null;
-		return count!=0;
+		return count != 0;
 	}
 
 	public void setPrefix(String prefix) {
 		if (this.prefix.equalsIgnoreCase("undefined")) {
-			MySQL.getInstance().command("INSERT INTO `game_perm`(`playerId`,`prefix`, `permission`, `pgroup`, `grouptyp`) VALUES ('-2','" + prefix + "','none','" + name + "','ALL')", new MySQL.Callback<Boolean>(){
+			MySQL.getInstance().command("INSERT INTO `game_perm`(`playerId`,`prefix`, `permission`, `pgroup`, `grouptyp`) VALUES ('-2','" + prefix + "','none','" + name + "','ALL')", new MySQL.Callback<Boolean>() {
 				@Override
 				public void done(Boolean obj, Throwable ex) {
 					handle.updateGroup(Group.this);
 				}
 			});
 		} else {
-			MySQL.getInstance().command("UPDATE `game_perm` SET `prefix`='" + prefix + "' WHERE `pgroup`='" + name + "' AND `permission`='none' AND `playerId`='-2'", new MySQL.Callback<Boolean>(){
+			MySQL.getInstance().command("UPDATE `game_perm` SET `prefix`='" + prefix + "' WHERE `pgroup`='" + name + "' AND `permission`='none' AND `playerId`='-2'", new MySQL.Callback<Boolean>() {
 				@Override
 				public void done(Boolean obj, Throwable ex) {
 					handle.updateGroup(Group.this);
@@ -103,10 +106,9 @@ public class Group {
 
 	public boolean hasPermission(String permission, GroupTyp type) {
 		for (Permission p : getPermissionsDeep())
-			if(p == null){
+			if (p == null) {
 				continue;
-			}
-			else if ((type == GroupTyp.ALL || p.getGroup() == type) && p.acceptPermission(permission))
+			} else if ((type == GroupTyp.ALL || p.getGroup() == type) && p.acceptPermission(permission))
 				return true;
 		return false;
 	}
@@ -117,16 +119,17 @@ public class Group {
 
 	public ArrayList<Permission> getPermissions() {
 		if (finalPermissions == null) {
-			try{
+			try {
 				finalPermissions = new ArrayList<>();
-				ploop: for (Permission p : permissions) {
+				ploop:
+				for (Permission p : permissions) {
 					for (Permission np : negativePerms) {
 						if (np.acceptPermission(p.getPermission()))
 							continue ploop;
 					}
 					finalPermissions.add(p);
 				}
-			}catch(Exception e){
+			} catch (Exception e) {
 				e.printStackTrace();
 				finalPermissions = null;
 			}
@@ -156,24 +159,43 @@ public class Group {
 		return perms;
 	}
 
+	public Set<Group> getGroupsDeep() {
+		return getGroupsDeep(new HashSet<>());
+	}
+
+	private Set<Group> getGroupsDeep(Set<Group> groups) {
+		if (groups.contains(this)) { //no endless loops
+			return groups;
+		}
+		for (Group group : instances) {
+			if (groups.contains(group)) { //no endless loops
+				continue;
+			}
+			group.getGroupsDeep(groups);
+		}
+		groups.addAll(instances);
+		return groups;
+	}
+
 	public void delete() {
 		MySQL.getInstance().command("DELETE FROM `game_perm` WHERE `pgroup`='" + name + "'");
 	}
-	
+
 	public int getImportance() {
 		return importance;
 	}
+
 	public void setImportance(int importance) {
 		this.importance = importance;
-		if(MySQL.getInstance().querySync("SELECT prefix FROM game_perm WHERE playerId='-1' AND pgroup='"+name+"' AND prefix='importance'", 1).size() == 0)
-			MySQL.getInstance().command("INSERT INTO `game_perm`(`playerId`,`prefix`, `permission`, `pgroup`, `grouptyp`) VALUES ('-2','importance','importance."+importance+"','" + name + "','ALL')",new MySQL.Callback<Boolean>(){
+		if (MySQL.getInstance().querySync("SELECT prefix FROM game_perm WHERE playerId='-1' AND pgroup='" + name + "' AND prefix='importance'", 1).size() == 0)
+			MySQL.getInstance().command("INSERT INTO `game_perm`(`playerId`,`prefix`, `permission`, `pgroup`, `grouptyp`) VALUES ('-2','importance','importance." + importance + "','" + name + "','ALL')", new MySQL.Callback<Boolean>() {
 				@Override
 				public void done(Boolean obj, Throwable ex) {
 					handle.updateGroup(Group.this);
 				}
 			});
 		else
-			MySQL.getInstance().command("UPDATE `game_perm` SET `permission`='importance." + importance + "' WHERE `pgroup`='" + name + "' AND `prefix`='importance' AND `playerId`='-2'",new MySQL.Callback<Boolean>(){
+			MySQL.getInstance().command("UPDATE `game_perm` SET `permission`='importance." + importance + "' WHERE `pgroup`='" + name + "' AND `prefix`='importance' AND `playerId`='-2'", new MySQL.Callback<Boolean>() {
 				@Override
 				public void done(Boolean obj, Throwable ex) {
 					handle.updateGroup(Group.this);
@@ -191,17 +213,17 @@ public class Group {
 					System.err.println("Cant find group instance (" + var[1] + "|" + group + ")");
 					continue;
 				}
-				if(!instances.contains(g))
+				if (!instances.contains(g))
 					instances.add(g);
-			}else if(var[1].startsWith("importance.")){
-				try{
-					importance = Integer.parseInt(var[1].replaceFirst("importance.", ""));	
-				}catch(Exception e){
+			} else if (var[1].startsWith("importance.")) {
+				try {
+					importance = Integer.parseInt(var[1].replaceFirst("importance.", ""));
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
-			}else if (var[1].equalsIgnoreCase("none")){
-					prefix = var[0];
-			} else{
+			} else if (var[1].equalsIgnoreCase("none")) {
+				prefix = var[0];
+			} else {
 				Permission p = new Permission(var[1], GroupTyp.get(var[2]));
 				if (p.isNegative())
 					negativePerms.add(p);

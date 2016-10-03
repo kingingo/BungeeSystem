@@ -1,14 +1,9 @@
 package dev.wolveringer.nick;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,26 +19,22 @@ import dev.wolveringer.BungeeUtil.packets.PacketPlayOutScoreboardScore;
 import dev.wolveringer.BungeeUtil.packets.PacketPlayOutScoreboardTeam;
 import dev.wolveringer.BungeeUtil.packets.PacketPlayOutTitle;
 import dev.wolveringer.arrays.CachedArrayList;
-import dev.wolveringer.arrays.CachedArrayList.UnloadListener;
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.bs.client.event.ServerMessageEvent;
 import dev.wolveringer.chat.ChatManager;
 import dev.wolveringer.chat.ChatSerializer;
 import dev.wolveringer.chat.IChatBaseComponent;
 import dev.wolveringer.client.LoadedPlayer;
-import dev.wolveringer.hashmaps.CachedHashMap;
-import dev.wolveringer.hashmaps.InitHashMap;
 import dev.wolveringer.permission.PermissionManager;
 import dev.wolveringer.thread.ThreadFactory;
-import dev.wolveringer.thread.ThreadRunner;
 import lombok.Getter;
 import lombok.Setter;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.HoverEvent.Action;
-import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.event.EventHandler;
 
@@ -135,7 +126,7 @@ public class NickHandler implements PacketHandler<Packet>, Listener {
 			sendPacket(e.getPlayer(), e.getPacket());
 		}
 	}
-	
+
 	private static class SchoreboardScoreThread extends ProgressThread {
 		@Override
 		void progressElement(PacketHandleEvent e) {
@@ -157,7 +148,7 @@ public class NickHandler implements PacketHandler<Packet>, Listener {
 	private CachedHashMap<Player, ProgressThread> chatThreads = new CachedHashMap<>(30, TimeUnit.SECONDS);
 	private CachedHashMap<Player, ProgressThread> scoreboardTeamThread = new CachedHashMap<>(30, TimeUnit.SECONDS);
 	private CachedHashMap<Player, ProgressThread> scoreboardScoreThread = new CachedHashMap<>(30, TimeUnit.SECONDS);
-	
+
 	public NickHandler() {
 		chatThreads.addUnloadListener(new UnloadListener<Map.Entry<Player, ProgressThread>>() {
 			@Override
@@ -326,10 +317,10 @@ public class NickHandler implements PacketHandler<Packet>, Listener {
 			}
 		}
 	}
-	
+
 	*/
 	private static final Pattern PATTERN = Pattern.compile("\\{player_(?=(([a-zA-Z0-9_]){3,30})\\})");
-	
+
 	@Getter
 	@Setter
 	private static NickHandler instance;
@@ -342,80 +333,72 @@ public class NickHandler implements PacketHandler<Packet>, Listener {
 		boolean contains = false;
 		synchronized (whitelist) {
 			contains = whitelist.contains(System.identityHashCode(e.getPacket()));
-			if(contains)
+			if (contains)
 				whitelist.remove(System.identityHashCode(e.getPacket()));
 		}
 		whitelistLock.unlock();
-		if(contains)
+		if (contains)
 			return;
 		if (e.getPacket() instanceof PacketPlayOutChat) {
 			PacketPlayOutChat chat = (PacketPlayOutChat) e.getPacket();
 			boolean replace = true;
-			if(!PATTERN.matcher(ChatSerializer.toJSONString(chat.getMessage())).find()){ //Check if message have a player variable (messages will send too while datenserver is disconnected and then i cant check the permission)
+			if (!PATTERN.matcher(ChatSerializer.toJSONString(chat.getMessage())).find()) { //Check if message have a player variable (messages will send too while datenserver is disconnected and then i cant check the permission)
 				replace = false;
-			}
-			else if(!Main.getDatenServer().isActive()){
+			} else if (!Main.getDatenServer().isActive()) {
 				chat.setMessage(ChatSerializer.fromMessage("§cNo message."));
 				replace = false;
 			}
-			if(replace)
+			if (replace)
 				chat.setMessage(replaceNames(chat.getMessage(), PermissionManager.getManager().hasPermission(e.getPlayer(), "chat.nick.see")));
 			e.setCancelled(ChatManager.getInstance().handle0(e));
-		}
-		else if(e.getPacket() instanceof PacketPlayInChat){
+		} else if (e.getPacket() instanceof PacketPlayInChat) {
 			PacketPlayInChat chat = (PacketPlayInChat) e.getPacket();
-			if(PATTERN.matcher(chat.getMessage()).find())
+			if (PATTERN.matcher(chat.getMessage()).find())
 				e.setCancelled(!PermissionManager.getManager().hasPermission(e.getPlayer(), "chat.syntax.nick", true));
-		}
-		else if(e.getPacket() instanceof PacketPlayOutPlayerInfo){
+		} else if (e.getPacket() instanceof PacketPlayOutPlayerInfo) {
 			//if(((PacketPlayOutPlayerInfo)e.getPacket()).getAction() == EnumPlayerInfoAction.ADD_PLAYER || ((PacketPlayOutPlayerInfo)e.getPacket()).getAction() == EnumPlayerInfoAction.UPDATE_DISPLAY_NAME)
-			for(PlayerInfoData i : ((PacketPlayOutPlayerInfo)e.getPacket()).getData()){
-				if(i.getName() != null)
+			for (PlayerInfoData i : ((PacketPlayOutPlayerInfo) e.getPacket()).getData()) {
+				if (i.getName() != null)
 					i.setName(replaceNames(i.getName(), PermissionManager.getManager().hasPermission(e.getPlayer(), "tab.nick.see")));
-				if(i.getGameprofile() != null && i.getGameprofile().getName() != null){
+				if (i.getGameprofile() != null && i.getGameprofile().getName() != null) {
 					i.getGameprofile().setName(replaceNames(i.getGameprofile().getName(), PermissionManager.getManager().hasPermission(e.getPlayer(), "nametag.nick.see"), 16));
 				}
 			}
-		}
-		else if(e.getPacket() instanceof PacketPlayOutScoreboardTeam){
+		} else if (e.getPacket() instanceof PacketPlayOutScoreboardTeam) {
 			PacketPlayOutScoreboardTeam team = (PacketPlayOutScoreboardTeam) e.getPacket();
-			if(team.getPlayers() != null){
+			if (team.getPlayers() != null) {
 				boolean sync = true;
-				for(String player : team.getPlayers()){
-					if(!Main.getDatenServer().getClient().getPlayer(player).isLoaded())
+				for (String player : team.getPlayers()) {
+					if (!Main.getDatenServer().getClient().getPlayer(player).isLoaded())
 						sync = false;
 				}
-				if(sync){
-					for(int i = 0;i<team.getPlayers().length;i++){
+				if (sync) {
+					for (int i = 0; i < team.getPlayers().length; i++) {
 						team.getPlayers()[i] = replaceNames(team.getPlayers()[i], PermissionManager.getManager().hasPermission(e.getPlayer(), "nametag.nick.see"), 40);
 					}
-				}
-				else
-				{
+				} else {
 					e.setCancelled(true);
-					ThreadFactory.getFactory().createThread(()->{
-						for(int i = 0;i<team.getPlayers().length;i++){
+					ThreadFactory.getFactory().createThread(() -> {
+						for (int i = 0; i < team.getPlayers().length; i++) {
 							team.getPlayers()[i] = replaceNames(team.getPlayers()[i], PermissionManager.getManager().hasPermission(e.getPlayer(), "nametag.nick.see"), 40);
 						}
 						sendPacket(e.getPlayer(), team);
 					}).start();
 				}
 			}
-		}
-		else if(e.getPacket() instanceof PacketPlayOutScoreboardScore){
+		} else if (e.getPacket() instanceof PacketPlayOutScoreboardScore) {
 			PacketPlayOutScoreboardScore score = (PacketPlayOutScoreboardScore) e.getPacket();
-			if(score.getScoreName() != null){
+			if (score.getScoreName() != null) {
 				score.setObjektiveName(replaceNames(score.getObjektiveName(), PermissionManager.getManager().hasPermission(e.getPlayer(), "scoreboard.nick.see"), 40));
 			}
-		}
-		else if(e.getPacket() instanceof PacketPlayOutTitle){
+		} else if (e.getPacket() instanceof PacketPlayOutTitle) {
 			PacketPlayOutTitle title = (PacketPlayOutTitle) e.getPacket();
-			if(title.getAction() == dev.wolveringer.BungeeUtil.packets.PacketPlayOutTitle.Action.SET_SUBTITLE || title.getAction() == dev.wolveringer.BungeeUtil.packets.PacketPlayOutTitle.Action.SET_TITLE){
+			if (title.getAction() == dev.wolveringer.BungeeUtil.packets.PacketPlayOutTitle.Action.SET_SUBTITLE || title.getAction() == dev.wolveringer.BungeeUtil.packets.PacketPlayOutTitle.Action.SET_TITLE) {
 				title.setTitle(replaceNames(title.getTitle(), PermissionManager.getManager().hasPermission(e.getPlayer(), "title.nick.see")));
 			}
 		}
 	}
-	
+
 	public void sendPacket(Player player, Packet packet) {
 		whitelistLock.lock();
 		whitelist.add(System.identityHashCode(packet));
@@ -423,23 +406,22 @@ public class NickHandler implements PacketHandler<Packet>, Listener {
 		player.getInitialHandler().sendPacket(packet);
 	}
 
-	
-	private static String replaceNames(String str,boolean info){
+	private static String replaceNames(String str, boolean info) {
 		return replaceNames(str, info, -1);
 	}
-	
-	private static String replaceNames(String str,boolean info, int maxlength){
+
+	private static String replaceNames(String str, boolean info, int maxlength) {
 		Matcher m = PATTERN.matcher(str);
 		while (m.find()) {
 			LoadedPlayer player = Main.getDatenServer().getClient().getPlayer(m.group(1));
-			if(player.isLoaded())
-				str = str.replace("{player_"+m.group(1)+"}", player.hasNickname() ? info ? player.getName() : player.getNickname() : player.getName());
-			else{
+			if (player.isLoaded())
+				str = str.replace("{player_" + m.group(1) + "}", player.hasNickname() ? info ? player.getName() : player.getNickname() : player.getName());
+			else {
 //				System.err.println("Cant replace nickname (Player not loaded in replaceNames(String,boolean,int), Player: "+m.group(1)+")");
-				str = str.replace("{player_"+m.group(1)+"}", m.group(1));
+				str = str.replace("{player_" + m.group(1) + "}", m.group(1));
 			}
 		}
-		if(maxlength != -1 && str.length()> maxlength)
+		if (maxlength != -1 && str.length() > maxlength)
 			str = str.substring(0, maxlength);
 		return str;
 	}
@@ -447,50 +429,50 @@ public class NickHandler implements PacketHandler<Packet>, Listener {
 	private static IChatBaseComponent replaceNames(IChatBaseComponent textComponent, boolean info) {
 		List<BaseComponent> out = new ArrayList<>();
 		BaseComponent[] comps = ComponentSerializer.parse(ChatSerializer.toJSONString(textComponent));
-		for(BaseComponent c : comps)
-			for(BaseComponent c1 : replaceNames(c, info))
+		for (BaseComponent c : comps)
+			for (BaseComponent c1 : replaceNames(c, info))
 				out.add(c1);
 		return ChatSerializer.fromJSON(ComponentSerializer.toString(out.toArray(new BaseComponent[0])));
 	}
-	
-	private static List<BaseComponent> replaceNames(BaseComponent bcomp, boolean info){
+
+	private static List<BaseComponent> replaceNames(BaseComponent bcomp, boolean info) {
 		ArrayList<BaseComponent> out = new ArrayList<>();
-		if(bcomp instanceof TextComponent){
+		if (bcomp instanceof TextComponent) {
 			TextComponent comp = (TextComponent) bcomp;
-			
+
 			String text = comp.getText();
 			Matcher m = PATTERN.matcher(text);
 			while (m.find()) {
 				TextComponent add = new TextComponent(comp);//Copy Style
 				add.setText(text.substring(0, m.start()));
 				out.add(add);
-				
+
 				LoadedPlayer player = Main.getDatenServer().getClient().getPlayer(m.group(1));
-				
+
 				TextComponent nickname = new TextComponent(comp); //Copy Style
-				if(player.isLoaded())
+				if (player.isLoaded())
 					nickname.setText(!player.hasNickname() ? m.group(1) : info ? player.getName() : player.getNickname());
-				else{
+				else {
 					nickname.setText(m.group(1));
 //					System.err.println("Cant replace nickname (Player not loaded in replaceNames(BaseComponent,boolean), Player: "+m.group(1)+")");
 				}
-				if(player.isLoaded() && player.hasNickname() && info){
+				if (player.isLoaded() && player.hasNickname() && info) {
 					nickname.setItalic(true);
-					nickname.setHoverEvent(new HoverEvent(Action.SHOW_TEXT, new ComponentBuilder("§aDer Spieler §e"+player.getName()+" §aist genickt als §b"+player.getNickname()).create()));
+					nickname.setHoverEvent(new HoverEvent(Action.SHOW_TEXT, new ComponentBuilder("§aDer Spieler §e" + player.getName() + " §aist genickt als §b" + player.getNickname()).create()));
 				}
 				out.add(nickname);
-				
-				comp.setText(text.substring(m.start()+("{player_"+m.group(1)+"}").length()));
+
+				comp.setText(text.substring(m.start() + ("{player_" + m.group(1) + "}").length()));
 			}
-			if(comp.getText().length() > 0)
+			if (comp.getText().length() > 0)
 				out.add(comp);
 		}
-		if(bcomp.getExtra() != null)
-			for(BaseComponent s : bcomp.getExtra())
+		if (bcomp.getExtra() != null)
+			for (BaseComponent s : bcomp.getExtra())
 				out.addAll(replaceNames(s, info));
 		return out;
 	}
-	
+
 	@EventHandler
 	public void a(ServerMessageEvent e) {
 		if (e.getChannel().equalsIgnoreCase("bnick")) {

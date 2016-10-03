@@ -88,16 +88,15 @@
 	                	<include>dev.wolveringer.datenserver:packets</include>
 	                	<include>dev.wolveringer:DatenClient</include>
 	                	<include>dev.wolveringer:CostumServer</include>
-	                	<include>dev.wolveringer:BungeeCordSystem</include>
+	                	<!--<include>dev.wolveringer:BungeeCordSystem</include>-->
 	                	<include>org.apache.commons:commons-io</include>
 	                	<include>org.apache.commons:commons-lang3</include>
 	                	<include>dev.wolveringer:ThreadManager</include>
 	                	<groupId>org.apache.commons</groupId>
-	                	<groupId></groupId>
 	                </includes>
 	              </artifactSet>
 					<finalName>${project.artifactId}-all</finalName>
-					<minimizeJar>true</minimizeJar>
+					<minimizeJar>false</minimizeJar>
 					<filters>
 						<filter>
 							<artifact>**:**</artifact>
@@ -174,7 +173,7 @@
 		<dependency>
 			<groupId>dev.wolveringer</groupId>
 			<artifactId>BungeeUtil</artifactId>
-			<version>1.6.7.14.2</version>
+			<version>1.6.7.15</version>
 		</dependency>
 		<dependency>
 			<groupId>dev.wolveringer</groupId>
