@@ -1,6 +1,6 @@
 package eu.epicpvp.bungee.system.guild.gui.section;
 
-import dev.wolveringer.gilde.GildSection;
+import eu.epicpvp.datenclient.gilde.GildSection;
 
 public class GuiGildeSectionPvP extends GuiGildeSection{
 

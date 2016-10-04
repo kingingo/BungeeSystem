@@ -8,7 +8,7 @@ import dev.wolveringer.BungeeUtil.Material;
 import dev.wolveringer.BungeeUtil.Player;
 import dev.wolveringer.BungeeUtil.item.Item;
 import eu.epicpvp.bungee.system.bs.Main;
-import dev.wolveringer.client.Callback;
+import eu.epicpvp.datenclient.client.Callback;
 import dev.wolveringer.gilde.GildeType;
 import eu.epicpvp.bungee.system.gui.SearchMenue;
 import eu.epicpvp.bungee.system.item.ItemBuilder;

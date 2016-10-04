@@ -7,7 +7,7 @@ import java.util.UUID;
 
 import eu.epicpvp.bungee.system.bs.Main;
 import eu.epicpvp.bungee.system.bs.listener.PlayerJoinListener;
-import dev.wolveringer.client.LoadedPlayer;
+import eu.epicpvp.datenclient.client.LoadedPlayer;
 import dev.wolveringer.dataserver.ban.BanEntity;
 import dev.wolveringer.dataserver.player.LanguageType;
 import eu.epicpvp.bungee.system.permission.PermissionManager;

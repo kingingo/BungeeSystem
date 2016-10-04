@@ -8,7 +8,7 @@ import dev.wolveringer.BungeeUtil.Material;
 import dev.wolveringer.BungeeUtil.item.Item;
 import eu.epicpvp.bungee.system.bs.Main;
 import eu.epicpvp.bungee.system.bs.listener.PlayerJoinListener;
-import dev.wolveringer.client.LoadedPlayer;
+import eu.epicpvp.datenclient.client.LoadedPlayer;
 import dev.wolveringer.dataserver.protocoll.packets.PacketTeamspeakAction;
 import dev.wolveringer.events.teamspeak.TeamspeakLinkRequestEvent;
 import eu.epicpvp.bungee.system.gui.GuiUpdating;

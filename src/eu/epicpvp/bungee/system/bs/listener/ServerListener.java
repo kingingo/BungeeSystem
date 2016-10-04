@@ -13,7 +13,7 @@ import eu.epicpvp.bungee.system.bs.message.MessageManager;
 import eu.epicpvp.bungee.system.bs.servermanager.ServerManager;
 import dev.wolveringer.bukkit.permissions.PermissionType;
 import eu.epicpvp.bungee.system.chat.ChatManager;
-import dev.wolveringer.client.LoadedPlayer;
+import eu.epicpvp.datenclient.client.LoadedPlayer;
 import dev.wolveringer.dataserver.ban.BanEntity;
 import eu.epicpvp.bungee.system.permission.PermissionManager;
 import eu.epicpvp.bungee.system.report.info.ActionBarInformation;

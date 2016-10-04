@@ -2,7 +2,7 @@ package eu.epicpvp.bungee.system.bs.commands;
 
 import dev.wolveringer.BungeeUtil.Player;
 import eu.epicpvp.bungee.system.bs.Main;
-import dev.wolveringer.client.LoadedPlayer;
+import eu.epicpvp.datenclient.client.LoadedPlayer;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.plugin.Command;
 

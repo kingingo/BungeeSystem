@@ -1,7 +1,7 @@
 package eu.epicpvp.bungee.system.bs.login;
 
 import eu.epicpvp.bungee.system.bs.Main;
-import dev.wolveringer.client.LoadedPlayer;
+import eu.epicpvp.datenclient.client.LoadedPlayer;
 import dev.wolveringer.dataserver.protocoll.packets.PacketReportRequest.RequestType;
 import dev.wolveringer.report.ReportState;
 import dev.wolveringer.thread.ThreadFactory;

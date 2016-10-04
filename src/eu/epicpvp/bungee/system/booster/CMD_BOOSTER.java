@@ -4,7 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import dev.wolveringer.BungeeUtil.Player;
 import eu.epicpvp.bungee.system.bs.Main;
-import dev.wolveringer.client.LoadedPlayer;
+import eu.epicpvp.datenclient.client.LoadedPlayer;
 import dev.wolveringer.dataserver.gamestats.GameType;
 import dev.wolveringer.dataserver.gamestats.StatsKey;
 import dev.wolveringer.dataserver.protocoll.packets.PacketInStatsEdit;

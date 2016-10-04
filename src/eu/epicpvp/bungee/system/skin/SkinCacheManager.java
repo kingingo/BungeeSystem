@@ -2,7 +2,7 @@ package eu.epicpvp.bungee.system.skin;
 
 import java.util.concurrent.TimeUnit;
 
-import dev.wolveringer.client.LoadedPlayer;
+import eu.epicpvp.datenclient.client.LoadedPlayer;
 import dev.wolveringer.hashmaps.CachedHashMap;
 import dev.wolveringer.skin.Skin;
 import dev.wolveringer.skin.SteveSkin;

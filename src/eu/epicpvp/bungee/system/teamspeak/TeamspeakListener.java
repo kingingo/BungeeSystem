@@ -3,7 +3,7 @@ package eu.epicpvp.bungee.system.teamspeak;
 import dev.wolveringer.BungeeUtil.Player;
 import eu.epicpvp.bungee.system.bs.Main;
 import dev.wolveringer.dataserver.protocoll.packets.PacketTeamspeakRequestAction;
-import dev.wolveringer.event.EventListener;
+import eu.epicpvp.datenclient.event.EventListener;
 import dev.wolveringer.events.Event;
 import dev.wolveringer.events.teamspeak.TeamspeakLinkRequestEvent;
 import net.md_5.bungee.BungeeCord;

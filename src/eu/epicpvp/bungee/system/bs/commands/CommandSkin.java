@@ -3,7 +3,7 @@ package eu.epicpvp.bungee.system.bs.commands;
 import java.util.UUID;
 
 import eu.epicpvp.bungee.system.bs.Main;
-import dev.wolveringer.client.LoadedPlayer;
+import eu.epicpvp.datenclient.client.LoadedPlayer;
 import dev.wolveringer.client.connection.ClientType;
 import dev.wolveringer.dataserver.protocoll.DataBuffer;
 import eu.epicpvp.bungee.system.permission.PermissionManager;

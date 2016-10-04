@@ -12,7 +12,7 @@ import dev.wolveringer.BungeeUtil.item.Item;
 import dev.wolveringer.BungeeUtil.item.ItemStack;
 import eu.epicpvp.bungee.system.bs.Main;
 import eu.epicpvp.bungee.system.bs.listener.PlayerJoinListener;
-import dev.wolveringer.client.PacketHandleErrorException;
+import eu.epicpvp.datenclient.client.PacketHandleErrorException;
 import dev.wolveringer.dataserver.protocoll.packets.PacketReportRequest.RequestType;
 import eu.epicpvp.bungee.system.gui.Gui;
 import dev.wolveringer.hashmaps.InitHashMap;

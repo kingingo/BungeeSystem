@@ -1,8 +1,8 @@
 package eu.epicpvp.bungee.system.guild.gui;
 
 import dev.wolveringer.BungeeUtil.Material;
-import dev.wolveringer.client.LoadedPlayer;
-import dev.wolveringer.gilde.GildSection;
+import eu.epicpvp.datenclient.client.LoadedPlayer;
+import eu.epicpvp.datenclient.gilde.GildSection;
 import eu.epicpvp.bungee.system.gui.GuiItemSelect;
 import eu.epicpvp.bungee.system.gui.GuiStatusPrint;
 import eu.epicpvp.bungee.system.item.ItemBuilder;

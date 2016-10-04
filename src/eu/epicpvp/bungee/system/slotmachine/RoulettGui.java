@@ -9,7 +9,7 @@ import dev.wolveringer.BungeeUtil.item.Item;
 import dev.wolveringer.api.inventory.Inventory;
 import eu.epicpvp.bungee.system.booster.GuiIntegerSelect;
 import eu.epicpvp.bungee.system.bs.Main;
-import dev.wolveringer.client.Callback;
+import eu.epicpvp.datenclient.client.Callback;
 import dev.wolveringer.client.connection.ClientType;
 import dev.wolveringer.dataserver.gamestats.StatsKey;
 import dev.wolveringer.dataserver.protocoll.DataBuffer;

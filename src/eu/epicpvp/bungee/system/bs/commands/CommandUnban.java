@@ -5,8 +5,8 @@ import java.util.UUID;
 
 import eu.epicpvp.bungee.system.ban.BanServerMessageListener;
 import eu.epicpvp.bungee.system.bs.Main;
-import dev.wolveringer.client.Callback;
-import dev.wolveringer.client.LoadedPlayer;
+import eu.epicpvp.datenclient.client.Callback;
+import eu.epicpvp.datenclient.client.LoadedPlayer;
 import dev.wolveringer.dataserver.ban.BanEntity;
 import eu.epicpvp.bungee.system.permission.PermissionManager;
 import dev.wolveringer.thread.ThreadFactory;

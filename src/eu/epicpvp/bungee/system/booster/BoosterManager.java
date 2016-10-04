@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import dev.wolveringer.booster.BoosterType;
 import dev.wolveringer.booster.NetworkBooster;
-import dev.wolveringer.event.EventListener;
+import eu.epicpvp.datenclient.event.EventListener;
 import dev.wolveringer.events.Event;
 import dev.wolveringer.events.booster.BoosterStatusChangeEvent;
 import dev.wolveringer.hashmaps.InitHashMap;

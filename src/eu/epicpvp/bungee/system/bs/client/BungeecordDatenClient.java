@@ -6,12 +6,11 @@ import java.util.List;
 
 import eu.epicpvp.bungee.system.bs.Main;
 import dev.wolveringer.bukkit.permissions.PermissionType;
-import dev.wolveringer.client.ClientWrapper;
-import dev.wolveringer.client.LoadedPlayer;
-import dev.wolveringer.client.connection.Client;
-import dev.wolveringer.client.debug.Debugger;
+import eu.epicpvp.datenclient.client.ClientWrapper;
+import eu.epicpvp.datenclient.client.LoadedPlayer;
+import eu.epicpvp.datenclient.client.connection.Client;
+import eu.epicpvp.datenclient.client.debug.Debugger;
 import dev.wolveringer.dataserver.protocoll.packets.PacketOutServerStatus;
-import dev.wolveringer.gilde.GildManager;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.scheduler.ScheduledTask;

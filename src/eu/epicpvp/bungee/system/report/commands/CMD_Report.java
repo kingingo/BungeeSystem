@@ -4,7 +4,7 @@ import java.util.Random;
 
 import dev.wolveringer.BungeeUtil.Player;
 import eu.epicpvp.bungee.system.bs.Main;
-import dev.wolveringer.client.LoadedPlayer;
+import eu.epicpvp.datenclient.client.LoadedPlayer;
 import dev.wolveringer.dataserver.protocoll.packets.PacketReportRequest.RequestType;
 import eu.epicpvp.bungee.system.permission.PermissionManager;
 import dev.wolveringer.report.ReportEntity;

@@ -3,7 +3,7 @@ package eu.epicpvp.bungee.system.report.gui;
 import dev.wolveringer.BungeeUtil.Material;
 import dev.wolveringer.BungeeUtil.item.ItemStack;
 import eu.epicpvp.bungee.system.bs.Main;
-import dev.wolveringer.client.LoadedPlayer;
+import eu.epicpvp.datenclient.client.LoadedPlayer;
 import eu.epicpvp.bungee.system.gui.Gui;
 import eu.epicpvp.bungee.system.item.ItemBuilder;
 import eu.epicpvp.bungee.system.permission.PermissionManager;

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import dev.wolveringer.BungeeUtil.Material;
 import eu.epicpvp.bungee.system.bs.Main;
-import dev.wolveringer.client.LoadedPlayer;
+import eu.epicpvp.datenclient.client.LoadedPlayer;
 import eu.epicpvp.bungee.system.gui.Gui;
 import eu.epicpvp.bungee.system.item.ItemBuilder;
 import dev.wolveringer.report.ReportState;

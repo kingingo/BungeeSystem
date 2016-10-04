@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import eu.epicpvp.bungee.system.bs.Bootstrap;
-import dev.wolveringer.client.debug.Debugger;
+import eu.epicpvp.datenclient.client.debug.Debugger;
 import eu.epicpvp.bungee.system.permission.PermissionManager;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;

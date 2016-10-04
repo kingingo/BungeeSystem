@@ -8,7 +8,6 @@ import dev.wolveringer.BungeeUtil.packets.PacketPlayOutPlayerInfo;
 import dev.wolveringer.BungeeUtil.packets.PacketPlayOutScoreboardTeam;
 import dev.wolveringer.chat.ChatMessage;
 import dev.wolveringer.chat.IChatBaseComponent;
-import dev.wolveringer.client.LoadedPlayer;
 
 public class TabListener implements PacketHandler<Packet>{
 

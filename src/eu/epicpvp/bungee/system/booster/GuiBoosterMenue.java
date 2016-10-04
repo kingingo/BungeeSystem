@@ -5,7 +5,7 @@ import dev.wolveringer.BungeeUtil.item.Item;
 import dev.wolveringer.BungeeUtil.item.ItemStack.Click;
 import dev.wolveringer.booster.BoosterType;
 import dev.wolveringer.booster.NetworkBooster;
-import dev.wolveringer.client.LoadedPlayer;
+import eu.epicpvp.datenclient.client.LoadedPlayer;
 import dev.wolveringer.dataserver.protocoll.packets.PacketInStatsEdit.Action;
 import eu.epicpvp.bungee.system.bs.Main;
 import eu.epicpvp.bungee.system.bs.listener.PlayerJoinListener;

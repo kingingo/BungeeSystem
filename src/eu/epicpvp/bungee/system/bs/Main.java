@@ -2,7 +2,7 @@ package eu.epicpvp.bungee.system.bs;
 
 import eu.epicpvp.bungee.system.booster.BoosterManager;
 import eu.epicpvp.bungee.system.bs.client.BungeecordDatenClient;
-import dev.wolveringer.gilde.GildManager;
+import eu.epicpvp.datenclient.gilde.GildManager;
 import eu.epicpvp.bungee.system.skin.SkinCacheManager;
 import eu.epicpvp.bungee.system.translation.TranslationHandler;
 import lombok.Getter;

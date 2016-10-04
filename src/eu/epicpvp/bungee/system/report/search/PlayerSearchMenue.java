@@ -7,7 +7,7 @@ import dev.wolveringer.BungeeUtil.Material;
 import dev.wolveringer.BungeeUtil.Player;
 import dev.wolveringer.BungeeUtil.item.Item;
 import eu.epicpvp.bungee.system.bs.Main;
-import dev.wolveringer.client.LoadedPlayer;
+import eu.epicpvp.datenclient.client.LoadedPlayer;
 import eu.epicpvp.bungee.system.gui.SearchMenue;
 import eu.epicpvp.bungee.system.item.ItemBuilder;
 import eu.epicpvp.bungee.system.permission.PermissionManager;

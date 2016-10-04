@@ -6,10 +6,10 @@ import java.util.concurrent.TimeUnit;
 
 import dev.wolveringer.BungeeUtil.Player;
 import eu.epicpvp.bungee.system.bs.Main;
-import dev.wolveringer.client.Callback;
-import dev.wolveringer.client.LoadedPlayer;
-import dev.wolveringer.client.ProgressFuture;
-import dev.wolveringer.client.futures.BaseProgressFuture;
+import eu.epicpvp.datenclient.client.Callback;
+import eu.epicpvp.datenclient.client.LoadedPlayer;
+import eu.epicpvp.datenclient.client.ProgressFuture;
+import eu.epicpvp.datenclient.client.futures.BaseProgressFuture;
 import dev.wolveringer.dataserver.gamestats.GameType;
 import dev.wolveringer.dataserver.gamestats.StatsKey;
 import dev.wolveringer.dataserver.protocoll.packets.PacketInStatsEdit.Action;

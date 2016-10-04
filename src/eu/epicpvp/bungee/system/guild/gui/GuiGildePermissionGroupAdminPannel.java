@@ -6,7 +6,7 @@ import dev.wolveringer.BungeeUtil.Material;
 import dev.wolveringer.BungeeUtil.item.Item;
 import dev.wolveringer.BungeeUtil.item.ItemStack.Click;
 import eu.epicpvp.bungee.system.bs.Main;
-import dev.wolveringer.gilde.GildPermissionGroup;
+import eu.epicpvp.datenclient.gilde.GildPermissionGroup;
 import dev.wolveringer.gilde.GildePermissions;
 import dev.wolveringer.gilde.GildePermissions.DisplayItem;
 import eu.epicpvp.bungee.system.gui.Gui;

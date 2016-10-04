@@ -24,7 +24,7 @@ import eu.epicpvp.bungee.system.bs.client.event.ServerMessageEvent;
 import eu.epicpvp.bungee.system.chat.ChatManager;
 import dev.wolveringer.chat.ChatSerializer;
 import dev.wolveringer.chat.IChatBaseComponent;
-import dev.wolveringer.client.LoadedPlayer;
+import eu.epicpvp.datenclient.client.LoadedPlayer;
 import eu.epicpvp.bungee.system.permission.PermissionManager;
 import dev.wolveringer.thread.ThreadFactory;
 import lombok.Getter;

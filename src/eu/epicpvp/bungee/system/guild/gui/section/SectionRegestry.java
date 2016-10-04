@@ -3,7 +3,7 @@ package eu.epicpvp.bungee.system.guild.gui.section;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
-import dev.wolveringer.gilde.GildSection;
+import eu.epicpvp.datenclient.gilde.GildSection;
 import dev.wolveringer.gilde.GildeType;
 import lombok.Getter;
 
