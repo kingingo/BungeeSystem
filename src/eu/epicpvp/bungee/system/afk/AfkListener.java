@@ -13,14 +13,14 @@ import dev.wolveringer.BungeeUtil.packets.PacketPlayInFlying;
 import dev.wolveringer.api.position.Location;
 import dev.wolveringer.arrays.CachedArrayList;
 import dev.wolveringer.arrays.CachedArrayList.UnloadListener;
+import dev.wolveringer.hashmaps.CachedHashMap;
+import dev.wolveringer.thread.ThreadFactory;
+import eu.epicpvp.bungee.fakeserver.FakeServer;
+import eu.epicpvp.bungee.fakeserver.ServerConfiguration;
 import eu.epicpvp.bungee.system.ban.BannedServerManager;
 import eu.epicpvp.bungee.system.bs.Main;
 import eu.epicpvp.bungee.system.bs.message.MessageManager;
 import eu.epicpvp.bungee.system.bs.servermanager.ServerManager;
-import dev.wolveringer.hashmaps.CachedHashMap;
-import eu.epicpvp.bungee.fakeserver.CostumServer;
-import eu.epicpvp.bungee.fakeserver.ServerConfiguration;
-import dev.wolveringer.thread.ThreadFactory;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.event.ServerConnectEvent;
 
@@ -56,19 +56,19 @@ public class AfkListener implements PacketHandler<Packet> {
 
 	@Override
 	public void handle(PacketHandleEvent<Packet> e) {
-		try{
+		try {
 			if (e.getPacket() instanceof PacketPlayInFlying) {
-				if(BannedServerManager.getInstance().isBanned(e.getPlayer()))
+				if (BannedServerManager.getInstance().isBanned(e.getPlayer()))
 					return;
 				if (ignore.contains(e.getPlayer()))
 					return;
 				PacketPlayInFlying packet = (PacketPlayInFlying) e.getPacket();
 				if (packet.hasPos()) {
-					CostumServer server;
-					if ((server = CostumServer.getServer(e.getPlayer())) != null) {
+					FakeServer server;
+					if ((server = FakeServer.getServer(e.getPlayer())) != null) {
 						Location center = server.getConfig().getWorld().getWorldSpawn();
 
-						if (center.getBlockY() < 0 || center.distanceSquared(packet.getLocation()) > MAX_MOVEAWAY*MAX_MOVEAWAY) {
+						if (center.getBlockY() < 0 || center.distanceSquared(packet.getLocation()) > MAX_MOVEAWAY * MAX_MOVEAWAY) {
 							moveBack(e.getPlayer());
 							return;
 						}
@@ -78,7 +78,7 @@ public class AfkListener implements PacketHandler<Packet> {
 							lastLocation.put(e.getPlayer(), new Location(0, 0, 0));
 						if (lastLocation.get(e.getPlayer()).distanceSquared(packet.getLocation()) < 0.5)
 							return;
-						if (!timeoutObject.contains(e.getPlayer())){
+						if (!timeoutObject.contains(e.getPlayer())) {
 							timeoutObject.add(e.getPlayer());
 						}
 						timeoutObject.resetTime(e.getPlayer());
@@ -87,57 +87,56 @@ public class AfkListener implements PacketHandler<Packet> {
 					}
 				}
 			} else if (e.getPacket() instanceof PacketPlayInChat) {
-				if(BannedServerManager.getInstance().isBanned(e.getPlayer()))
+				if (BannedServerManager.getInstance().isBanned(e.getPlayer()))
 					return;
-				if (CostumServer.getServer(e.getPlayer()) != null) {
+				if (FakeServer.getServer(e.getPlayer()) != null) {
 					if (ignore.contains(e.getPlayer()))
 						return;
 					moveBack(e.getPlayer());
 					return;
 				} else {
-					if (!timeoutObject.contains(e.getPlayer())){
+					if (!timeoutObject.contains(e.getPlayer())) {
 						timeoutObject.add(e.getPlayer());
 					}
 					timeoutObject.resetTime(e.getPlayer());
 				}
 			} else if (e.getPacket() instanceof PacketPlayInBlockDig || e.getPacket() instanceof PacketPlayInBlockPlace) {
-				if(BannedServerManager.getInstance().isBanned(e.getPlayer()))
+				if (BannedServerManager.getInstance().isBanned(e.getPlayer()))
 					return;
 				if (ignore.contains(e.getPlayer()))
 					return;
-				if (CostumServer.getServer(e.getPlayer()) != null) {
+				if (FakeServer.getServer(e.getPlayer()) != null) {
 					moveBack(e.getPlayer());
 				} else {
-					if (!timeoutObject.contains(e.getPlayer())){
+					if (!timeoutObject.contains(e.getPlayer())) {
 						timeoutObject.add(e.getPlayer());
 					}
 					timeoutObject.resetTime(e.getPlayer());
 				}
 			}
-		}catch(Exception ex){
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
 
 	public synchronized boolean canUnload(Player player) {
-		if(CostumServer.getServer(player) != null)
+		if (FakeServer.getServer(player) != null)
 			return true;
-		if(BannedServerManager.getInstance().isBanned(player))
+		if (BannedServerManager.getInstance().isBanned(player))
 			return true;
-		if(!player.isConnected())
+		if (!player.isConnected())
 			return true;
-		System.out.println("AFK: "+player);
-		CostumServer.createServer(Main.getInstance(), player, config);
+		System.out.println("AFK: " + player);
+		FakeServer.createServer(Main.getInstance(), player, config);
 		return true;
 	}
 
-	private synchronized void moveBack(Player player){
+	private synchronized void moveBack(Player player) {
 		ignore.add(player);
-		if (!timeoutObject.contains(player)){
+		if (!timeoutObject.contains(player)) {
 			timeoutObject.add(player);
 		}
-		CostumServer.getServer(player).switchTo(BungeeCord.getInstance().getPluginManager().callEvent(new ServerConnectEvent(player, ServerManager.DEFAULT_HUB)).getTarget());
+		FakeServer.getServer(player).switchTo(BungeeCord.getInstance().getPluginManager().callEvent(new ServerConnectEvent(player, ServerManager.DEFAULT_HUB)).getTarget());
 		MessageManager.getmanager(Main.getTranslationManager().getLanguage(player)).playTitles(player);
 	}
-
 }

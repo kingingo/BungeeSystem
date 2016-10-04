@@ -3,10 +3,12 @@ package eu.epicpvp.bungee.system.booster;
 import dev.wolveringer.BungeeUtil.Player;
 import dev.wolveringer.BungeeUtil.item.Item;
 import dev.wolveringer.BungeeUtil.item.ItemStack.Click;
-import eu.epicpvp.bungee.system.bs.Main;
-import eu.epicpvp.bungee.system.bs.listener.PlayerJoinListener;
+import dev.wolveringer.booster.BoosterType;
+import dev.wolveringer.booster.NetworkBooster;
 import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.dataserver.protocoll.packets.PacketInStatsEdit.Action;
+import eu.epicpvp.bungee.system.bs.Main;
+import eu.epicpvp.bungee.system.bs.listener.PlayerJoinListener;
 import eu.epicpvp.bungee.system.gui.GuiUpdating;
 import eu.epicpvp.bungee.system.item.ItemBuilder;
 

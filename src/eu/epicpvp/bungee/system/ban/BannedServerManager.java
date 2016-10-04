@@ -15,7 +15,7 @@ import dev.wolveringer.dataserver.ban.BanEntity;
 import dev.wolveringer.dataserver.player.LanguageType;
 import eu.epicpvp.bungee.system.nick.ReplaceUtils;
 import eu.epicpvp.bungee.system.nick.ReplaceUtils.Replacer;
-import eu.epicpvp.bungee.fakeserver.CostumServer;
+import eu.epicpvp.bungee.fakeserver.FakeServer;
 import eu.epicpvp.bungee.fakeserver.ServerConfiguration;
 import eu.epicpvp.bungee.fakeserver.ServerConfiguration.ServerConfigurationBuilder;
 import eu.epicpvp.bungee.fakeserver.world.World;
@@ -107,7 +107,7 @@ http://shop.clashMC.eu/checkout/packages?action=add&package=1224531&ign=<PLAYERN
 
 	private final World world;
 	private final int render;
-	private HashMap<Player, CostumServer> server = new HashMap<>();
+	private HashMap<Player, FakeServer> server = new HashMap<>();
 	private ArrayList<Runnable> updates = new ArrayList<>();
 
 	public BannedServerManager(World world, int render) {
@@ -147,7 +147,7 @@ http://shop.clashMC.eu/checkout/packages?action=add&package=1224531&ign=<PLAYERN
 		cfgBuilder.chat(Arrays.asList("","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""));
 		cfgBuilder.renderDistance(render);
 		cfgBuilder.world(world);
-		server.put(player, CostumServer.createServer(Main.getInstance(), player, cfgBuilder.build()));
+		server.put(player, FakeServer.createServer(Main.getInstance(), player, cfgBuilder.build()));
 		updates.add(new Runnable() {
 			int count = 0;
 			@Override
@@ -163,7 +163,7 @@ http://shop.clashMC.eu/checkout/packages?action=add&package=1224531&ign=<PLAYERN
 					return;
 				}
 				if(ban.isTempBanned()){
-					CostumServer cserver = server.get(player);
+					FakeServer cserver = server.get(player);
 					if(cserver != null){
 						cserver.getConfig().setSubTitle(Main.getTranslationManager().translate("server.banned.subtitle.temporary",player,PlayerJoinListener.getDurationBreakdown(ban.getEnd()-System.currentTimeMillis(),"now")));
 						cserver.getConfig().setActionBar(Main.getTranslationManager().translate("server.banned.actionbar.temporary",player,ban.getReson()));
