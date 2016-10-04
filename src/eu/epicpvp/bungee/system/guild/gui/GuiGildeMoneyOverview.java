@@ -12,7 +12,7 @@ import dev.wolveringer.BungeeUtil.item.Item;
 import eu.epicpvp.bungee.system.bs.Main;
 import eu.epicpvp.datenclient.client.LoadedPlayer;
 import eu.epicpvp.datenclient.gilde.GildSectionMoney;
-import dev.wolveringer.gilde.MoneyLogRecord;
+import eu.epicpvp.datenserver.definitions.gilde.MoneyLogRecord;
 import eu.epicpvp.bungee.system.gui.Gui;
 import eu.epicpvp.bungee.system.item.ItemBuilder;
 

@@ -19,8 +19,8 @@ import dev.wolveringer.api.gui.AnvilGuiListener;
 import dev.wolveringer.api.inventory.Inventory;
 import eu.epicpvp.bungee.system.bs.Main;
 import eu.epicpvp.bungee.system.item.ItemBuilder;
-import dev.wolveringer.skin.Skin;
-import dev.wolveringer.skin.SteveSkin;
+import eu.epicpvp.datenserver.definitions.skin.Skin;
+import eu.epicpvp.datenserver.definitions.skin.SteveSkin;
 import dev.wolveringer.thread.ThreadFactory;
 
 public abstract class PlayerSearchMenueOld implements AnvilGuiListener, PacketHandler<PacketPlayInWindowClick> {

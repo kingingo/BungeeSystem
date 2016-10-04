@@ -8,8 +8,8 @@ import javax.xml.bind.DatatypeConverter;
 
 import eu.epicpvp.bungee.system.bs.Main;
 import eu.epicpvp.bungee.system.bs.client.event.ServerMessageEvent;
-import dev.wolveringer.client.connection.ClientType;
-import dev.wolveringer.dataserver.protocoll.DataBuffer;
+import eu.epicpvp.datenserver.definitions.connection.ClientType;
+import eu.epicpvp.datenserver.definitions.dataserver.protocoll.DataBuffer;
 import eu.epicpvp.bungee.system.mysql.MySQL;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;

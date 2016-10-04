@@ -9,7 +9,7 @@ import eu.epicpvp.datenclient.client.PacketHandleErrorException;
 import dev.wolveringer.dataserver.protocoll.packets.PacketReportRequest.RequestType;
 import eu.epicpvp.bungee.system.gui.Gui;
 import eu.epicpvp.bungee.system.item.ItemBuilder;
-import dev.wolveringer.report.ReportEntity;
+import eu.epicpvp.datenserver.definitions.report.ReportEntity;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
 

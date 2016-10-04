@@ -4,7 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
 import eu.epicpvp.datenclient.gilde.GildSection;
-import dev.wolveringer.gilde.GildeType;
+import eu.epicpvp.datenserver.definitions.gilde.GildeType;
 import lombok.Getter;
 
 public class SectionRegestry {

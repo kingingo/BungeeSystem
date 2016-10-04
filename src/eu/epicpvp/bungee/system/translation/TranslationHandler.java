@@ -2,7 +2,7 @@ package eu.epicpvp.bungee.system.translation;
 
 import eu.epicpvp.bungee.system.bs.Main;
 import eu.epicpvp.datenclient.client.LoadedPlayer;
-import dev.wolveringer.dataserver.player.LanguageType;
+import eu.epicpvp.datenserver.definitions.dataserver.player.LanguageType;
 import eu.epicpvp.datenclient.translation.TranslationManager;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;

@@ -5,8 +5,8 @@ import java.util.LinkedList;
 
 import eu.epicpvp.bungee.system.bs.Main;
 import eu.epicpvp.bungee.system.bs.client.event.ServerMessageEvent;
-import dev.wolveringer.client.connection.ClientType;
-import dev.wolveringer.dataserver.protocoll.DataBuffer;
+import eu.epicpvp.datenserver.definitions.connection.ClientType;
+import eu.epicpvp.datenserver.definitions.dataserver.protocoll.DataBuffer;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.md_5.bungee.api.plugin.Listener;

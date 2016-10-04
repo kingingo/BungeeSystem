@@ -11,7 +11,7 @@ import com.google.common.collect.Lists;
 
 import eu.epicpvp.bungee.system.bs.Main;
 import eu.epicpvp.bungee.system.permission.PermissionManager;
-import dev.wolveringer.bukkit.permissions.PermissionType;
+import eu.epicpvp.datenserver.definitions.permissions.PermissionType;
 import eu.epicpvp.datenclient.client.Callback;
 import eu.epicpvp.datenclient.client.PacketHandleErrorException;
 import dev.wolveringer.dataserver.protocoll.packets.PacketOutServerStatus;

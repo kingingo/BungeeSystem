@@ -5,7 +5,7 @@ import dev.wolveringer.BungeeUtil.item.ItemStack.Click;
 import eu.epicpvp.bungee.system.bs.Main;
 import eu.epicpvp.datenclient.client.LoadedPlayer;
 import eu.epicpvp.datenclient.gilde.GildSection;
-import dev.wolveringer.gilde.GildeType;
+import eu.epicpvp.datenserver.definitions.gilde.GildeType;
 import eu.epicpvp.bungee.system.gui.Gui;
 import eu.epicpvp.bungee.system.item.ItemBuilder;
 

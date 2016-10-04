@@ -12,8 +12,8 @@ import eu.epicpvp.bungee.system.bs.Main;
 import eu.epicpvp.datenclient.client.LoadedPlayer;
 import eu.epicpvp.bungee.system.gui.Gui;
 import eu.epicpvp.bungee.system.item.ItemBuilder;
-import dev.wolveringer.report.ReportEntity;
-import dev.wolveringer.report.ReportWorker;
+import eu.epicpvp.datenserver.definitions.report.ReportEntity;
+import eu.epicpvp.datenserver.definitions.report.ReportWorker;
 
 public class GuiViewPlayerReport extends Gui{
 	private static final DateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm");

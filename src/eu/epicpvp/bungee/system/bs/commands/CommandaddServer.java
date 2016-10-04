@@ -2,7 +2,7 @@ package eu.epicpvp.bungee.system.bs.commands;
 
 import eu.epicpvp.bungee.system.bs.Main;
 import eu.epicpvp.bungee.system.bs.servermanager.ServerManager;
-import dev.wolveringer.bukkit.permissions.PermissionType;
+import eu.epicpvp.datenserver.definitions.permissions.PermissionType;
 import eu.epicpvp.bungee.system.permission.PermissionManager;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.plugin.Command;

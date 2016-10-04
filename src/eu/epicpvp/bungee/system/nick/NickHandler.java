@@ -18,7 +18,7 @@ import dev.wolveringer.BungeeUtil.packets.PacketPlayOutPlayerInfo;
 import dev.wolveringer.BungeeUtil.packets.PacketPlayOutScoreboardScore;
 import dev.wolveringer.BungeeUtil.packets.PacketPlayOutScoreboardTeam;
 import dev.wolveringer.BungeeUtil.packets.PacketPlayOutTitle;
-import dev.wolveringer.arrays.CachedArrayList;
+import eu.epicpvp.datenserver.definitions.arrays.CachedArrayList;
 import eu.epicpvp.bungee.system.bs.Main;
 import eu.epicpvp.bungee.system.bs.client.event.ServerMessageEvent;
 import eu.epicpvp.bungee.system.chat.ChatManager;

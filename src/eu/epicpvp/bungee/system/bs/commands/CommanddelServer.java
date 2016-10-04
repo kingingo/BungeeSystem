@@ -3,7 +3,7 @@ package eu.epicpvp.bungee.system.bs.commands;
 import eu.epicpvp.bungee.system.bs.Main;
 import eu.epicpvp.bungee.system.bs.servermanager.ServerManager;
 import eu.epicpvp.bungee.system.permission.PermissionManager;
-import dev.wolveringer.bukkit.permissions.PermissionType;
+import eu.epicpvp.datenserver.definitions.permissions.PermissionType;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;

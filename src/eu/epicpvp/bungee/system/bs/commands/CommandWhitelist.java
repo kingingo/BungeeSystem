@@ -6,10 +6,10 @@ import org.apache.commons.lang3.StringUtils;
 
 import eu.epicpvp.bungee.system.bs.Main;
 import eu.epicpvp.bungee.system.bs.information.InformationManager;
-import dev.wolveringer.client.connection.ClientType;
-import dev.wolveringer.dataserver.protocoll.DataBuffer;
+import eu.epicpvp.datenserver.definitions.connection.ClientType;
+import eu.epicpvp.datenserver.definitions.dataserver.protocoll.DataBuffer;
 import eu.epicpvp.bungee.system.permission.PermissionManager;
-import dev.wolveringer.bukkit.permissions.PermissionType;
+import eu.epicpvp.datenserver.definitions.permissions.PermissionType;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.plugin.Command;

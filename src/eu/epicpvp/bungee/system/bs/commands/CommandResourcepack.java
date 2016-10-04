@@ -4,7 +4,7 @@ import dev.wolveringer.BungeeUtil.Player;
 import eu.epicpvp.bungee.system.bs.Main;
 import eu.epicpvp.bungee.system.bs.listener.WarzTexturePackListener;
 import eu.epicpvp.bungee.system.bs.packets.PacketPlayOutResourcepack;
-import dev.wolveringer.dataserver.player.LanguageType;
+import eu.epicpvp.datenserver.definitions.dataserver.player.LanguageType;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.plugin.Command;
 

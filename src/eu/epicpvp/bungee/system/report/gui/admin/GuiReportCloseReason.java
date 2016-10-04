@@ -7,8 +7,8 @@ import eu.epicpvp.bungee.system.bs.Main;
 import eu.epicpvp.datenclient.client.LoadedPlayer;
 import eu.epicpvp.bungee.system.gui.Gui;
 import eu.epicpvp.bungee.system.item.ItemBuilder;
-import dev.wolveringer.report.ReportState;
-import dev.wolveringer.report.ReportEntity;
+import eu.epicpvp.datenserver.definitions.report.ReportState;
+import eu.epicpvp.datenserver.definitions.report.ReportEntity;
 
 public class GuiReportCloseReason extends Gui{
 	private ArrayList<ReportEntity> reports;

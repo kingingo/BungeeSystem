@@ -2,10 +2,10 @@ package eu.epicpvp.bungee.system.bs.commands;
 
 import eu.epicpvp.bungee.system.bs.Main;
 import eu.epicpvp.bungee.system.bs.client.event.ServerMessageEvent;
-import dev.wolveringer.client.connection.ClientType;
-import dev.wolveringer.dataserver.protocoll.DataBuffer;
+import eu.epicpvp.datenserver.definitions.connection.ClientType;
+import eu.epicpvp.datenserver.definitions.dataserver.protocoll.DataBuffer;
 import eu.epicpvp.bungee.system.permission.PermissionManager;
-import dev.wolveringer.bukkit.permissions.PermissionType;
+import eu.epicpvp.datenserver.definitions.permissions.PermissionType;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;

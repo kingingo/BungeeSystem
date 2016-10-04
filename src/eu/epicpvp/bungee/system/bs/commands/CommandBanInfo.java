@@ -8,10 +8,10 @@ import java.util.UUID;
 import eu.epicpvp.bungee.system.bs.Main;
 import eu.epicpvp.bungee.system.bs.listener.PlayerJoinListener;
 import eu.epicpvp.datenclient.client.LoadedPlayer;
-import dev.wolveringer.dataserver.ban.BanEntity;
-import dev.wolveringer.dataserver.player.LanguageType;
+import eu.epicpvp.datenserver.definitions.dataserver.ban.BanEntity;
+import eu.epicpvp.datenserver.definitions.dataserver.player.LanguageType;
 import eu.epicpvp.bungee.system.permission.PermissionManager;
-import dev.wolveringer.bukkit.permissions.PermissionType;
+import eu.epicpvp.datenserver.definitions.permissions.PermissionType;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.plugin.Command;
 

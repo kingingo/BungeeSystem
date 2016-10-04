@@ -5,7 +5,7 @@ import java.net.SocketAddress;
 import java.util.List;
 
 import eu.epicpvp.bungee.system.bs.Main;
-import dev.wolveringer.bukkit.permissions.PermissionType;
+import eu.epicpvp.datenserver.definitions.permissions.PermissionType;
 import eu.epicpvp.datenclient.client.ClientWrapper;
 import eu.epicpvp.datenclient.client.LoadedPlayer;
 import eu.epicpvp.datenclient.client.connection.Client;

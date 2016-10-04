@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import dev.wolveringer.bukkit.permissions.GroupTyp;
+import eu.epicpvp.datenserver.definitions.permissions.GroupTyp;
 import eu.epicpvp.bungee.system.mysql.MySQL;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

@@ -3,8 +3,8 @@ package eu.epicpvp.bungee.system.bs.listener;
 import java.lang.reflect.Field;
 
 import eu.epicpvp.bungee.system.bs.Main;
-import dev.wolveringer.skin.Skin;
-import dev.wolveringer.skin.SteveSkin;
+import eu.epicpvp.datenserver.definitions.skin.Skin;
+import eu.epicpvp.datenserver.definitions.skin.SteveSkin;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.connection.InitialHandler;

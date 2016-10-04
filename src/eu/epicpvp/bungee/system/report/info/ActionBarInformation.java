@@ -9,7 +9,7 @@ import eu.epicpvp.bungee.system.bs.Main;
 import eu.epicpvp.bungee.system.chat.ChatManager;
 import eu.epicpvp.bungee.system.chat.ChatManager.ChatBoxModifier;
 import dev.wolveringer.dataserver.protocoll.packets.PacketReportRequest.RequestType;
-import dev.wolveringer.report.ReportEntity;
+import eu.epicpvp.datenserver.definitions.report.ReportEntity;
 import dev.wolveringer.thread.ThreadFactory;
 import dev.wolveringer.thread.ThreadRunner;
 import lombok.Getter;

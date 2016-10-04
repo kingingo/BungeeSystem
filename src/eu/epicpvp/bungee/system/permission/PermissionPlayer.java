@@ -2,7 +2,7 @@ package eu.epicpvp.bungee.system.permission;
 
 import java.util.ArrayList;
 
-import dev.wolveringer.bukkit.permissions.GroupTyp;
+import eu.epicpvp.datenserver.definitions.permissions.GroupTyp;
 import eu.epicpvp.bungee.system.mysql.MySQL;
 import lombok.Getter;
 

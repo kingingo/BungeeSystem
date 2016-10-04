@@ -8,7 +8,7 @@ import eu.epicpvp.bungee.system.bs.Main;
 import eu.epicpvp.bungee.system.bs.message.MessageManager;
 import eu.epicpvp.bungee.system.bs.servermanager.ServerManager;
 import eu.epicpvp.bungee.system.permission.PermissionManager;
-import dev.wolveringer.bukkit.permissions.PermissionType;
+import eu.epicpvp.datenserver.definitions.permissions.PermissionType;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.ServerConnection;
 import net.md_5.bungee.api.connection.ProxiedPlayer;

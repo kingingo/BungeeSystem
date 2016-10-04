@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import dev.wolveringer.booster.BoosterType;
+import eu.epicpvp.datenserver.definitions.booster.BoosterType;
 import eu.epicpvp.bungee.system.bs.Main;
-import dev.wolveringer.client.connection.ClientType;
-import dev.wolveringer.dataserver.player.LanguageType;
-import dev.wolveringer.dataserver.protocoll.DataBuffer;
+import eu.epicpvp.datenserver.definitions.connection.ClientType;
+import eu.epicpvp.datenserver.definitions.dataserver.player.LanguageType;
+import eu.epicpvp.datenserver.definitions.dataserver.protocoll.DataBuffer;
 import eu.epicpvp.bungee.system.mysql.MySQL;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ChatColor;

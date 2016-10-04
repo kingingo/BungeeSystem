@@ -8,7 +8,7 @@ import eu.epicpvp.bungee.system.bs.Main;
 import eu.epicpvp.bungee.system.gui.Gui;
 import eu.epicpvp.bungee.system.item.ItemBuilder;
 import eu.epicpvp.bungee.system.item.ItemBuilder.ItemClickListener;
-import dev.wolveringer.report.ReportEntity;
+import eu.epicpvp.datenserver.definitions.report.ReportEntity;
 import eu.epicpvp.bungee.system.report.search.PlayerTextEnterMenue;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ChatColor;

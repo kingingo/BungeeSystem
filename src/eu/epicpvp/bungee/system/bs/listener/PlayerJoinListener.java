@@ -6,14 +6,14 @@ import java.util.concurrent.TimeUnit;
 
 import dev.wolveringer.BungeeUtil.ClientVersion;
 import dev.wolveringer.BungeeUtil.ClientVersion.BigClientVersion;
-import dev.wolveringer.arrays.CachedArrayList;
+import eu.epicpvp.datenserver.definitions.arrays.CachedArrayList;
 import eu.epicpvp.bungee.system.bs.Main;
 import eu.epicpvp.bungee.system.bs.information.InformationManager;
 import eu.epicpvp.bungee.system.bs.message.MessageManager;
 import eu.epicpvp.datenclient.client.LoadedPlayer;
 import eu.epicpvp.datenclient.client.PacketHandleErrorException;
-import dev.wolveringer.dataserver.player.LanguageType;
-import dev.wolveringer.dataserver.player.Setting;
+import eu.epicpvp.datenserver.definitions.dataserver.player.LanguageType;
+import eu.epicpvp.datenserver.definitions.dataserver.player.Setting;
 import dev.wolveringer.dataserver.protocoll.packets.PacketInChangePlayerSettings;
 import dev.wolveringer.dataserver.protocoll.packets.PacketVersion;
 import eu.epicpvp.bungee.system.permission.PermissionManager;

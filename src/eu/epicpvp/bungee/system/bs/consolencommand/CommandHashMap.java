@@ -2,7 +2,7 @@ package eu.epicpvp.bungee.system.bs.consolencommand;
 
 import org.apache.commons.lang3.StringUtils;
 
-import dev.wolveringer.hashmaps.InitHashMap;
+import eu.epicpvp.datenserver.definitions.hashmaps.InitHashMap;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.plugin.Command;
 

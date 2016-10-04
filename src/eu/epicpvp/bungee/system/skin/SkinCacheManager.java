@@ -3,9 +3,9 @@ package eu.epicpvp.bungee.system.skin;
 import java.util.concurrent.TimeUnit;
 
 import eu.epicpvp.datenclient.client.LoadedPlayer;
-import dev.wolveringer.hashmaps.CachedHashMap;
-import dev.wolveringer.skin.Skin;
-import dev.wolveringer.skin.SteveSkin;
+import eu.epicpvp.datenserver.definitions.hashmaps.CachedHashMap;
+import eu.epicpvp.datenserver.definitions.skin.Skin;
+import eu.epicpvp.datenserver.definitions.skin.SteveSkin;
 import eu.epicpvp.bungee.system.bs.Main;
 
 public class SkinCacheManager {

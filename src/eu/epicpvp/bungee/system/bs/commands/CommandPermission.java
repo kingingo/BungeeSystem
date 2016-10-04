@@ -9,7 +9,7 @@ import eu.epicpvp.bungee.system.permission.Group;
 import eu.epicpvp.bungee.system.permission.Permission;
 import eu.epicpvp.bungee.system.permission.PermissionManager;
 import eu.epicpvp.bungee.system.permission.PermissionPlayer;
-import dev.wolveringer.bukkit.permissions.PermissionType;
+import eu.epicpvp.datenserver.definitions.permissions.PermissionType;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;

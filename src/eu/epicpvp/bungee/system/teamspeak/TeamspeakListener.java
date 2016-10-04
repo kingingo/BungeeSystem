@@ -4,8 +4,8 @@ import dev.wolveringer.BungeeUtil.Player;
 import eu.epicpvp.bungee.system.bs.Main;
 import dev.wolveringer.dataserver.protocoll.packets.PacketTeamspeakRequestAction;
 import eu.epicpvp.datenclient.event.EventListener;
-import dev.wolveringer.events.Event;
-import dev.wolveringer.events.teamspeak.TeamspeakLinkRequestEvent;
+import eu.epicpvp.datenserver.definitions.events.Event;
+import eu.epicpvp.datenserver.definitions.events.teamspeak.TeamspeakLinkRequestEvent;
 import net.md_5.bungee.BungeeCord;
 
 public class TeamspeakListener implements EventListener{

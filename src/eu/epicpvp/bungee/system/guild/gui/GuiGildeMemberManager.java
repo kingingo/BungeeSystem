@@ -12,7 +12,7 @@ import eu.epicpvp.bungee.system.bs.Main;
 import eu.epicpvp.datenclient.client.LoadedPlayer;
 import eu.epicpvp.datenclient.gilde.GildPermissionGroup;
 import eu.epicpvp.datenclient.gilde.GildSectionPermission;
-import dev.wolveringer.gilde.GildePermissions;
+import eu.epicpvp.datenserver.definitions.gilde.GildePermissions;
 import eu.epicpvp.bungee.system.gui.Gui;
 import eu.epicpvp.bungee.system.guild.gui.section.SectionRegestry;
 import eu.epicpvp.bungee.system.item.ItemBuilder;

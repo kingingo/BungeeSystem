@@ -1,6 +1,6 @@
 package eu.epicpvp.bungee.system.permission;
 
-import dev.wolveringer.bukkit.permissions.GroupTyp;
+import eu.epicpvp.datenserver.definitions.permissions.GroupTyp;
 import lombok.Getter;
 
 @Getter
