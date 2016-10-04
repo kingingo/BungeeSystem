@@ -1,4 +1,4 @@
-package me.kingingo.kBungeeCord.Language;
+package dev.wolveringer.translation;
 
 import dev.wolveringer.bs.Main;
 import dev.wolveringer.client.LoadedPlayer;
