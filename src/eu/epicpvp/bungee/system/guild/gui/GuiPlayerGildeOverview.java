@@ -1,4 +1,4 @@
-package dev.wolveringer.guild.gui;
+package eu.epicpvp.bungee.system.guild.gui;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,13 +16,13 @@ import dev.wolveringer.dataserver.protocoll.packets.PacketGildActionResponse.Act
 import dev.wolveringer.gilde.Gilde;
 import dev.wolveringer.gilde.GildePermissions;
 import dev.wolveringer.gilde.GildeType;
-import dev.wolveringer.gui.Gui;
-import dev.wolveringer.gui.GuiStatusPrint;
-import dev.wolveringer.gui.GuiWaiting;
-import dev.wolveringer.guild.gui.search.GildeSearchMenue;
-import dev.wolveringer.guild.gui.section.SectionRegestry;
-import dev.wolveringer.item.ItemBuilder;
-import dev.wolveringer.report.search.PlayerTextEnterMenue;
+import eu.epicpvp.bungee.system.gui.Gui;
+import eu.epicpvp.bungee.system.gui.GuiStatusPrint;
+import eu.epicpvp.bungee.system.gui.GuiWaiting;
+import eu.epicpvp.bungee.system.guild.gui.search.GildeSearchMenue;
+import eu.epicpvp.bungee.system.guild.gui.section.SectionRegestry;
+import eu.epicpvp.bungee.system.item.ItemBuilder;
+import eu.epicpvp.bungee.system.report.search.PlayerTextEnterMenue;
 import dev.wolveringer.thread.ThreadFactory;
 
 public class GuiPlayerGildeOverview extends Gui{

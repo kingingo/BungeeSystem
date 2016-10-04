@@ -1,4 +1,4 @@
-package dev.wolveringer.guild.gui;
+package eu.epicpvp.bungee.system.guild.gui;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,9 +13,9 @@ import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.gilde.GildPermissionGroup;
 import dev.wolveringer.gilde.GildSectionPermission;
 import dev.wolveringer.gilde.GildePermissions;
-import dev.wolveringer.gui.Gui;
-import dev.wolveringer.guild.gui.section.SectionRegestry;
-import dev.wolveringer.item.ItemBuilder;
+import eu.epicpvp.bungee.system.gui.Gui;
+import eu.epicpvp.bungee.system.guild.gui.section.SectionRegestry;
+import eu.epicpvp.bungee.system.item.ItemBuilder;
 
 public class GuiGildeMemberManager extends Gui{
 	private static final List<String> FINAL_GROUPS = Arrays.asList("owner");

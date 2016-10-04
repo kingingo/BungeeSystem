@@ -1,11 +1,9 @@
-package dev.wolveringer.permission;
+package eu.epicpvp.bungee.system.permission;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 import dev.wolveringer.bukkit.permissions.GroupTyp;
-import dev.wolveringer.mysql.MySQL;
+import eu.epicpvp.bungee.system.mysql.MySQL;
 import lombok.Getter;
 
 //WolverinDEV=57091d6f-839f-48b7-a4b1-4474222d4ad1
@@ -38,7 +36,7 @@ public class PermissionPlayer {
 				if (!groups.contains(g) && g != null){
 					groups.add(g);
 				}
-			} 
+			}
 			else if (var[1].startsWith("epicpvp.perm.group.")) {
 				String group = var[1].replaceFirst("epicpvp.perm.group.", "").split(":")[0]; //mvp+:sky
 				Group g = manager.getGroup(group);

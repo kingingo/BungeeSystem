@@ -1,4 +1,4 @@
-package dev.wolveringer.bs.listener;
+package eu.epicpvp.bungee.system.bs.listener;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -6,17 +6,17 @@ import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 
 import dev.wolveringer.BungeeUtil.Player;
-import dev.wolveringer.ban.BannedServerManager;
-import dev.wolveringer.bs.Main;
-import dev.wolveringer.bs.login.LoginManager;
-import dev.wolveringer.bs.message.MessageManager;
-import dev.wolveringer.bs.servermanager.ServerManager;
+import eu.epicpvp.bungee.system.ban.BannedServerManager;
+import eu.epicpvp.bungee.system.bs.Main;
+import eu.epicpvp.bungee.system.bs.login.LoginManager;
+import eu.epicpvp.bungee.system.bs.message.MessageManager;
+import eu.epicpvp.bungee.system.bs.servermanager.ServerManager;
 import dev.wolveringer.bukkit.permissions.PermissionType;
-import dev.wolveringer.chat.ChatManager;
+import eu.epicpvp.bungee.system.chat.ChatManager;
 import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.dataserver.ban.BanEntity;
-import dev.wolveringer.permission.PermissionManager;
-import dev.wolveringer.report.info.ActionBarInformation;
+import eu.epicpvp.bungee.system.permission.PermissionManager;
+import eu.epicpvp.bungee.system.report.info.ActionBarInformation;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.UserConnection;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -40,7 +40,7 @@ public class ServerListener implements Listener{
 		if(BannedServerManager.getInstance() != null)
 			BannedServerManager.getInstance().playerQuit((Player) e.getPlayer());
 	}
-	
+
 	public void disconnectPlayer(LoadedPlayer player){
 		while (player != null) {
 			try{
@@ -52,7 +52,7 @@ public class ServerListener implements Listener{
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void a(ServerConnectEvent e) {
 		try{
@@ -95,12 +95,12 @@ public class ServerListener implements Listener{
 				System.out.println("Empty ex?!");
 		}
 	}
-	
+
 	@EventHandler
 	public void a(ServerConnectedEvent e){
 		BungeeCord.getInstance().createTitle().title(new ComponentBuilder("").create()).subTitle(new ComponentBuilder("").create()).fadeIn(0).stay(0).fadeOut(0).send(e.getPlayer()); //Reset title
 	}
-	
+
 	@EventHandler
 	public void a(ServerSwitchEvent e){
 		Main.getDatenServer().getClient().getPlayerAndLoad(e.getPlayer().getUniqueId()).setServerSync(e.getPlayer().getServer().getInfo().getName());

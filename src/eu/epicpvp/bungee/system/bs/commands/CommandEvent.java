@@ -1,4 +1,4 @@
-package dev.wolveringer.bs.commands;
+package eu.epicpvp.bungee.system.bs.commands;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,15 +6,15 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import dev.wolveringer.BungeeUtil.Player;
-import dev.wolveringer.actionbar.ActionBar;
+import eu.epicpvp.bungee.system.actionbar.ActionBar;
 import dev.wolveringer.arrays.CachedArrayList;
-import dev.wolveringer.bs.Main;
-import dev.wolveringer.bs.client.event.ServerMessageEvent;
+import eu.epicpvp.bungee.system.bs.Main;
+import eu.epicpvp.bungee.system.bs.client.event.ServerMessageEvent;
 import dev.wolveringer.bukkit.permissions.PermissionType;
 import dev.wolveringer.chat.ChatClickable;
 import dev.wolveringer.chat.ChatComponentText;
 import dev.wolveringer.chat.ChatHoverable;
-import dev.wolveringer.chat.ChatManager;
+import eu.epicpvp.bungee.system.chat.ChatManager;
 import dev.wolveringer.chat.ChatModifier;
 import dev.wolveringer.chat.ChatSerializer;
 import dev.wolveringer.chat.EnumClickAction;
@@ -22,7 +22,7 @@ import dev.wolveringer.chat.EnumHoverAction;
 import dev.wolveringer.chat.IChatBaseComponent;
 import dev.wolveringer.client.connection.ClientType;
 import dev.wolveringer.dataserver.protocoll.DataBuffer;
-import dev.wolveringer.permission.PermissionManager;
+import eu.epicpvp.bungee.system.permission.PermissionManager;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;

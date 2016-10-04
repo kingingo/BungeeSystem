@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>dev.wolveringer</groupId>
+	<groupId>eu.epicpvp.bungee</groupId>
 	<artifactId>BungeeCordSystem</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
@@ -49,27 +49,6 @@
 				</configuration>
 			</plugin>
 
-			<!-- Copy project dependency -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>2.5.1</version>
-				<executions>
-					<execution>
-						<id>copy-dependencies</id>
-						<phase>package</phase>
-						<goals>
-							<goal>copy-dependencies</goal>
-						</goals>
-						<configuration>
-							<!-- exclude junit, we need runtime dependency only -->
-							<includeScope>runtime</includeScope>
-							<outputDirectory>${project.build.directory}/dependency-jars/</outputDirectory>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
@@ -84,14 +63,13 @@
 				<configuration>
 				 <artifactSet>
 	                <includes>
-	                	<include>dev.wolveringer.datenserver:definitions</include>
-	                	<include>dev.wolveringer.datenserver:packets</include>
-	                	<include>dev.wolveringer:DatenClient</include>
-	                	<include>dev.wolveringer:CostumServer</include>
-	                	<!--<include>dev.wolveringer:BungeeCordSystem</include>-->
+	                	<include>eu.epicpvp.datenserver:definitions</include>
+	                	<include>eu.epicpvp.datenserver:packets</include>
+	                	<include>eu.epicpvp:DatenClient</include>
+	                	<include>eu.epicpvp.bungee:CostumServer</include>
 	                	<include>org.apache.commons:commons-io</include>
 	                	<include>org.apache.commons:commons-lang3</include>
-	                	<include>dev.wolveringer:ThreadManager</include>
+	                	<include>eu.epicpvp:ThreadManager</include>
 	                	<groupId>org.apache.commons</groupId>
 	                </includes>
 	              </artifactSet>
@@ -115,10 +93,10 @@
 							</excludes>
 						</filter>
 						<filter>
-							<artifact>dev.wolveringer:DatenClient</artifact>
+							<artifact>eu.epicpvp:DatenClient</artifact>
 							<excludes>
-								<exclude>dev/wolveringer/client/BungeePlugin.*</exclude>
-								<exclude>dev/wolveringer/client/BukkitPlugin.*</exclude>
+								<exclude>eu/epicpvp/client/BungeePlugin.*</exclude>
+								<exclude>eu/epicpvp/client/BukkitPlugin.*</exclude>
 								<exclude>**.yml</exclude>
 							</excludes>
 						</filter>
@@ -171,25 +149,35 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>dev.wolveringer</groupId>
+			<groupId>eu.epicpvp.bungee</groupId>
 			<artifactId>BungeeUtil</artifactId>
 			<version>1.6.7.15</version>
 		</dependency>
 		<dependency>
-			<groupId>dev.wolveringer</groupId>
+			<groupId>eu.epicpvp</groupId>
 			<artifactId>DatenClient</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 			<type>jar</type>
 		</dependency>
 		<dependency>
-			<groupId>dev.wolveringer.datenserver</groupId>
+			<groupId>eu.epicpvp.datenserver</groupId>
 			<artifactId>definitions</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>dev.wolveringer.datenserver</groupId>
+			<groupId>eu.epicpvp.datenserver</groupId>
 			<artifactId>packets</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>eu.epicpvp.bungee</groupId>
+			<artifactId>FakeServer</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>eu.epicpvp</groupId>
+			<artifactId>ThreadManager</artifactId>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -200,16 +188,6 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 			<version>3.4</version>
-		</dependency>
-		<dependency>
-			<groupId>dev.wolveringer</groupId>
-			<artifactId>CostumServer</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			 <groupId>dev.wolveringer</groupId>
- 			 <artifactId>ThreadManager</artifactId>
-  			 <version>1.0</version>
 		</dependency>
 	</dependencies>
 </project>

@@ -1,16 +1,16 @@
-package dev.wolveringer.bs.commands;
+package eu.epicpvp.bungee.system.bs.commands;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import dev.wolveringer.bs.Main;
-import dev.wolveringer.bs.listener.PlayerJoinListener;
+import eu.epicpvp.bungee.system.bs.Main;
+import eu.epicpvp.bungee.system.bs.listener.PlayerJoinListener;
 import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.dataserver.ban.BanEntity;
 import dev.wolveringer.dataserver.player.LanguageType;
-import dev.wolveringer.permission.PermissionManager;
+import eu.epicpvp.bungee.system.permission.PermissionManager;
 import dev.wolveringer.bukkit.permissions.PermissionType;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.plugin.Command;
@@ -23,7 +23,7 @@ public class CommandBanInfo extends Command{
 		Main.getTranslationManager().registerFallback(LanguageType.ENGLISH, "command.baninfo.history.unban.buy", "§7[§b%s0§7] §aBought unban.");
 		Main.getTranslationManager().registerFallback(LanguageType.ENGLISH, "command.baninfo.history.unban.player", "§7[§b%s0§7] §aUnbaned by §e%s1§a.");
 	}
-	
+
 	private static final int DEFAULT_DEEP = 5;
 	public CommandBanInfo() {
 		super("baninfo");
@@ -32,9 +32,9 @@ public class CommandBanInfo extends Command{
 	@Override
 	public void execute(CommandSender cs, String[] args) {
 		if(!PermissionManager.getManager().hasPermission(cs, PermissionType.BAN_INFO,true)) return;
-		
+
 		if(args.length >= 1){
-			cs.sendMessage(Main.getTranslationManager().translate("prefix",cs)+Main.getTranslationManager().translate("command.baninfo.status.loadingPlayer",cs)); 
+			cs.sendMessage(Main.getTranslationManager().translate("prefix",cs)+Main.getTranslationManager().translate("command.baninfo.status.loadingPlayer",cs));
 			LoadedPlayer player = null;
 
 			if (args[0].matches("[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}"))
@@ -90,7 +90,7 @@ public class CommandBanInfo extends Command{
 		}
 		cs.sendMessage(Main.getTranslationManager().translate("prefix",cs)+Main.getTranslationManager().translate("command.baninfo.help",cs));
 	}
-	
+
 }
 //command.baninfo.status.loadingPlayer - §aLoading player...
 //command.baninfo.error.toLongName - §cPlayer name cant be longer than 16.

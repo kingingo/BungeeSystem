@@ -1,7 +1,7 @@
-package dev.wolveringer.bs.commands;
+package eu.epicpvp.bungee.system.bs.commands;
 
-import dev.wolveringer.bs.Main;
-import dev.wolveringer.permission.PermissionManager;
+import eu.epicpvp.bungee.system.bs.Main;
+import eu.epicpvp.bungee.system.permission.PermissionManager;
 import dev.wolveringer.bukkit.permissions.PermissionType;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.CommandSender;
@@ -17,11 +17,11 @@ public class CommandTBuild extends Command {
 	@Override
 	public void execute(CommandSender sender, String[] args) {
 		ProxiedPlayer p = (ProxiedPlayer) sender;
-		
+
 		if(!PermissionManager.getManager().hasPermission(p, PermissionType.TBUILD_SERVER,true))return;
-		
+
 		if (p.getServer().getInfo() != BungeeCord.getInstance().getServerInfo("tbuild")) {
-	        p.connect(BungeeCord.getInstance().getServerInfo("tbuild"));  
+	        p.connect(BungeeCord.getInstance().getServerInfo("tbuild"));
 	    }else{
 	    	p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.tbuild.alredy", sender));
 	    }

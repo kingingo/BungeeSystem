@@ -1,4 +1,4 @@
-package dev.wolveringer.guild.gui.section;
+package eu.epicpvp.bungee.system.guild.gui.section;
 
 import dev.wolveringer.gilde.GildSection;
 

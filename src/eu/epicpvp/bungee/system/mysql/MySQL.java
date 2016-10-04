@@ -1,4 +1,4 @@
-package dev.wolveringer.mysql;
+package eu.epicpvp.bungee.system.mysql;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;

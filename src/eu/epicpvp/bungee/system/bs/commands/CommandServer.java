@@ -1,4 +1,4 @@
-package dev.wolveringer.bs.commands;
+package eu.epicpvp.bungee.system.bs.commands;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,8 +9,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.collect.Lists;
 
-import dev.wolveringer.bs.Main;
-import dev.wolveringer.permission.PermissionManager;
+import eu.epicpvp.bungee.system.bs.Main;
+import eu.epicpvp.bungee.system.permission.PermissionManager;
 import dev.wolveringer.bukkit.permissions.PermissionType;
 import dev.wolveringer.client.Callback;
 import dev.wolveringer.client.PacketHandleErrorException;
@@ -83,7 +83,7 @@ public class CommandServer extends Command implements TabExecutor {
 					sender.sendMessage(new ComponentBuilder("----------------------------------------------------").color(ChatColor.GRAY).create());
 					return;
 				}
-				
+
 				if (!(BungeeCord.getInstance().getServerInfo(args[0]) == null)) {
 					if (sender instanceof ProxiedPlayer) {
 						ProxiedPlayer p = (ProxiedPlayer) sender;

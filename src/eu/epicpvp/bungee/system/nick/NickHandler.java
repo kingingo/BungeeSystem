@@ -1,4 +1,4 @@
-package dev.wolveringer.nick;
+package eu.epicpvp.bungee.system.nick;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,11 +21,11 @@ import dev.wolveringer.BungeeUtil.packets.PacketPlayOutTitle;
 import dev.wolveringer.arrays.CachedArrayList;
 import eu.epicpvp.bungee.system.bs.Main;
 import eu.epicpvp.bungee.system.bs.client.event.ServerMessageEvent;
-import dev.wolveringer.chat.ChatManager;
+import eu.epicpvp.bungee.system.chat.ChatManager;
 import dev.wolveringer.chat.ChatSerializer;
 import dev.wolveringer.chat.IChatBaseComponent;
 import dev.wolveringer.client.LoadedPlayer;
-import dev.wolveringer.permission.PermissionManager;
+import eu.epicpvp.bungee.system.permission.PermissionManager;
 import dev.wolveringer.thread.ThreadFactory;
 import lombok.Getter;
 import lombok.Setter;

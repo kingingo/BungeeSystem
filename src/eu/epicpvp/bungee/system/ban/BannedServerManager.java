@@ -1,4 +1,4 @@
-package dev.wolveringer.ban;
+package eu.epicpvp.bungee.system.ban;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,14 +7,14 @@ import java.util.List;
 import java.util.regex.Matcher;
 
 import dev.wolveringer.BungeeUtil.Player;
-import dev.wolveringer.bs.Main;
-import dev.wolveringer.bs.listener.PlayerJoinListener;
-import dev.wolveringer.bs.message.MessageManager;
-import dev.wolveringer.bs.servermanager.ServerManager;
+import eu.epicpvp.bungee.system.bs.Main;
+import eu.epicpvp.bungee.system.bs.listener.PlayerJoinListener;
+import eu.epicpvp.bungee.system.bs.message.MessageManager;
+import eu.epicpvp.bungee.system.bs.servermanager.ServerManager;
 import dev.wolveringer.dataserver.ban.BanEntity;
 import dev.wolveringer.dataserver.player.LanguageType;
-import dev.wolveringer.nick.ReplaceUtils;
-import dev.wolveringer.nick.ReplaceUtils.Replacer;
+import eu.epicpvp.bungee.system.nick.ReplaceUtils;
+import eu.epicpvp.bungee.system.nick.ReplaceUtils.Replacer;
 import eu.epicpvp.bungee.fakeserver.CostumServer;
 import eu.epicpvp.bungee.fakeserver.ServerConfiguration;
 import eu.epicpvp.bungee.fakeserver.ServerConfiguration.ServerConfigurationBuilder;

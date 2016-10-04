@@ -1,10 +1,10 @@
-package dev.wolveringer.bs.commands;
+package eu.epicpvp.bungee.system.bs.commands;
 
-import dev.wolveringer.bs.Main;
-import dev.wolveringer.bs.client.event.ServerMessageEvent;
+import eu.epicpvp.bungee.system.bs.Main;
+import eu.epicpvp.bungee.system.bs.client.event.ServerMessageEvent;
 import dev.wolveringer.client.connection.ClientType;
 import dev.wolveringer.dataserver.protocoll.DataBuffer;
-import dev.wolveringer.permission.PermissionManager;
+import eu.epicpvp.bungee.system.permission.PermissionManager;
 import dev.wolveringer.bukkit.permissions.PermissionType;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.CommandSender;
@@ -34,7 +34,7 @@ public class CommandClearChat extends Command implements Listener {
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void a(ServerMessageEvent e){
 		if(e.getChannel().equalsIgnoreCase("chatclear")){

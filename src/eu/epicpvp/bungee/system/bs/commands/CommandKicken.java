@@ -1,7 +1,7 @@
-package dev.wolveringer.bs.commands;
+package eu.epicpvp.bungee.system.bs.commands;
 
-import dev.wolveringer.bs.Main;
-import dev.wolveringer.permission.PermissionManager;
+import eu.epicpvp.bungee.system.bs.Main;
+import eu.epicpvp.bungee.system.permission.PermissionManager;
 import dev.wolveringer.bukkit.permissions.PermissionType;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ChatColor;
@@ -16,13 +16,13 @@ public class CommandKicken extends Command implements Listener{
 		super("bkick",null,name,"kick");
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), this);
 	}
-	
+
 	@Override
 	public void execute(CommandSender sender, String[] args) {
 		if(sender instanceof ProxiedPlayer){
 			ProxiedPlayer player = (ProxiedPlayer)sender;
 			if(!PermissionManager.getManager().hasPermission(player, PermissionType.KICKEN,true))return;
-			
+
 			if(args.length<1){
 				player.sendMessages(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.kick.help", sender));
 			}else{

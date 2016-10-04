@@ -1,4 +1,4 @@
-package dev.wolveringer.report.search;
+package eu.epicpvp.bungee.system.report.search;
 
 import java.util.ArrayList;
 import java.util.HashMap;

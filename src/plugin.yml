@@ -1,5 +1,5 @@
 name: BungeecordSystem
-main: dev.wolveringer.bs.Main
+main: eu.epicpvp.bungee.system.bs.Main
 version: 1.0
 author: WolverinDEV
 depend: [DatenClient]

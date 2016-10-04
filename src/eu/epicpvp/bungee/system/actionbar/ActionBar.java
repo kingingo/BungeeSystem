@@ -1,7 +1,7 @@
-package dev.wolveringer.actionbar;
+package eu.epicpvp.bungee.system.actionbar;
 
 import dev.wolveringer.BungeeUtil.Player;
-import dev.wolveringer.permission.PermissionManager;
+import eu.epicpvp.bungee.system.permission.PermissionManager;
 import dev.wolveringer.thread.ThreadFactory;
 import dev.wolveringer.thread.ThreadRunner;
 
@@ -12,7 +12,6 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 import net.md_5.bungee.BungeeCord;
-import net.md_5.bungee.api.connection.Connection.Unsafe;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.protocol.packet.Chat;
 

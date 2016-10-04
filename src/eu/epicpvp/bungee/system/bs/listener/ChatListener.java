@@ -1,4 +1,4 @@
-package dev.wolveringer.bs.listener;
+package eu.epicpvp.bungee.system.bs.listener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import dev.wolveringer.BungeeUtil.Player;
-import dev.wolveringer.bs.Main;
-import dev.wolveringer.bs.login.LoginManager;
+import eu.epicpvp.bungee.system.bs.Main;
+import eu.epicpvp.bungee.system.bs.login.LoginManager;
 import dev.wolveringer.client.Callback;
 import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.client.debug.Debugger;
@@ -15,7 +15,7 @@ import dev.wolveringer.dataserver.gamestats.GameType;
 import dev.wolveringer.dataserver.protocoll.packets.PacketVersion;
 import dev.wolveringer.gamestats.Statistic;
 import dev.wolveringer.hashmaps.CachedHashMap;
-import dev.wolveringer.permission.PermissionManager;
+import eu.epicpvp.bungee.system.permission.PermissionManager;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ChatEvent;

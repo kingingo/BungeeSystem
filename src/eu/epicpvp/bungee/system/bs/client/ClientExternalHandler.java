@@ -1,17 +1,17 @@
-package dev.wolveringer.bs.client;
+package eu.epicpvp.bungee.system.bs.client;
 
 import java.util.UUID;
 
 import dev.wolveringer.BungeeUtil.Player;
-import dev.wolveringer.bs.Main;
-import dev.wolveringer.bs.UtilBungeeCord;
-import dev.wolveringer.bs.client.event.ServerMessageEvent;
+import eu.epicpvp.bungee.system.bs.Main;
+import eu.epicpvp.bungee.system.bs.UtilBungeeCord;
+import eu.epicpvp.bungee.system.bs.client.event.ServerMessageEvent;
 import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.client.connection.State;
 import dev.wolveringer.client.external.BungeeCordActionListener;
 import dev.wolveringer.dataserver.player.Setting;
 import dev.wolveringer.dataserver.protocoll.DataBuffer;
-import dev.wolveringer.permission.PermissionManager;
+import eu.epicpvp.bungee.system.permission.PermissionManager;
 import dev.wolveringer.thread.ThreadFactory;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ChatColor;
@@ -128,7 +128,7 @@ public class ClientExternalHandler implements BungeeCordActionListener{
 		System.out.println("§cError while "+state);
 		e.printStackTrace();
 	}
-	
+
 	@Override
 	public boolean isOnline(String name) {
 		return BungeeCord.getInstance().getPlayer(name) != null && BungeeCord.getInstance().getPlayer(name).isConnected();

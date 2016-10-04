@@ -1,6 +1,6 @@
-package dev.wolveringer.bs.message;
+package eu.epicpvp.bungee.system.bs.message;
 
-import dev.wolveringer.bs.client.event.ServerMessageEvent;
+import eu.epicpvp.bungee.system.bs.client.event.ServerMessageEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 

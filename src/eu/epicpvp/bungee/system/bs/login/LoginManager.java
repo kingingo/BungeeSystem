@@ -1,13 +1,13 @@
-package dev.wolveringer.bs.login;
+package eu.epicpvp.bungee.system.bs.login;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.util.ArrayList;
 
-import dev.wolveringer.bs.Main;
-import dev.wolveringer.bs.message.MessageManager;
-import dev.wolveringer.bs.servermanager.ServerManager;
-import dev.wolveringer.permission.PermissionManager;
+import eu.epicpvp.bungee.system.bs.Main;
+import eu.epicpvp.bungee.system.bs.message.MessageManager;
+import eu.epicpvp.bungee.system.bs.servermanager.ServerManager;
+import eu.epicpvp.bungee.system.permission.PermissionManager;
 import dev.wolveringer.bukkit.permissions.PermissionType;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.ServerConnection;

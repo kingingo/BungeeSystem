@@ -1,4 +1,4 @@
-package dev.wolveringer.gui;
+package eu.epicpvp.bungee.system.gui;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,7 @@ import dev.wolveringer.api.gui.AnvilGui;
 import dev.wolveringer.api.gui.AnvilGuiListener;
 import dev.wolveringer.api.inventory.Inventory;
 import eu.epicpvp.bungee.system.bs.Main;
-import dev.wolveringer.item.ItemBuilder;
+import eu.epicpvp.bungee.system.item.ItemBuilder;
 import dev.wolveringer.skin.Skin;
 import dev.wolveringer.skin.SteveSkin;
 import dev.wolveringer.thread.ThreadFactory;

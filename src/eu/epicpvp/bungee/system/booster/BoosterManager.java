@@ -1,4 +1,4 @@
-package dev.wolveringer.booster;
+package eu.epicpvp.bungee.system.booster;
 
 import java.util.HashMap;
 

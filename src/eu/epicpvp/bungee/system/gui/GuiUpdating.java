@@ -1,4 +1,4 @@
-package dev.wolveringer.gui;
+package eu.epicpvp.bungee.system.gui;
 
 import dev.wolveringer.BungeeUtil.Player;
 import dev.wolveringer.api.inventory.Inventory;
@@ -9,7 +9,7 @@ import dev.wolveringer.thread.ThreadRunner;
 public abstract class GuiUpdating extends Gui{
 	private ThreadRunner pid;
 	private int waitTime = 1000;
-	
+
 	public GuiUpdating(int rows, String name) {
 		super(rows, name);
 	}
@@ -36,16 +36,16 @@ public abstract class GuiUpdating extends Gui{
 		});
 		pid.start();
 	}
-	
+
 	public abstract void updateInventory();
-	
+
 	public void setWaitTime(int waitTime) {
 		this.waitTime = waitTime;
 	}
 	public int getWaitTime() {
 		return waitTime;
 	}
-	
+
 	@Override
 	public void deactive() {
 		pid.stop();

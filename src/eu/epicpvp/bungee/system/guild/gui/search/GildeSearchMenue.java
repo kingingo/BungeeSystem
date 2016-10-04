@@ -1,4 +1,4 @@
-package dev.wolveringer.guild.gui.search;
+package eu.epicpvp.bungee.system.guild.gui.search;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,8 +10,8 @@ import dev.wolveringer.BungeeUtil.item.Item;
 import eu.epicpvp.bungee.system.bs.Main;
 import dev.wolveringer.client.Callback;
 import dev.wolveringer.gilde.GildeType;
-import dev.wolveringer.gui.SearchMenue;
-import dev.wolveringer.item.ItemBuilder;
+import eu.epicpvp.bungee.system.gui.SearchMenue;
+import eu.epicpvp.bungee.system.item.ItemBuilder;
 
 public abstract class GildeSearchMenue extends SearchMenue {
 

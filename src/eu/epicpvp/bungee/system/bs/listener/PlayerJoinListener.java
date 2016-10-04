@@ -1,4 +1,4 @@
-package dev.wolveringer.bs.listener;
+package eu.epicpvp.bungee.system.bs.listener;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -7,16 +7,16 @@ import java.util.concurrent.TimeUnit;
 import dev.wolveringer.BungeeUtil.ClientVersion;
 import dev.wolveringer.BungeeUtil.ClientVersion.BigClientVersion;
 import dev.wolveringer.arrays.CachedArrayList;
-import dev.wolveringer.bs.Main;
-import dev.wolveringer.bs.information.InformationManager;
-import dev.wolveringer.bs.message.MessageManager;
+import eu.epicpvp.bungee.system.bs.Main;
+import eu.epicpvp.bungee.system.bs.information.InformationManager;
+import eu.epicpvp.bungee.system.bs.message.MessageManager;
 import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.client.PacketHandleErrorException;
 import dev.wolveringer.dataserver.player.LanguageType;
 import dev.wolveringer.dataserver.player.Setting;
 import dev.wolveringer.dataserver.protocoll.packets.PacketInChangePlayerSettings;
 import dev.wolveringer.dataserver.protocoll.packets.PacketVersion;
-import dev.wolveringer.permission.PermissionManager;
+import eu.epicpvp.bungee.system.permission.PermissionManager;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.event.PreLoginEvent;

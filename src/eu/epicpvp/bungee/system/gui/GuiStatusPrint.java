@@ -1,11 +1,11 @@
-package dev.wolveringer.gui;
+package eu.epicpvp.bungee.system.gui;
 
 import dev.wolveringer.BungeeUtil.item.Item;
 import dev.wolveringer.BungeeUtil.item.ItemStack;
 
 public abstract class GuiStatusPrint extends Gui{
 	private Item item;
-	
+
 	public GuiStatusPrint(int rows, Item message) {
 		super(rows, "§c");
 		this.item = new ItemStack(message) {

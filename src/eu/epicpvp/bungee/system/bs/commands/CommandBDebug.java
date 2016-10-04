@@ -1,11 +1,11 @@
-package dev.wolveringer.bs.commands;
+package eu.epicpvp.bungee.system.bs.commands;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import dev.wolveringer.bs.Bootstrap;
+import eu.epicpvp.bungee.system.bs.Bootstrap;
 import dev.wolveringer.client.debug.Debugger;
-import dev.wolveringer.permission.PermissionManager;
+import eu.epicpvp.bungee.system.permission.PermissionManager;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;

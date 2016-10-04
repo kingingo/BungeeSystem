@@ -1,4 +1,4 @@
-package dev.wolveringer.bs.commands;
+package eu.epicpvp.bungee.system.bs.commands;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -6,14 +6,14 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import dev.wolveringer.ban.BanServerMessageListener;
-import dev.wolveringer.bs.Main;
+import eu.epicpvp.bungee.system.ban.BanServerMessageListener;
+import eu.epicpvp.bungee.system.bs.Main;
 import dev.wolveringer.client.Callback;
 import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.dataserver.ban.BanEntity;
 import dev.wolveringer.dataserver.player.Setting;
 import dev.wolveringer.dataserver.protocoll.packets.PacketOutPlayerSettings.SettingValue;
-import dev.wolveringer.permission.PermissionManager;
+import eu.epicpvp.bungee.system.permission.PermissionManager;
 import dev.wolveringer.thread.ThreadFactory;
 import dev.wolveringer.bukkit.permissions.PermissionType;
 import net.md_5.bungee.BungeeCord;
@@ -96,7 +96,7 @@ public class CommandTempBan extends Command {
 				cs.sendMessage("§cToo long ban time. Maximal temp-time 14D");
 				return;
 			}
-			
+
 			String reson = ChatColor.translateAlternateColorCodes('&', join(Arrays.copyOfRange(args, 3, args.length), " "));
 
 			LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(args[0]);
@@ -124,7 +124,7 @@ public class CommandTempBan extends Command {
 						public void call(Boolean obj, Throwable exception) {
 							if(exception != null || obj == false){
 								if(BungeeCord.getInstance().getPlayer(player.getName()) != null)
-									BungeeCord.getInstance().getPlayer(player.getName()).disconnect(Main.getTranslationManager().translate("command.ban.kickplayer", cs,reson,cs.getName())); 
+									BungeeCord.getInstance().getPlayer(player.getName()).disconnect(Main.getTranslationManager().translate("command.ban.kickplayer", cs,reson,cs.getName()));
 								else
 									player.kickPlayer(Main.getTranslationManager().translate("command.ban.kickplayer", cs,reson,cs.getName()));
 							}
@@ -143,7 +143,7 @@ public class CommandTempBan extends Command {
 		cs.sendMessage("§cTime format: 1H;22D;11S");
 		cs.sendMessage("§cAvariable Time Types: S-Seconds, M-Minutes, H-Houer, D-Days");
 	}
-	
+
 	private String join(String[] copyOfRange, String string) {
 		String out = "";
 		for(String s : copyOfRange)
@@ -160,7 +160,7 @@ public class CommandTempBan extends Command {
 				return false;
 		return true;
 	}
-	
+
 	public static String getDurationBreakdown(long millis) {
 		if (millis < 0) {
 			throw new IllegalArgumentException("Duration must be greater than zero!");
@@ -193,7 +193,7 @@ public class CommandTempBan extends Command {
 		}
 		return (sb.toString());
 	}
-	
+
 	public static void main(String[] args) {
 		for(String s : "1D".split(";")){
 			String stime = "";

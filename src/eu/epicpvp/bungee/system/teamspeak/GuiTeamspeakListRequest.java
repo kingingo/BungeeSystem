@@ -1,4 +1,4 @@
-package dev.wolveringer.teamspeak;
+package eu.epicpvp.bungee.system.teamspeak;
 
 import java.util.Collections;
 import java.util.Comparator;

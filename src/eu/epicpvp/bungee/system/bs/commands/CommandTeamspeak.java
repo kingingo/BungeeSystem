@@ -1,7 +1,7 @@
-package dev.wolveringer.bs.commands;
+package eu.epicpvp.bungee.system.bs.commands;
 
 import dev.wolveringer.BungeeUtil.Player;
-import dev.wolveringer.teamspeak.GuiTeamspeak;
+import eu.epicpvp.bungee.system.teamspeak.GuiTeamspeak;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.plugin.Command;
 

@@ -1,7 +1,7 @@
-package dev.wolveringer.bs.commands;
+package eu.epicpvp.bungee.system.bs.commands;
 
-import dev.wolveringer.bs.Main;
-import dev.wolveringer.permission.PermissionManager;
+import eu.epicpvp.bungee.system.bs.Main;
+import eu.epicpvp.bungee.system.permission.PermissionManager;
 import dev.wolveringer.bukkit.permissions.PermissionType;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -20,7 +20,7 @@ public class CommandBroad extends Command implements Listener {
 		ProxiedPlayer p = (ProxiedPlayer) sender;
 		if (PermissionManager.getManager().hasPermission(p, PermissionType.BROADCAST, true)) {
 			if (args.length == 0) {
-				
+
 				sender.sendMessage(Main.getTranslationManager().translate("prefix",sender)+ Main.getTranslationManager().translate("command.broad.nomessage",sender));
 			} else {
 				StringBuilder builder = new StringBuilder();

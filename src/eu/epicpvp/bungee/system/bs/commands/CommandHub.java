@@ -1,9 +1,9 @@
-package dev.wolveringer.bs.commands;
+package eu.epicpvp.bungee.system.bs.commands;
 
-import dev.wolveringer.bs.Main;
-import dev.wolveringer.bs.login.LoginManager;
-import dev.wolveringer.bs.servermanager.ServerManager;
-import dev.wolveringer.permission.PermissionManager;
+import eu.epicpvp.bungee.system.bs.Main;
+import eu.epicpvp.bungee.system.bs.login.LoginManager;
+import eu.epicpvp.bungee.system.bs.servermanager.ServerManager;
+import eu.epicpvp.bungee.system.permission.PermissionManager;
 import dev.wolveringer.bukkit.permissions.PermissionType;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;

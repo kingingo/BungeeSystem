@@ -1,11 +1,11 @@
-package dev.wolveringer.bs.listener;
+package eu.epicpvp.bungee.system.bs.listener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import dev.wolveringer.BungeeUtil.Player;
-import dev.wolveringer.bs.Main;
+import eu.epicpvp.bungee.system.bs.Main;
 import dev.wolveringer.client.Callback;
 import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.client.ProgressFuture;
@@ -38,7 +38,7 @@ public class TimeListener implements Listener {
 	private final long MINUTE = 60000L;
 	private static boolean active = false;
 	private CachedHashMap<Player, Long> alltimings = new CachedHashMap<>(2, TimeUnit.MINUTES);
-	
+
 	public TimeListener() {
 		init();
 	}
@@ -97,12 +97,12 @@ public class TimeListener implements Listener {
 				if(players.containsKey(loadedplayer.getPlayerId()))
 					playedTime+=System.currentTimeMillis()-players.get(loadedplayer.getPlayerId()).timestamp;
 				future.applayValue(playedTime);
-				
+
 			}
 		});
 		return future;
 	}
-	
+
 	public void init() {
 		active = true;
 		BungeeCord.getInstance().getScheduler().runAsync(Main.getInstance(), new Runnable() {

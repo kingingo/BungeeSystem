@@ -9,7 +9,7 @@ import eu.epicpvp.bungee.system.bs.Main;
 import dev.wolveringer.client.connection.ClientType;
 import dev.wolveringer.dataserver.player.LanguageType;
 import dev.wolveringer.dataserver.protocoll.DataBuffer;
-import dev.wolveringer.mysql.MySQL;
+import eu.epicpvp.bungee.system.mysql.MySQL;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.Title;

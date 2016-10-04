@@ -1,9 +1,9 @@
-package dev.wolveringer.bs.commands;
+package eu.epicpvp.bungee.system.bs.commands;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 
-import dev.wolveringer.bs.Main;
+import eu.epicpvp.bungee.system.bs.Main;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -18,7 +18,7 @@ public class CommandgPing extends Command {
 	public String getAvgPing() {
 		BigDecimal all = new BigDecimal(0);
 		int count = 0;
-		
+
 
 		for (ProxiedPlayer player : BungeeCord.getInstance().getPlayers()) {
 			all = all.add(new BigDecimal(player.getPing()));

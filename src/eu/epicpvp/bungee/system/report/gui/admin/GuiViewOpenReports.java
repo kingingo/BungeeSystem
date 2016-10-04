@@ -1,4 +1,4 @@
-package dev.wolveringer.report.gui.admin;
+package eu.epicpvp.bungee.system.report.gui.admin;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,7 +18,7 @@ import eu.epicpvp.bungee.system.gui.Gui;
 import dev.wolveringer.hashmaps.InitHashMap;
 import eu.epicpvp.bungee.system.item.ItemBuilder;
 import dev.wolveringer.report.ReportEntity;
-import dev.wolveringer.report.gui.GuiPlayerMenue;
+import eu.epicpvp.bungee.system.report.gui.GuiPlayerMenue;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
 

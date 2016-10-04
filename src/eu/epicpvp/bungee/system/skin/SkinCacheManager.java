@@ -1,16 +1,15 @@
-package dev.wolveringer.skin;
+package eu.epicpvp.bungee.system.skin;
 
 import java.util.concurrent.TimeUnit;
 
-import eu.epicpvp.bungee.system.bs.Main;
 import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.hashmaps.CachedHashMap;
+import dev.wolveringer.skin.Skin;
+import dev.wolveringer.skin.SteveSkin;
+import eu.epicpvp.bungee.system.bs.Main;
 
 public class SkinCacheManager {
 	private CachedHashMap<String, Skin> skinCache = new CachedHashMap<>(2, TimeUnit.MINUTES);
-
-	public SkinCacheManager() {
-	}
 
 	public Skin getIfLoaded(String player) {
 		return skinCache.getOrDefault(player, null);

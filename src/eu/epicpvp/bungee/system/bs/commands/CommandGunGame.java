@@ -1,6 +1,6 @@
-package dev.wolveringer.bs.commands;
+package eu.epicpvp.bungee.system.bs.commands;
 
-import dev.wolveringer.bs.Main;
+import eu.epicpvp.bungee.system.bs.Main;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -15,9 +15,9 @@ public class CommandGunGame extends Command {
 	@Override
 	public void execute(CommandSender sender, String[] args) {
 		ProxiedPlayer p = (ProxiedPlayer) sender;
-		
+
 		if (p.getServer().getInfo() != BungeeCord.getInstance().getServerInfo("gungame")) {
-	        p.connect(BungeeCord.getInstance().getServerInfo("gungame"));  
+	        p.connect(BungeeCord.getInstance().getServerInfo("gungame"));
 	    }else{
 	    	p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.gungame.alredy", args)); //§cYou are allready on the §epvp §cserver!
 	    }

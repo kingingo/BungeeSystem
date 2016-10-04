@@ -1,7 +1,7 @@
-package dev.wolveringer.bs.listener;
+package eu.epicpvp.bungee.system.bs.listener;
 
-import dev.wolveringer.bs.Main;
-import dev.wolveringer.bs.consolencommand.CommandExecutor;
+import eu.epicpvp.bungee.system.bs.Main;
+import eu.epicpvp.bungee.system.bs.consolencommand.CommandExecutor;
 import net.md_5.bungee.api.CommandSender;
 
 public class ConsoleTeamMessageListener implements CommandExecutor{

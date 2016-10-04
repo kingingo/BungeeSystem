@@ -1,11 +1,11 @@
-package dev.wolveringer.bs.commands;
+package eu.epicpvp.bungee.system.bs.commands;
 
-import dev.wolveringer.bs.Main;
-import dev.wolveringer.bs.client.event.ServerMessageEvent;
+import eu.epicpvp.bungee.system.bs.Main;
+import eu.epicpvp.bungee.system.bs.client.event.ServerMessageEvent;
 import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.client.connection.ClientType;
 import dev.wolveringer.dataserver.protocoll.DataBuffer;
-import dev.wolveringer.permission.PermissionManager;
+import eu.epicpvp.bungee.system.permission.PermissionManager;
 import dev.wolveringer.bukkit.permissions.PermissionType;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.CommandSender;
@@ -24,12 +24,12 @@ public class CommandWhereIs extends Command implements Listener {
 	@Override
 	public void execute(CommandSender sender, String[] args) {
 		ProxiedPlayer p = (ProxiedPlayer) sender;
-		
+
 		if (args.length==0) {
 			p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.whereis.message", sender,new String[]{p.getName(),p.getServer().getInfo().getName(),Main.getInstance().getServerId()}));
 			return;
 		}
-		
+
 		if (PermissionManager.getManager().hasPermission(p, PermissionType.WHERE_IS,true)) {
 			if (args.length == 1) {
 				String name = args[0];

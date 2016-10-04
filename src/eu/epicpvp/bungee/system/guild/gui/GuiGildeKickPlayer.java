@@ -1,4 +1,4 @@
-package dev.wolveringer.guild.gui;
+package eu.epicpvp.bungee.system.guild.gui;
 
 import dev.wolveringer.BungeeUtil.Material;
 import dev.wolveringer.BungeeUtil.item.ItemStack.Click;
@@ -6,8 +6,8 @@ import eu.epicpvp.bungee.system.bs.Main;
 import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.gilde.GildSection;
 import dev.wolveringer.gilde.GildeType;
-import dev.wolveringer.gui.Gui;
-import dev.wolveringer.item.ItemBuilder;
+import eu.epicpvp.bungee.system.gui.Gui;
+import eu.epicpvp.bungee.system.item.ItemBuilder;
 
 public class GuiGildeKickPlayer extends Gui {
 	private GildSection section;

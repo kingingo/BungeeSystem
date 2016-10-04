@@ -1,12 +1,12 @@
-package dev.wolveringer.guild.gui;
+package eu.epicpvp.bungee.system.guild.gui;
 
 import dev.wolveringer.BungeeUtil.Material;
 import dev.wolveringer.BungeeUtil.item.ItemStack;
 import eu.epicpvp.bungee.system.bs.Main;
 import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.gilde.Gilde;
-import dev.wolveringer.gui.Gui;
-import dev.wolveringer.item.ItemBuilder;
+import eu.epicpvp.bungee.system.gui.Gui;
+import eu.epicpvp.bungee.system.item.ItemBuilder;
 import net.md_5.bungee.BungeeCord;
 
 public class GuiGildeDeleteConfirm extends Gui{

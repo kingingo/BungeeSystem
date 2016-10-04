@@ -1,16 +1,12 @@
-package dev.wolveringer.guild.listener;
+package eu.epicpvp.bungee.system.guild.listener;
 
 import dev.wolveringer.BungeeUtil.PacketHandleEvent;
 import dev.wolveringer.BungeeUtil.PacketHandler;
-import dev.wolveringer.BungeeUtil.Player;
-import dev.wolveringer.BungeeUtil.gameprofile.GameProfile;
 import dev.wolveringer.BungeeUtil.gameprofile.PlayerInfoData;
 import dev.wolveringer.BungeeUtil.packets.Packet;
 import dev.wolveringer.BungeeUtil.packets.PacketPlayOutPlayerInfo;
-import dev.wolveringer.BungeeUtil.packets.PacketPlayOutPlayerInfo.EnumPlayerInfoAction;
 import dev.wolveringer.BungeeUtil.packets.PacketPlayOutScoreboardTeam;
 import dev.wolveringer.chat.ChatMessage;
-import dev.wolveringer.chat.ChatSerializer;
 import dev.wolveringer.chat.IChatBaseComponent;
 import dev.wolveringer.client.LoadedPlayer;
 

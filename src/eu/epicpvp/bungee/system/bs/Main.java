@@ -1,10 +1,10 @@
-package dev.wolveringer.bs;
+package eu.epicpvp.bungee.system.bs;
 
-import dev.wolveringer.booster.BoosterManager;
-import dev.wolveringer.bs.client.BungeecordDatenClient;
+import eu.epicpvp.bungee.system.booster.BoosterManager;
+import eu.epicpvp.bungee.system.bs.client.BungeecordDatenClient;
 import dev.wolveringer.gilde.GildManager;
-import dev.wolveringer.skin.SkinCacheManager;
-import dev.wolveringer.translation.TranslationHandler;
+import eu.epicpvp.bungee.system.skin.SkinCacheManager;
+import eu.epicpvp.bungee.system.translation.TranslationHandler;
 import lombok.Getter;
 import lombok.Setter;
 import net.md_5.bungee.BungeeCord;

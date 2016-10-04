@@ -1,4 +1,4 @@
-package dev.wolveringer.slotmachine;
+package eu.epicpvp.bungee.system.slotmachine;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

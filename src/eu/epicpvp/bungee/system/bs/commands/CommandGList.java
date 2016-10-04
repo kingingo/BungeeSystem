@@ -1,10 +1,10 @@
-package dev.wolveringer.bs.commands;
+package eu.epicpvp.bungee.system.bs.commands;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import dev.wolveringer.bs.Main;
+import eu.epicpvp.bungee.system.bs.Main;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;

@@ -1,12 +1,12 @@
-package dev.wolveringer.bs.commands;
+package eu.epicpvp.bungee.system.bs.commands;
 
-import dev.wolveringer.bs.Main;
-import dev.wolveringer.bs.client.event.ServerMessageEvent;
+import eu.epicpvp.bungee.system.bs.Main;
+import eu.epicpvp.bungee.system.bs.client.event.ServerMessageEvent;
 import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.client.connection.ClientType;
 import dev.wolveringer.dataserver.player.LanguageType;
 import dev.wolveringer.dataserver.protocoll.DataBuffer;
-import dev.wolveringer.permission.PermissionManager;
+import eu.epicpvp.bungee.system.permission.PermissionManager;
 import dev.wolveringer.bukkit.permissions.PermissionType;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.CommandSender;
@@ -20,7 +20,7 @@ public class CommandPerformance extends Command implements Listener {
 	static {
 		Main.getTranslationManager().registerFallback(LanguageType.ENGLISH, "command.performance.info", "§7BungeeCord: §b%s0 §7Players: §b%s1 §7AVG-Ping: §b%s2 §7Memory: §b%s3mb§7/§c%s4mb");
 	}
-	
+
 	public CommandPerformance(String name) {
 		super(name);
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), this);

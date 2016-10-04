@@ -1,4 +1,4 @@
-package dev.wolveringer.report.gui;
+package eu.epicpvp.bungee.system.report.gui;
 
 import dev.wolveringer.BungeeUtil.Material;
 import dev.wolveringer.BungeeUtil.item.ItemStack;
@@ -7,8 +7,8 @@ import dev.wolveringer.client.LoadedPlayer;
 import eu.epicpvp.bungee.system.gui.Gui;
 import eu.epicpvp.bungee.system.item.ItemBuilder;
 import eu.epicpvp.bungee.system.permission.PermissionManager;
-import dev.wolveringer.report.gui.admin.GuiViewOpenReports;
-import dev.wolveringer.report.search.PlayerSearchMenue;
+import eu.epicpvp.bungee.system.report.gui.admin.GuiViewOpenReports;
+import eu.epicpvp.bungee.system.report.search.PlayerSearchMenue;
 import dev.wolveringer.thread.ThreadFactory;
 
 public class GuiPlayerMenue extends Gui {

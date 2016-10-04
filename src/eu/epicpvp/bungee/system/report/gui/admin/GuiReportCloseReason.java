@@ -1,4 +1,4 @@
-package dev.wolveringer.report.gui.admin;
+package eu.epicpvp.bungee.system.report.gui.admin;
 
 import java.util.ArrayList;
 

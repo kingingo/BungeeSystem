@@ -1,4 +1,4 @@
-package dev.wolveringer.bs;
+package eu.epicpvp.bungee.system.bs;
 
 import net.md_5.bungee.api.event.PreLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;

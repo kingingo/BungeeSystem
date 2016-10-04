@@ -1,4 +1,4 @@
-package dev.wolveringer.translation;
+package eu.epicpvp.bungee.system.translation;
 
 import eu.epicpvp.bungee.system.bs.Main;
 import dev.wolveringer.client.LoadedPlayer;

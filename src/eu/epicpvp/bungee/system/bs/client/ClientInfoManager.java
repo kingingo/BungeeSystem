@@ -1,6 +1,6 @@
-package dev.wolveringer.bs.client;
+package eu.epicpvp.bungee.system.bs.client;
 
-import dev.wolveringer.bs.Main;
+import eu.epicpvp.bungee.system.bs.Main;
 import dev.wolveringer.client.connection.ServerInformations;
 import dev.wolveringer.dataserver.gamestats.GameState;
 import dev.wolveringer.dataserver.gamestats.GameType;

@@ -1,4 +1,4 @@
-package dev.wolveringer.report.info;
+package eu.epicpvp.bungee.system.report.info;
 
 import java.util.Arrays;
 
@@ -7,7 +7,6 @@ import eu.epicpvp.bungee.system.actionbar.ActionBar;
 import eu.epicpvp.bungee.system.actionbar.ActionBar.ActionBarMessage;
 import eu.epicpvp.bungee.system.bs.Main;
 import eu.epicpvp.bungee.system.chat.ChatManager;
-import dev.wolveringer.chat.IChatBaseComponent;
 import eu.epicpvp.bungee.system.chat.ChatManager.ChatBoxModifier;
 import dev.wolveringer.dataserver.protocoll.packets.PacketReportRequest.RequestType;
 import dev.wolveringer.report.ReportEntity;

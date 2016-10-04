@@ -1,4 +1,4 @@
-package dev.wolveringer.ban;
+package eu.epicpvp.bungee.system.ban;
 
 import dev.wolveringer.BungeeUtil.PacketHandleEvent;
 import dev.wolveringer.BungeeUtil.PacketHandler;

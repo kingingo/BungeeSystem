@@ -1,4 +1,4 @@
-package dev.wolveringer.guild.gui.section;
+package eu.epicpvp.bungee.system.guild.gui.section;
 
 import java.util.ArrayList;
 
@@ -7,22 +7,22 @@ import dev.wolveringer.BungeeUtil.item.Item;
 import dev.wolveringer.BungeeUtil.item.ItemStack.Click;
 import dev.wolveringer.api.gui.AnvilGui;
 import dev.wolveringer.api.gui.AnvilGuiListener;
-import dev.wolveringer.booster.GuiIntegerSelect;
+import eu.epicpvp.bungee.system.booster.GuiIntegerSelect;
 import eu.epicpvp.bungee.system.bs.Main;
 import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.dataserver.protocoll.packets.PacketInStatsEdit;
 import dev.wolveringer.gamestats.Statistic;
 import dev.wolveringer.gilde.GildSection;
 import dev.wolveringer.gilde.GildePermissions;
-import dev.wolveringer.gui.Gui;
-import dev.wolveringer.gui.GuiStatusPrint;
-import dev.wolveringer.gui.GuiWaiting;
-import dev.wolveringer.guild.gui.GuiGildeAdminOverview;
-import dev.wolveringer.guild.gui.GuiGildeMemberInvatations;
-import dev.wolveringer.guild.gui.GuiGildeMemberManager;
-import dev.wolveringer.guild.gui.GuiGildeMoneyOverview;
-import dev.wolveringer.guild.gui.GuiGildePermissionGroupOverview;
-import dev.wolveringer.item.ItemBuilder;
+import eu.epicpvp.bungee.system.gui.Gui;
+import eu.epicpvp.bungee.system.gui.GuiStatusPrint;
+import eu.epicpvp.bungee.system.gui.GuiWaiting;
+import eu.epicpvp.bungee.system.guild.gui.GuiGildeAdminOverview;
+import eu.epicpvp.bungee.system.guild.gui.GuiGildeMemberInvatations;
+import eu.epicpvp.bungee.system.guild.gui.GuiGildeMemberManager;
+import eu.epicpvp.bungee.system.guild.gui.GuiGildeMoneyOverview;
+import eu.epicpvp.bungee.system.guild.gui.GuiGildePermissionGroupOverview;
+import eu.epicpvp.bungee.system.item.ItemBuilder;
 import dev.wolveringer.thread.ThreadFactory;
 import net.md_5.bungee.api.ChatColor;
 

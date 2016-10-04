@@ -1,11 +1,11 @@
-package dev.wolveringer.permission;
+package eu.epicpvp.bungee.system.permission;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
 import dev.wolveringer.bukkit.permissions.GroupTyp;
-import dev.wolveringer.mysql.MySQL;
+import eu.epicpvp.bungee.system.mysql.MySQL;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 

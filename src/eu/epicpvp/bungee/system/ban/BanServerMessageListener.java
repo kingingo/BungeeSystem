@@ -1,12 +1,12 @@
-package dev.wolveringer.ban;
+package eu.epicpvp.bungee.system.ban;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import dev.wolveringer.BungeeUtil.Player;
-import dev.wolveringer.bs.Main;
-import dev.wolveringer.bs.client.event.ServerMessageEvent;
+import eu.epicpvp.bungee.system.bs.Main;
+import eu.epicpvp.bungee.system.bs.client.event.ServerMessageEvent;
 import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.client.PacketHandleErrorException;
 import dev.wolveringer.client.ProgressFuture;
@@ -25,13 +25,13 @@ import net.md_5.bungee.event.EventHandler;
 public class BanServerMessageListener implements Listener{
 	@Getter
 	private static BanServerMessageListener instance;
-	
+
 	private HashMap<Integer, Boolean> responses = new CachedHashMap<>(1, TimeUnit.MINUTES);
-	
+
 	public BanServerMessageListener() {
 		instance = this;
 	}
-	
+
 	@EventHandler
 	public void a(ServerMessageEvent e){
 		if(e.getChannel().equalsIgnoreCase("ban")){
@@ -51,7 +51,7 @@ public class BanServerMessageListener implements Listener{
 			responses.put(e.getBuffer().readInt(), e.getBuffer().readBoolean());
 		}
 	}
-	
+
 	public void updateBan(LoadedPlayer player,boolean active){
 		List<BanEntity> entries = player.getBanStats(player.getSettings(Setting.CURRUNT_IP).getSync()[0].getValue(),1).getSync();
 		Player plr = (Player) BungeeCord.getInstance().getPlayer(player.getName());
@@ -62,7 +62,7 @@ public class BanServerMessageListener implements Listener{
 				BannedServerManager.getInstance().unban(plr);
 		}
 	}
-	
+
 	public ProgressFuture<Boolean> movePlayer(LoadedPlayer player,boolean active){
 		if(BungeeCord.getInstance().getPlayer(player.getName()) != null){
 			 updateBan(player, active);

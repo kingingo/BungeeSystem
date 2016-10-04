@@ -1,4 +1,4 @@
-package dev.wolveringer.bs.client.event;
+package eu.epicpvp.bungee.system.bs.client.event;
 
 import dev.wolveringer.dataserver.protocoll.DataBuffer;
 import lombok.AllArgsConstructor;

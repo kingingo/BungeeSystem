@@ -1,4 +1,4 @@
-package dev.wolveringer.item;
+package eu.epicpvp.bungee.system.item;
 
 import java.util.ArrayList;
 
@@ -6,7 +6,6 @@ import dev.wolveringer.BungeeUtil.Material;
 import dev.wolveringer.BungeeUtil.item.Item;
 import dev.wolveringer.BungeeUtil.item.ItemStack;
 import dev.wolveringer.BungeeUtil.item.ItemStack.Click;
-import dev.wolveringer.BungeeUtil.item.SyncHandle;
 
 public class ItemBuilder {
 	@FunctionalInterface
@@ -59,7 +58,7 @@ public class ItemBuilder {
 		this.lore.add(lore);
 		return this;
 	}
-	
+
 	public ItemBuilder lore(String[] lore) {
 		this.lore.clear();
 		if(lore != null)
@@ -92,7 +91,7 @@ public class ItemBuilder {
 		this.listener = run;
 		return this;
 	}
-	
+
 	public ItemBuilder listener(Runnable run) {
 		this.listener = new ItemClickListener() {
 			@Override

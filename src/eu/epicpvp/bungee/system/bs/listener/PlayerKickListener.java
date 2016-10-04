@@ -1,7 +1,7 @@
-package dev.wolveringer.bs.listener;
+package eu.epicpvp.bungee.system.bs.listener;
 
-import dev.wolveringer.bs.login.LoginManager;
-import dev.wolveringer.bs.servermanager.ServerManager;
+import eu.epicpvp.bungee.system.bs.login.LoginManager;
+import eu.epicpvp.bungee.system.bs.servermanager.ServerManager;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.AbstractReconnectHandler;
 import net.md_5.bungee.api.ProxyServer;
@@ -22,7 +22,7 @@ public class PlayerKickListener implements Listener{
 			ev.getPlayer().disconnect(ev.getKickReasonComponent());
 			return;
 		}
-		
+
 		ServerInfo kickedFrom = null;
 		if (ev.getPlayer().getServer() != null) {
 			kickedFrom = ev.getPlayer().getServer().getInfo();

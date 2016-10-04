@@ -1,4 +1,4 @@
-package dev.wolveringer.guild.gui;
+package eu.epicpvp.bungee.system.guild.gui;
 
 import java.util.List;
 
@@ -9,10 +9,10 @@ import eu.epicpvp.bungee.system.bs.Main;
 import dev.wolveringer.gilde.GildPermissionGroup;
 import dev.wolveringer.gilde.GildePermissions;
 import dev.wolveringer.gilde.GildePermissions.DisplayItem;
-import dev.wolveringer.gui.Gui;
-import dev.wolveringer.gui.GuiStatusPrint;
-import dev.wolveringer.gui.GuiWaiting;
-import dev.wolveringer.item.ItemBuilder;
+import eu.epicpvp.bungee.system.gui.Gui;
+import eu.epicpvp.bungee.system.gui.GuiStatusPrint;
+import eu.epicpvp.bungee.system.gui.GuiWaiting;
+import eu.epicpvp.bungee.system.item.ItemBuilder;
 
 public class GuiGildePermissionGroupAdminPannel extends Gui{
 	private static class PermissionItem {

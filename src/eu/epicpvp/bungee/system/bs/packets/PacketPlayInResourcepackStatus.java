@@ -1,4 +1,4 @@
-package dev.wolveringer.bs.packets;
+package eu.epicpvp.bungee.system.bs.packets;
 
 import dev.wolveringer.BungeeUtil.packets.Packet;
 import dev.wolveringer.BungeeUtil.packets.Abstract.PacketPlayIn;
@@ -21,13 +21,13 @@ public class PacketPlayInResourcepackStatus extends Packet implements PacketPlay
 	}
 	private String hash;
 	private Action action;
-	
+
 	@Override
 	public void read(PacketDataSerializer s) {
 		hash = s.readString(-1);
 		action = Action.values()[s.readVarInt()];
 	}
-	
+
 	@Override
 	public void write(PacketDataSerializer s) {
 		s.writeString(hash);

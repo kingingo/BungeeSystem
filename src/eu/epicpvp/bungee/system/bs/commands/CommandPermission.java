@@ -1,14 +1,14 @@
-package dev.wolveringer.bs.commands;
+package eu.epicpvp.bungee.system.bs.commands;
 
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 
-import dev.wolveringer.bs.Main;
-import dev.wolveringer.permission.Group;
-import dev.wolveringer.permission.Permission;
-import dev.wolveringer.permission.PermissionManager;
-import dev.wolveringer.permission.PermissionPlayer;
+import eu.epicpvp.bungee.system.bs.Main;
+import eu.epicpvp.bungee.system.permission.Group;
+import eu.epicpvp.bungee.system.permission.Permission;
+import eu.epicpvp.bungee.system.permission.PermissionManager;
+import eu.epicpvp.bungee.system.permission.PermissionPlayer;
 import dev.wolveringer.bukkit.permissions.PermissionType;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -158,7 +158,7 @@ public class CommandPermission extends Command implements Listener {
 					return;
 				}
 				PermissionPlayer pp = PermissionManager.getManager().getPlayer(player);
-				
+
 				if(args[1].equalsIgnoreCase("addPerm")){
 					if(!pp.addPermission(args[3])){
 						cs.sendMessage("§cDie Permission konnte nicht hinzugefügt werden.");
@@ -222,13 +222,13 @@ public class CommandPermission extends Command implements Listener {
 		cs.sendMessage("§7/perm groupInfo <Group>");
 		cs.sendMessage("§7/perm groupReload <Group>");
 		cs.sendMessage("§7/perm userInfo <Player/UUID>");
-		
+
 		cs.sendMessage("§7/perm group addPerm <group> <permission>");
 		cs.sendMessage("§7/perm group removePerm <group> <permission>");
-		
+
 		cs.sendMessage("§7/perm user addGroup <Player/UUID> <group>");
 		cs.sendMessage("§7/perm user removeGroup <Player/UUID> <group>");
-		
+
 		cs.sendMessage("§7/perm user addPerm <Player/UUID> <perm>");
 		cs.sendMessage("§7/perm user removePerm <Player/UUID> <perm>");
 	}

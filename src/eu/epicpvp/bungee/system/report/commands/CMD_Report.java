@@ -1,4 +1,4 @@
-package dev.wolveringer.report.commands;
+package eu.epicpvp.bungee.system.report.commands;
 
 import java.util.Random;
 
@@ -9,7 +9,7 @@ import dev.wolveringer.dataserver.protocoll.packets.PacketReportRequest.RequestT
 import eu.epicpvp.bungee.system.permission.PermissionManager;
 import dev.wolveringer.report.ReportEntity;
 import dev.wolveringer.report.ReportState;
-import dev.wolveringer.report.gui.GuiPlayerMenue;
+import eu.epicpvp.bungee.system.report.gui.GuiPlayerMenue;
 import dev.wolveringer.thread.ThreadFactory;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.plugin.Command;

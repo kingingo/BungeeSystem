@@ -1,10 +1,10 @@
-package dev.wolveringer.report.gui;
+package eu.epicpvp.bungee.system.report.gui;
 
 import dev.wolveringer.BungeeUtil.Material;
 import dev.wolveringer.BungeeUtil.item.ItemStack.Click;
 import eu.epicpvp.bungee.system.gui.Gui;
 import eu.epicpvp.bungee.system.item.ItemBuilder;
-import dev.wolveringer.report.search.PlayerTextEnterMenue;
+import eu.epicpvp.bungee.system.report.search.PlayerTextEnterMenue;
 
 public class GuiSelectPlayerReportChat extends Gui{
 	private String target;

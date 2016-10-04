@@ -1,12 +1,12 @@
-package dev.wolveringer.bs.commands;
+package eu.epicpvp.bungee.system.bs.commands;
 
 import dev.wolveringer.BungeeUtil.Player;
-import dev.wolveringer.bs.Main;
+import eu.epicpvp.bungee.system.bs.Main;
 import dev.wolveringer.client.connection.ClientType;
 import dev.wolveringer.dataserver.protocoll.DataBuffer;
-import dev.wolveringer.permission.PermissionManager;
-import dev.wolveringer.slotmachine.RoulettGui;
-import dev.wolveringer.slotmachine.RoulettHistory;
+import eu.epicpvp.bungee.system.permission.PermissionManager;
+import eu.epicpvp.bungee.system.slotmachine.RoulettGui;
+import eu.epicpvp.bungee.system.slotmachine.RoulettHistory;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.plugin.Command;
 

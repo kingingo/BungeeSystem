@@ -1,4 +1,4 @@
-package dev.wolveringer.teamspeak;
+package eu.epicpvp.bungee.system.teamspeak;
 
 import dev.wolveringer.BungeeUtil.Player;
 import eu.epicpvp.bungee.system.bs.Main;

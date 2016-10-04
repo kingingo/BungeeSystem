@@ -1,17 +1,17 @@
-package dev.wolveringer.bs.commands;
+package eu.epicpvp.bungee.system.bs.commands;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import dev.wolveringer.ban.BanServerMessageListener;
-import dev.wolveringer.bs.Main;
+import eu.epicpvp.bungee.system.ban.BanServerMessageListener;
+import eu.epicpvp.bungee.system.bs.Main;
 import dev.wolveringer.client.Callback;
 import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.dataserver.ban.BanEntity;
 import dev.wolveringer.dataserver.player.Setting;
 import dev.wolveringer.dataserver.protocoll.packets.PacketOutPlayerSettings.SettingValue;
-import dev.wolveringer.permission.PermissionManager;
+import eu.epicpvp.bungee.system.permission.PermissionManager;
 import dev.wolveringer.thread.ThreadFactory;
 import dev.wolveringer.bukkit.permissions.PermissionType;
 import net.md_5.bungee.BungeeCord;
@@ -25,19 +25,19 @@ public class CommandBan extends Command{
 	public CommandBan() {
 		super("ban",null,"kban");
 	}
-	
+
 	///ban <Player> <level> <reson>
 	@Override
 	public void execute(CommandSender cs, String[] args) {
 		if(!PermissionManager.getManager().hasPermission(cs, PermissionType.KBAN,true))return; //basic permission
-		
+
 		if(args.length >= 3){
 			if(!isNumber(args[1])){
-				cs.sendMessage(Main.getTranslationManager().translate("prefix",cs)+Main.getTranslationManager().translate("command.ban.error.invalidNumber", cs)); 
+				cs.sendMessage(Main.getTranslationManager().translate("prefix",cs)+Main.getTranslationManager().translate("command.ban.error.invalidNumber", cs));
 			}
 			int level = Integer.parseInt(args[1]);
 			if(level < 1 || level > 5){
-				cs.sendMessage(Main.getTranslationManager().translate("prefix",cs)+Main.getTranslationManager().translate("command.ban.error.invalidRange", cs)); 
+				cs.sendMessage(Main.getTranslationManager().translate("prefix",cs)+Main.getTranslationManager().translate("command.ban.error.invalidRange", cs));
 			}
 			switch (level) { //Ban-Level 1 alredy tested
 			case 2:
@@ -53,9 +53,9 @@ public class CommandBan extends Command{
 				if(!PermissionManager.getManager().hasPermission(cs, PermissionType.BAN_LVL_5,true))return;
 				break;
 			}
-			
+
 			String reson = ChatColor.translateAlternateColorCodes('&', join(Arrays.copyOfRange(args, 2, args.length)," "));
-			
+
 			LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(args[0]);
 			cs.sendMessage(Main.getTranslationManager().translate("prefix",cs)+Main.getTranslationManager().translate("command.ban.status.loadingstats", cs));
 			List<BanEntity> bans = player.getBanStats("", 1).getSync();
@@ -81,7 +81,7 @@ public class CommandBan extends Command{
 						public void call(Boolean obj, Throwable exception) {
 							if(exception != null || obj == false){
 								if(BungeeCord.getInstance().getPlayer(player.getName()) != null)
-									BungeeCord.getInstance().getPlayer(player.getName()).disconnect(Main.getTranslationManager().translate("command.ban.kickplayer", cs,reson,cs.getName())); 
+									BungeeCord.getInstance().getPlayer(player.getName()).disconnect(Main.getTranslationManager().translate("command.ban.kickplayer", cs,reson,cs.getName()));
 								else
 									player.kickPlayer(Main.getTranslationManager().translate("command.ban.kickplayer", cs,reson,cs.getName()));
 							}
@@ -98,7 +98,7 @@ public class CommandBan extends Command{
 		}
 		cs.sendMessage(Main.getTranslationManager().translate("prefix",cs)+"§cUsage: §6/ban <Player> <Level> <Reson>");
 	}
-	
+
 	private String join(String[] copyOfRange, String string) {
 		String out = "";
 		for(String s : copyOfRange)
@@ -115,7 +115,7 @@ public class CommandBan extends Command{
 				return false;
 		return true;
 	}
-	
+
 }
 //command.ban.error.invalidNumber - §cBan-Level isn't a number!
 //command.ban.error.invalidRange - §cBan-Level out of bounds! [1-5]

@@ -1,4 +1,4 @@
-package dev.wolveringer.bs.information;
+package eu.epicpvp.bungee.system.bs.information;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -6,11 +6,11 @@ import java.util.HashMap;
 
 import javax.xml.bind.DatatypeConverter;
 
-import dev.wolveringer.bs.Main;
-import dev.wolveringer.bs.client.event.ServerMessageEvent;
+import eu.epicpvp.bungee.system.bs.Main;
+import eu.epicpvp.bungee.system.bs.client.event.ServerMessageEvent;
 import dev.wolveringer.client.connection.ClientType;
 import dev.wolveringer.dataserver.protocoll.DataBuffer;
-import dev.wolveringer.mysql.MySQL;
+import eu.epicpvp.bungee.system.mysql.MySQL;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
@@ -23,7 +23,7 @@ public class InformationManager implements Listener{
 	public static InformationManager getManager() {
 		return manager;
 	}
-	
+
 	private HashMap<String, String> inf_cash = new HashMap<>();
 
 	public InformationManager() {
@@ -41,7 +41,7 @@ public class InformationManager implements Listener{
 		String currunt = inf_cash.get(info);
 		if(currunt != null && !currunt.equalsIgnoreCase(""))
 			return inf_cash.get(info);
-		
+
 		ArrayList<String[]> query = MySQL.getInstance().querySync("SELECT value FROM `BG_INFROMATIONS` WHERE `key`='"+info+"'", 1);
 		if(query.size()>0){
 			if(query.get(0)[0].startsWith(base64_start))
@@ -69,7 +69,7 @@ public class InformationManager implements Listener{
 						ex.printStackTrace();
 					Main.getDatenServer().getClient().sendServerMessage(ClientType.BUNGEECORD, "informations", new DataBuffer().writeByte(0).writeString(info));
 				}
-				
+
 			});
 		}else{
 			System.out.println("Inert");
@@ -80,12 +80,12 @@ public class InformationManager implements Listener{
 						ex.printStackTrace();
 					Main.getDatenServer().getClient().sendServerMessage(ClientType.BUNGEECORD, "informations", new DataBuffer().writeByte(0).writeString(info));
 				}
-				
+
 			});
 		}
 		inf_cash.put(info, anser);
 	}
-	
+
 	@EventHandler
 	public void a(ServerMessageEvent e){
 		if(e.getChannel().equalsIgnoreCase("informations")){
@@ -97,5 +97,5 @@ public class InformationManager implements Listener{
 			}
 		}
 	}
-	
+
 }

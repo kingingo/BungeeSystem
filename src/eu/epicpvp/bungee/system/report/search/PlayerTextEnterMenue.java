@@ -1,4 +1,4 @@
-package dev.wolveringer.report.search;
+package eu.epicpvp.bungee.system.report.search;
 
 import dev.wolveringer.BungeeUtil.Material;
 import dev.wolveringer.BungeeUtil.Player;

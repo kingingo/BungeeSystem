@@ -1,4 +1,4 @@
-package dev.wolveringer.bs.servermanager;
+package eu.epicpvp.bungee.system.bs.servermanager;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
@@ -6,11 +6,11 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import dev.wolveringer.bs.Main;
-import dev.wolveringer.bs.client.event.ServerMessageEvent;
+import eu.epicpvp.bungee.system.bs.Main;
+import eu.epicpvp.bungee.system.bs.client.event.ServerMessageEvent;
 import dev.wolveringer.client.connection.ClientType;
 import dev.wolveringer.dataserver.protocoll.DataBuffer;
-import dev.wolveringer.mysql.MySQL;
+import eu.epicpvp.bungee.system.mysql.MySQL;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.BungeeServerInfo;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -20,7 +20,7 @@ import net.md_5.bungee.event.EventHandler;
 
 public class ServerManager implements Listener{
 	public static ServerInfo DEFAULT_HUB;
-			
+
 	private static class BungeecordServerInfo extends BungeeServerInfo {
 		private String name;
 		private InetSocketAddress addr;
@@ -62,16 +62,16 @@ public class ServerManager implements Listener{
 			return true;
 		}
 	}
-	
+
 	private static ServerManager manager;
-	
+
 	public static ServerManager getManager() {
 		return manager;
 	}
 	public static void setManager(ServerManager manager) {
 		ServerManager.manager = manager;
 	}
-	
+
 	private ArrayList<BungeecordServerInfo> server = new ArrayList<>();
 	private BungeecordServerInfo[] lobbies = new BungeecordServerInfo[0];
 	private BungeecordServerInfo[] loginServer = new BungeecordServerInfo[0];
@@ -79,12 +79,12 @@ public class ServerManager implements Listener{
 	private int lobbyWitch = 0;
 	private int plobbyWitch = 0;
 	private int loginWitch = 0;
-	
+
 	public ServerManager() {
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), this);
 		DEFAULT_HUB = createServerInfo("hub", "localhost", 1000);
 	}
-	
+
 	public void loadServers() {
 		ArrayList<String[]> server = MySQL.getInstance().querySync("SELECT name,adress,port FROM `BG_Server`", -1);
 		for(String[] s : server){
@@ -111,7 +111,7 @@ public class ServerManager implements Listener{
 		}
 		return info;
 	}
-	
+
 	public boolean addServer(String name, String ip, int port) {
 		if(MySQL.getInstance().querySync("SELECT * FROM `BG_Server` WHERE `name`='"+name+"'",1).size() > 0)
 			return false;
@@ -120,7 +120,7 @@ public class ServerManager implements Listener{
 		createServerInfo(name, ip, port);
 		return true;
 	}
-	
+
 	public boolean delServer(String name) {
 		BungeecordServerInfo info = null;
 		for(BungeecordServerInfo s : new ArrayList<>(server))
@@ -139,27 +139,27 @@ public class ServerManager implements Listener{
 		Main.getDatenServer().getClient().sendServerMessage(ClientType.BUNGEECORD, "servers", new DataBuffer().writeByte(1).writeString(name));
 		return true;
 	}
-	
+
 	private void recalculateLobbies(){
 		ArrayList<BungeecordServerInfo> l = new ArrayList<>();
 		for(BungeecordServerInfo i : server)
 			if(i.name.startsWith("lobby") || (i.name.startsWith("hub") && !i.name.equalsIgnoreCase("hub")))
 				l.add(i);
 		lobbies = l.toArray(new BungeecordServerInfo[0]);
-		
+
 		l.clear();
 		for(BungeecordServerInfo i : server)
 			if(i.name.startsWith("login"))
 				l.add(i);
 		loginServer = l.toArray(new BungeecordServerInfo[0]);
-		
+
 		l.clear();
 		for(BungeecordServerInfo i : server)
 			if(i.name.startsWith("premium"))
 				l.add(i);
 		permiumServer = l.toArray(new BungeecordServerInfo[0]);
 	}
-	
+
 	public Queue<String> buildLoginQueue(){
 		lobbyWitch = loginWitch++%loginServer.length;
 		ArrayList<ServerInfo> i = new ArrayList<>();
@@ -170,7 +170,7 @@ public class ServerManager implements Listener{
 			x.add(y.getName());
 		return x;
 	}
-	
+
 	public Queue<String> buildPremiumQueue(){
 		plobbyWitch = plobbyWitch++%permiumServer.length;
 		ArrayList<ServerInfo> i = new ArrayList<>();
@@ -182,7 +182,7 @@ public class ServerManager implements Listener{
 		x.addAll(buildLobbyQueue());
 		return x;
 	}
-	
+
 	public Queue<String> buildLobbyQueue(){
 		lobbyWitch = lobbyWitch++%lobbies.length;
 		ArrayList<ServerInfo> i = new ArrayList<>();
@@ -193,7 +193,7 @@ public class ServerManager implements Listener{
 			x.add(y.getName());
 		return x;
 	}
-	
+
 	public ServerInfo nextPremiumLobby(){
 		if(permiumServer.length == 0)
 			return nextLobby();
@@ -201,7 +201,7 @@ public class ServerManager implements Listener{
 			plobbyWitch = 0;
 		return permiumServer[plobbyWitch++%permiumServer.length];
 	}
-	
+
 	public ServerInfo nextLobby(){
 		if(lobbies.length == 0){
 			System.out.println("No lobbies found");
@@ -216,7 +216,7 @@ public class ServerManager implements Listener{
 			loginWitch = 0;
 		return loginServer[loginWitch++%loginServer.length];
 	}
-	
+
 	@EventHandler
 	public void a(ServerMessageEvent e){
 		if(e.getChannel().equalsIgnoreCase("servers")){

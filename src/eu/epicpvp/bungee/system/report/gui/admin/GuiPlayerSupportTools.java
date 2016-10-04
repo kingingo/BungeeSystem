@@ -1,4 +1,4 @@
-package dev.wolveringer.report.gui.admin;
+package eu.epicpvp.bungee.system.report.gui.admin;
 
 import java.util.ArrayList;
 
@@ -9,7 +9,7 @@ import eu.epicpvp.bungee.system.gui.Gui;
 import eu.epicpvp.bungee.system.item.ItemBuilder;
 import eu.epicpvp.bungee.system.item.ItemBuilder.ItemClickListener;
 import dev.wolveringer.report.ReportEntity;
-import dev.wolveringer.report.search.PlayerTextEnterMenue;
+import eu.epicpvp.bungee.system.report.search.PlayerTextEnterMenue;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ChatColor;
 

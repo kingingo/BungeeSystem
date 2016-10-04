@@ -1,7 +1,7 @@
-package dev.wolveringer.bs.commands;
+package eu.epicpvp.bungee.system.bs.commands;
 
-import dev.wolveringer.bs.Main;
-import dev.wolveringer.permission.PermissionManager;
+import eu.epicpvp.bungee.system.bs.Main;
+import eu.epicpvp.bungee.system.permission.PermissionManager;
 import dev.wolveringer.bukkit.permissions.PermissionType;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.CommandSender;
@@ -24,23 +24,23 @@ public class CommandSendServer extends Command implements Listener {
 			p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+"/sendserver [Player] [Server]");
 		}else{
 			String player = args[0];
-			
+
 			if(player.equalsIgnoreCase(p.getName())){
 				p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+"§cDu kannst dich nicht selber senden!");
 				return;
 			}
-			
+
 			String server = (args.length>1?args[1]:null);
-			
+
 			if(server==null){
 				server=p.getServer().getInfo().getName();
 			}
-			
+
 			if(BungeeCord.getInstance().getServerInfo(server)==null){
 				p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.sendserver.notexist", sender)); //§cServer does not exist!
 				return;
 			}
-			
+
 			if(BungeeCord.getInstance().getPlayer(player) != null){
 				BungeeCord.getInstance().getPlayer(player).connect( BungeeCord.getInstance().getServerInfo(server) );
 				p.sendMessage(Main.getTranslationManager().translate("prefix", sender)+Main.getTranslationManager().translate("command.sendserver.sended", sender)); //§aPlayer was send to the server

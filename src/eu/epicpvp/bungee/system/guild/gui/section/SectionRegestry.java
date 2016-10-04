@@ -1,4 +1,4 @@
-package dev.wolveringer.guild.gui.section;
+package eu.epicpvp.bungee.system.guild.gui.section;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -10,7 +10,7 @@ import lombok.Getter;
 public class SectionRegestry {
 	@Getter
 	private static final SectionRegestry instance;
-	
+
 	static {
 		instance = new SectionRegestry();
 		instance.registerSection(GildeType.ARCADE, GuiGildeSection.class);
@@ -19,9 +19,9 @@ public class SectionRegestry {
 		instance.registerSection(GildeType.VERSUS, GuiGildeSection.class);
 		instance.registerSection(GildeType.WARZ, GuiGildeSection.class);
 	}
-	
+
 	private HashMap<GildeType, Class<? extends GuiGildeSection>> classes = new HashMap<>();
-	
+
 	public void registerSection(GildeType type,Class<? extends GuiGildeSection> clazz){
 		classes.put(type, clazz);
 	}

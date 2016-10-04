@@ -1,10 +1,10 @@
-package dev.wolveringer.booster;
+package eu.epicpvp.bungee.system.booster;
 
 import dev.wolveringer.BungeeUtil.Player;
 import dev.wolveringer.BungeeUtil.item.Item;
 import dev.wolveringer.api.inventory.Inventory;
 import dev.wolveringer.api.inventory.InventoryType;
-import dev.wolveringer.item.ItemBuilder;
+import eu.epicpvp.bungee.system.item.ItemBuilder;
 import lombok.Setter;
 
 public abstract class GuiIntegerSelect {

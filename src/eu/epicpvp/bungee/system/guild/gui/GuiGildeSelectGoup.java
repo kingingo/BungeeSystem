@@ -1,18 +1,18 @@
-package dev.wolveringer.guild.gui;
+package eu.epicpvp.bungee.system.guild.gui;
 
 import dev.wolveringer.BungeeUtil.Material;
 import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.gilde.GildSection;
-import dev.wolveringer.gui.GuiItemSelect;
-import dev.wolveringer.gui.GuiStatusPrint;
-import dev.wolveringer.item.ItemBuilder;
+import eu.epicpvp.bungee.system.gui.GuiItemSelect;
+import eu.epicpvp.bungee.system.gui.GuiStatusPrint;
+import eu.epicpvp.bungee.system.item.ItemBuilder;
 
 public class GuiGildeSelectGoup extends GuiItemSelect{
 	private GildSection section;
 	private LoadedPlayer player;
-	
+
 	private String[] groups;
-	
+
 	public GuiGildeSelectGoup(GildSection section, LoadedPlayer player) {
 		super("§a"+section.getType().getDisplayName()+" §6» §aMember §6» §aGroup");
 		this.section = section;

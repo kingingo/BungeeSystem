@@ -1,4 +1,4 @@
-package dev.wolveringer.gui;
+package eu.epicpvp.bungee.system.gui;
 
 import dev.wolveringer.BungeeUtil.Player;
 import dev.wolveringer.BungeeUtil.gameprofile.SkinFactory;
@@ -9,7 +9,7 @@ import dev.wolveringer.animations.inventory.InventoryViewChangeAnimations.Animat
 import dev.wolveringer.api.inventory.Inventory;
 import dev.wolveringer.api.inventory.ItemContainer;
 import eu.epicpvp.bungee.system.bs.Main;
-import dev.wolveringer.item.ItemBuilder;
+import eu.epicpvp.bungee.system.item.ItemBuilder;
 import dev.wolveringer.skin.Skin;
 import dev.wolveringer.skin.SteveSkin;
 import lombok.AllArgsConstructor;

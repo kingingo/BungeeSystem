@@ -1,10 +1,10 @@
-package dev.wolveringer.bs.commands;
+package eu.epicpvp.bungee.system.bs.commands;
 
-import dev.wolveringer.bs.Main;
+import eu.epicpvp.bungee.system.bs.Main;
 import dev.wolveringer.client.LoadedPlayer;
 import dev.wolveringer.client.connection.ClientType;
 import dev.wolveringer.dataserver.protocoll.DataBuffer;
-import dev.wolveringer.permission.PermissionManager;
+import eu.epicpvp.bungee.system.permission.PermissionManager;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.plugin.Command;
 
@@ -68,7 +68,7 @@ public class CommandNick extends Command {
 			return;
 		}
 	}
-	
+
 	private void updatePlayer(String name){
 		Main.getDatenServer().getClient().sendServerMessage(ClientType.BUNGEECORD, "bnick", new DataBuffer().writeString(name));
 	}

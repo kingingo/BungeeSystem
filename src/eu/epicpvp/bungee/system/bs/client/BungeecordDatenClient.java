@@ -1,10 +1,10 @@
-package dev.wolveringer.bs.client;
+package eu.epicpvp.bungee.system.bs.client;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.List;
 
-import dev.wolveringer.bs.Main;
+import eu.epicpvp.bungee.system.bs.Main;
 import dev.wolveringer.bukkit.permissions.PermissionType;
 import dev.wolveringer.client.ClientWrapper;
 import dev.wolveringer.client.LoadedPlayer;

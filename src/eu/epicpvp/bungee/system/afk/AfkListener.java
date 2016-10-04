@@ -1,4 +1,4 @@
-package dev.wolveringer.afk;
+package eu.epicpvp.bungee.system.afk;
 
 import java.util.concurrent.TimeUnit;
 
@@ -13,10 +13,10 @@ import dev.wolveringer.BungeeUtil.packets.PacketPlayInFlying;
 import dev.wolveringer.api.position.Location;
 import dev.wolveringer.arrays.CachedArrayList;
 import dev.wolveringer.arrays.CachedArrayList.UnloadListener;
-import dev.wolveringer.ban.BannedServerManager;
-import dev.wolveringer.bs.Main;
-import dev.wolveringer.bs.message.MessageManager;
-import dev.wolveringer.bs.servermanager.ServerManager;
+import eu.epicpvp.bungee.system.ban.BannedServerManager;
+import eu.epicpvp.bungee.system.bs.Main;
+import eu.epicpvp.bungee.system.bs.message.MessageManager;
+import eu.epicpvp.bungee.system.bs.servermanager.ServerManager;
 import dev.wolveringer.hashmaps.CachedHashMap;
 import eu.epicpvp.bungee.fakeserver.CostumServer;
 import eu.epicpvp.bungee.fakeserver.ServerConfiguration;

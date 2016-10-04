@@ -1,4 +1,4 @@
-package dev.wolveringer.report.gui;
+package eu.epicpvp.bungee.system.report.gui;
 
 import dev.wolveringer.BungeeUtil.Material;
 import dev.wolveringer.BungeeUtil.item.Item;

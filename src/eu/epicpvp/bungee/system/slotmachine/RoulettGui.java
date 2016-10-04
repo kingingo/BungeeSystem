@@ -1,4 +1,4 @@
-package dev.wolveringer.slotmachine;
+package eu.epicpvp.bungee.system.slotmachine;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,7 +7,7 @@ import java.util.Random;
 import dev.wolveringer.BungeeUtil.Player;
 import dev.wolveringer.BungeeUtil.item.Item;
 import dev.wolveringer.api.inventory.Inventory;
-import dev.wolveringer.booster.GuiIntegerSelect;
+import eu.epicpvp.bungee.system.booster.GuiIntegerSelect;
 import eu.epicpvp.bungee.system.bs.Main;
 import dev.wolveringer.client.Callback;
 import dev.wolveringer.client.connection.ClientType;
@@ -16,9 +16,9 @@ import dev.wolveringer.dataserver.protocoll.DataBuffer;
 import dev.wolveringer.dataserver.protocoll.packets.PacketOutPacketStatus;
 import dev.wolveringer.dataserver.protocoll.packets.PacketInStatsEdit.Action;
 import dev.wolveringer.dataserver.protocoll.packets.PacketOutPacketStatus.Error;
-import dev.wolveringer.item.ItemBuilder;
-import dev.wolveringer.slotmachine.RoulettHistory.HistoryItem;
-import dev.wolveringer.slotmachine.RoulettHistory.HistoryListener;
+import eu.epicpvp.bungee.system.item.ItemBuilder;
+import eu.epicpvp.bungee.system.slotmachine.RoulettHistory.HistoryItem;
+import eu.epicpvp.bungee.system.slotmachine.RoulettHistory.HistoryListener;
 import dev.wolveringer.thread.ThreadFactory;
 
 public class RoulettGui implements HistoryListener {

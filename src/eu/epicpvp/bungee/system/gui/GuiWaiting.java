@@ -1,8 +1,8 @@
-package dev.wolveringer.gui;
+package eu.epicpvp.bungee.system.gui;
 
 import dev.wolveringer.BungeeUtil.Material;
 import dev.wolveringer.BungeeUtil.item.Item;
-import dev.wolveringer.item.ItemBuilder;
+import eu.epicpvp.bungee.system.item.ItemBuilder;
 
 public class GuiWaiting extends GuiUpdating{
 	private static final Item[] ROW_ITEMS = new Item[]{
@@ -14,16 +14,16 @@ public class GuiWaiting extends GuiUpdating{
 		ItemBuilder.create(Material.WOOL).build(),
 		ItemBuilder.create(Material.WOOL).build()
 	};
-	
+
 	private String message;
 	private long start = System.currentTimeMillis();
-	
+
 	public GuiWaiting(String message,String title) {
 		super(3, message);
 		this.message = message;
 		this.setWaitTime(150);
 	}
-	
+
 	int step = 0;
 	@Override
 	public void updateInventory() {
@@ -44,7 +44,7 @@ public class GuiWaiting extends GuiUpdating{
 		fill(ItemBuilder.create(160).durbility(7).name("§7").build());
 		updateInventory();
 	}
-	
+
 	public void waitForMinwait(int ms){
 		while (start+ms > System.currentTimeMillis()) {
 			try {

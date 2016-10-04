@@ -1,13 +1,12 @@
-package dev.wolveringer.bs.commands;
+package eu.epicpvp.bungee.system.bs.commands;
 
 import java.util.Arrays;
 
-import dev.wolveringer.bs.information.InformationManager;
-import dev.wolveringer.permission.PermissionManager;
+import eu.epicpvp.bungee.system.bs.information.InformationManager;
+import eu.epicpvp.bungee.system.permission.PermissionManager;
 import dev.wolveringer.bukkit.permissions.PermissionType;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
 public class CommandMOTD extends Command {

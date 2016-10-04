@@ -1,4 +1,4 @@
-package dev.wolveringer.bs.listener;
+package eu.epicpvp.bungee.system.bs.listener;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -8,8 +8,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import dev.wolveringer.bs.Main;
-import dev.wolveringer.bs.information.InformationManager;
+import eu.epicpvp.bungee.system.bs.Main;
+import eu.epicpvp.bungee.system.bs.information.InformationManager;
 import dev.wolveringer.thread.ThreadFactory;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ServerPing;
@@ -20,9 +20,9 @@ import net.md_5.bungee.event.EventHandler;
 
 public class PingListener implements Listener {
 	private static final Pattern ELEMENT_PATTERN = Pattern.compile("\\[\\?([A-Za-z0-9]*) (.+)\\]");
-	
+
 	private String motd = "§aDefault MOTD!";
-	
+
 	public PingListener() {
 		ThreadFactory.getFactory().createThread(()->{
 			while (true) {
@@ -34,7 +34,7 @@ public class PingListener implements Listener {
 			}
 		}).start();;
 	}
-	
+
 	@EventHandler
 	public void a(ProxyPingEvent e) {
 		if (InformationManager.getManager() == null) {
@@ -51,7 +51,7 @@ public class PingListener implements Listener {
 		e.getResponse().setPlayers(player);
 		e.getResponse().setDescription(motd);
 	}
-	
+
 	private static String formatMOTD(String in){
 		Matcher m = ELEMENT_PATTERN.matcher(in);
 		while (m.find()) {
@@ -69,10 +69,10 @@ public class PingListener implements Listener {
 		}
 		return ChatColor.translateAlternateColorCodes('&', in);
 	}
-	
+
 	private static HashMap<String, String> paradiseParms(String in){
 		HashMap<String, String> parms = new HashMap<>();
-		
+
 		int currentIndex = 0;
 		int lastIndex = 0;
 		String parmKey = null;
@@ -97,10 +97,10 @@ public class PingListener implements Listener {
 			else
 			lastIndex = -1;
 		}
-		
+
 		return parms;
 	}
-	
+
 	private static HashMap<TimeUnit, String> defaultMapping = new HashMap<>();
 	{
 		defaultMapping.put(TimeUnit.DAYS, "Tage");
@@ -108,7 +108,7 @@ public class PingListener implements Listener {
 		defaultMapping.put(TimeUnit.MINUTES, "Minuten");
 		defaultMapping.put(TimeUnit.SECONDS, "Sekunden");
 	}
-	
+
 	private static String replaceDate(String key, HashMap<String, String> parms){
 		SimpleDateFormat format = new SimpleDateFormat(parms.getOrDefault("targetFormat", "dd.MM.yyyy'-'HH:mm:ss"));
 		if(!parms.containsKey("target"))
@@ -122,25 +122,25 @@ public class PingListener implements Listener {
 		}
 		if(targetDate.before(currentDate))
 			return parms.getOrDefault("end", "now");
-		
+
 		long time = targetDate.getTime()-currentDate.getTime();
-		
+
 		HashMap<TimeUnit, String> mapping = new HashMap<>();
 		mapping.putAll(defaultMapping);
-		
+
 		for(TimeUnit u : TimeUnit.values())
 			if(parms.containsKey(u.toString().toLowerCase()))
 				mapping.put(u, parms.get(u.toString().toLowerCase()));
-		
+
 		HashMap<TimeUnit, String> pmapping = new HashMap<>();
-		
+
 		for(TimeUnit u : TimeUnit.values())
 			if(parms.containsKey(u.toString().toLowerCase()+"_p"))
 				pmapping.put(u, parms.get(u.toString().toLowerCase()+"_p"));
-		
+
 		return PlayerJoinListener.getDurationBreakdown(time, "§cerror",pmapping, mapping);
 	}
-	
+
 	public static void main(String[] args) {
 		long start = System.currentTimeMillis();
 		System.out.println("MOTD: "+formatMOTD("Starting in: [?date target=10.09.2016-14:55:00 days=Tag hours=Stunde minutes=Minute seconds=Sekunde minutes_p=n]"));
