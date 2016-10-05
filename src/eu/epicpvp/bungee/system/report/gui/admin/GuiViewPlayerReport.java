@@ -9,9 +9,9 @@ import dev.wolveringer.BungeeUtil.Material;
 import dev.wolveringer.BungeeUtil.item.Item;
 import dev.wolveringer.BungeeUtil.item.ItemStack.Click;
 import eu.epicpvp.bungee.system.bs.Main;
-import eu.epicpvp.datenclient.client.LoadedPlayer;
 import eu.epicpvp.bungee.system.gui.Gui;
 import eu.epicpvp.bungee.system.item.ItemBuilder;
+import eu.epicpvp.datenclient.client.LoadedPlayer;
 import eu.epicpvp.datenserver.definitions.report.ReportEntity;
 import eu.epicpvp.datenserver.definitions.report.ReportWorker;
 

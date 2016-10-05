@@ -11,10 +11,10 @@ import com.google.common.collect.Lists;
 
 import eu.epicpvp.bungee.system.bs.Main;
 import eu.epicpvp.bungee.system.permission.PermissionManager;
-import eu.epicpvp.datenserver.definitions.permissions.PermissionType;
+import eu.epicpvp.dataserver.protocoll.packets.PacketOutServerStatus;
 import eu.epicpvp.datenclient.client.Callback;
 import eu.epicpvp.datenclient.client.PacketHandleErrorException;
-import dev.wolveringer.dataserver.protocoll.packets.PacketOutServerStatus;
+import eu.epicpvp.datenserver.definitions.permissions.PermissionType;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -97,7 +97,7 @@ public class CommandServer extends Command implements TabExecutor {
 			else if(args.length == 2){
 				if(args[0].equalsIgnoreCase("info")){
 					sender.sendMessage("§aFetching server information.");
-					Main.getDatenServer().getClient().getServerStatus(dev.wolveringer.dataserver.protocoll.packets.PacketOutServerStatus.Action.SERVER, args[1], true).getAsync(new Callback<PacketOutServerStatus>() {
+					Main.getDatenServer().getClient().getServerStatus(eu.epicpvp.dataserver.protocoll.packets.PacketOutServerStatus.Action.SERVER, args[1], true).getAsync(new Callback<PacketOutServerStatus>() {
 						@Override
 						public void call(PacketOutServerStatus obj, Throwable exception) {
 							if(exception != null){

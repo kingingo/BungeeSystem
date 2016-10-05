@@ -3,14 +3,14 @@ package eu.epicpvp.bungee.system.booster;
 import dev.wolveringer.BungeeUtil.Player;
 import dev.wolveringer.BungeeUtil.item.Item;
 import dev.wolveringer.BungeeUtil.item.ItemStack.Click;
-import eu.epicpvp.datenserver.definitions.booster.BoosterType;
-import eu.epicpvp.datenserver.definitions.booster.NetworkBooster;
-import eu.epicpvp.datenclient.client.LoadedPlayer;
-import dev.wolveringer.dataserver.protocoll.packets.PacketInStatsEdit.Action;
 import eu.epicpvp.bungee.system.bs.Main;
 import eu.epicpvp.bungee.system.bs.listener.PlayerJoinListener;
 import eu.epicpvp.bungee.system.gui.GuiUpdating;
 import eu.epicpvp.bungee.system.item.ItemBuilder;
+import eu.epicpvp.dataserver.protocoll.packets.PacketInStatsEdit.Action;
+import eu.epicpvp.datenclient.client.LoadedPlayer;
+import eu.epicpvp.datenserver.definitions.booster.BoosterType;
+import eu.epicpvp.datenserver.definitions.booster.NetworkBooster;
 
 public class GuiBoosterMenue extends GuiUpdating{
 	public GuiBoosterMenue() {

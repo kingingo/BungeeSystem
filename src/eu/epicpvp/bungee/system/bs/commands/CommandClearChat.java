@@ -2,9 +2,9 @@ package eu.epicpvp.bungee.system.bs.commands;
 
 import eu.epicpvp.bungee.system.bs.Main;
 import eu.epicpvp.bungee.system.bs.client.event.ServerMessageEvent;
+import eu.epicpvp.bungee.system.permission.PermissionManager;
 import eu.epicpvp.datenserver.definitions.connection.ClientType;
 import eu.epicpvp.datenserver.definitions.dataserver.protocoll.DataBuffer;
-import eu.epicpvp.bungee.system.permission.PermissionManager;
 import eu.epicpvp.datenserver.definitions.permissions.PermissionType;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.CommandSender;

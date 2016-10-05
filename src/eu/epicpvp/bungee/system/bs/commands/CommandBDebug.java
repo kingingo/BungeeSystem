@@ -4,8 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import eu.epicpvp.bungee.system.bs.Bootstrap;
-import eu.epicpvp.datenclient.client.debug.Debugger;
 import eu.epicpvp.bungee.system.permission.PermissionManager;
+import eu.epicpvp.datenclient.client.debug.Debugger;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;

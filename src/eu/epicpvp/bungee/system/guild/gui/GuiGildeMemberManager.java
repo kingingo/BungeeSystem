@@ -9,13 +9,13 @@ import dev.wolveringer.BungeeUtil.item.Item;
 import dev.wolveringer.BungeeUtil.item.ItemStack.Click;
 import dev.wolveringer.BungeeUtil.packets.PacketPlayInWindowClick;
 import eu.epicpvp.bungee.system.bs.Main;
+import eu.epicpvp.bungee.system.gui.Gui;
+import eu.epicpvp.bungee.system.guild.gui.section.SectionRegestry;
+import eu.epicpvp.bungee.system.item.ItemBuilder;
 import eu.epicpvp.datenclient.client.LoadedPlayer;
 import eu.epicpvp.datenclient.gilde.GildPermissionGroup;
 import eu.epicpvp.datenclient.gilde.GildSectionPermission;
 import eu.epicpvp.datenserver.definitions.gilde.GildePermissions;
-import eu.epicpvp.bungee.system.gui.Gui;
-import eu.epicpvp.bungee.system.guild.gui.section.SectionRegestry;
-import eu.epicpvp.bungee.system.item.ItemBuilder;
 
 public class GuiGildeMemberManager extends Gui{
 	private static final List<String> FINAL_GROUPS = Arrays.asList("owner");

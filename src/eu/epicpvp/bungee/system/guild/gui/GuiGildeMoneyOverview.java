@@ -10,11 +10,11 @@ import java.util.List;
 import dev.wolveringer.BungeeUtil.Material;
 import dev.wolveringer.BungeeUtil.item.Item;
 import eu.epicpvp.bungee.system.bs.Main;
+import eu.epicpvp.bungee.system.gui.Gui;
+import eu.epicpvp.bungee.system.item.ItemBuilder;
 import eu.epicpvp.datenclient.client.LoadedPlayer;
 import eu.epicpvp.datenclient.gilde.GildSectionMoney;
 import eu.epicpvp.datenserver.definitions.gilde.MoneyLogRecord;
-import eu.epicpvp.bungee.system.gui.Gui;
-import eu.epicpvp.bungee.system.item.ItemBuilder;
 
 public class GuiGildeMoneyOverview extends Gui{
 	public static interface LogFilter {

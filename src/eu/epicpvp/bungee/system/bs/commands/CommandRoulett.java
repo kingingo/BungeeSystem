@@ -2,11 +2,11 @@ package eu.epicpvp.bungee.system.bs.commands;
 
 import dev.wolveringer.BungeeUtil.Player;
 import eu.epicpvp.bungee.system.bs.Main;
-import eu.epicpvp.datenserver.definitions.connection.ClientType;
-import eu.epicpvp.datenserver.definitions.dataserver.protocoll.DataBuffer;
 import eu.epicpvp.bungee.system.permission.PermissionManager;
 import eu.epicpvp.bungee.system.slotmachine.RoulettGui;
 import eu.epicpvp.bungee.system.slotmachine.RoulettHistory;
+import eu.epicpvp.datenserver.definitions.connection.ClientType;
+import eu.epicpvp.datenserver.definitions.dataserver.protocoll.DataBuffer;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.plugin.Command;
 

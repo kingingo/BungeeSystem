@@ -3,10 +3,10 @@ package eu.epicpvp.bungee.system.bs.commands;
 import java.util.UUID;
 
 import eu.epicpvp.bungee.system.bs.Main;
+import eu.epicpvp.bungee.system.permission.PermissionManager;
 import eu.epicpvp.datenclient.client.LoadedPlayer;
 import eu.epicpvp.datenserver.definitions.connection.ClientType;
 import eu.epicpvp.datenserver.definitions.dataserver.protocoll.DataBuffer;
-import eu.epicpvp.bungee.system.permission.PermissionManager;
 import eu.epicpvp.datenserver.definitions.permissions.PermissionType;
 import eu.epicpvp.datenserver.definitions.skin.Skin;
 import eu.epicpvp.datenserver.definitions.skin.SteveSkin;

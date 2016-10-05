@@ -2,12 +2,12 @@ package eu.epicpvp.bungee.system.bs.commands;
 
 import dev.wolveringer.BungeeUtil.Player;
 import eu.epicpvp.bungee.system.bs.Main;
+import eu.epicpvp.bungee.system.permission.PermissionManager;
+import eu.epicpvp.dataserver.protocoll.packets.PacketInStatsEdit;
 import eu.epicpvp.datenclient.client.LoadedPlayer;
 import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameType;
 import eu.epicpvp.datenserver.definitions.dataserver.gamestats.StatsKey;
 import eu.epicpvp.datenserver.definitions.dataserver.player.LanguageType;
-import dev.wolveringer.dataserver.protocoll.packets.PacketInStatsEdit;
-import eu.epicpvp.bungee.system.permission.PermissionManager;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;

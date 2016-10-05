@@ -3,17 +3,17 @@ package eu.epicpvp.bungee.system.guild.gui;
 import dev.wolveringer.BungeeUtil.Material;
 import dev.wolveringer.BungeeUtil.item.ItemStack.Click;
 import eu.epicpvp.bungee.system.bs.Main;
-import eu.epicpvp.datenclient.client.LoadedPlayer;
-import eu.epicpvp.datenclient.gilde.GildSection;
-import eu.epicpvp.datenserver.definitions.gilde.GildePermissions;
-import eu.epicpvp.datenserver.definitions.gilde.MoneyLogRecord;
 import eu.epicpvp.bungee.system.gui.Gui;
 import eu.epicpvp.bungee.system.gui.GuiStatusPrint;
 import eu.epicpvp.bungee.system.gui.GuiWaiting;
 import eu.epicpvp.bungee.system.gui.GuiYesNo;
 import eu.epicpvp.bungee.system.guild.gui.section.SectionRegestry;
 import eu.epicpvp.bungee.system.item.ItemBuilder;
-import dev.wolveringer.thread.ThreadFactory;
+import eu.epicpvp.datenclient.client.LoadedPlayer;
+import eu.epicpvp.datenclient.gilde.GildSection;
+import eu.epicpvp.datenserver.definitions.gilde.GildePermissions;
+import eu.epicpvp.datenserver.definitions.gilde.MoneyLogRecord;
+import eu.epicpvp.thread.ThreadFactory;
 
 public class GuiGildeMemberAdminPannel extends Gui{
 	private GildSection section;

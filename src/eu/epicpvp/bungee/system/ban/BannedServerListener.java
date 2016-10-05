@@ -2,7 +2,6 @@ package eu.epicpvp.bungee.system.ban;
 
 import dev.wolveringer.BungeeUtil.PacketHandleEvent;
 import dev.wolveringer.BungeeUtil.PacketHandler;
-import dev.wolveringer.BungeeUtil.Player;
 import dev.wolveringer.BungeeUtil.packets.Packet;
 import dev.wolveringer.BungeeUtil.packets.PacketPlayInChat;
 

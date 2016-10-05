@@ -1,10 +1,10 @@
 package eu.epicpvp.bungee.system.bs.client;
 
 import eu.epicpvp.bungee.system.bs.Main;
+import eu.epicpvp.dataserver.protocoll.packets.PacketInServerStatus;
 import eu.epicpvp.datenclient.client.connection.ServerInformations;
 import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameState;
 import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameType;
-import dev.wolveringer.dataserver.protocoll.packets.PacketInServerStatus;
 import net.md_5.bungee.BungeeCord;
 
 public class ClientInfoManager implements ServerInformations{

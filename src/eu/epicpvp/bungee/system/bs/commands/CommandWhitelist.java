@@ -6,9 +6,9 @@ import org.apache.commons.lang3.StringUtils;
 
 import eu.epicpvp.bungee.system.bs.Main;
 import eu.epicpvp.bungee.system.bs.information.InformationManager;
+import eu.epicpvp.bungee.system.permission.PermissionManager;
 import eu.epicpvp.datenserver.definitions.connection.ClientType;
 import eu.epicpvp.datenserver.definitions.dataserver.protocoll.DataBuffer;
-import eu.epicpvp.bungee.system.permission.PermissionManager;
 import eu.epicpvp.datenserver.definitions.permissions.PermissionType;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;

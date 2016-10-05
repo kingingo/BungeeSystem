@@ -8,15 +8,15 @@ import dev.wolveringer.BungeeUtil.item.ItemStack.Click;
 import dev.wolveringer.api.gui.AnvilGui;
 import dev.wolveringer.api.gui.AnvilGuiListener;
 import eu.epicpvp.bungee.system.bs.Main;
-import eu.epicpvp.datenclient.gilde.GildPermissionGroup;
-import eu.epicpvp.datenclient.gilde.GildSectionPermission;
-import eu.epicpvp.datenserver.definitions.gilde.GildePermissions;
 import eu.epicpvp.bungee.system.gui.Gui;
 import eu.epicpvp.bungee.system.gui.GuiStatusPrint;
 import eu.epicpvp.bungee.system.gui.GuiWaiting;
 import eu.epicpvp.bungee.system.guild.gui.section.SectionRegestry;
 import eu.epicpvp.bungee.system.item.ItemBuilder;
-import dev.wolveringer.thread.ThreadFactory;
+import eu.epicpvp.datenclient.gilde.GildPermissionGroup;
+import eu.epicpvp.datenclient.gilde.GildSectionPermission;
+import eu.epicpvp.datenserver.definitions.gilde.GildePermissions;
+import eu.epicpvp.thread.ThreadFactory;
 
 public class GuiGildePermissionGroupOverview extends Gui{
 	private static final Item ARROW_LEFT = ItemBuilder.create(Material.ARROW).name("§7» §6Nach links").build();

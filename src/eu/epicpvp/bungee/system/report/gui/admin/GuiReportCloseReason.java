@@ -4,11 +4,11 @@ import java.util.ArrayList;
 
 import dev.wolveringer.BungeeUtil.Material;
 import eu.epicpvp.bungee.system.bs.Main;
-import eu.epicpvp.datenclient.client.LoadedPlayer;
 import eu.epicpvp.bungee.system.gui.Gui;
 import eu.epicpvp.bungee.system.item.ItemBuilder;
-import eu.epicpvp.datenserver.definitions.report.ReportState;
+import eu.epicpvp.datenclient.client.LoadedPlayer;
 import eu.epicpvp.datenserver.definitions.report.ReportEntity;
+import eu.epicpvp.datenserver.definitions.report.ReportState;
 
 public class GuiReportCloseReason extends Gui{
 	private ArrayList<ReportEntity> reports;

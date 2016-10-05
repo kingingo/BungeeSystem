@@ -8,14 +8,14 @@ import dev.wolveringer.BungeeUtil.Material;
 import dev.wolveringer.BungeeUtil.item.Item;
 import eu.epicpvp.bungee.system.bs.Main;
 import eu.epicpvp.bungee.system.bs.listener.PlayerJoinListener;
-import eu.epicpvp.datenclient.client.LoadedPlayer;
-import dev.wolveringer.dataserver.protocoll.packets.PacketTeamspeakAction;
-import eu.epicpvp.datenserver.definitions.events.teamspeak.TeamspeakLinkRequestEvent;
 import eu.epicpvp.bungee.system.gui.GuiUpdating;
 import eu.epicpvp.bungee.system.item.ItemBuilder;
 import eu.epicpvp.bungee.system.permission.Group;
 import eu.epicpvp.bungee.system.permission.PermissionManager;
-import dev.wolveringer.thread.ThreadFactory;
+import eu.epicpvp.dataserver.protocoll.packets.PacketTeamspeakAction;
+import eu.epicpvp.datenclient.client.LoadedPlayer;
+import eu.epicpvp.datenserver.definitions.events.teamspeak.TeamspeakLinkRequestEvent;
+import eu.epicpvp.thread.ThreadFactory;
 
 public abstract class GuiTeamspeakListRequest extends GuiUpdating {
 	private final int TIME = 60 * 1000;
@@ -61,7 +61,7 @@ public abstract class GuiTeamspeakListRequest extends GuiUpdating {
 						return Integer.compare(o2.getImportance(), o1.getImportance());
 					}
 				});
-				Main.getDatenServer().getClient().writePacket(new PacketTeamspeakAction(lplayer.getPlayerId(), dev.wolveringer.dataserver.protocoll.packets.PacketTeamspeakAction.Action.UPDATE_GROUPS, groups.get(0).getName()));
+				Main.getDatenServer().getClient().writePacket(new PacketTeamspeakAction(lplayer.getPlayerId(), eu.epicpvp.dataserver.protocoll.packets.PacketTeamspeakAction.Action.UPDATE_GROUPS, groups.get(0).getName()));
 			}).start();
 		}).build());
 	}

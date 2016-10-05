@@ -2,11 +2,11 @@ package eu.epicpvp.bungee.system.skin;
 
 import java.util.concurrent.TimeUnit;
 
+import eu.epicpvp.bungee.system.bs.Main;
 import eu.epicpvp.datenclient.client.LoadedPlayer;
 import eu.epicpvp.datenserver.definitions.hashmaps.CachedHashMap;
 import eu.epicpvp.datenserver.definitions.skin.Skin;
 import eu.epicpvp.datenserver.definitions.skin.SteveSkin;
-import eu.epicpvp.bungee.system.bs.Main;
 
 public class SkinCacheManager {
 	private CachedHashMap<String, Skin> skinCache = new CachedHashMap<>(2, TimeUnit.MINUTES);

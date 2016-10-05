@@ -7,11 +7,11 @@ import dev.wolveringer.BungeeUtil.Material;
 import dev.wolveringer.BungeeUtil.Player;
 import dev.wolveringer.BungeeUtil.item.Item;
 import eu.epicpvp.bungee.system.bs.Main;
-import eu.epicpvp.datenclient.client.LoadedPlayer;
 import eu.epicpvp.bungee.system.gui.SearchMenue;
 import eu.epicpvp.bungee.system.item.ItemBuilder;
 import eu.epicpvp.bungee.system.permission.PermissionManager;
-import dev.wolveringer.thread.ThreadFactory;
+import eu.epicpvp.datenclient.client.LoadedPlayer;
+import eu.epicpvp.thread.ThreadFactory;
 
 public abstract class PlayerSearchMenue extends SearchMenue {
 	private HashMap<String, String> nicks = new HashMap<>();

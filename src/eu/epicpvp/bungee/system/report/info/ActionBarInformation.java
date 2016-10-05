@@ -8,10 +8,10 @@ import eu.epicpvp.bungee.system.actionbar.ActionBar.ActionBarMessage;
 import eu.epicpvp.bungee.system.bs.Main;
 import eu.epicpvp.bungee.system.chat.ChatManager;
 import eu.epicpvp.bungee.system.chat.ChatManager.ChatBoxModifier;
-import dev.wolveringer.dataserver.protocoll.packets.PacketReportRequest.RequestType;
+import eu.epicpvp.dataserver.protocoll.packets.PacketReportRequest.RequestType;
 import eu.epicpvp.datenserver.definitions.report.ReportEntity;
-import dev.wolveringer.thread.ThreadFactory;
-import dev.wolveringer.thread.ThreadRunner;
+import eu.epicpvp.thread.ThreadFactory;
+import eu.epicpvp.thread.ThreadRunner;
 import lombok.Getter;
 import lombok.Setter;
 

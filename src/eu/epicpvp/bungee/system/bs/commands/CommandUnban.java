@@ -5,12 +5,12 @@ import java.util.UUID;
 
 import eu.epicpvp.bungee.system.ban.BanServerMessageListener;
 import eu.epicpvp.bungee.system.bs.Main;
+import eu.epicpvp.bungee.system.permission.PermissionManager;
 import eu.epicpvp.datenclient.client.Callback;
 import eu.epicpvp.datenclient.client.LoadedPlayer;
 import eu.epicpvp.datenserver.definitions.dataserver.ban.BanEntity;
-import eu.epicpvp.bungee.system.permission.PermissionManager;
-import dev.wolveringer.thread.ThreadFactory;
 import eu.epicpvp.datenserver.definitions.permissions.PermissionType;
+import eu.epicpvp.thread.ThreadFactory;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.plugin.Command;

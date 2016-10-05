@@ -6,13 +6,13 @@ import dev.wolveringer.BungeeUtil.Material;
 import dev.wolveringer.BungeeUtil.item.Item;
 import dev.wolveringer.BungeeUtil.item.ItemStack.Click;
 import eu.epicpvp.bungee.system.bs.Main;
-import eu.epicpvp.datenclient.client.LoadedPlayer;
-import eu.epicpvp.datenclient.gilde.GildSection;
 import eu.epicpvp.bungee.system.gui.Gui;
 import eu.epicpvp.bungee.system.gui.GuiStatusPrint;
 import eu.epicpvp.bungee.system.gui.GuiYesNo;
 import eu.epicpvp.bungee.system.guild.gui.section.SectionRegestry;
 import eu.epicpvp.bungee.system.item.ItemBuilder;
+import eu.epicpvp.datenclient.client.LoadedPlayer;
+import eu.epicpvp.datenclient.gilde.GildSection;
 
 public class GuiGildeMemberInvatations extends Gui{
 	private GildSection section;

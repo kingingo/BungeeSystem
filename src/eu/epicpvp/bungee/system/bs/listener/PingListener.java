@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 import eu.epicpvp.bungee.system.bs.Main;
 import eu.epicpvp.bungee.system.bs.information.InformationManager;
-import dev.wolveringer.thread.ThreadFactory;
+import eu.epicpvp.thread.ThreadFactory;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ServerPing;
 import net.md_5.bungee.api.ServerPing.Players;

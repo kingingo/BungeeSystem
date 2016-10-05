@@ -1,16 +1,16 @@
 package eu.epicpvp.bungee.system.actionbar;
 
-import dev.wolveringer.BungeeUtil.Player;
-import eu.epicpvp.bungee.system.permission.PermissionManager;
-import dev.wolveringer.thread.ThreadFactory;
-import dev.wolveringer.thread.ThreadRunner;
-
 import java.beans.ConstructorProperties;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import dev.wolveringer.BungeeUtil.Player;
+import eu.epicpvp.bungee.system.permission.PermissionManager;
+import eu.epicpvp.thread.ThreadFactory;
+import eu.epicpvp.thread.ThreadRunner;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.protocol.packet.Chat;

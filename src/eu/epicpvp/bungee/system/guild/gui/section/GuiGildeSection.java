@@ -9,11 +9,6 @@ import dev.wolveringer.api.gui.AnvilGui;
 import dev.wolveringer.api.gui.AnvilGuiListener;
 import eu.epicpvp.bungee.system.booster.GuiIntegerSelect;
 import eu.epicpvp.bungee.system.bs.Main;
-import eu.epicpvp.datenclient.client.LoadedPlayer;
-import dev.wolveringer.dataserver.protocoll.packets.PacketInStatsEdit;
-import eu.epicpvp.datenserver.definitions.gamestats.Statistic;
-import eu.epicpvp.datenclient.gilde.GildSection;
-import eu.epicpvp.datenserver.definitions.gilde.GildePermissions;
 import eu.epicpvp.bungee.system.gui.Gui;
 import eu.epicpvp.bungee.system.gui.GuiStatusPrint;
 import eu.epicpvp.bungee.system.gui.GuiWaiting;
@@ -23,7 +18,12 @@ import eu.epicpvp.bungee.system.guild.gui.GuiGildeMemberManager;
 import eu.epicpvp.bungee.system.guild.gui.GuiGildeMoneyOverview;
 import eu.epicpvp.bungee.system.guild.gui.GuiGildePermissionGroupOverview;
 import eu.epicpvp.bungee.system.item.ItemBuilder;
-import dev.wolveringer.thread.ThreadFactory;
+import eu.epicpvp.dataserver.protocoll.packets.PacketInStatsEdit;
+import eu.epicpvp.datenclient.client.LoadedPlayer;
+import eu.epicpvp.datenclient.gilde.GildSection;
+import eu.epicpvp.datenserver.definitions.gamestats.Statistic;
+import eu.epicpvp.datenserver.definitions.gilde.GildePermissions;
+import eu.epicpvp.thread.ThreadFactory;
 import net.md_5.bungee.api.ChatColor;
 
 public class GuiGildeSection extends Gui {

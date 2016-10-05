@@ -9,13 +9,6 @@ import dev.wolveringer.BungeeUtil.Player;
 import dev.wolveringer.BungeeUtil.item.Item;
 import dev.wolveringer.BungeeUtil.item.ItemStack.Click;
 import eu.epicpvp.bungee.system.bs.Main;
-import eu.epicpvp.datenclient.client.Callback;
-import eu.epicpvp.datenclient.client.LoadedPlayer;
-import dev.wolveringer.dataserver.protocoll.packets.PacketGildActionResponse;
-import dev.wolveringer.dataserver.protocoll.packets.PacketGildActionResponse.Action;
-import eu.epicpvp.datenclient.gilde.Gilde;
-import eu.epicpvp.datenserver.definitions.gilde.GildePermissions;
-import eu.epicpvp.datenserver.definitions.gilde.GildeType;
 import eu.epicpvp.bungee.system.gui.Gui;
 import eu.epicpvp.bungee.system.gui.GuiStatusPrint;
 import eu.epicpvp.bungee.system.gui.GuiWaiting;
@@ -23,7 +16,14 @@ import eu.epicpvp.bungee.system.guild.gui.search.GildeSearchMenue;
 import eu.epicpvp.bungee.system.guild.gui.section.SectionRegestry;
 import eu.epicpvp.bungee.system.item.ItemBuilder;
 import eu.epicpvp.bungee.system.report.search.PlayerTextEnterMenue;
-import dev.wolveringer.thread.ThreadFactory;
+import eu.epicpvp.dataserver.protocoll.packets.PacketGildActionResponse;
+import eu.epicpvp.dataserver.protocoll.packets.PacketGildActionResponse.Action;
+import eu.epicpvp.datenclient.client.Callback;
+import eu.epicpvp.datenclient.client.LoadedPlayer;
+import eu.epicpvp.datenclient.gilde.Gilde;
+import eu.epicpvp.datenserver.definitions.gilde.GildePermissions;
+import eu.epicpvp.datenserver.definitions.gilde.GildeType;
+import eu.epicpvp.thread.ThreadFactory;
 
 public class GuiPlayerGildeOverview extends Gui{
 

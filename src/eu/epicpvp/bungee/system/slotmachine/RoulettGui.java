@@ -9,17 +9,17 @@ import dev.wolveringer.BungeeUtil.item.Item;
 import dev.wolveringer.api.inventory.Inventory;
 import eu.epicpvp.bungee.system.booster.GuiIntegerSelect;
 import eu.epicpvp.bungee.system.bs.Main;
+import eu.epicpvp.bungee.system.item.ItemBuilder;
+import eu.epicpvp.bungee.system.slotmachine.RoulettHistory.HistoryItem;
+import eu.epicpvp.bungee.system.slotmachine.RoulettHistory.HistoryListener;
+import eu.epicpvp.dataserver.protocoll.packets.PacketInStatsEdit.Action;
+import eu.epicpvp.dataserver.protocoll.packets.PacketOutPacketStatus;
+import eu.epicpvp.dataserver.protocoll.packets.PacketOutPacketStatus.Error;
 import eu.epicpvp.datenclient.client.Callback;
 import eu.epicpvp.datenserver.definitions.connection.ClientType;
 import eu.epicpvp.datenserver.definitions.dataserver.gamestats.StatsKey;
 import eu.epicpvp.datenserver.definitions.dataserver.protocoll.DataBuffer;
-import dev.wolveringer.dataserver.protocoll.packets.PacketOutPacketStatus;
-import dev.wolveringer.dataserver.protocoll.packets.PacketInStatsEdit.Action;
-import dev.wolveringer.dataserver.protocoll.packets.PacketOutPacketStatus.Error;
-import eu.epicpvp.bungee.system.item.ItemBuilder;
-import eu.epicpvp.bungee.system.slotmachine.RoulettHistory.HistoryItem;
-import eu.epicpvp.bungee.system.slotmachine.RoulettHistory.HistoryListener;
-import dev.wolveringer.thread.ThreadFactory;
+import eu.epicpvp.thread.ThreadFactory;
 
 public class RoulettGui implements HistoryListener {
 	private static final String BANK_NAME = "WolverinDEV";
@@ -37,7 +37,7 @@ public class RoulettGui implements HistoryListener {
 	private int wheelIndex = 0;
 
 	private boolean wheelActive;
-
+	
 	private int[] puts = new int[3];
 
 	public RoulettGui() {

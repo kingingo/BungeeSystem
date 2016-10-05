@@ -5,12 +5,12 @@ import java.net.SocketAddress;
 import java.util.List;
 
 import eu.epicpvp.bungee.system.bs.Main;
-import eu.epicpvp.datenserver.definitions.permissions.PermissionType;
+import eu.epicpvp.dataserver.protocoll.packets.PacketOutServerStatus;
 import eu.epicpvp.datenclient.client.ClientWrapper;
 import eu.epicpvp.datenclient.client.LoadedPlayer;
 import eu.epicpvp.datenclient.client.connection.Client;
 import eu.epicpvp.datenclient.client.debug.Debugger;
-import dev.wolveringer.dataserver.protocoll.packets.PacketOutServerStatus;
+import eu.epicpvp.datenserver.definitions.permissions.PermissionType;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.scheduler.ScheduledTask;

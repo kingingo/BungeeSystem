@@ -6,17 +6,18 @@ import java.util.concurrent.TimeUnit;
 
 import dev.wolveringer.BungeeUtil.ClientVersion;
 import dev.wolveringer.BungeeUtil.ClientVersion.BigClientVersion;
-import eu.epicpvp.datenserver.definitions.arrays.CachedArrayList;
 import eu.epicpvp.bungee.system.bs.Main;
 import eu.epicpvp.bungee.system.bs.information.InformationManager;
 import eu.epicpvp.bungee.system.bs.message.MessageManager;
+import eu.epicpvp.bungee.system.permission.PermissionManager;
+import eu.epicpvp.dataserver.protocoll.packets.PacketInChangePlayerSettings;
+import eu.epicpvp.dataserver.protocoll.packets.PacketOutPacketStatus;
+import eu.epicpvp.dataserver.protocoll.packets.PacketVersion;
 import eu.epicpvp.datenclient.client.LoadedPlayer;
 import eu.epicpvp.datenclient.client.PacketHandleErrorException;
+import eu.epicpvp.datenserver.definitions.arrays.CachedArrayList;
 import eu.epicpvp.datenserver.definitions.dataserver.player.LanguageType;
 import eu.epicpvp.datenserver.definitions.dataserver.player.Setting;
-import dev.wolveringer.dataserver.protocoll.packets.PacketInChangePlayerSettings;
-import dev.wolveringer.dataserver.protocoll.packets.PacketVersion;
-import eu.epicpvp.bungee.system.permission.PermissionManager;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.event.PreLoginEvent;
@@ -124,7 +125,7 @@ public class PlayerJoinListener implements Listener {
 							System.out.println("Player cracked");
 						}
 					} catch (PacketHandleErrorException ex) {
-						for (dev.wolveringer.dataserver.protocoll.packets.PacketOutPacketStatus.Error er : ex.getErrors())
+						for (PacketOutPacketStatus.Error er : ex.getErrors())
 							System.out.println(er.getId() + ":" + er.getMessage());
 						ex.printStackTrace();
 						e.setCancelled(true);

@@ -6,22 +6,22 @@ import java.util.List;
 
 import dev.wolveringer.BungeeUtil.Material;
 import dev.wolveringer.BungeeUtil.item.ItemStack.Click;
+import dev.wolveringer.nbt.NBTCompressedStreamTools;
+import dev.wolveringer.nbt.NBTTagCompound;
 import eu.epicpvp.bungee.system.bs.Main;
 import eu.epicpvp.bungee.system.bs.listener.PlayerJoinListener;
+import eu.epicpvp.bungee.system.gui.GuiUpdating;
+import eu.epicpvp.bungee.system.item.ItemBuilder;
+import eu.epicpvp.bungee.system.permission.Group;
+import eu.epicpvp.bungee.system.permission.PermissionManager;
+import eu.epicpvp.dataserver.protocoll.packets.PacketInStatsEdit;
+import eu.epicpvp.dataserver.protocoll.packets.PacketInStatsEdit.Action;
+import eu.epicpvp.dataserver.protocoll.packets.PacketTeamspeakAction;
 import eu.epicpvp.datenclient.client.LoadedPlayer;
 import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameType;
 import eu.epicpvp.datenserver.definitions.dataserver.gamestats.StatsKey;
-import dev.wolveringer.dataserver.protocoll.packets.PacketInStatsEdit;
-import dev.wolveringer.dataserver.protocoll.packets.PacketInStatsEdit.Action;
-import dev.wolveringer.dataserver.protocoll.packets.PacketTeamspeakAction;
 import eu.epicpvp.datenserver.definitions.gamestats.Statistic;
-import eu.epicpvp.bungee.system.gui.GuiUpdating;
-import eu.epicpvp.bungee.system.item.ItemBuilder;
-import dev.wolveringer.nbt.NBTCompressedStreamTools;
-import dev.wolveringer.nbt.NBTTagCompound;
-import eu.epicpvp.bungee.system.permission.Group;
-import eu.epicpvp.bungee.system.permission.PermissionManager;
-import dev.wolveringer.thread.ThreadFactory;
+import eu.epicpvp.thread.ThreadFactory;
 
 public class GuiTeamspeak extends GuiUpdating {
 	private NBTTagCompound properties;
@@ -81,7 +81,7 @@ public class GuiTeamspeak extends GuiUpdating {
 			return;
 		inv.setItem(8, ItemBuilder.create(Material.LAVA_BUCKET).name("§cLösche diese Verlinkung!").listener(()->{
 			LoadedPlayer lplayer = Main.getDatenServer().getClient().getPlayerAndLoad(getPlayer().getName());
-			Main.getDatenServer().getClient().writePacket(new PacketTeamspeakAction(lplayer.getPlayerId(), dev.wolveringer.dataserver.protocoll.packets.PacketTeamspeakAction.Action.UNLINK, null));
+			Main.getDatenServer().getClient().writePacket(new PacketTeamspeakAction(lplayer.getPlayerId(), eu.epicpvp.dataserver.protocoll.packets.PacketTeamspeakAction.Action.UNLINK, null));
 			getPlayer().closeInventory();
 			getPlayer().sendMessage("§aDu hast deine Verlinkung aufgehoben.");
 		}).build());
@@ -125,7 +125,7 @@ public class GuiTeamspeak extends GuiUpdating {
 						return Integer.compare(o2.getImportance(), o1.getImportance());
 					}
 				});
-				Main.getDatenServer().getClient().writePacket(new PacketTeamspeakAction(lplayer.getPlayerId(), dev.wolveringer.dataserver.protocoll.packets.PacketTeamspeakAction.Action.UPDATE_GROUPS, groups.get(0).getName()));
+				Main.getDatenServer().getClient().writePacket(new PacketTeamspeakAction(lplayer.getPlayerId(), eu.epicpvp.dataserver.protocoll.packets.PacketTeamspeakAction.Action.UPDATE_GROUPS, groups.get(0).getName()));
 			}).build());
 		}
 
@@ -150,7 +150,7 @@ public class GuiTeamspeak extends GuiUpdating {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				Main.getDatenServer().getClient().writePacket(new PacketTeamspeakAction(lplayer.getPlayerId(), dev.wolveringer.dataserver.protocoll.packets.PacketTeamspeakAction.Action.UPDATE_AVATAR, null));
+				Main.getDatenServer().getClient().writePacket(new PacketTeamspeakAction(lplayer.getPlayerId(), eu.epicpvp.dataserver.protocoll.packets.PacketTeamspeakAction.Action.UPDATE_AVATAR, null));
 			}).build());
 		}
 	}

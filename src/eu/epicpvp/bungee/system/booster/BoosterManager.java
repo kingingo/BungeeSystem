@@ -2,16 +2,16 @@ package eu.epicpvp.bungee.system.booster;
 
 import java.util.HashMap;
 
-import eu.epicpvp.datenserver.definitions.booster.BoosterType;
-import eu.epicpvp.datenserver.definitions.booster.NetworkBooster;
-import eu.epicpvp.datenclient.event.EventListener;
-import eu.epicpvp.datenserver.definitions.events.Event;
-import eu.epicpvp.datenserver.definitions.events.booster.BoosterStatusChangeEvent;
-import eu.epicpvp.datenserver.definitions.hashmaps.InitHashMap;
-import dev.wolveringer.thread.ThreadFactory;
 import eu.epicpvp.bungee.system.actionbar.ActionBar;
 import eu.epicpvp.bungee.system.bs.Main;
 import eu.epicpvp.bungee.system.bs.listener.PlayerJoinListener;
+import eu.epicpvp.datenclient.event.EventListener;
+import eu.epicpvp.datenserver.definitions.booster.BoosterType;
+import eu.epicpvp.datenserver.definitions.booster.NetworkBooster;
+import eu.epicpvp.datenserver.definitions.events.Event;
+import eu.epicpvp.datenserver.definitions.events.booster.BoosterStatusChangeEvent;
+import eu.epicpvp.datenserver.definitions.hashmaps.InitHashMap;
+import eu.epicpvp.thread.ThreadFactory;
 import net.md_5.bungee.BungeeCord;
 
 public class BoosterManager implements EventListener {

@@ -21,7 +21,7 @@ import eu.epicpvp.bungee.system.bs.Main;
 import eu.epicpvp.bungee.system.item.ItemBuilder;
 import eu.epicpvp.datenserver.definitions.skin.Skin;
 import eu.epicpvp.datenserver.definitions.skin.SteveSkin;
-import dev.wolveringer.thread.ThreadFactory;
+import eu.epicpvp.thread.ThreadFactory;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;

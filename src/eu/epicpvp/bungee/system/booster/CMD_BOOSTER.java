@@ -4,12 +4,12 @@ import org.apache.commons.lang3.StringUtils;
 
 import dev.wolveringer.BungeeUtil.Player;
 import eu.epicpvp.bungee.system.bs.Main;
+import eu.epicpvp.bungee.system.permission.PermissionManager;
+import eu.epicpvp.dataserver.protocoll.packets.PacketInStatsEdit;
+import eu.epicpvp.dataserver.protocoll.packets.PacketInStatsEdit.Action;
 import eu.epicpvp.datenclient.client.LoadedPlayer;
 import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameType;
 import eu.epicpvp.datenserver.definitions.dataserver.gamestats.StatsKey;
-import dev.wolveringer.dataserver.protocoll.packets.PacketInStatsEdit;
-import dev.wolveringer.dataserver.protocoll.packets.PacketInStatsEdit.Action;
-import eu.epicpvp.bungee.system.permission.PermissionManager;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.plugin.Command;
 

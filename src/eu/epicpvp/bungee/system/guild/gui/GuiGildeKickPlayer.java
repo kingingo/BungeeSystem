@@ -3,11 +3,11 @@ package eu.epicpvp.bungee.system.guild.gui;
 import dev.wolveringer.BungeeUtil.Material;
 import dev.wolveringer.BungeeUtil.item.ItemStack.Click;
 import eu.epicpvp.bungee.system.bs.Main;
+import eu.epicpvp.bungee.system.gui.Gui;
+import eu.epicpvp.bungee.system.item.ItemBuilder;
 import eu.epicpvp.datenclient.client.LoadedPlayer;
 import eu.epicpvp.datenclient.gilde.GildSection;
 import eu.epicpvp.datenserver.definitions.gilde.GildeType;
-import eu.epicpvp.bungee.system.gui.Gui;
-import eu.epicpvp.bungee.system.item.ItemBuilder;
 
 public class GuiGildeKickPlayer extends Gui {
 	private GildSection section;

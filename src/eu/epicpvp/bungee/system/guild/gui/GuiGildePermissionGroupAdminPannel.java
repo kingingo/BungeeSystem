@@ -6,13 +6,13 @@ import dev.wolveringer.BungeeUtil.Material;
 import dev.wolveringer.BungeeUtil.item.Item;
 import dev.wolveringer.BungeeUtil.item.ItemStack.Click;
 import eu.epicpvp.bungee.system.bs.Main;
-import eu.epicpvp.datenclient.gilde.GildPermissionGroup;
-import eu.epicpvp.datenserver.definitions.gilde.GildePermissions;
-import eu.epicpvp.datenserver.definitions.gilde.GildePermissions.DisplayItem;
 import eu.epicpvp.bungee.system.gui.Gui;
 import eu.epicpvp.bungee.system.gui.GuiStatusPrint;
 import eu.epicpvp.bungee.system.gui.GuiWaiting;
 import eu.epicpvp.bungee.system.item.ItemBuilder;
+import eu.epicpvp.datenclient.gilde.GildPermissionGroup;
+import eu.epicpvp.datenserver.definitions.gilde.GildePermissions;
+import eu.epicpvp.datenserver.definitions.gilde.GildePermissions.DisplayItem;
 
 public class GuiGildePermissionGroupAdminPannel extends Gui{
 	private static class PermissionItem {
