@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>eu.epicpvp.bungee</groupId>
 	<artifactId>BungeeCordSystem</artifactId>
@@ -61,18 +61,19 @@
 					</execution>
 				</executions>
 				<configuration>
-				 <artifactSet>
-	                <includes>
-	                	<include>eu.epicpvp.datenserver:definitions</include>
-	                	<include>eu.epicpvp.datenserver:packets</include>
-	                	<include>eu.epicpvp:DatenClient</include>
-	                	<include>eu.epicpvp.bungee:FakeServer</include>
-	                	<include>org.apache.commons:commons-io</include>
-	                	<include>org.apache.commons:commons-lang3</include>
-	                	<include>eu.epicpvp:ThreadManager</include>
-	                	<groupId>org.apache.commons</groupId>
-	                </includes>
-	              </artifactSet>
+					<artifactSet>
+						<includes>
+							<include>eu.epicpvp.datenserver:definitions</include>
+							<include>eu.epicpvp.datenserver:packets</include>
+							<include>eu.epicpvp:DatenClient</include>
+							<include>eu.epicpvp.lib:NBTTag</include>
+							<include>eu.epicpvp.bungee:FakeServer</include>
+							<include>org.apache.commons:commons-io</include>
+							<include>org.apache.commons:commons-lang3</include>
+							<include>eu.epicpvp:ThreadManager</include>
+							<groupId>org.apache.commons</groupId>
+						</includes>
+					</artifactSet>
 					<finalName>${project.artifactId}-all</finalName>
 					<minimizeJar>false</minimizeJar>
 					<filters>
@@ -162,8 +163,12 @@
 			<groupId>eu.epicpvp</groupId>
 			<artifactId>DatenClient</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
-			<type>jar</type>
 		</dependency>
+		<!--<dependency>-->
+		<!--<groupId>eu.epicpvp.lib</groupId>-->
+		<!--<artifactId>NBTTag</artifactId>-->
+		<!--<version>1.2.1</version>-->
+		<!--</dependency>-->
 		<dependency>
 			<groupId>eu.epicpvp.datenserver</groupId>
 			<artifactId>definitions</artifactId>
