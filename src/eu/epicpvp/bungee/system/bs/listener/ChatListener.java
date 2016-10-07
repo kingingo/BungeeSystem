@@ -86,9 +86,16 @@ public class ChatListener implements Listener {
 				else
 					return;
 			}
-
-			if (e.getMessage().equalsIgnoreCase("/aac") || e.getMessage().startsWith("/aac ") || e.getMessage().equalsIgnoreCase("/aac:aac") || e.getMessage().startsWith("/aac:aac ")) {
+			
+			String trimMsg = e.getMessage().trim();
+			if (trimMsg.equalsIgnoreCase("/aac") || trimMsg.startsWith("/aac ") || trimMsg.equalsIgnoreCase("/aac:aac") || trimMsg.startsWith("/aac:aac ")) {
 				e.setMessage("///iAmACommandThatDoesNotExistAndShouldNeverExistKappa");
+			}
+			
+			if (trimMsg.equalsIgnoreCase("/icanhasbukkit") || trimMsg.startsWith("/icanhasbukkit ") || trimMsg.equalsIgnoreCase("/bukkit:icanhasbukkit") || trimMsg.startsWith("/bukkit:icanhasbukkit ")) {
+				e.setCancelled(true);
+				((ProxiedPlayer) e.getSender()).sendMessage("§cJetzt nicht wirklich?");
+				return;
 			}
 
 			if (time.containsKey(e.getSender())) {
