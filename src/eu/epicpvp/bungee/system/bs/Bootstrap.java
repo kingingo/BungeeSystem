@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
@@ -489,7 +490,7 @@ public class Bootstrap {
 
 		emanager.getEventManager(EventType.SERVER_SWITCH).setEventEnabled(true);
 		emanager.getEventManager(EventType.SERVER_SWITCH).setConditionEnables(EventConditions.PLAYERS_WHITELIST, true);
-		emanager.getEventManager(EventType.SERVER_SWITCH).getCondition(EventConditions.PLAYERS_WHITELIST).addValue(Main.getDatenServer().getClient().getPlayerAndLoad("WolverinDEV").getUUID());
+		emanager.getEventManager(EventType.SERVER_SWITCH).getCondition(EventConditions.PLAYERS_WHITELIST, UUID.class).addValue(Main.getDatenServer().getClient().getPlayerAndLoad("WolverinDEV").getUUID());
 		emanager.registerListener(new EventListener() {
 			@Override
 			public void fireEvent(Event e) {
