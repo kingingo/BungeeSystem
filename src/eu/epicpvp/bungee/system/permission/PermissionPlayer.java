@@ -185,6 +185,11 @@ public class PermissionPlayer {
 				for (Permission np : negativePermissions) {
 					if (np.acceptPermission(p.getPermission()))
 						continue ploop;
+					else {
+						if (!perms.contains(np)) {
+							perms.add(np);
+						}
+					}
 				}
 				perms.add(p);
 			}

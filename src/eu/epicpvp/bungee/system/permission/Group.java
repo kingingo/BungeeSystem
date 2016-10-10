@@ -126,6 +126,11 @@ public class Group {
 					for (Permission np : negativePerms) {
 						if (np.acceptPermission(p.getPermission()))
 							continue ploop;
+						else {
+							if (!finalPermissions.contains(np)) {
+								finalPermissions.add(np);
+							}
+						}
 					}
 					finalPermissions.add(p);
 				}
@@ -153,7 +158,24 @@ public class Group {
 		for (Group g : instances) {
 			if (checked.contains(g))
 				continue;
-			perms.addAll(g.getPermissionsDeep(checked));
+			ArrayList<Permission> groupPerms = g.getPermissionsDeep(checked);
+			outer: for (Permission perm : groupPerms) {
+				if (!perms.contains(perm)) {
+					for (Permission alreadyPerm : perms) {
+						if (alreadyPerm.isNegative()) {
+							if (alreadyPerm.getFinalPermission().equalsIgnoreCase(perm.getFinalPermission())) {
+								break outer; //do not add any permission if its negative part was found
+							}
+						} else if (perm.isNegative()) {
+							if (alreadyPerm.getFinalPermission().equalsIgnoreCase(perm.getFinalPermission())) {
+								break outer; //do not add a negative permission if any matching permission is already available
+							}
+						}
+					}
+					perms.add(perm);
+				}
+			}
+//			perms.addAll(groupPerms);
 			checked.add(g);
 		}
 		return perms;

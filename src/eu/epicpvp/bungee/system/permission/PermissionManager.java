@@ -270,9 +270,9 @@ public class PermissionManager implements Listener {
 						DataBuffer out = new DataBuffer();
 						List<Group> groupsBase = new ArrayList<>(p.getGroups());
 						List<Group> groups = new ArrayList<>(groupsBase);
-						for (Group group : groupsBase) {
-							groups.addAll(group.getGroupsDeep());
-						}
+//						for (Group group : groupsBase) {
+//							groups.addAll(group.getGroupsDeep());
+//						}
 						out.writeInt(groups.size());
 						Collections.sort(groups, (a, b) -> Integer.compare(b.getImportance(), a.getImportance()));
 						for (Group group : groups) {
