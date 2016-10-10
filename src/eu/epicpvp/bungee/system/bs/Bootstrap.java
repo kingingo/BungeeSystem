@@ -90,7 +90,7 @@ import eu.epicpvp.bungee.system.bs.consolencommand.CommandHashMap;
 import eu.epicpvp.bungee.system.bs.consolencommand.PrefixCommandRegistry;
 import eu.epicpvp.bungee.system.bs.information.InformationManager;
 import eu.epicpvp.bungee.system.bs.listener.ChatListener;
-import eu.epicpvp.bungee.system.bs.listener.ConsoleTeamMessageListener;
+import eu.epicpvp.bungee.system.bs.listener.CommandConsoleTeamMessage;
 import eu.epicpvp.bungee.system.bs.listener.InvalidChatListener;
 import eu.epicpvp.bungee.system.bs.listener.PingListener;
 import eu.epicpvp.bungee.system.bs.listener.PlayerJoinListener;
@@ -420,6 +420,7 @@ public class Bootstrap {
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandTeamspeak());
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandResourcepack());
 		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandMoney());
+		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandConsoleTeamMessage());
 		//BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandGilde());
 
 		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), InformationManager.getManager());
@@ -519,7 +520,6 @@ public class Bootstrap {
 			e.printStackTrace();
 		}
 
-		PrefixCommandRegistry.getInstance().registerCommandListener("~", new ConsoleTeamMessageListener());
 
 		BungeeCord.getInstance().getScheduler().schedule(Main.getInstance(), new Runnable() {
 			private int lastAmount = -7;
