@@ -32,7 +32,7 @@ public class GuiTeamspeak extends GuiUpdating {
 
 	@Override
 	public void build() {
-		fill(ItemBuilder.create(160).durbility(7).name("§7").build(), 0 , -1,true);
+		fill(ItemBuilder.create(160).durability(7).name("§7").build(), 0 , -1,true);
 		inv.setItem(0, ItemBuilder.create(Material.BARRIER).name("§cSchließen").listener((Click c) -> c.getPlayer().closeInventory()).build());
 		inv.setItem(4, ItemBuilder.create(Material.WATCH).name("§eLoading informations").glow().build());
 		loadInformation();

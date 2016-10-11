@@ -57,14 +57,14 @@ public abstract class GuiIntegerSelect {
 			break;
 		case 1:
 			inv = new Inventory(9, title);
-			inv.setItem(0, ItemBuilder.create(160).durbility(7).name("§7").build());
+			inv.setItem(0, ItemBuilder.create(160).durability(7).name("§7").build());
 			inv.setItem(1, buildItem(337, -100));
 			inv.setItem(2, buildItem(77, -10));
 			inv.setItem(3, buildItem(143, -1));
 			inv.setItem(5, buildItem(143, 1));
 			inv.setItem(6, buildItem(77, 10));
 			inv.setItem(7, buildItem(337, 100));
-			inv.setItem(8, ItemBuilder.create(160).durbility(7).name("§7").build());
+			inv.setItem(8, ItemBuilder.create(160).durability(7).name("§7").build());
 			updateCenter();
 			player.openInventory(inv);
 			break;
@@ -96,14 +96,14 @@ public abstract class GuiIntegerSelect {
 			updateCenter();
 			break;
 		case 1:
-			inv.setItem(0, ItemBuilder.create(160).durbility(7).name("§7").build());
+			inv.setItem(0, ItemBuilder.create(160).durability(7).name("§7").build());
 			inv.setItem(1, buildItem(337, -100));
 			inv.setItem(2, buildItem(77, -10));
 			inv.setItem(3, buildItem(143, -1));
 			inv.setItem(5, buildItem(143, 1));
 			inv.setItem(6, buildItem(77, 10));
 			inv.setItem(7, buildItem(337, 100));
-			inv.setItem(8, ItemBuilder.create(160).durbility(7).name("§7").build());
+			inv.setItem(8, ItemBuilder.create(160).durability(7).name("§7").build());
 			updateCenter();
 			break;
 		case 2:

@@ -43,15 +43,15 @@ public abstract class GuiItemSelect extends Gui{
 			rebuild();
 		}).build());
 
-		Item success = ItemBuilder.create().id(160).durbility(5).name("§aSave").listener((c)->{
+		Item success = ItemBuilder.create().id(160).durability(5).name("§aSave").listener((c)->{
 			select(select);
 		}).build();
 		for (int i = 0; i < 5; i++)
 			inv.setItem(9 + i, success);
 
-		inv.setItem(13, ItemBuilder.create().id(160).durbility(8).name("§6Currunt Selection").glow().build());
+		inv.setItem(13, ItemBuilder.create().id(160).durability(8).name("§6Currunt Selection").glow().build());
 
-		Item cancel = ItemBuilder.create().id(160).durbility(14).name("§cCancel").listener((c)->{
+		Item cancel = ItemBuilder.create().id(160).durability(14).name("§cCancel").listener((c)->{
 			cancel();
 		}).build();
 		for (int i = 5; i < 9; i++)

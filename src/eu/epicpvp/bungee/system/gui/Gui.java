@@ -137,7 +137,7 @@ public abstract class Gui {
 		gui.player = this.player;
 		active = false;
 		deactive();
-		InventoryViewChangeAnimations.runAnimation(AnimationType.SCROLL_UP, this.inv, items, newName, ItemBuilder.create(160).durbility(7).name("§7").build(), 100);
+		InventoryViewChangeAnimations.runAnimation(AnimationType.SCROLL_UP, this.inv, items, newName, ItemBuilder.create(160).durability(7).name("§7").build(), 100);
 		gui.animationEnd = System.currentTimeMillis()+100*(items.getSize()/9)*1;
 		gui.active = true;
 		gui.active();

@@ -25,7 +25,7 @@ public class GuiSelectPlayerReportReson extends Gui{
 				getPlayer().closeInventory();
 			}
 		});
-		inv.setItem(4, loadSkin(ItemBuilder.create(Material.SKULL_ITEM).durbility(1).name("§6"+targetNickname).build(), targetNickname));
+		inv.setItem(4, loadSkin(ItemBuilder.create(Material.SKULL_ITEM).durability(1).name("§6"+targetNickname).build(), targetNickname));
 		inv.setItem(8, ItemBuilder.create(386).name("§aNicht dabei? » §eSelber schreiben").lore("§aKicke um fortzufahren.").listener((c)->{
 			PlayerTextEnterMenue gui = new PlayerTextEnterMenue(getPlayer()) {
 				@Override
@@ -56,6 +56,6 @@ public class GuiSelectPlayerReportReson extends Gui{
 		//29 31 33
 		//47 49 51
 
-		fill(ItemBuilder.create(160).durbility(7).name("§7").build(), 0, 6*9);
+		fill(ItemBuilder.create(160).durability(7).name("§7").build(), 0, 6*9);
 	}
 }

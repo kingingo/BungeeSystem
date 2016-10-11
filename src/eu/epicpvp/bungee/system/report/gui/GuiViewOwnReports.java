@@ -15,7 +15,7 @@ import net.md_5.bungee.api.scheduler.ScheduledTask;
 
 public class GuiViewOwnReports extends Gui implements Runnable{
 	private ScheduledTask pid;
-	private Item fillItem = ItemBuilder.create(160).durbility(7).name("§7").build();
+	private Item fillItem = ItemBuilder.create(160).durability(7).name("§7").build();
 	private ReportEntity[] entites;
 
 	public GuiViewOwnReports() {
@@ -46,14 +46,14 @@ public class GuiViewOwnReports extends Gui implements Runnable{
 				}catch(Exception e){
 					if(e instanceof PacketHandleErrorException){
 						PacketHandleErrorException ex = (PacketHandleErrorException) e;
-						ItemBuilder builder = ItemBuilder.create(160).durbility(14).name("§cError while loading report list!");
+						ItemBuilder builder = ItemBuilder.create(160).durability(14).name("§cError while loading report list!");
 						builder.lore("§cErrors: ");
 						for(int i = 0;i<ex.getErrors().length;i++)
 							builder.lore(" §7- §c"+ex.getErrors()[i].getId()+" -> "+ex.getErrors()[i].getMessage());
 						fill(builder.build(), 1*9, -1,true);
 					}
 					else
-						fill(ItemBuilder.create(160).durbility(14).name("§cError while loading report list!").lore("§cException: "+e.getMessage()).build(), 1*9, -1,true);
+						fill(ItemBuilder.create(160).durability(14).name("§cError while loading report list!").lore("§cException: "+e.getMessage()).build(), 1*9, -1,true);
 				}
 			}
 		});

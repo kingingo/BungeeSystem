@@ -23,7 +23,7 @@ public class GuiSelectPlayerReportQuestion extends Gui{
 	@Override
 	public void build() {
 		inv.setItem(0, ItemBuilder.create(Material.BARRIER).name("§cZurück").listener((Click c) -> switchToGui(new GuiSelectPlayerReportReson(target,targetNickname))).build());
-		inv.setItem(4, loadSkin(ItemBuilder.create(Material.SKULL_ITEM).durbility(1).name("§6" + targetNickname).lore("§aGrund » §e"+categorisation).build(), targetNickname));
+		inv.setItem(4, loadSkin(ItemBuilder.create(Material.SKULL_ITEM).durability(1).name("§6" + targetNickname).lore("§aGrund » §e"+categorisation).build(), targetNickname));
 		inv.setItem(8, ItemBuilder.create(386).name(question).lore("§aKicke um fortzufahren.").listener((c) -> {
 			PlayerTextEnterMenue gui = new PlayerTextEnterMenue(getPlayer()) {
 				@Override
@@ -39,6 +39,6 @@ public class GuiSelectPlayerReportQuestion extends Gui{
 			gui.open();
 		}).build());
 
-		fill(ItemBuilder.create(160).durbility(7).name("§7").build(), 0, -1);
+		fill(ItemBuilder.create(160).durability(7).name("§7").build(), 0, -1);
 	}
 }

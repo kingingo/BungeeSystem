@@ -61,6 +61,6 @@ public class GuiPlayerMenue extends Gui {
 				switchToGui(new GuiViewOwnReports());
 			}
 		});
-		fill(ItemBuilder.create(160).durbility(7).name("§7").build(), 0, 8);
+		fill(ItemBuilder.create(160).durability(7).name("§7").build(), 0, 8);
 	}
 }

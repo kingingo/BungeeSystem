@@ -58,6 +58,6 @@ public class GuiPlayerSupportTools extends Gui {
 		inv.setItem(7, ItemBuilder.create(Material.LAVA_BUCKET).name("§cClose reports").glow().listener((c)->{
 			switchToGui(new GuiReportCloseReason(reports, player));
 		}).build());
-		fill(ItemBuilder.create(160).durbility(7).name("§7").build(), 0, 6*9);
+		fill(ItemBuilder.create(160).durability(7).name("§7").build(), 0, 6*9);
 	}
 }

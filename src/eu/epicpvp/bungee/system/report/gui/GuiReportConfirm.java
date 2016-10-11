@@ -29,19 +29,19 @@ public class GuiReportConfirm extends Gui{
 				getPlayer().closeInventory();
 			}
 		});
-		inv.setItem(1, loadSkin(ItemBuilder.create(Material.SKULL_ITEM).durbility(1).name("§6"+targetNickname).lore("§aGrund » §e"+ reason).lore("§aWeitere Info » §e"+(moreInfo== null ? "§cNone":moreInfo)).build(), targetNickname));
+		inv.setItem(1, loadSkin(ItemBuilder.create(Material.SKULL_ITEM).durability(1).name("§6"+targetNickname).lore("§aGrund » §e"+ reason).lore("§aWeitere Info » §e"+(moreInfo== null ? "§cNone":moreInfo)).build(), targetNickname));
 		inv.setItem(4, ItemBuilder.create(Material.ANVIL).name("§c§lAchtung!").lore("§cTicket-Missbrach kann zum Ban führen!").build());
 
-		inv.setItem(7, new ItemStack(ItemBuilder.create(159).name("§cAbbrechen").durbility(14).build()){
+		inv.setItem(7, new ItemStack(ItemBuilder.create(159).name("§cAbbrechen").durability(14).build()){
 			@Override
 			public void click(Click c) {
 				getPlayer().closeInventory();
 				getPlayer().sendMessage("§cAction canceled.");
 			}
 		});
-		inv.setItem(8, ItemBuilder.create(159).name("§a§mBestätigen").lore("§cBitte warte noch 5 Sekunden bevor du").lore("§cden Report bestätigen kannst.").durbility(11).build());
+		inv.setItem(8, ItemBuilder.create(159).name("§a§mBestätigen").lore("§cBitte warte noch 5 Sekunden bevor du").lore("§cden Report bestätigen kannst.").durability(11).build());
 
-		fill(ItemBuilder.create(160).durbility(7).name("§7").build(), 0, 9);
+		fill(ItemBuilder.create(160).durability(7).name("§7").build(), 0, 9);
 	}
 
 	@Override
@@ -50,14 +50,14 @@ public class GuiReportConfirm extends Gui{
 			public void run() {
 				int loop = 6;
 				while (--loop>0) {
-					inv.setItem(8, ItemBuilder.create(159).name("§a§mBestätigen").lore("§cBitte warte noch "+loop+" Sekunden bevor du").lore("§cden Report bestätigen kannst.").durbility(11).build());
+					inv.setItem(8, ItemBuilder.create(159).name("§a§mBestätigen").lore("§cBitte warte noch "+loop+" Sekunden bevor du").lore("§cden Report bestätigen kannst.").durability(11).build());
 					try {
 						Thread.sleep(1000);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
 				}
-				inv.setItem(8, new ItemStack(ItemBuilder.create(159).name("§aBestätigen").durbility(13).build()){
+				inv.setItem(8, new ItemStack(ItemBuilder.create(159).name("§aBestätigen").durability(13).build()){
 					@Override
 					public void click(Click c) {
 						getPlayer().closeInventory();

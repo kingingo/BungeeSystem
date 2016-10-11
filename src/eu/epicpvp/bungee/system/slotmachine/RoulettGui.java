@@ -47,7 +47,7 @@ public class RoulettGui implements HistoryListener {
 		wheelIndex = Math.abs((int) System.currentTimeMillis());
 		inv = new Inventory(54, "§6Roulette");
 		for(int i = 0;i<inv.getSlots();i++)
-			inv.setItem(i, ItemBuilder.create(160).durbility(7).name("§7").build());
+			inv.setItem(i, ItemBuilder.create(160).durability(7).name("§7").build());
 	}
 
 	public void setPlayer(Player player) {
@@ -68,10 +68,10 @@ public class RoulettGui implements HistoryListener {
 
 	private ItemBuilder buildWheelItem(int index) {
 		if (index == 0)
-			return ItemBuilder.create().id(160).durbility(13).name("§a" + index).amouth(index);
+			return ItemBuilder.create().id(160).durability(13).name("§a" + index).amouth(index);
 		if (index % 2 == 0)
-			return ItemBuilder.create().id(160).durbility(14).name("§c" + index).amouth(index);
-		return ItemBuilder.create().id(160).durbility(15).name("§8" + index).amouth(index);
+			return ItemBuilder.create().id(160).durability(14).name("§c" + index).amouth(index);
+		return ItemBuilder.create().id(160).durability(15).name("§8" + index).amouth(index);
 	}
 
 	public void open() {

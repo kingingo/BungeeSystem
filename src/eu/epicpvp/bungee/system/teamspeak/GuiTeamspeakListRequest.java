@@ -39,13 +39,13 @@ public abstract class GuiTeamspeakListRequest extends GuiUpdating {
 
 	@Override
 	public void build() {
-		fill(ItemBuilder.create(160).durbility(7).name("§7").build(), 0, -1, true);
+		fill(ItemBuilder.create(160).durability(7).name("§7").build(), 0, -1, true);
 		inv.setItem(4, createInfoItem());
-		inv.setItem(0, ItemBuilder.create(159).durbility(14).name("§cAblehnen").listener(() -> {
+		inv.setItem(0, ItemBuilder.create(159).durability(14).name("§cAblehnen").listener(() -> {
 			input(false);
 			getPlayer().closeInventory();
 		}).build());
-		inv.setItem(8, ItemBuilder.create(159).durbility(5).name("§aAnnehmen").listener(() -> {
+		inv.setItem(8, ItemBuilder.create(159).durability(5).name("§aAnnehmen").listener(() -> {
 			LoadedPlayer lplayer = Main.getDatenServer().getClient().getPlayerAndLoad(getPlayer().getName());
 			input(true);
 			getPlayer().closeInventory();

@@ -8,9 +8,9 @@ public class GuiWaiting extends GuiUpdating{
 	private static final Item[] ROW_ITEMS = new Item[]{
 		ItemBuilder.create(Material.WOOL).build(),
 		ItemBuilder.create(Material.WOOL).build(),
-		ItemBuilder.create(Material.WOOL).durbility(8).build(),
-		ItemBuilder.create(Material.WOOL).durbility(7).build(),
-		ItemBuilder.create(Material.WOOL).durbility(15).build(),
+		ItemBuilder.create(Material.WOOL).durability(8).build(),
+		ItemBuilder.create(Material.WOOL).durability(7).build(),
+		ItemBuilder.create(Material.WOOL).durability(15).build(),
 		ItemBuilder.create(Material.WOOL).build(),
 		ItemBuilder.create(Material.WOOL).build()
 	};
@@ -41,7 +41,7 @@ public class GuiWaiting extends GuiUpdating{
 	public void build() {
 		start = System.currentTimeMillis();
 		step = (int) ((ROW_ITEMS.length-1)*Math.random());
-		fill(ItemBuilder.create(160).durbility(7).name("§7").build());
+		fill(ItemBuilder.create(160).durability(7).name("§7").build());
 		updateInventory();
 	}
 

@@ -25,7 +25,7 @@ import net.md_5.bungee.api.scheduler.ScheduledTask;
 public class GuiViewOpenReports extends Gui implements Runnable{
 	private static final int REPORTS_PER_SIDE = 36;
 	private ScheduledTask pid;
-	private Item fillItem = ItemBuilder.create(160).durbility(7).name("§7").build();
+	private Item fillItem = ItemBuilder.create(160).durability(7).name("§7").build();
 	private ReportEntity[] entites;
 	private List<Entry<Integer, ArrayList<ReportEntity>>> reportEntities;
 	private HashMap<Integer, Long> minTimes;
@@ -58,14 +58,14 @@ public class GuiViewOpenReports extends Gui implements Runnable{
 				}catch(Exception e){
 					if(e instanceof PacketHandleErrorException){
 						PacketHandleErrorException ex = (PacketHandleErrorException) e;
-						ItemBuilder builder = ItemBuilder.create(160).durbility(14).name("§cError while loading report list!");
+						ItemBuilder builder = ItemBuilder.create(160).durability(14).name("§cError while loading report list!");
 						builder.lore("§cErrors: ");
 						for(int i = 0;i<ex.getErrors().length;i++)
 							builder.lore(" §7- §c"+ex.getErrors()[i].getId()+" -> "+ex.getErrors()[i].getMessage());
 						fill(builder.build(), 1*9, -1,true);
 					}
 					else
-						fill(ItemBuilder.create(160).durbility(14).name("§cError while loading report list!").lore("§cException: "+e.getMessage()).build(), 1*9, -1,true);
+						fill(ItemBuilder.create(160).durability(14).name("§cError while loading report list!").lore("§cException: "+e.getMessage()).build(), 1*9, -1,true);
 				}
 			}
 		});
@@ -153,7 +153,7 @@ public class GuiViewOpenReports extends Gui implements Runnable{
 	}
 	private Item createReportInfo(int playerId,ArrayList<ReportEntity> reports,long minTime){
 		if(playerId == -1)
-			return ItemBuilder.create(160).durbility(14).name("§cPlayerId -> "+playerId).build();
+			return ItemBuilder.create(160).durability(14).name("§cPlayerId -> "+playerId).build();
 		String player = Main.getDatenServer().getClient().getPlayerAndLoad(playerId).getName();
 		int workerAmount = reports.get(0).getWorkers().size();
 		ItemBuilder builder = ItemBuilder.create(Material.SKULL_ITEM)

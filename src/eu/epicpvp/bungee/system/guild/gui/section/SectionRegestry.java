@@ -8,6 +8,7 @@ import eu.epicpvp.datenserver.definitions.gilde.GildeType;
 import lombok.Getter;
 
 public class SectionRegestry {
+
 	@Getter
 	private static final SectionRegestry instance;
 
@@ -22,13 +23,14 @@ public class SectionRegestry {
 
 	private HashMap<GildeType, Class<? extends GuiGildeSection>> classes = new HashMap<>();
 
-	public void registerSection(GildeType type,Class<? extends GuiGildeSection> clazz){
+	public void registerSection(GildeType type, Class<? extends GuiGildeSection> clazz) {
 		classes.put(type, clazz);
 	}
-	public GuiGildeSection createGildeSection(GildeType type,GildSection section){
+
+	public GuiGildeSection createGildeSection(GildeType type, GildSection section) {
 		Class<? extends GuiGildeSection> clazz = classes.get(type);
-		if(clazz == null){
-			System.out.println("Cant find class: "+type);
+		if (clazz == null) {
+			System.out.println("Cant find class: " + type);
 			return null;
 		}
 		try {
@@ -39,7 +41,8 @@ public class SectionRegestry {
 		}
 		return null;
 	}
-	public GuiGildeSection createGildeSection(GildSection section){
-		return createGildeSection(section.getType() ,section);
+
+	public GuiGildeSection createGildeSection(GildSection section) {
+		return createGildeSection(section.getType(), section);
 	}
 }

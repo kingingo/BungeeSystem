@@ -52,11 +52,11 @@ public class GuiViewPlayerReport extends Gui{
 			if(e.getPlayerId() == own.getPlayerId() && e.getEnd() == -1)
 				alredyWorking = true;
 		if(alredyWorking){
-			inv.setItem(8, ItemBuilder.create(159).name("§aReport tools").durbility(14).listener((c)-> switchToGui(new GuiPlayerSupportTools(name,reports))).build());
+			inv.setItem(8, ItemBuilder.create(159).name("§aReport tools").durability(14).listener((c)-> switchToGui(new GuiPlayerSupportTools(name,reports))).build());
 		}
 		else
 		{
-			inv.setItem(8, ItemBuilder.create(159).name("§aReport annehmen").durbility(13).listener((c)->{
+			inv.setItem(8, ItemBuilder.create(159).name("§aReport annehmen").durability(13).listener((c)->{
 				for(ReportEntity e : reports){
 					Main.getDatenServer().getClient().addReportWorker(e.getReportId(), own.getPlayerId());
 					e.getWorkers().add(new ReportWorker(e.getReportId(), own.getPlayerId(), System.currentTimeMillis(), -1));
@@ -73,7 +73,7 @@ public class GuiViewPlayerReport extends Gui{
 				inv.setItem(pos++, createItem(e));
 		}
 
-		fill(ItemBuilder.create(160).durbility(7).name("§7").build(), 0, 6*9);
+		fill(ItemBuilder.create(160).durability(7).name("§7").build(), 0, 6*9);
 	}
 
 	private Item createItem(ReportEntity e){

@@ -22,7 +22,7 @@ public class GuiBoosterMenue extends GuiUpdating{
 		inv.setItem(2, buildBooster(BoosterType.SKY));
 		inv.setItem(6, buildBooster(BoosterType.ARCADE));
 		inv.setItem(4, buildOwnInformations());
-		fill(ItemBuilder.create(160).durbility(7).name("§7").build());
+		fill(ItemBuilder.create(160).durability(7).name("§7").build());
 	}
 	@Override
 	public void updateInventory() {

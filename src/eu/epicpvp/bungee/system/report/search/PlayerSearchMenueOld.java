@@ -130,7 +130,7 @@ public abstract class PlayerSearchMenueOld implements AnvilGuiListener, PacketHa
 	}
 
 	private void updateInv() {
-		gui.setCenterItem(ItemBuilder.create(Material.GOLDEN_APPLE).durbility(1).name("§eEnter a playername").build());
+		gui.setCenterItem(ItemBuilder.create(Material.GOLDEN_APPLE).durability(1).name("§eEnter a playername").build());
 		gui.setColorPrefix("§a");
 		gui.setOutputItem(ItemBuilder.create(Material.LAVA_BUCKET).name("§cCancel").lore("§aClick to cancel").glow().build());
 	}
@@ -176,7 +176,7 @@ public abstract class PlayerSearchMenueOld implements AnvilGuiListener, PacketHa
 	private void drawPlayers(List<String> players){
 		for(int i = 0;i<Math.min(players.size(), 27);i++){
 			final String name = players.get(i);
-			ItemStack is = new ItemStack(ItemBuilder.create(Material.SKULL_ITEM).durbility(1).name("§e"+name).build()){
+			ItemStack is = new ItemStack(ItemBuilder.create(Material.SKULL_ITEM).durability(1).name("§e"+name).build()){
 				@Override
 				public void click(Click c) {
 					playerEntered(name);

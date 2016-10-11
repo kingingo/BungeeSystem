@@ -64,7 +64,7 @@ public abstract class PlayerSearchMenue extends SearchMenue {
 
 	@Override
 	protected void updateInv() {
-		gui.setCenterItem(ItemBuilder.create(Material.GOLDEN_APPLE).durbility(1).name("§eEnter a playername").build());
+		gui.setCenterItem(ItemBuilder.create(Material.GOLDEN_APPLE).durability(1).name("§eEnter a playername").build());
 		gui.setColorPrefix("§a");
 		gui.setOutputItem(ItemBuilder.create(Material.LAVA_BUCKET).name("§cCancel").lore("§aClick to cancel").glow().build());
 	}
@@ -76,7 +76,7 @@ public abstract class PlayerSearchMenue extends SearchMenue {
 
 	@Override
 	protected Item createEntity(String name, int slot) {
-		return loadSkin(ItemBuilder.create(Material.SKULL_ITEM).durbility(1).name("§e"+(nicks.containsKey(name.toLowerCase()) ? nicks.get(name.toLowerCase()) : name)).build(), nicks.containsKey(name.toLowerCase()) ? nicks.get(name.toLowerCase()) : name, slot);
+		return loadSkin(ItemBuilder.create(Material.SKULL_ITEM).durability(1).name("§e"+(nicks.containsKey(name.toLowerCase()) ? nicks.get(name.toLowerCase()) : name)).build(), nicks.containsKey(name.toLowerCase()) ? nicks.get(name.toLowerCase()) : name, slot);
 	}
 
 	@Override

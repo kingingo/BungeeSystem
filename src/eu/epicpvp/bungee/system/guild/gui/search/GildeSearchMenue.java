@@ -47,7 +47,7 @@ public abstract class GildeSearchMenue extends SearchMenue {
 
 	@Override
 	protected void updateInv() {
-		gui.setCenterItem(ItemBuilder.create(Material.GOLDEN_APPLE).durbility(1).name("§eEnter the GildName").build());
+		gui.setCenterItem(ItemBuilder.create(Material.GOLDEN_APPLE).durability(1).name("§eEnter the GildName").build());
 		gui.setColorPrefix("§a");
 		gui.setOutputItem(ItemBuilder.create(Material.LAVA_BUCKET).name("§cCancel").lore("§aClick to cancel").glow().build());
 	}
@@ -68,5 +68,4 @@ public abstract class GildeSearchMenue extends SearchMenue {
 	}
 
 	public abstract void gildeEntered(UUID gilde);
-
 }

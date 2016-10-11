@@ -77,7 +77,7 @@ public class ItemBuilder {
 		return this;
 	}
 
-	public ItemBuilder durbility(int short_) {
+	public ItemBuilder durability(int short_) {
 		this.sid = short_;
 		return this;
 	}

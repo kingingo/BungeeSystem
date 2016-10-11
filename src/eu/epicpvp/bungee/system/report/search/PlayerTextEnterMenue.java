@@ -57,7 +57,7 @@ public abstract class PlayerTextEnterMenue implements AnvilGuiListener {
 	}
 
 	private void updateInv() {
-		gui.setCenterItem(ItemBuilder.create(Material.GOLDEN_APPLE).durbility(1).name("§eEnter your message").build());
+		gui.setCenterItem(ItemBuilder.create(Material.GOLDEN_APPLE).durability(1).name("§eEnter your message").build());
 		gui.setColorPrefix("§a");
 		gui.setOutputItem(ItemBuilder.create(Material.SLIME_BALL).name("§aConfirm").lore("§aClick to confirm").glow().build());
 	}
