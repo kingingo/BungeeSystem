@@ -9,7 +9,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
@@ -54,6 +53,7 @@ import eu.epicpvp.bungee.system.bs.commands.CommandClient;
 import eu.epicpvp.bungee.system.bs.commands.CommandCreative;
 import eu.epicpvp.bungee.system.bs.commands.CommandEvent;
 import eu.epicpvp.bungee.system.bs.commands.CommandGList;
+import eu.epicpvp.bungee.system.bs.commands.CommandGilde;
 import eu.epicpvp.bungee.system.bs.commands.CommandGunGame;
 import eu.epicpvp.bungee.system.bs.commands.CommandHub;
 import eu.epicpvp.bungee.system.bs.commands.CommandKicken;
@@ -119,14 +119,10 @@ import eu.epicpvp.bungee.system.translation.TranslationHandler;
 import eu.epicpvp.dataserver.protocoll.packets.PacketOutPlayerSettings.SettingValue;
 import eu.epicpvp.datenclient.client.LoadedPlayer;
 import eu.epicpvp.datenclient.client.debug.Debugger;
-import eu.epicpvp.datenclient.event.EventListener;
 import eu.epicpvp.datenclient.event.EventManager;
 import eu.epicpvp.datenclient.gilde.GildManager;
 import eu.epicpvp.datenserver.definitions.dataserver.player.Setting;
-import eu.epicpvp.datenserver.definitions.events.Event;
-import eu.epicpvp.datenserver.definitions.events.EventConditions;
 import eu.epicpvp.datenserver.definitions.events.EventType;
-import eu.epicpvp.datenserver.definitions.events.player.PlayerServerSwitchEvent;
 import eu.epicpvp.thread.ThreadFactory;
 import eu.epicpvp.thread.ThreadRunner;
 import lombok.AllArgsConstructor;
@@ -187,6 +183,7 @@ public class Bootstrap {
 			Class.forName(UtilBungeeCord.class.getName());
 		} catch (ClassNotFoundException ex) {
 		}
+		final Main plugin = Main.getInstance();
 		if (false)
 			ThreadFactory.setInstance(new ThreadFactory() {
 				@Override
@@ -221,7 +218,7 @@ public class Bootstrap {
 								System.err.println("Try to start a task twice!");
 								throw new RuntimeException("Task is alredy runnings");
 							}
-							task = BungeeCord.getInstance().getScheduler().runAsync(Main.getInstance(), new Runnable() {
+							task = BungeeCord.getInstance().getScheduler().runAsync(plugin, new Runnable() {
 								@Override
 								public void run() {
 									current = Thread.currentThread();
@@ -265,12 +262,15 @@ public class Bootstrap {
 				conf.set("server.afk.world", "worlds/afk/");
 				conf.set("server.banned.world", "worlds/banned/");
 				conf.set("server.chunksize", 2);
+				if (conf.get("gilde.enabled") == null) {
+					conf.set("gilde.enabled", "false");
+				}
 				ConfigurationProvider.getProvider(YamlConfiguration.class).save(conf, new File(getDataFolder(), "config.yml"));
 			} else
 				conf = ConfigurationProvider.getProvider(YamlConfiguration.class).load(new File(getDataFolder(), "config.yml"));
 			MySQL.setInstance(new MySQL(conf.getString("mysql.host"), conf.getInt("mysql.port") + "", conf.getString("mysql.db"), conf.getString("mysql.user"), conf.getString("mysql.passwort")));
 			MySQL.getInstance().connect();
-			Main.getInstance().serverId = conf.getString("serverId");
+			plugin.serverId = conf.getString("serverId");
 			if (!MySQL.getInstance().isConnected()) {
 				BungeeCord.getInstance().getConsole().sendMessage("§cCant connect to MySQL. Restart....");
 				UtilBungeeCord.restart();
@@ -284,9 +284,9 @@ public class Bootstrap {
 		ActionBar.setInstance(new ActionBar());
 		ChatManager.setInstance(new ChatManager());
 
-		Main.data = new BungeecordDatenClient(Main.getInstance().serverId, new InetSocketAddress(configuration.getString("datenserver.host"), configuration.getInt("datenserver.port")));
+		Main.data = new BungeecordDatenClient(plugin.serverId, new InetSocketAddress(configuration.getString("datenserver.host"), configuration.getInt("datenserver.port")));
 		Main.data.setPassword(configuration.getString("datenserver.passwort"));
-		BungeeCord.getInstance().getScheduler().runAsync(Main.getInstance(), new Runnable() {
+		BungeeCord.getInstance().getScheduler().runAsync(plugin, new Runnable() {
 			@Override
 			public void run() {
 				while (!Main.isRestarting()) {
@@ -368,79 +368,90 @@ public class Bootstrap {
 		MessageManager.start();
 		NickHandler.setInstance(new NickHandler());
 		RoulettHistory.history = new RoulettHistory();
-		BungeeCord.getInstance().getScheduler().runAsync(Main.getInstance(), new Runnable() {
+		BungeeCord.getInstance().getScheduler().runAsync(plugin, new Runnable() {
 			public void run() {
 				PermissionManager.getManager().loadGroups();
 			}
 		});
 		Main.boosterManager = new BoosterManager();
 		Main.getBoosterManager().init();
+		
+		PluginManager pluginManager = BungeeCord.getInstance().getPluginManager();
+		pluginManager.registerCommand(plugin, new CommandBDebug("bdebug"));
+		pluginManager.registerCommand(plugin, new CommandCreative("creative"));
+		pluginManager.registerCommand(plugin, new CommandNews("news"));
+		pluginManager.registerCommand(plugin, new CommandBroad("broad"));
+		pluginManager.registerCommand(plugin, new CommandKicken("kicken"));
+		pluginManager.registerCommand(plugin, new CommandRestart("grestart"));
+		pluginManager.registerCommand(plugin, new CommandaddServer("addserver"));
+		pluginManager.registerCommand(plugin, new CommanddelServer("delserver"));
+		pluginManager.registerCommand(plugin, new CommandMOTD("motd"));
+		pluginManager.registerCommand(plugin, new CommandPremium("premium"));
+		pluginManager.registerCommand(plugin, new CommandPwChange("pwchange"));
+		pluginManager.registerCommand(plugin, new CommandServer("server"));
+		pluginManager.registerCommand(plugin, new CommandClearChat("cc"));
+		pluginManager.registerCommand(plugin, new CommandGList("glist"));
+		pluginManager.registerCommand(plugin, new CommandPvP("pvp"));
+		pluginManager.registerCommand(plugin, new CommandGunGame("gungame"));
+		pluginManager.registerCommand(plugin, new CommandSky("sky"));
+		pluginManager.registerCommand(plugin, new CommandWarZ("warz"));
+		pluginManager.registerCommand(plugin, new CommandHub("hub", "l", "tm", "lobby"));
+		pluginManager.registerCommand(plugin, new CommandWhereIs("whereis"));
+		pluginManager.registerCommand(plugin, new CommandVorbau("vorbau"));
+		pluginManager.registerCommand(plugin, new CommandBuild("build"));
+		pluginManager.registerCommand(plugin, new CommandTBuild("tbuild"));
+		pluginManager.registerCommand(plugin, new CommandPermission("perm"));
+		pluginManager.registerCommand(plugin, new CommandClient("client"));
+		pluginManager.registerCommand(plugin, new CommandPerformance("performance"));
+		pluginManager.registerCommand(plugin, new CommandVote("vote"));
+		pluginManager.registerCommand(plugin, new CommandSendServer("sendserver"));
+		pluginManager.registerCommand(plugin, new CommandVersus("versus", "vs"));
+		pluginManager.registerCommand(plugin, new CommandgPing());
+		pluginManager.registerCommand(plugin, new CommandEvent("event"));
+		pluginManager.registerCommand(plugin, new CommandBan());
+		pluginManager.registerCommand(plugin, new CommandTempBan());
+		pluginManager.registerCommand(plugin, new CommandUnban());
+		pluginManager.registerCommand(plugin, new CommandBanInfo());
+		pluginManager.registerCommand(plugin, new CommandWhitelist());
+		pluginManager.registerCommand(plugin, new CommandSkin());
+		pluginManager.registerCommand(plugin, new CMD_Report());
+		pluginManager.registerCommand(plugin, new CMD_BOOSTER());
+		pluginManager.registerCommand(plugin, new CommandRoulett());
+		pluginManager.registerCommand(plugin, new CommandNick());
+		pluginManager.registerCommand(plugin, new CommandTeamspeak());
+		pluginManager.registerCommand(plugin, new CommandResourcepack());
+		pluginManager.registerCommand(plugin, new CommandMoney());
+		pluginManager.registerCommand(plugin, new CommandConsoleTeamMessage());
+		
+		if (configuration.get("gilde.enabled") == null) {
+			configuration.set("gilde.enabled", "false");
+			try {
+				ConfigurationProvider.getProvider(YamlConfiguration.class).save(configuration, new File(getDataFolder(), "config.yml"));
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		} else if (configuration.getBoolean("gilde.enabled")){
+			pluginManager.registerCommand(plugin, new CommandGilde());
+		}
 
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandBDebug("bdebug"));
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandCreative("creative"));
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandNews("news"));
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandBroad("broad"));
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandKicken("kicken"));
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandRestart("grestart"));
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandaddServer("addserver"));
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommanddelServer("delserver"));
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandMOTD("motd"));
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandPremium("premium"));
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandPwChange("pwchange"));
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandServer("server"));
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandClearChat("cc"));
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandGList("glist"));
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandPvP("pvp"));
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandGunGame("gungame"));
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandSky("sky"));
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandWarZ("warz"));
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandHub("hub", "l", "tm", "lobby"));
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandWhereIs("whereis"));
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandVorbau("vorbau"));
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandBuild("build"));
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandTBuild("tbuild"));
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandPermission("perm"));
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandClient("client"));
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandPerformance("performance"));
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandVote("vote"));
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandSendServer("sendserver"));
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandVersus("versus", "vs"));
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandgPing());
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandEvent("event"));
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandBan());
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandTempBan());
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandUnban());
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandBanInfo());
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandWhitelist());
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandSkin());
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CMD_Report());
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CMD_BOOSTER());
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandRoulett());
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandNick());
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandTeamspeak());
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandResourcepack());
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandMoney());
-		BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandConsoleTeamMessage());
-		//BungeeCord.getInstance().getPluginManager().registerCommand(Main.getInstance(), new CommandGilde());
-
-		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), InformationManager.getManager());
-		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), ServerManager.getManager());
-		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), RoulettHistory.history);
-		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), NickHandler.getInstance());
-		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), ChatManager.getInstance());
-		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new ChatListener());
-		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new PingListener());
-		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new PlayerJoinListener());
-		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new PlayerKickListener());
-		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new TeamChatListener());
-		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new ServerListener());
-		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new SkinListener());
-		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new InvalidChatListener());
-		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new PlayerDisconnectListener());
+		pluginManager.registerListener(plugin, InformationManager.getManager());
+		pluginManager.registerListener(plugin, ServerManager.getManager());
+		pluginManager.registerListener(plugin, RoulettHistory.history);
+		pluginManager.registerListener(plugin, NickHandler.getInstance());
+		pluginManager.registerListener(plugin, ChatManager.getInstance());
+		pluginManager.registerListener(plugin, new ChatListener());
+		pluginManager.registerListener(plugin, new PingListener());
+		pluginManager.registerListener(plugin, new PlayerJoinListener());
+		pluginManager.registerListener(plugin, new PlayerKickListener());
+		pluginManager.registerListener(plugin, new TeamChatListener());
+		pluginManager.registerListener(plugin, new ServerListener());
+		pluginManager.registerListener(plugin, new SkinListener());
+		pluginManager.registerListener(plugin, new InvalidChatListener());
+		pluginManager.registerListener(plugin, new PlayerDisconnectListener());
 		TimeListener.setInstance(new TimeListener());
-		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), TimeListener.getInstance());
+		pluginManager.registerListener(plugin, TimeListener.getInstance());
 		WarzTexturePackListener.setInstance(new WarzTexturePackListener());
-		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), WarzTexturePackListener.getInstance());
+		pluginManager.registerListener(plugin, WarzTexturePackListener.getInstance());
 
 		ActionBar.getInstance().start();
 
@@ -476,7 +487,7 @@ public class Bootstrap {
 			BannedServerManager.setInstance(new BannedServerManager(WorldFileReader.read(new File(conf.getString("server.banned.world"))), conf.getInt("server.chunksize")));
 			System.out.println("§aBan-Server loaded!");
 		}
-		BungeeCord.getInstance().getPluginManager().registerListener(Main.getInstance(), new BanServerMessageListener());
+		pluginManager.registerListener(plugin, new BanServerMessageListener());
 
 		Main.skins = new SkinCacheManager();
 		ActionBarInformation.setInstance(new ActionBarInformation(1000, 5000));
@@ -489,18 +500,18 @@ public class Bootstrap {
 		emanager.getEventManager(EventType.BOOSTER_SWITCH).setEventEnabled(true);
 		emanager.registerListener(Main.getBoosterManager());
 
-		emanager.getEventManager(EventType.SERVER_SWITCH).setEventEnabled(true);
-		emanager.getEventManager(EventType.SERVER_SWITCH).setConditionEnables(EventConditions.PLAYERS_WHITELIST, true);
-		emanager.getEventManager(EventType.SERVER_SWITCH).getCondition(EventConditions.PLAYERS_WHITELIST, UUID.class).addValue(Main.getDatenServer().getClient().getPlayerAndLoad("WolverinDEV").getUUID());
-		emanager.registerListener(new EventListener() {
-			@Override
-			public void fireEvent(Event e) {
-				if (e instanceof PlayerServerSwitchEvent) {
-					PlayerServerSwitchEvent ev = (PlayerServerSwitchEvent) e;
-					System.out.println("§aServerswitch: " + ev.getFrom() + ":" + ev.getTo() + ":" + ev.getPlayerId());
-				}
-			}
-		});
+//		emanager.getEventManager(EventType.SERVER_SWITCH).setEventEnabled(true);
+//		emanager.getEventManager(EventType.SERVER_SWITCH).setConditionEnables(EventConditions.PLAYERS_WHITELIST, true);
+//		emanager.getEventManager(EventType.SERVER_SWITCH).getCondition(EventConditions.PLAYERS_WHITELIST, UUID.class).addValue(Main.getDatenServer().getClient().getPlayerAndLoad("WolverinDEV").getUUID());
+//		emanager.registerListener(new EventListener() {
+//			@Override
+//			public void fireEvent(Event e) {
+//				if (e instanceof PlayerServerSwitchEvent) {
+//					PlayerServerSwitchEvent ev = (PlayerServerSwitchEvent) e;
+//					System.out.println("§aServerswitch: " + ev.getFrom() + ":" + ev.getTo() + ":" + ev.getPlayerId());
+//				}
+//			}
+//		});
 
 		emanager.getEventManager(EventType.TEAMSPEAK_LINK_REQUEST).setEventEnabled(true);
 		emanager.registerListener(new TeamspeakListener());
@@ -511,9 +522,9 @@ public class Bootstrap {
 		try {
 			PrefixCommandRegistry.setInstance(new PrefixCommandRegistry());
 			Field commandMap = UtilReflection.getField(PluginManager.class, "commandMap");
-			HashMap<String, Command> old = (HashMap<String, Command>) commandMap.get(BungeeCord.getInstance().getPluginManager());
+			HashMap<String, Command> old = (HashMap<String, Command>) commandMap.get(pluginManager);
 			CommandHashMap _new = new CommandHashMap();
-			commandMap.set(BungeeCord.getInstance().getPluginManager(), (Map<String, Command>) _new);
+			commandMap.set(pluginManager, (Map<String, Command>) _new);
 			for (Entry<String, Command> cmd : old.entrySet())
 				_new.put(cmd.getKey(), cmd.getValue());
 		} catch (Exception e) {
@@ -521,7 +532,7 @@ public class Bootstrap {
 		}
 
 
-		BungeeCord.getInstance().getScheduler().schedule(Main.getInstance(), new Runnable() {
+		BungeeCord.getInstance().getScheduler().schedule(plugin, new Runnable() {
 			private int lastAmount = -7;
 
 			@Override
@@ -541,7 +552,7 @@ public class Bootstrap {
 				lastAmount = onlineCount;
 			}
 		}, 1, 10, TimeUnit.SECONDS);
-		BungeeCord.getInstance().getScheduler().schedule(Main.getInstance(), () -> {
+		BungeeCord.getInstance().getScheduler().schedule(plugin, () -> {
 			for (ProxiedPlayer plr : BungeeCord.getInstance().getPlayers()) {
 				try {
 					LoadedPlayer player = Main.getDatenServer().getClient().getPlayer(plr.getUniqueId());

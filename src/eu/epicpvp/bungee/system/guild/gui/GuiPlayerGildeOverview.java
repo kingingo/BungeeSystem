@@ -1,7 +1,9 @@
 package eu.epicpvp.bungee.system.guild.gui;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import dev.wolveringer.BungeeUtil.Material;
@@ -27,7 +29,7 @@ import eu.epicpvp.thread.ThreadFactory;
 
 public class GuiPlayerGildeOverview extends Gui{
 
-	private static HashMap<GildeType, Integer> itemMapping = new HashMap<>();
+	private static Map<GildeType, Integer> itemMapping = new EnumMap<>(GildeType.class);
 	static {
 		itemMapping.put(GildeType.ARCADE, 345);
 		itemMapping.put(GildeType.PVP, 279);
@@ -38,7 +40,7 @@ public class GuiPlayerGildeOverview extends Gui{
 
 	private Player player;
 	private LoadedPlayer lplayer;
-	private HashMap<GildeType, Gilde> gilden = new HashMap<>();
+	private Map<GildeType, Gilde> gilden = new EnumMap<>(GildeType.class);
 	private int ownerState = -1;
 	private UUID ownGilde;
 
@@ -85,12 +87,12 @@ public class GuiPlayerGildeOverview extends Gui{
 		ItemBuilder item = ItemBuilder.create(itemMapping.get(type));
 		item.name("§7» §6"+type.getDisplayName());
 		if(!gilden.containsKey(type)){
-			item.lore("§cLoading gilde information...");
+			item.lore("§cLade Claninformationen...");
 		}
 		else
 		{
 			if(gilden.get(type) == null){
-				item.lore("§aKlicke um einer Gilde im bereich "+type.getDisplayName()+" beizutreten.");
+				item.lore("§aKlicke, um einer Gilde im Bereich "+type.getDisplayName()+" beizutreten.");
 				item.listener((c)->{
 					GildeSearchMenue search = new GildeSearchMenue(c.getPlayer(), type) {
 						@Override
@@ -104,7 +106,7 @@ public class GuiPlayerGildeOverview extends Gui{
 								Gilde gilde = Main.getGildeManager().getGilde(ugilde);
 								if(gilde == null || !gilde.getSelection(type).isActive()){
 									waiting.waitForMinwait(1500);
-									new GuiStatusPrint(6,ItemBuilder.create(Material.REDSTONE_BLOCK).name("§cAn error happed while requesting.").build()) {
+									new GuiStatusPrint(6, "§cFehler #1 während der Anfrage aufgetreten.", ItemBuilder.create(Material.REDSTONE_BLOCK).name("§cFehler #1 während der Anfrage aufgetreten.").build()) {
 										@Override
 										public void onContinue() {
 											new GuiPlayerGildeOverview(getPlayer()).setPlayer(getPlayer()).openGui();
@@ -114,7 +116,7 @@ public class GuiPlayerGildeOverview extends Gui{
 								}
 								if(gilde.getSelection(type).getRequestedPlayer().contains(lplayer.getPlayerId())){
 									waiting.waitForMinwait(1500);
-									new GuiStatusPrint(6,ItemBuilder.create(Material.REDSTONE_BLOCK).name("§cDu hast in dieser Gilde bereits eine Mitgliedschaft angefordert!").build()) {
+									new GuiStatusPrint(6, "§cDu hast in dieser Gilde bereits eine Mitgliedschaft angefordert!", ItemBuilder.create(Material.REDSTONE_BLOCK).name("§cDu hast in dieser Gilde bereits eine Mitgliedschaft angefordert!").build()) {
 										@Override
 										public void onContinue() {
 											new GuiPlayerGildeOverview(getPlayer()).setPlayer(getPlayer()).openGui();
@@ -131,7 +133,7 @@ public class GuiPlayerGildeOverview extends Gui{
 								}).start();
 
 								waiting.waitForMinwait(1500);
-								new GuiStatusPrint(6,ItemBuilder.create(Material.EMERALD).name("§aMitglidschaft beantragt.").build()) {
+								new GuiStatusPrint(6, "§cAn error happed while requesting.", ItemBuilder.create(Material.EMERALD).name("§aMitglidschaft beantragt.").build()) {
 									@Override
 									public void onContinue() {
 										new GuiPlayerGildeOverview(getPlayer()).setPlayer(getPlayer()).openGui();
@@ -147,7 +149,7 @@ public class GuiPlayerGildeOverview extends Gui{
 			else
 			{
 				Gilde gilde = gilden.get(type);
-				item.lore("§aKlicke um in den Gildenbereich bereich");
+				item.lore("§aKlicke um in den Clanbereich");
 				item.lore("§ader Gilde "+gilde.getName()+" zu kommen.");
 				item.listener((c)->{
 					switchToGui(SectionRegestry.getInstance().createGildeSection(gilde.getSelection(type)));
@@ -174,7 +176,7 @@ public class GuiPlayerGildeOverview extends Gui{
 							for (String name : obj.values())
 								names.add(name.toLowerCase());
 							if(names.contains(name)){
-								new GuiStatusPrint(5,ItemBuilder.create().material(Material.REDSTONE_BLOCK).name("§cDieser Name wird bereits genutzt.").lore("§6Clicke hier um einen anderen Namen zu wählen").lore("§6Schließe das Inventar zum Abbrechen").build()) {
+								new GuiStatusPrint(5, "§cDieser Name wird bereits genutzt.", ItemBuilder.create().material(Material.REDSTONE_BLOCK).name("§cDieser Name wird bereits genutzt.").lore("§6Klicke, um einen anderen Namen zu wählen").lore("§6Schließe das Inventar zum Abbrechen").build()) {
 									@Override
 									public void onContinue() {
 										createNewGilde(name);
@@ -187,7 +189,10 @@ public class GuiPlayerGildeOverview extends Gui{
 									@Override
 									public void call(PacketGildActionResponse obj, Throwable exception) {
 										if(obj == null || obj.getAction() == Action.ERROR){
-											new GuiStatusPrint(5,ItemBuilder.create().material(Material.REDSTONE_BLOCK).name("§cAn error happend while creating your gilde. ("+(obj == null ? 1 : obj.getAction() == Action.ERROR ? 2 : 3)+")").lore(obj != null ? "§6Message: §7"+obj.getMessage() : "§c").build()) {
+											if (exception != null) {
+												exception.printStackTrace();
+											}
+											new GuiStatusPrint(5, "§cEs ist ein Fehler beim Erstellen des Clans aufgetreten.", ItemBuilder.create().material(Material.REDSTONE_BLOCK).name("§cEs ist ein Fehler beim Erstellen des Clans aufgetreten. ("+(obj == null ? 1 : obj.getAction() == Action.ERROR ? 2 : 3)+")").lore(obj != null ? "§6Message: §7"+obj.getMessage() : "§c").build()) {
 												@Override
 												public void onContinue() {
 													player.closeInventory();
@@ -196,7 +201,7 @@ public class GuiPlayerGildeOverview extends Gui{
 										}
 										else
 										{
-											new GuiStatusPrint(5,ItemBuilder.create().material(Material.EMERALD).name("§aDeine Gilde wurde erfolgreich erstellt.").build()) {
+											new GuiStatusPrint(5,"§aDein Clan wurde erfolgreich erstellt.", ItemBuilder.create().material(Material.EMERALD).name("§aDein Clan wurde erfolgreich erstellt.").build()) {
 												@Override
 												public void onContinue() {
 													new GuiGildeAdminOverview(player, Main.getGildeManager().getGilde(obj.getUuid())).setPlayer(player).openGui();
@@ -213,7 +218,7 @@ public class GuiPlayerGildeOverview extends Gui{
 			@Override
 			public void canceled() {}
 		};
-		name.setBackGround("§aEnter the name");
+		name.setBackGround("§aGeb den Namen ein");
 		name.open();
 		if(current != null)
 			name.getGui().setCurruntInput(current);

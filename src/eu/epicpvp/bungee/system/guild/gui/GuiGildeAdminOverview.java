@@ -108,8 +108,7 @@ public class GuiGildeAdminOverview extends Gui{
 		ItemBuilder item = ItemBuilder.create(itemMapping.get(type));
 		item.name("§7» §6"+type.getDisplayName());
 		if(gilde.getSelection(type).isActive()){
-			item.lore("§aKlicke um in den Gildenbereich bereich");
-			item.lore("§a"+type.getDisplayName()+" zu kommen.");
+			item.lore("§aKlicke, um diesen Clanbereich zu verwalten");
 			item.listener((c)->{
 				switchToGui(SectionRegestry.getInstance().createGildeSection(gilde.getSelection(type)));
 			});
@@ -117,14 +116,14 @@ public class GuiGildeAdminOverview extends Gui{
 		else
 		{
 			if(gilde.getOwnerId() == lplayer.getPlayerId()){
-				item.lore("§aDieser Gildenbereich ist deaktiviert.");
-				item.lore("§6Klicke hier um den bereich zu aktivieren.");
+				item.lore("§cDieser Clanbereich ist deaktiviert.");
+				item.lore("§6Klicke, um den Bereich zu aktivieren.");
 				item.listener((c)->{
 					GuiWaiting waiting = new GuiWaiting(Main.getTranslationManager().translate("waiting.title", getPlayer()), Main.getTranslationManager().translate("waiting.message", getPlayer()));
 					waiting.setPlayer(player).openGui();
 					ThreadFactory.getFactory().createThread(()->{
 						if(Main.getGildeManager().getGildeSync(lplayer, type) != null){
-							new GuiStatusPrint(5, ItemBuilder.create().material(Material.EMERALD).name("§cDu kannst kein Owner dieses Bereichs sein,").lore("da du hier bereits in einer anderen Gilde bist.").build()) {
+							new GuiStatusPrint(5, "§cDu kannst kein Owner dieses Bereichs sein", ItemBuilder.create().material(Material.EMERALD).name("§cDu kannst kein Owner dieses Bereichs sein,").lore("da du hier bereits in einem anderen Clan bist.").build()) {
 								@Override
 								public void onContinue() {
 									player.closeInventory();
@@ -137,7 +136,8 @@ public class GuiGildeAdminOverview extends Gui{
 								@Override
 								public void call(PacketOutPacketStatus.Error[] obj, Throwable exception) {
 									if(exception != null){
-										new GuiStatusPrint(5, ItemBuilder.create().material(Material.REDSTONE_BLOCK).name("§cEs ist ein Fehler aufgetreten ("+exception.getClass().getName()+" -> "+exception.getMessage()+")").build()) {
+										exception.printStackTrace();
+										new GuiStatusPrint(5, "§cInterner Fehler", ItemBuilder.create().material(Material.REDSTONE_BLOCK).name("§cEs ist ein Fehler aufgetreten ("+exception.getClass().getName()+" -> "+exception.getMessage()+")").build()) {
 											@Override
 											public void onContinue() {
 												SectionRegestry.getInstance().createGildeSection(gilde.getSelection(type)).setPlayer(player).openGui();
@@ -148,7 +148,7 @@ public class GuiGildeAdminOverview extends Gui{
 									gilde.getSelection(type).addMemeber(lplayer);
 									gilde.getSelection(type).getPermission().setGroup(lplayer, gilde.getSelection(type).getPermission().getGroup("owner"));
 									waiting.waitForMinwait(1500);
-									new GuiStatusPrint(5, ItemBuilder.create().material(Material.EMERALD).name("§aDie Gildsection wurde activiert.").build()) {
+									new GuiStatusPrint(5, "§aDer Clanbereich wurde aktiviert", ItemBuilder.create().material(Material.EMERALD).name("§aDer Clanbereich wurde aktiviert.").build()) {
 										@Override
 										public void onContinue() {
 											SectionRegestry.getInstance().createGildeSection(gilde.getSelection(type)).setPlayer(player).openGui();
