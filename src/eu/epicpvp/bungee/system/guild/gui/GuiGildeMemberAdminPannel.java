@@ -49,7 +49,7 @@ public class GuiGildeMemberAdminPannel extends Gui {
 				return;
 			}
 			switchToGui(new GuiGildeSelectGoup(section, player));
-		}).name("§7» §6Gruppe Setzen").lore("§aKlicke hier um fortzufahren.").build());
+		}).name("§7» §6Gruppe setzen").lore("§aKlicke, um fortzufahren.").build());
 
 		inv.setItem(22, ItemBuilder.create(Material.FEATHER).listener((c) -> {
 			if (player.getPlayerId() == section.getHandle().getOwnerId()) {
