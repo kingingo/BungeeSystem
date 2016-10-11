@@ -213,7 +213,6 @@ public class PermissionManager implements Listener {
 					if (g.getName().equalsIgnoreCase(group)) {
 						System.out.println("Reload permission group: " + g.getName());
 						g.reload();
-						g.initPerms();
 					}
 			}
 		}

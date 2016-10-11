@@ -17,11 +17,11 @@ import net.md_5.bungee.api.plugin.Listener;
 import org.apache.commons.lang3.StringUtils;
 
 public class CommandPermission extends Command implements Listener {
-	
+
 	public CommandPermission(String name) {
 		super(name);
 	}
-	
+
 	@Override
 	public void execute(CommandSender cs, String[] args) {
 		if (cs instanceof ProxiedPlayer) {
@@ -70,7 +70,7 @@ public class CommandPermission extends Command implements Listener {
 				}
 				cs.sendMessage("§aGruppe: §e" + g.getName() + "§7[§r" + g.getPrefix() + "§7]");
 				cs.sendMessage("§aVererbende Gruppen:");
-				for (Group id : g.getInstances()) {
+				for (Group id : g.getInheritFrom()) {
 					cs.sendMessage("  §7- " + id.getName());
 				}
 				cs.sendMessage("§aBerechtigungen:");
@@ -156,7 +156,7 @@ public class CommandPermission extends Command implements Listener {
 					return;
 				}
 				PermissionPlayer pp = PermissionManager.getManager().getPlayer(player);
-				
+
 				if (args[1].equalsIgnoreCase("addPerm")) {
 					if (!pp.addPermission(args[3])) {
 						cs.sendMessage("§cDie Berechtigung konnte dem Spieler §6" + loadedPlayer.getName() + "§c nicht hinzugefügt werden.");
@@ -216,13 +216,13 @@ public class CommandPermission extends Command implements Listener {
 		cs.sendMessage("§7/perm groupInfo <Group>");
 		cs.sendMessage("§7/perm groupReload <Group>");
 		cs.sendMessage("§7/perm userInfo <Player/UUID>");
-		
+
 		cs.sendMessage("§7/perm group addPerm <group> <permission>");
 		cs.sendMessage("§7/perm group removePerm <group> <permission>");
-		
+
 		cs.sendMessage("§7/perm user addGroup <Player/UUID> <group>");
 		cs.sendMessage("§7/perm user removeGroup <Player/UUID> <group>");
-		
+
 		cs.sendMessage("§7/perm user addPerm <Player/UUID> <perm>");
 		cs.sendMessage("§7/perm user removePerm <Player/UUID> <perm>");
 	}

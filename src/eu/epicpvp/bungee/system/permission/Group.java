@@ -21,7 +21,7 @@ public class Group {
 	@Getter
 	private ArrayList<Permission> negativePerms = new ArrayList<>();
 	private ArrayList<Permission> finalPermissions = null;
-	private ArrayList<Group> instances = new ArrayList<>();
+	private ArrayList<Group> inheritFrom = new ArrayList<>();
 	private int importance = 0;
 
 	private PermissionManager handle;
@@ -29,10 +29,11 @@ public class Group {
 	public Group(PermissionManager handle, String name) {
 		this.name = name;
 		this.handle = handle;
-		init();
+		clear();
 	}
 
-	private void init() {
+	private void clear() {
+		new Throwable("Clearing positive permissions of group " + name ).printStackTrace();
 		permissions.clear();
 	}
 
@@ -114,7 +115,8 @@ public class Group {
 	}
 
 	public void reload() {
-		init();
+		clear();
+		initPerms();
 	}
 
 	public ArrayList<Permission> getPermissions() {
@@ -143,8 +145,8 @@ public class Group {
 		return finalPermissions;
 	}
 
-	public ArrayList<Group> getInstances() {
-		return instances;
+	public ArrayList<Group> getInheritFrom() {
+		return inheritFrom;
 	}
 
 	public ArrayList<Permission> getPermissionsDeep() {
@@ -155,7 +157,7 @@ public class Group {
 		//epicpvp.perm.group.
 		ArrayList<Permission> perms = new ArrayList<>();
 		perms.addAll(getPermissions());
-		for (Group g : instances) {
+		for (Group g : inheritFrom) {
 			if (checked.contains(g))
 				continue;
 			ArrayList<Permission> groupPerms = g.getPermissionsDeep(checked);
@@ -189,13 +191,13 @@ public class Group {
 		if (groups.contains(this)) { //no endless loops
 			return groups;
 		}
-		for (Group group : instances) {
+		for (Group group : inheritFrom) {
 			if (groups.contains(group)) { //no endless loops
 				continue;
 			}
 			group.getGroupsDeep(groups);
 		}
-		groups.addAll(instances);
+		groups.addAll(inheritFrom);
 		return groups;
 	}
 
@@ -235,8 +237,9 @@ public class Group {
 					System.err.println("Cant find group instance (" + var[1] + "|" + group + ")");
 					continue;
 				}
-				if (!instances.contains(g))
-					instances.add(g);
+				if (!inheritFrom.contains(g)) {
+					inheritFrom.add(g);
+				}
 			} else if (var[1].startsWith("importance.")) {
 				try {
 					importance = Integer.parseInt(var[1].replaceFirst("importance.", ""));
@@ -253,6 +256,20 @@ public class Group {
 					permissions.add(p);
 			}
 		}
+		System.out.println("---------------------------");
+		System.out.println("Gruppe " + name + ":");
+		System.out.println("Importance: " + importance);
+		System.out.println("Prefix: " + prefix);
+		System.out.println("Inherit from: " + inheritFrom);
+		System.out.println("Permissions:");
+		for (Permission p : permissions) {
+			System.out.println("  " + p.getPermission());
+		}
+		System.out.println("Negative permissions:");
+		for (Permission p : negativePerms) {
+			System.out.println("  " + p.getPermission());
+		}
+		System.out.println("---------------------------");
 	}
 
 	@Override
