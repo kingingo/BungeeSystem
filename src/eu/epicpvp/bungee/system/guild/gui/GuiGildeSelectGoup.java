@@ -31,7 +31,7 @@ public class GuiGildeSelectGoup extends GuiItemSelect{
 	@Override
 	public void select(int select) {
 		if(groups[select].equalsIgnoreCase("owner")){
-			new GuiStatusPrint(6,ItemBuilder.create(Material.REDSTONE).name("§cDu kannst den Gildenbesitzer nicht ändern").build()) {
+			new GuiStatusPrint(6, "§cDu kannst den Clanbesitzer nicht ändern", ItemBuilder.create(Material.REDSTONE).name("§cDu kannst den Clanbesitzer nicht ändern").build()) {
 				@Override
 				public void onContinue() {
 					new GuiGildeSelectGoup(section, player).setPlayer(getPlayer()).openGui();
@@ -40,7 +40,7 @@ public class GuiGildeSelectGoup extends GuiItemSelect{
 			return;
 		}
 		if(section.getPermission().getGroup(player).getName().equalsIgnoreCase("owner")){
-			new GuiStatusPrint(6,ItemBuilder.create(Material.REDSTONE).name("§cDu kannst den Gildenowner nicht heruntersetzen").build()) {
+			new GuiStatusPrint(6, "§cDu kannst den Clanbesitzer nicht heruntersetzen", ItemBuilder.create(Material.REDSTONE).name("§cDu kannst den Clanbesitzer nicht heruntersetzen").build()) {
 				@Override
 				public void onContinue() {
 					new GuiGildeSelectGoup(section, player).setPlayer(getPlayer()).openGui();

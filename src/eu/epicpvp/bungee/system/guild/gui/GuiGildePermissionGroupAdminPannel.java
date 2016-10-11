@@ -86,7 +86,7 @@ public class GuiGildePermissionGroupAdminPannel extends Gui{
 
 				group.delete();
 				waiting.waitForMinwait(1500);
-				new GuiStatusPrint(6,ItemBuilder.create(Material.EMERALD).name("§aGruppe erfolgreich gelöscht").build()) {
+				new GuiStatusPrint(6, "§aGruppe erfolgreich gelöscht", ItemBuilder.create(Material.EMERALD).name("§aGruppe erfolgreich gelöscht").build()) {
 					@Override
 					public void onContinue() {
 						new GuiGildePermissionGroupOverview(group.getHandle()).setPlayer(getPlayer()).openGui();

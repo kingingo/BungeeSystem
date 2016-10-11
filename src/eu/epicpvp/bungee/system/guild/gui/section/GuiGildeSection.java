@@ -49,7 +49,7 @@ public class GuiGildeSection extends Gui {
 				ThreadFactory.getFactory().createThread(()->{
 					if(lplayer.getPlayerId() != section.getHandle().getOwnerId()){
 						waiting.waitForMinwait(1500);
-						new GuiStatusPrint(5,ItemBuilder.create().material(Material.REDSTONE_BLOCK).name("§cYou must be the gilden owner!").build()) {
+						new GuiStatusPrint(5, "§cNur der Clanbesitzer kann das machen!", ItemBuilder.create().material(Material.REDSTONE_BLOCK).name("§cNur der Clanbesitzer kann das machen!").build()) {
 							@Override
 							public void onContinue() {
 								switchToGui(new GuiGildeSection(section)); //REBUILD THE GUI :)
@@ -61,7 +61,7 @@ public class GuiGildeSection extends Gui {
 						section.setActive(false);
 					}
 					waiting.waitForMinwait(1500);
-					new GuiStatusPrint(5, ItemBuilder.create().material(Material.EMERALD).name("§aGild-Section deaktiviert.").build()) {
+					new GuiStatusPrint(5, "§aClanbereich deaktiviert.", ItemBuilder.create().material(Material.EMERALD).name("§aClanbereich deaktiviert.").build()) {
 						@Override
 						public void onContinue() {
 							new GuiGildeAdminOverview(getPlayer(), section.getHandle()).setPlayer(getPlayer()).openGui();
@@ -76,7 +76,7 @@ public class GuiGildeSection extends Gui {
 
 		inv.setItem(25, ItemBuilder.create(Material.GOLD_NUGGET).name("§7» §6Lade die Clan Bank auf").lore("§aKlicke hier um Geld aufzuladen").listener((c)->{
 			if(!section.getPermission().hasPermission(lplayer, GildePermissions.BANK_DEPOSIT)){
-				new GuiStatusPrint(5,ItemBuilder.create().material(Material.REDSTONE_BLOCK).name("§cYou dont have permission for deposit.").build()) {
+				new GuiStatusPrint(5, "§cDu hast keine Berechtigung, Geld abzuheben.", ItemBuilder.create().material(Material.REDSTONE_BLOCK).name("§cDu hast keine Berechtigung, Geld abzuheben.").build()) {
 					@Override
 					public void onContinue() {
 						switchToGui(new GuiGildeSection(section)); //REBUILD THE GUI :)
@@ -95,7 +95,7 @@ public class GuiGildeSection extends Gui {
 						public void onMessageChange(AnvilGui guy, String newMessage) {
 					    	//Update output item ;)
 							Item item = new Item(Material.ENCHANTED_BOOK);
-					    	item.getItemMeta().setDisplayName("§aDeposit reason: §e" + (newMessage.length() == 0 ? "§cNo reason" : newMessage));
+					    	item.getItemMeta().setDisplayName("§aAbhebegrund: §e" + (newMessage.isEmpty() ? "§cNo reason" : newMessage));
 					    	guy.setOutputItem(item);
 						}
 
@@ -105,10 +105,10 @@ public class GuiGildeSection extends Gui {
 							waiting.setPlayer(getPlayer()).openGui();
 							ThreadFactory.getFactory().createThread(()->{
 								section.getMoney().addMoney(number);
-								section.getMoney().log(lplayer.getPlayerId(), number, ChatColor.stripColor(message.length() == 0 ? "No reason" : message));
+								section.getMoney().log(lplayer.getPlayerId(), number, ChatColor.stripColor(message.isEmpty() ? "No reason" : message));
 								lplayer.changeCoins(PacketInStatsEdit.Action.REMOVE, number);
 								waiting.waitForMinwait(1500);
-								new GuiStatusPrint(5,ItemBuilder.create().material(Material.EMERALD).name("§aMoney überwiesen.").build()) {
+								new GuiStatusPrint(5, "§aGeld überwiesen.", ItemBuilder.create().material(Material.EMERALD).name("§aGeld überwiesen.").build()) {
 									@Override
 									public void onContinue() {
 										switchToGui(new GuiGildeSection(section)); //REBUILD THE GUI :)
@@ -120,12 +120,12 @@ public class GuiGildeSection extends Gui {
 						@Override
 						public void onClose(AnvilGui guy) {
 							switchToGui(new GuiGildeSection(section)); //REBUILD THE GUI :)
-							getPlayer().sendMessage("§cAction canceled.");
+							getPlayer().sendMessage("§cAktion abgebrochen.");
 						}
 					});
 					gui.setColorPrefix("§a");
 					gui.open();
-					gui.setBackgroundMessage("Enter you reason");
+					gui.setBackgroundMessage("Gib den Grund ein");
 				}
 
 				@Override
@@ -136,7 +136,7 @@ public class GuiGildeSection extends Gui {
 		}).build());
 		inv.setItem(37, ItemBuilder.create(Material.DIAMOND).name("§7» §6Entnehme was von der Clan Bank").listener(()->{
 			if(!section.getPermission().hasPermission(lplayer, GildePermissions.BANK_WITHDRAW)){
-				new GuiStatusPrint(5,ItemBuilder.create().material(Material.REDSTONE_BLOCK).name("§cDu hast keine Berechtigung etwas abzuheben!").build()) {
+				new GuiStatusPrint(5, "§cDu hast keine Berechtigung etwas abzuheben!", ItemBuilder.create().material(Material.REDSTONE_BLOCK).name("§cDu hast keine Berechtigung etwas abzuheben!").build()) {
 					@Override
 					public void onContinue() {
 						switchToGui(new GuiGildeSection(section)); //REBUILD THE GUI :)
@@ -146,7 +146,7 @@ public class GuiGildeSection extends Gui {
 			}
 			final int money = section.getMoney().getCurrentMoney();
 			if(money < 10){
-				new GuiStatusPrint(5,ItemBuilder.create().material(Material.REDSTONE_BLOCK).name("§cDas Guthaben auf der Bank ist unter 10! Du kannst nichts abheben!").build()) {
+				new GuiStatusPrint(5, "§cDas Guthaben auf der Bank ist unter 10! Du kannst nichts abheben!", ItemBuilder.create().material(Material.REDSTONE_BLOCK).name("§cDas Guthaben auf der Bank ist unter 10! Du kannst nichts abheben!").build()) {
 					@Override
 					public void onContinue() {
 						switchToGui(new GuiGildeSection(section)); //REBUILD THE GUI :)
@@ -164,7 +164,7 @@ public class GuiGildeSection extends Gui {
 						public void onMessageChange(AnvilGui guy, String newMessage) {
 					    	//Update output item ;)
 							Item item = new Item(Material.ENCHANTED_BOOK);
-					    	item.getItemMeta().setDisplayName("§aWithdraw reason: §e" + (newMessage.length() == 0 ? "§cNo reason" : newMessage));
+					    	item.getItemMeta().setDisplayName("§aWithdraw reason: §e" + (newMessage.isEmpty() ? "§cNo reason" : newMessage));
 					    	guy.setOutputItem(item);
 						}
 
@@ -175,7 +175,7 @@ public class GuiGildeSection extends Gui {
 							ThreadFactory.getFactory().createThread(()->{
 								if(section.getMoney().getCurrentMoney() < number){
 									waiting.waitForMinwait(1500);
-									new GuiStatusPrint(5,ItemBuilder.create().material(Material.REDSTONE_BLOCK).name("§cAuf der Gilden-Bank ist nicht genug Geld!").build()) {
+									new GuiStatusPrint(5, "§cAuf der Gilden-Bank ist nicht genug Geld!", ItemBuilder.create().material(Material.REDSTONE_BLOCK).name("§cAuf der Gilden-Bank ist nicht genug Geld!").build()) {
 										@Override
 										public void onContinue() {
 											switchToGui(new GuiGildeSection(section)); //REBUILD THE GUI :)
@@ -184,10 +184,10 @@ public class GuiGildeSection extends Gui {
 									return;
 								}
 								section.getMoney().removeMoney(number);
-								section.getMoney().log(lplayer.getPlayerId(), -number, ChatColor.stripColor(message.length() == 0 ? "No reason" : message));
+								section.getMoney().log(lplayer.getPlayerId(), -number, ChatColor.stripColor(message.isEmpty() ? "No reason" : message));
 								lplayer.changeCoins(PacketInStatsEdit.Action.ADD, number);
 								waiting.waitForMinwait(1500);
-								new GuiStatusPrint(5,ItemBuilder.create().material(Material.EMERALD).name("§aGeld überwiesen.").build()) {
+								new GuiStatusPrint(5, "§aGeld überwiesen.", ItemBuilder.create().material(Material.EMERALD).name("§aGeld überwiesen.").build()) {
 									@Override
 									public void onContinue() {
 										switchToGui(new GuiGildeSection(section)); //REBUILD THE GUI :)

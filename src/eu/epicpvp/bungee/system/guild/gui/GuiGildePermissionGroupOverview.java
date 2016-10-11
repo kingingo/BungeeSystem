@@ -38,7 +38,7 @@ public class GuiGildePermissionGroupOverview extends Gui{
 
 		inv.setItem(8, ItemBuilder.create(Material.NETHER_STAR).name("§cErstelle eine Gruppe").listener((click)->{
 			if(!permission.hasPermission(Main.getDatenServer().getClient().getPlayerAndLoad(getPlayer().getName()), GildePermissions.GROUP_EDIT_PERMISSIONS)){
-				new GuiStatusPrint(6,ItemBuilder.create(Material.REDSTONE_BLOCK).name("§cDu hast keine Bereichtigung neue gruppen zu erstellen").build()) {
+				new GuiStatusPrint(6, "§cDu hast keine Bereichtigung, neue Gruppen zu erstellen", ItemBuilder.create(Material.REDSTONE_BLOCK).name("§cDu hast keine Bereichtigung, neue Gruppen zu erstellen").build()) {
 					@Override
 					public void onContinue() {
 						GuiGildePermissionGroupOverview.this.setPlayer(getPlayer()).openGui(); //Its an try
@@ -53,7 +53,7 @@ public class GuiGildePermissionGroupOverview extends Gui{
 				public void onMessageChange(AnvilGui guy, String newMessage) {
 			    	//Update output item ;)
 					Item item = new Item(Material.ENCHANTED_BOOK);
-			    	item.getItemMeta().setDisplayName("§aGroupname: §e" + (newMessage.length() == 0 ? "§cNo name" : newMessage));
+			    	item.getItemMeta().setDisplayName("§aGroupname: §e" + (newMessage.isEmpty() ? "§cNo name" : newMessage));
 			    	guy.setOutputItem(item);
 				}
 
@@ -64,7 +64,7 @@ public class GuiGildePermissionGroupOverview extends Gui{
 					ThreadFactory.getFactory().createThread(()->{
 						waiting.waitForMinwait(1500);
 						if(message.length() < 3){
-							new GuiStatusPrint(6,ItemBuilder.create(Material.REDSTONE_BLOCK).name("§cDie Gruppe existiert bereits").build()) {
+							new GuiStatusPrint(6, "§cDie Gruppe existiert bereits", ItemBuilder.create(Material.REDSTONE_BLOCK).name("§cDie Gruppe existiert bereits").build()) {
 								@Override
 								public void onContinue() {
 									new GuiGildePermissionGroupOverview(permission).setPlayer(getPlayer()).openGui();
@@ -82,7 +82,7 @@ public class GuiGildePermissionGroupOverview extends Gui{
 							}
 						}
 						if(System.currentTimeMillis()-start > 10000){
-							new GuiStatusPrint(6,ItemBuilder.create(Material.REDSTONE_BLOCK).name("§cCant create group (Group not created)").build()) {
+							new GuiStatusPrint(6, "§cKonnte Gruppe nicht erstellen.", ItemBuilder.create(Material.REDSTONE_BLOCK).name("§cKonnte Gruppe nicht erstellen.").build()) {
 								@Override
 								public void onContinue() {
 									new GuiGildePermissionGroupOverview(permission).setPlayer(getPlayer()).openGui();
@@ -90,7 +90,7 @@ public class GuiGildePermissionGroupOverview extends Gui{
 							}.setPlayer(getPlayer()).openGui();
 							return;
 						}
-						new GuiStatusPrint(6,ItemBuilder.create(Material.EMERALD).name("§Gruppe erstellt.").build()) {
+						new GuiStatusPrint(6, "§Gruppe erstellt.", ItemBuilder.create(Material.EMERALD).name("§Gruppe erstellt.").build()) {
 							@Override
 							public void onContinue() {
 								new GuiGildePermissionGroupOverview(permission).setPlayer(getPlayer()).openGui();
@@ -105,7 +105,7 @@ public class GuiGildePermissionGroupOverview extends Gui{
 			});
 			gui.setColorPrefix("§a");
 			gui.open();
-			gui.setBackgroundMessage("Enter the groupname");
+			gui.setBackgroundMessage("Gib den Gruppennamen ein");
 		}).build());
 
 		buildGroups();
@@ -120,7 +120,7 @@ public class GuiGildePermissionGroupOverview extends Gui{
 			GildPermissionGroup group = permission.getGroup(g);
 			ItemBuilder builder = ItemBuilder.create(Math.max(group.getItemId(), 1));
 
-			builder.name("§a"+group.getName()).lore("§aKlicke hier um die Gruppe zu editieren.");
+			builder.name("§a"+group.getName()).lore("§aKlicke, um die Gruppe zu bearbeiten.");
 			builder.listener((c)->{
 				GuiGildePermissionGroupOverview.this.switchToGui(new GuiGildePermissionGroupAdminPannel(group));
 			});

@@ -50,7 +50,7 @@ public class GuiGildeMemberInvatations extends Gui{
 				@Override
 				public void onDicition(boolean flag) {
 					if(Main.getGildeManager().getGildeSync(lp, section.getType()) != null){
-						new GuiStatusPrint(6,ItemBuilder.create(Material.REDSTONE_BLOCK).name("§cDieser Spieler ist bereits in einer Gilde!").build()) {
+						new GuiStatusPrint(6, "§cDieser Spieler ist bereits in einer Gilde!", ItemBuilder.create(Material.REDSTONE_BLOCK).name("§cDieser Spieler ist bereits in einer Gilde!").build()) {
 							@Override
 							public void onContinue() {
 								new GuiGildeMemberInvatations(section).setPlayer(getPlayer()).openGui();
