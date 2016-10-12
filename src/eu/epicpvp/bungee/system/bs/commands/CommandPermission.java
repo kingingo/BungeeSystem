@@ -1,6 +1,7 @@
 package eu.epicpvp.bungee.system.bs.commands;
 
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import eu.epicpvp.bungee.system.bs.Main;
 import eu.epicpvp.bungee.system.permission.Group;
@@ -56,6 +57,7 @@ public class CommandPermission extends Command implements Listener {
 				for (Group g : pp.getGroups())
 					if (g != null) {
 						cs.sendMessage("  §6Gruppe §a" + g.getName() + "§7[§r" + g.getPrefix() + "§7] Importance: " + g.getImportance());
+						cs.sendMessage("  §7erbt von " + g.getInheritFrom().stream().map(Group::getName).collect(Collectors.toList()));
 						for (Permission x : g.getPermissions())
 							cs.sendMessage("  §7- §b" + x.getPermission() + "§7-§b" + x.getGroup());
 						for (Permission x : g.getNegativePerms())
@@ -88,9 +90,9 @@ public class CommandPermission extends Command implements Listener {
 					cs.sendMessage("§cGruppe nicht gefunden.");
 					return;
 				}
-				PermissionManager.getManager().getGroups().remove(g);
-				g = PermissionManager.getManager().addGroup(args[1]);
-				g.initPerms();
+//				PermissionManager.getManager().getGroups().remove(g);
+//				g = PermissionManager.getManager().addGroup(args[1]);
+				g.reload();
 				cs.sendMessage("§aGruppe neugeladen.");
 				return;
 			} else if (args[0].equalsIgnoreCase("addgroup")) {

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import dev.wolveringer.BungeeUtil.Player;
@@ -53,13 +54,13 @@ public class PermissionManager implements Listener {
 	}
 
 	public void loadGroups() {
-		ArrayList<String[]> qurry = MySQL.getInstance().querySync("SELECT DISTINCT `pgroup` FROM `game_perm` WHERE `pgroup`!='none' AND `playerId`='-2' ", -1);
+		ArrayList<String[]> groupQueryResult = MySQL.getInstance().querySync("SELECT DISTINCT `pgroup` FROM `game_perm` WHERE `pgroup`!='none' AND `playerId`='-2' ", -1);
 		long start = System.currentTimeMillis();
 		System.out.println("Loading permission groups...");
-		for (String[] var : qurry)
+		for (String[] var : groupQueryResult)
 			groups.add(new Group(this, var[0]));
 		for (Group g : groups)
-			g.initPerms();
+			g.reload();
 		System.out.println("Done (" + (System.currentTimeMillis() - start) + ")");
 	}
 
@@ -292,7 +293,8 @@ public class PermissionManager implements Listener {
 						sendToBukkit(packetUUID, new DataBuffer().writeInt(-1).writeString("Group not found"), player.getServer().getInfo()); //Response (Group not found) [UUID (packet)] [INT -1] [STRING reson]
 					else {
 						DataBuffer out = new DataBuffer();
-						ArrayList<Permission> permissions = g.getPermissionsDeep();
+						Set<Permission> permissions = g.getPermissionsDeep();
+//						System.out.println("Start writing permissions for " + g.getName());
 						out.writeInt(permissions.size());
 
 						for (Permission perm : permissions) {
@@ -301,12 +303,13 @@ public class PermissionManager implements Listener {
 								out.writeString("anUndefinedPermissionThankAnNullPointerException").writeByte(GroupTyp.ALL.ordinal());
 								continue;
 							}
+//							System.out.println("Writing permission " + perm.getPermission() + "[" + perm.getGroup() + "]");
 							out.writeString(perm.getPermission());
 							out.writeByte(perm.getGroup().ordinal());
 						}
 						out.writeString(g.getPrefix());
 						out.writeInt(g.getImportance());
-						System.out.print("Requesting group permissions for group " + group);
+//						System.out.print("Requesting group permissions for group " + group);
 						sendToBukkit(packetUUID, out, player.getServer().getInfo()); //Response (Permissions) [UUID (packet)] [INT perms-Length] [STRING[] perms] [STRING name]
 					}
 				} else if (action == 2) {
@@ -336,7 +339,7 @@ public class PermissionManager implements Listener {
 					sendToBukkit(packetUUID, new DataBuffer().writeInt(1), player.getServer().getInfo());
 				}
 			} catch (Exception ex) {
-				System.out.print(e.getSender().getAddress());
+				System.err.print("Exception coming through " + e.getSender().getAddress());
 				ex.printStackTrace();
 			}
 		}

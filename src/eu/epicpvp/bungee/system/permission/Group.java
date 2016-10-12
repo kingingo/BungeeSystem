@@ -17,11 +17,11 @@ public class Group {
 	private String prefix = "undefined";
 	@Getter
 	private String name = "undefined";
-	private ArrayList<Permission> permissions = new ArrayList<>();
+	private Set<Permission> permissions = new HashSet<>();
 	@Getter
-	private ArrayList<Permission> negativePerms = new ArrayList<>();
-	private ArrayList<Permission> finalPermissions = null;
-	private ArrayList<Group> inheritFrom = new ArrayList<>();
+	private Set<Permission> negativePerms = new HashSet<>();
+	private Set<Permission> finalPermissions = null;
+	private Set<Group> inheritFrom = new HashSet<>();
 	private int importance = 0;
 
 	private PermissionManager handle;
@@ -33,8 +33,10 @@ public class Group {
 	}
 
 	private void clear() {
-		new Throwable("Clearing positive permissions of group " + name ).printStackTrace();
+//		new Throwable("Clearing permissions of group " + name).printStackTrace();
 		permissions.clear();
+		negativePerms.clear();
+		finalPermissions = null;
 	}
 
 	public boolean addPermission(String permission) {
@@ -119,17 +121,20 @@ public class Group {
 		initPerms();
 	}
 
-	public ArrayList<Permission> getPermissions() {
-		if (finalPermissions == null) {
+	public Set<Permission> getPermissions() {
+		if (true || finalPermissions == null) { //recalc permissions always due to possible changes in inherit groups
+//			System.out.println("Group " + name + " getPermissions() calc");
 			try {
-				finalPermissions = new ArrayList<>();
+				finalPermissions = new HashSet<>();
 				ploop:
 				for (Permission p : permissions) {
 					for (Permission np : negativePerms) {
-						if (np.acceptPermission(p.getPermission()))
+						if ((np.getGroup() == p.getGroup() || np.getGroup() == GroupTyp.ALL) && np.acceptPermission(p.getPermission())) {
+//							System.out.println("  Skipping " + p.getPermission() + " [" + p.getGroup() + "] due to " + np.getPermission() + " [" + np.getGroup() + "]");
 							continue ploop;
-						else {
+						} else {
 							if (!finalPermissions.contains(np)) {
+//								System.out.println("  Adding negative perm " + np.getPermission() + " [" + np.getGroup() + "]");
 								finalPermissions.add(np);
 							}
 						}
@@ -140,47 +145,74 @@ public class Group {
 				e.printStackTrace();
 				finalPermissions = null;
 			}
+
+//			System.out.println("  finalPermissions:");
+//			for (Permission p : finalPermissions) {
+//				System.out.println("    " + p.getPermission() + " [" + p.getGroup() + "]");
+//			}
 		}
 
 		return finalPermissions;
 	}
 
-	public ArrayList<Group> getInheritFrom() {
+	public Set<Group> getInheritFrom() {
 		return inheritFrom;
 	}
 
-	public ArrayList<Permission> getPermissionsDeep() {
+	public Set<Permission> getPermissionsDeep() {
 		return getPermissionsDeep(new ArrayList<>());
 	}
 
-	protected ArrayList<Permission> getPermissionsDeep(ArrayList<Group> checked) {
+	protected Set<Permission> getPermissionsDeep(ArrayList<Group> checked) {
 		//epicpvp.perm.group.
-		ArrayList<Permission> perms = new ArrayList<>();
-		perms.addAll(getPermissions());
-		for (Group g : inheritFrom) {
-			if (checked.contains(g))
+//		System.out.println("Group " + name + " getPermissionsDeep() calc");
+//		System.out.println("Group " + name + " checked: " + checked.stream().map(Group::getName).collect(Collectors.toList()));
+		Set<Permission> finalPerms = new HashSet<>();
+		finalPerms.addAll(getPermissions());
+		for (Group inheritGroup : inheritFrom) {
+			if (checked.contains(inheritGroup)) {
+//				System.out.println("Skipping group " + inheritGroup.getName() + " because it was already checked");
 				continue;
-			ArrayList<Permission> groupPerms = g.getPermissionsDeep(checked);
-			outer: for (Permission perm : groupPerms) {
-				if (!perms.contains(perm)) {
-					for (Permission alreadyPerm : perms) {
-						if (alreadyPerm.isNegative()) {
-							if (alreadyPerm.getFinalPermission().equalsIgnoreCase(perm.getFinalPermission())) {
-								break outer; //do not add any permission if its negative part was found
-							}
-						} else if (perm.isNegative()) {
-							if (alreadyPerm.getFinalPermission().equalsIgnoreCase(perm.getFinalPermission())) {
-								break outer; //do not add a negative permission if any matching permission is already available
-							}
+			}
+//			System.out.println("Group " + name + " checked: " + checked.stream().map(Group::getName).collect(Collectors.toList()));
+			Set<Permission> groupPerms = inheritGroup.getPermissionsDeep(checked);
+//			System.out.println("permissionDeep from " + inheritGroup.getName() + " (being in " + name + "):");
+//			for (Permission groupPerm : groupPerms) {
+//				System.out.println("  " + groupPerm.getPermission() + " [" + groupPerm.getGroup() + "]");
+//			}
+//			System.out.println("Group " + name + " getPermissionsDeep() exclusions - checking group " + inheritGroup.getName());
+
+			outer:
+			for (Permission groupPerm : groupPerms) {
+//				System.out.println(" Checking " + groupPerm.getPermission() + " [" + groupPerm.getGroup() + "] in " + name);
+				if (finalPerms.contains(groupPerm)) {
+//					System.out.println("  Skipping " + groupPerm.getPermission() + " [" + groupPerm.getGroup() + "]" + " due to already being present from higher group #3");
+					continue;
+				}
+				for (Permission alreadyPerm : finalPerms) {
+					if (alreadyPerm.isNegative()) {
+						if (alreadyPerm.getFinalPermission().equalsIgnoreCase(groupPerm.getFinalPermission())) {
+//							System.out.println("  Skipping " + groupPerm.getPermission() + " [" + groupPerm.getGroup() + "]" + " due to " + alreadyPerm.getPermission() + " [" + alreadyPerm.getGroup() + "]" + " already being present #1");
+							continue outer; //do not add any permission if its negative part was found
+						}
+					} else if (groupPerm.isNegative()) {
+						if (alreadyPerm.getFinalPermission().equalsIgnoreCase(groupPerm.getFinalPermission())) {
+//							System.out.println("  Skipping " + groupPerm.getPermission() + " due to " + alreadyPerm.getPermission() + " [" + alreadyPerm.getGroup() + "]" + " already being present #2");
+							continue outer; //do not add a negative permission if any matching permission is already available
 						}
 					}
-					perms.add(perm);
 				}
+//				System.out.println("  Taking perm " + groupPerm.getPermission() + " [" + groupPerm.getGroup() + "]");
+				finalPerms.add(groupPerm);
 			}
 //			perms.addAll(groupPerms);
-			checked.add(g);
+			checked.add(inheritGroup);
 		}
-		return perms;
+//		System.out.println("Group " + name + " getPermissionsDeep() final return");
+//		for (Permission p : finalPerms) {
+//			System.out.println("  " + p.getPermission() + " [" + p.getGroup() + "]");
+//		}
+		return finalPerms;
 	}
 
 	public Set<Group> getGroupsDeep() {
@@ -256,20 +288,20 @@ public class Group {
 					permissions.add(p);
 			}
 		}
-		System.out.println("---------------------------");
-		System.out.println("Gruppe " + name + ":");
-		System.out.println("Importance: " + importance);
-		System.out.println("Prefix: " + prefix);
-		System.out.println("Inherit from: " + inheritFrom);
-		System.out.println("Permissions:");
-		for (Permission p : permissions) {
-			System.out.println("  " + p.getPermission());
-		}
-		System.out.println("Negative permissions:");
-		for (Permission p : negativePerms) {
-			System.out.println("  " + p.getPermission());
-		}
-		System.out.println("---------------------------");
+//		System.out.println("---------------------------");
+//		System.out.println("Gruppe " + name + ":");
+//		System.out.println("Importance: " + importance);
+//		System.out.println("Prefix: " + prefix);
+//		System.out.println("Inherit from: " + inheritFrom);
+//		System.out.println("Permissions:");
+//		for (Permission p : permissions) {
+//			System.out.println("  " + p.getPermission() + " [" + p.getGroup() + "]");
+//		}
+//		System.out.println("Negative permissions:");
+//		for (Permission p : negativePerms) {
+//			System.out.println("  " + p.getPermission() + " [" + p.getGroup() + "]");
+//		}
+//		System.out.println("---------------------------");
 	}
 
 	@Override
