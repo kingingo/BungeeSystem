@@ -22,7 +22,7 @@ public class MessageManager implements Listener {
 	private static ScheduledTask task;
 
 	public static void start() {
-		for (LanguageType t : LanguageType.values()) getmanager(t);
+		for (LanguageType t : LanguageType.values()) getManager(t);
 
 		task = BungeeCord.getInstance().getScheduler().runAsync(Main.getInstance(), new Runnable() {
 			@Override
@@ -52,7 +52,7 @@ public class MessageManager implements Listener {
 
 	protected static HashMap<LanguageType, MessageManager> messageManagers = new HashMap<>();
 
-	public static MessageManager getmanager(LanguageType lang) {
+	public static MessageManager getManager(LanguageType lang) {
 		if (!messageManagers.containsKey(lang))
 			messageManagers.put(lang, new MessageManager(lang));
 		return messageManagers.get(lang);

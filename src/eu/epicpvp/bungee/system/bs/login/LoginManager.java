@@ -44,7 +44,7 @@ public class LoginManager implements Listener {
 					String sp;
 					ProxiedPlayer player = BungeeCord.getInstance().getPlayer(sp = in.readUTF());
 					if (player != null) {
-						MessageManager.getmanager(Main.getTranslationManager().getLanguage(player)).playTitles(player);
+						MessageManager.getManager(Main.getTranslationManager().getLanguage(player)).playTitles(player);
 						loggedIn.add(player);
 						if (PermissionManager.getManager().hasPermission(player, PermissionType.PREMIUM_LOBBY, false))
 							player.connect(ServerManager.getManager().nextPremiumLobby());

@@ -36,13 +36,13 @@ public class CommandNews extends Command {
 						player.sendMessage("§aNews for language: " + t);
 						int id = 0;
 						player.sendMessage("  §aBroadcasts: ");
-						for (String s : MessageManager.getmanager(t).getMessages()) {
+						for (String s : MessageManager.getManager(t).getMessages()) {
 							player.sendMessage(new ComponentBuilder("   §7- §r" + ChatColor.translateAlternateColorCodes('&', s)).event(new HoverEvent(Action.SHOW_TEXT, new ComponentBuilder("§cClick to delete").create())).event(new ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.RUN_COMMAND, "/news remove " + t.getShortName() + " B " + id)).create());
 							id++;
 						}
 						id = 0;
 						player.sendMessage("  §aTitles: ");
-						for (String s : MessageManager.getmanager(t).getTitles()) {
+						for (String s : MessageManager.getManager(t).getTitles()) {
 							player.sendMessage(new ComponentBuilder("   §7- §r" + ChatColor.translateAlternateColorCodes('&', s)).event(new HoverEvent(Action.SHOW_TEXT, new ComponentBuilder("§cClick to delete").create())).event(new ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.RUN_COMMAND, "/news remove " + t.getShortName() + " T " + id)).create());
 							id++;
 						}
@@ -61,7 +61,7 @@ public class CommandNews extends Command {
 						player.sendMessage("§cLanguage not found");
 						return;
 					}
-					MessageManager manager = MessageManager.getmanager(lang);
+					MessageManager manager = MessageManager.getManager(lang);
 					String m = manager.removeMessage(Integer.parseInt(args[3]), args[2]);
 					player.sendMessage("§aMessage " + m + " §adeleted");
 				} else if (args[0].equalsIgnoreCase("add")) {
@@ -78,7 +78,7 @@ public class CommandNews extends Command {
 						player.sendMessage("§cLanguage not found");
 						return;
 					}
-					MessageManager manager = MessageManager.getmanager(lang);
+					MessageManager manager = MessageManager.getManager(lang);
 
 					String message = "";
 					for (int i = 3; i < args.length; i++)

@@ -137,6 +137,6 @@ public class AfkListener implements PacketHandler<Packet> {
 			timeoutObject.add(player);
 		}
 		FakeServer.getServer(player).switchTo(BungeeCord.getInstance().getPluginManager().callEvent(new ServerConnectEvent(player, ServerManager.DEFAULT_HUB)).getTarget());
-		MessageManager.getmanager(Main.getTranslationManager().getLanguage(player)).playTitles(player);
+		MessageManager.getManager(Main.getTranslationManager().getLanguage(player)).playTitles(player);
 	}
 }

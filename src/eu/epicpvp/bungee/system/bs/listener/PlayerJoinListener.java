@@ -25,16 +25,17 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
 public class PlayerJoinListener implements Listener {
+
 	static {
-		if(Main.getTranslationManager() != null)
+		if (Main.getTranslationManager() != null)
 			Main.getTranslationManager().translate("proxy.join.full", "§cThe server is full!\n§6If you want to join everytime then You can buy a rank in ouer shop.");
 	}
 
 	private CachedArrayList<Object> connections = new CachedArrayList<>(1, TimeUnit.SECONDS);
 
 	@EventHandler
-	public void a(PreLoginEvent e) {
-		if(!Main.getDatenServer().isActive()){
+	public void onPreLogin(PreLoginEvent e) {
+		if (!Main.getDatenServer().isActive()) {
 			e.setCancelReason("§cCant connect to §eServer-Chef§c. Protocoll version: §a" + PacketVersion.PROTOCOLL_VERSION + "\nPlease try again in 10-30 seconds");
 			e.setCancelled(true);
 			return;
@@ -46,17 +47,17 @@ public class PlayerJoinListener implements Listener {
 		}
 		if (connections.size() >= 5) {
 			e.setCancelled(true);
-			e.setCancelReason("§cTo many people logging in.");
+			e.setCancelReason("§cToo many people logging in.");
 			return;
 		}
 
 		ClientVersion version = ClientVersion.fromProtocoll(e.getConnection().getVersion());
 		String name = e.getConnection().getName();
-		if((version.getBigVersion() != BigClientVersion.v1_8 && version.getBigVersion() != BigClientVersion.v1_9 && version != ClientVersion.v1_10_0)
-				|| version == ClientVersion.v1_9_1 || version == ClientVersion.v1_9_2 || version == ClientVersion.v1_9_3){
+		if ((version.getBigVersion() != BigClientVersion.v1_8 && version.getBigVersion() != BigClientVersion.v1_9 && version != ClientVersion.v1_10_0)
+					|| version == ClientVersion.v1_9_1 || version == ClientVersion.v1_9_2 || version == ClientVersion.v1_9_3) {
 			e.setCancelled(true);
-			e.setCancelReason("§cYour minecraft versions issnt supportted. Please use 1.8.X, 1.9.0, 1.9.4 or 1.10");
-			System.out.println("Player "+ name +" try to connect with an outdated version ("+e.getConnection().getVersion()+")");
+			e.setCancelReason("§cYour minecraft versions is not supported. Please use 1.8.X, 1.9.0, 1.9.4 or 1.10.X");
+			System.out.println("Player " + name + " try to connect with an outdated version (" + e.getConnection().getVersion() + ")");
 			return;
 		}
 		if (name.length() < 3 || name.length() > 16) {
@@ -65,7 +66,7 @@ public class PlayerJoinListener implements Listener {
 			return;
 		}
 		for (char c : name.toCharArray()) {
-			if ((('0' > c) || (c > '9')) && (('a' > c) || (c > 'z')) && (('A' > c) || (c > 'Z')) && (c != '_')){
+			if ((('0' > c) || (c > '9')) && (('a' > c) || (c > 'z')) && (('A' > c) || (c > 'Z')) && (c != '_')) {
 				e.setCancelled(true);
 				e.setCancelReason("§cInvalid characters in name!");
 				return;
@@ -106,9 +107,9 @@ public class PlayerJoinListener implements Listener {
 					}
 					*/
 
-					if(Main.getDatenServer().getPlayerCount() > Integer.parseInt(InformationManager.getManager().getInfo("maxPlayers"))){
-						if(!PermissionManager.getManager().hasPermission(player.getPlayerId(), "proxy.join.full")){
-							e.getConnection().disconnect(Main.getTranslationManager().translate("proxy.join.full",player));
+					if (Main.getDatenServer().getPlayerCount() > Integer.parseInt(InformationManager.getManager().getInfo("maxPlayers"))) {
+						if (!PermissionManager.getManager().hasPermission(player.getPlayerId(), "proxy.join.full")) {
+							e.getConnection().disconnect(Main.getTranslationManager().translate("proxy.join.full", player));
 							return;
 						}
 					}
@@ -178,9 +179,9 @@ public class PlayerJoinListener implements Listener {
 	}
 
 	@EventHandler
-	public void a(PostLoginEvent e) {
+	public void onPostLogin(PostLoginEvent e) {
 		LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(e.getPlayer().getName());
-		if(Main.getDatenServer().getPlayers() != null)
+		if (Main.getDatenServer().getPlayers() != null)
 			Main.getDatenServer().getPlayers().add(e.getPlayer().getName());
 		if (!player.getUUID().equals(e.getPlayer().getUniqueId())) {
 			if (player.getUUID().equals(UUID.nameUUIDFromBytes(("OfflinePlayer:" + e.getPlayer().getName()).getBytes()))) {
@@ -194,19 +195,22 @@ public class PlayerJoinListener implements Listener {
 		LanguageType lang = player.getLanguageSync();
 		PermissionManager.getManager().loadPlayer(e.getPlayer().getUniqueId());
 		if (e.getPlayer().getPendingConnection().isOnlineMode())
-			MessageManager.getmanager(lang).playTitles(e.getPlayer());
+			MessageManager.getManager(lang).playTitles(e.getPlayer());
 	}
 
 	public static String getDurationBreakdown(long millis) {
 		return getDurationBreakdown(millis, "now");
 	}
-	public static String getDurationBreakdown(long millis,String no) {
+
+	public static String getDurationBreakdown(long millis, String no) {
 		return getDurationBreakdown(millis, no, new HashMap<>());
 	}
-	public static String getDurationBreakdown(long millis,String no,HashMap<TimeUnit, String> mapping) {
+
+	public static String getDurationBreakdown(long millis, String no, HashMap<TimeUnit, String> mapping) {
 		return getDurationBreakdown(millis, no, new HashMap<>(), mapping);
 	}
-	public static String getDurationBreakdown(long millis,String no,HashMap<TimeUnit, String> plural,HashMap<TimeUnit, String> mapping) {
+
+	public static String getDurationBreakdown(long millis, String no, HashMap<TimeUnit, String> plural, HashMap<TimeUnit, String> mapping) {
 		if (millis < 0) {
 			return "millis<0";
 		}
@@ -222,22 +226,30 @@ public class PlayerJoinListener implements Listener {
 
 		StringBuilder sb = new StringBuilder(64);
 		if (days > 0) {
-			sb.append(days);
-			sb.append(" "+mapping.getOrDefault(TimeUnit.DAYS, "day")+"" + (days == 1 ? "" : plural.getOrDefault(TimeUnit.DAYS, "s")) + " ");
+			sb.append(' ').append(days).append(' ').append(mapping.getOrDefault(TimeUnit.DAYS, "day"));
+			if (days != 1) {
+				sb.append(plural.getOrDefault(TimeUnit.DAYS, "s"));
+			}
 		}
 		if (hours > 0) {
-			sb.append(hours);
-			sb.append(" "+mapping.getOrDefault(TimeUnit.HOURS, "hour")+"" + (hours == 1 ? "" : plural.getOrDefault(TimeUnit.HOURS, "s")) + " ");
+			sb.append(' ').append(hours).append(' ').append(mapping.getOrDefault(TimeUnit.HOURS, "hour"));
+			if (hours != 1) {
+				sb.append(plural.getOrDefault(TimeUnit.HOURS, "s"));
+			}
 		}
 		if (minutes > 0) {
-			sb.append(minutes);
-			sb.append(" "+mapping.getOrDefault(TimeUnit.MINUTES, "minute")+"" + (minutes == 1 ? "" : plural.getOrDefault(TimeUnit.MINUTES, "s")) + " ");
+			sb.append(' ').append(minutes).append(' ').append(mapping.getOrDefault(TimeUnit.MINUTES, "minute"));
+			if (minutes != 1) {
+				sb.append(plural.getOrDefault(TimeUnit.MINUTES, "s"));
+			}
 		}
 		if (seconds > 0) {
-			sb.append(seconds);
-			sb.append(" "+mapping.getOrDefault(TimeUnit.SECONDS, "second")+"" + (seconds == 1 ? "" : plural.getOrDefault(TimeUnit.SECONDS, "s")) + "");
+			sb.append(' ').append(seconds).append(' ').append(mapping.getOrDefault(TimeUnit.SECONDS, "second"));
+			if (seconds != 1) {
+				sb.append(plural.getOrDefault(TimeUnit.SECONDS, "s"));
+			}
 		}
-		return (sb.toString());
+		return sb.substring(1);
 	}
 }
 //event.join.kickBan - §cYou were banned %s0 §cfrom the Network! \n§3Reason: §c%s1 \n \n§aYou can write an unban-request at §ewww.EpicPvP.org [length,reson]

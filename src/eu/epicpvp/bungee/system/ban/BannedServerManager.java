@@ -198,7 +198,7 @@ http://shop.clashMC.eu/checkout/packages?action=add&package=1224531&ign=<PLAYERN
 		if(server.get(player) == null)
 			return;
 		server.get(player).switchTo(BungeeCord.getInstance().getPluginManager().callEvent(new ServerConnectEvent(player, ServerManager.DEFAULT_HUB)).getTarget());
-		MessageManager.getmanager(Main.getTranslationManager().getLanguage(player)).playTitles(player);
+		MessageManager.getManager(Main.getTranslationManager().getLanguage(player)).playTitles(player);
 		server.remove(player);
 	}
 }
