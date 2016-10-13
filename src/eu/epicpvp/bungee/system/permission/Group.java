@@ -21,7 +21,7 @@ public class Group {
 	private Set<Permission> permissions = Collections.synchronizedSet(new HashSet<>());
 	@Getter
 	private Set<Permission> negativePerms = Collections.synchronizedSet(new HashSet<>());
-	private Set<Permission> finalPermissions = null;
+//	private Set<Permission> finalPermissions = null;
 	private Set<Group> inheritFrom = Collections.synchronizedSet(new HashSet<>());
 	private int importance = 0;
 
@@ -37,7 +37,7 @@ public class Group {
 //		new Throwable("Clearing permissions of group " + name).printStackTrace();
 		permissions.clear();
 		negativePerms.clear();
-		finalPermissions = null;
+//		finalPermissions = null;
 	}
 
 	public boolean addPermission(String permission) {
@@ -59,7 +59,7 @@ public class Group {
 			});
 		} else
 			return false;
-		finalPermissions = null;
+//		finalPermissions = null;
 		return true;
 	}
 
@@ -81,7 +81,7 @@ public class Group {
 				});
 				count++;
 			}
-		finalPermissions = null;
+//		finalPermissions = null;
 		return count != 0;
 	}
 
@@ -125,8 +125,8 @@ public class Group {
 	public Set<Permission> getPermissions() {
 //		if (finalPermissions == null) { //recalc permissions always due to possible changes in inherit groups
 //			System.out.println("Group " + name + " getPermissions() calc");
+		Set<Permission> finalPermissions = new HashSet<>();
 		try {
-			Set<Permission> finalPermissions = new HashSet<>();
 			ploop:
 			for (Permission p : permissions) {
 				for (Permission np : negativePerms) {
@@ -144,7 +144,7 @@ public class Group {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			finalPermissions = null;
+//			finalPermissions = null;
 		}
 
 //		System.out.println("  finalPermissions:");
