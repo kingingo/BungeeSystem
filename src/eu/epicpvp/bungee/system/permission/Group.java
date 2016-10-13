@@ -1,6 +1,7 @@
 package eu.epicpvp.bungee.system.permission;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,11 +18,11 @@ public class Group {
 	private String prefix = "undefined";
 	@Getter
 	private String name = "undefined";
-	private Set<Permission> permissions = new HashSet<>();
+	private Set<Permission> permissions = Collections.synchronizedSet(new HashSet<>());
 	@Getter
-	private Set<Permission> negativePerms = new HashSet<>();
+	private Set<Permission> negativePerms = Collections.synchronizedSet(new HashSet<>());
 	private Set<Permission> finalPermissions = null;
-	private Set<Group> inheritFrom = new HashSet<>();
+	private Set<Group> inheritFrom = Collections.synchronizedSet(new HashSet<>());
 	private int importance = 0;
 
 	private PermissionManager handle;
@@ -122,36 +123,36 @@ public class Group {
 	}
 
 	public Set<Permission> getPermissions() {
-		if (true || finalPermissions == null) { //recalc permissions always due to possible changes in inherit groups
+//		if (finalPermissions == null) { //recalc permissions always due to possible changes in inherit groups
 //			System.out.println("Group " + name + " getPermissions() calc");
-			try {
-				finalPermissions = new HashSet<>();
-				ploop:
-				for (Permission p : permissions) {
-					for (Permission np : negativePerms) {
-						if ((np.getGroup() == p.getGroup() || np.getGroup() == GroupTyp.ALL) && np.acceptPermission(p.getPermission())) {
-//							System.out.println("  Skipping " + p.getPermission() + " [" + p.getGroup() + "] due to " + np.getPermission() + " [" + np.getGroup() + "]");
-							continue ploop;
-						} else {
-							if (!finalPermissions.contains(np)) {
-//								System.out.println("  Adding negative perm " + np.getPermission() + " [" + np.getGroup() + "]");
-								finalPermissions.add(np);
-							}
+		try {
+			Set<Permission> finalPermissions = new HashSet<>();
+			ploop:
+			for (Permission p : permissions) {
+				for (Permission np : negativePerms) {
+					if ((np.getGroup() == p.getGroup() || np.getGroup() == GroupTyp.ALL) && np.acceptPermission(p.getPermission())) {
+//						System.out.println("  Skipping " + p.getPermission() + " [" + p.getGroup() + "] due to " + np.getPermission() + " [" + np.getGroup() + "]");
+						continue ploop;
+					} else {
+						if (!finalPermissions.contains(np)) {
+//							System.out.println("  Adding negative perm " + np.getPermission() + " [" + np.getGroup() + "]");
+							finalPermissions.add(np);
 						}
 					}
-					finalPermissions.add(p);
 				}
-			} catch (Exception e) {
-				e.printStackTrace();
-				finalPermissions = null;
+				finalPermissions.add(p);
 			}
-
-//			System.out.println("  finalPermissions:");
-//			for (Permission p : finalPermissions) {
-//				System.out.println("    " + p.getPermission() + " [" + p.getGroup() + "]");
-//			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			finalPermissions = null;
 		}
 
+//		System.out.println("  finalPermissions:");
+//		for (Permission p : finalPermissions) {
+//			System.out.println("    " + p.getPermission() + " [" + p.getGroup() + "]");
+//		}
+
+//		}
 		return finalPermissions;
 	}
 
@@ -167,7 +168,7 @@ public class Group {
 		//epicpvp.perm.group.
 //		System.out.println("Group " + name + " getPermissionsDeep() calc");
 //		System.out.println("Group " + name + " checked: " + checked.stream().map(Group::getName).collect(Collectors.toList()));
-		Set<Permission> finalPerms = new HashSet<>();
+		Set<Permission> finalPerms = Collections.synchronizedSet(new HashSet<>());
 		finalPerms.addAll(getPermissions());
 		for (Group inheritGroup : inheritFrom) {
 			if (checked.contains(inheritGroup)) {

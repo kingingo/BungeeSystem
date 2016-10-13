@@ -16,6 +16,7 @@ import eu.epicpvp.datenclient.client.debug.Debugger;
 import eu.epicpvp.datenserver.definitions.dataserver.gamestats.GameType;
 import eu.epicpvp.datenserver.definitions.gamestats.Statistic;
 import eu.epicpvp.datenserver.definitions.hashmaps.CachedHashMap;
+import eu.epicpvp.datenserver.definitions.permissions.PermissionType;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ChatEvent;
@@ -86,12 +87,17 @@ public class ChatListener implements Listener {
 				else
 					return;
 			}
-			
+
 			String trimMsg = e.getMessage().trim();
-			if (trimMsg.equalsIgnoreCase("/aac") || trimMsg.startsWith("/aac ") || trimMsg.equalsIgnoreCase("/aac:aac") || trimMsg.startsWith("/aac:aac ")) {
-				e.setMessage("///iAmACommandThatDoesNotExistAndShouldNeverExistKappa");
+			if (!PermissionManager.getManager().hasPermission(p, PermissionType.ALL_PERMISSION)) {
+				if (trimMsg.equalsIgnoreCase("/aac") || trimMsg.startsWith("/aac ") || trimMsg.equalsIgnoreCase("/aac:aac") || trimMsg.startsWith("/aac:aac ")) {
+					e.setMessage("///iAmACommandThatDoesNotExistAndShouldNeverExistKappa");
+				}
+				if (trimMsg.startsWith("/reflex")) {
+					e.setMessage("///iAmACommandThatDoesNotExistAndShouldNeverExistKappa2");
+				}
 			}
-			
+
 			if (trimMsg.equalsIgnoreCase("/icanhasbukkit") || trimMsg.startsWith("/icanhasbukkit ") || trimMsg.equalsIgnoreCase("/bukkit:icanhasbukkit") || trimMsg.startsWith("/bukkit:icanhasbukkit ")) {
 				e.setCancelled(true);
 				((ProxiedPlayer) e.getSender()).sendMessage("§cJetzt nicht wirklich?");
