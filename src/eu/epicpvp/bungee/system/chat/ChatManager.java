@@ -35,7 +35,7 @@ public class ChatManager implements PacketHandler, Listener {
 	private final HashMap<Player, ChatHistory> histories;
 	private HashMap<Player, CopyOnWriteArrayList<ChatBoxModifier>> chatBoxes;
 	private ThreadRunner chatResender;
-	private CachedArrayList<PacketPlayOutChat> ignorePackets;
+	private CachedArrayList<Integer> ignorePackets;
 
 	public ChatManager() {
 		this.histories = new InitHashMap<Player, ChatHistory>() {
@@ -126,7 +126,7 @@ public class ChatManager implements PacketHandler, Listener {
 
 	private void sendMessage(Player player, IChatBaseComponent comp) {
 		PacketPlayOutChat packet = new PacketPlayOutChat(comp);
-		this.ignorePackets.add(packet);
+		this.ignorePackets.add(System.identityHashCode(packet));
 		NickHandler.whitelist.add(System.identityHashCode(packet));
 		player.sendPacket(packet);
 	}
@@ -140,7 +140,7 @@ public class ChatManager implements PacketHandler, Listener {
 		if (!(e.getPacket() instanceof PacketPlayOutChat))
 			return false;
 //		System.out.println("handle chat packet");
-		if (((PacketPlayOutChat) e.getPacket()).getModus() == 2 || this.ignorePackets.contains(e.getPacket())) {
+		if (((PacketPlayOutChat) e.getPacket()).getModus() == 2 || this.ignorePackets.contains(System.identityHashCode(e.getPacket()))) {
 			return false;
 		}
 		ChatBoxModifier mod = getChatBoxModifier(e.getPlayer());
