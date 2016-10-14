@@ -34,10 +34,12 @@ public class CommandBan extends Command{
 		if(args.length >= 3){
 			if(!isNumber(args[1])){
 				cs.sendMessage(Main.getTranslationManager().translate("prefix",cs)+Main.getTranslationManager().translate("command.ban.error.invalidNumber", cs));
+				return;
 			}
 			int level = Integer.parseInt(args[1]);
 			if(level < 1 || level > 5){
 				cs.sendMessage(Main.getTranslationManager().translate("prefix",cs)+Main.getTranslationManager().translate("command.ban.error.invalidRange", cs));
+				return;
 			}
 			switch (level) { //Ban-Level 1 alredy tested
 			case 2:
