@@ -108,7 +108,6 @@ import eu.epicpvp.bungee.system.bs.packets.PacketPlayOutResourcepack;
 import eu.epicpvp.bungee.system.bs.servermanager.ServerManager;
 import eu.epicpvp.bungee.system.chat.ChatManager;
 import eu.epicpvp.bungee.system.mysql.MySQL;
-import eu.epicpvp.bungee.system.nick.NickHandler;
 import eu.epicpvp.bungee.system.permission.PermissionManager;
 import eu.epicpvp.bungee.system.report.commands.CMD_Report;
 import eu.epicpvp.bungee.system.report.info.ActionBarInformation;
@@ -366,7 +365,7 @@ public class Bootstrap {
 		ServerManager.setManager(new ServerManager());
 		ServerManager.getManager().loadServers();
 		MessageManager.start();
-		NickHandler.setInstance(new NickHandler());
+//		NickHandler.setInstance(new NickHandler());
 		RoulettHistory.history = new RoulettHistory();
 		BungeeCord.getInstance().getScheduler().runAsync(plugin, new Runnable() {
 			public void run() {
@@ -375,7 +374,7 @@ public class Bootstrap {
 		});
 		Main.boosterManager = new BoosterManager();
 		Main.getBoosterManager().init();
-		
+
 		PluginManager pluginManager = BungeeCord.getInstance().getPluginManager();
 		pluginManager.registerCommand(plugin, new CommandBDebug("bdebug"));
 		pluginManager.registerCommand(plugin, new CommandCreative("creative"));
@@ -422,7 +421,7 @@ public class Bootstrap {
 		pluginManager.registerCommand(plugin, new CommandResourcepack());
 		pluginManager.registerCommand(plugin, new CommandMoney());
 		pluginManager.registerCommand(plugin, new CommandConsoleTeamMessage());
-		
+
 		if (configuration.get("gilde.enabled") == null) {
 			configuration.set("gilde.enabled", "false");
 			try {
@@ -437,7 +436,7 @@ public class Bootstrap {
 		pluginManager.registerListener(plugin, InformationManager.getManager());
 		pluginManager.registerListener(plugin, ServerManager.getManager());
 		pluginManager.registerListener(plugin, RoulettHistory.history);
-		pluginManager.registerListener(plugin, NickHandler.getInstance());
+//		pluginManager.registerListener(plugin, NickHandler.getInstance());
 		pluginManager.registerListener(plugin, ChatManager.getInstance());
 		pluginManager.registerListener(plugin, new ChatListener());
 		pluginManager.registerListener(plugin, new PingListener());
@@ -469,8 +468,8 @@ public class Bootstrap {
 
 		Packet.registerPacket(Protocol.GAME, Direction.TO_CLIENT, PacketPlayOutResourcepack.class, new ProtocollId(BigClientVersion.v1_8, 0x48), new ProtocollId(BigClientVersion.v1_9, 0x32), new ProtocollId(BigClientVersion.v1_10, 0x32));
 		Packet.registerPacket(Protocol.GAME, Direction.TO_SERVER, PacketPlayInResourcepackStatus.class, new ProtocollId(BigClientVersion.v1_8, 0x19), new ProtocollId(BigClientVersion.v1_9, 0x16), new ProtocollId(BigClientVersion.v1_10, 0x16));
-		PacketLib.addHandler(NickHandler.getInstance(), 100); //Register before chat log! Use chat handle self
-		//PacketLib.addHandler(ChatManager.getInstance(), 50);
+//		PacketLib.addHandler(NickHandler.getInstance(), 100); //Register before chat log! Use chat handle self
+		PacketLib.addHandler(ChatManager.getInstance(), 50);
 
 		if (!WorldFileReader.isWorld(new File(conf.getString("server.afk.world")))) {
 			System.out.println("§cCant create AFK server!");

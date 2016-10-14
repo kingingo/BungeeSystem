@@ -62,8 +62,8 @@ public class GuiReportConfirm extends Gui{
 					public void click(Click c) {
 						getPlayer().closeInventory();
 						Main.getDatenServer().getClient().createReport(Main.getDatenServer().getClient().getPlayerAndLoad(c.getPlayer().getName()).getPlayerId(), Main.getDatenServer().getClient().getPlayerAndLoad(target).getPlayerId(), reason, moreInfo);
-						getPlayer().sendMessage("§aDu hast den Spieler §e{player_"+target+"} §areportet!");
-						Main.getDatenServer().getClient().broadcastMessage("report.alert", "§aDer Spieler §e{player_"+c.getPlayer().getName()+"} §ahat den Spieler §e{player_"+target+"} §awegen §6"+ reason + (moreInfo == null ? "":" ("+moreInfo+")") + " §areportet!");
+						getPlayer().sendMessage("§aDu hast den Spieler §e"+target+" §areportet!");
+						Main.getDatenServer().getClient().broadcastMessage("report.alert", "§aDer Spieler §e"+c.getPlayer().getName()+" §ahat den Spieler §e"+target+" §awegen §6"+ reason + (moreInfo == null ? "":" ("+moreInfo+")") + " §areportet!");
 					}
 				});
 			}

@@ -49,6 +49,9 @@ public class WarzTexturePackListener implements Listener{
 			@Override
 			public void handle(PacketHandleEvent<PacketPlayInResourcepackStatus> e) {
 				System.out.println("Having packet: "+e.getPacket());
+				if (e.getPacket().getHash() == null) { //TODO track which pack was sent
+					return;
+				}
 				if(!e.getPacket().getHash().equalsIgnoreCase(DEFAULT_HASH)){
 					if(e.getPacket().getAction() == Action.SUCCESSFULLY_LOADED)
 						textureUsing.add(e.getPlayer());

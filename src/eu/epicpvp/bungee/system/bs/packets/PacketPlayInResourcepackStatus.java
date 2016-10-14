@@ -1,7 +1,8 @@
 package eu.epicpvp.bungee.system.bs.packets;
 
-import dev.wolveringer.BungeeUtil.packets.Packet;
+import dev.wolveringer.BungeeUtil.ClientVersion;
 import dev.wolveringer.BungeeUtil.packets.Abstract.PacketPlayIn;
+import dev.wolveringer.BungeeUtil.packets.Packet;
 import dev.wolveringer.packet.PacketDataSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,13 +25,17 @@ public class PacketPlayInResourcepackStatus extends Packet implements PacketPlay
 
 	@Override
 	public void read(PacketDataSerializer s) {
-		hash = s.readString(-1);
+		if (getVersion().getBigVersion() == ClientVersion.BigClientVersion.v1_8) {
+			hash = s.readString(-1);
+		}
 		action = Action.values()[s.readVarInt()];
 	}
 
 	@Override
 	public void write(PacketDataSerializer s) {
-		s.writeString(hash);
+		if (getVersion().getBigVersion() == ClientVersion.BigClientVersion.v1_8) {
+			s.writeString(hash);
+		}
 		s.writeVarInt(action.ordinal());
 	}
 }
