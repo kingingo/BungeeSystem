@@ -39,16 +39,16 @@ public class BannedServerManager {
 		Main.getTranslationManager().registerFallback(LanguageType.ENGLISH, "server.banned.tab.permanent.header", "§cYou are permanently banned level %s0!");
 		Main.getTranslationManager().registerFallback(LanguageType.ENGLISH, "server.banned.tab.permanent.footer", "§aYour ban reason: §c%s0");
 
-		Main.getTranslationManager().registerFallback(LanguageType.ENGLISH, "server.banned.chat", "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n§eDu wurdest vom dem §6ClashMC §eNetzwerk %s3 wegen\n"
+		Main.getTranslationManager().registerFallback(LanguageType.ENGLISH, "server.banned.chat", "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n§eDu wurdest vom dem §6EpicPvP §eNetzwerk %s3 wegen\n"
 				+ "§b%s0§e von§b %s1 §eauf der Stufe§c %s2 §egebannt.\n"
 				+ "§eFalls du wieder spielen möchtest, dann kannst\n"
 				+ "§edu dir eine Entsperrung in unserem Onlineshop\n"
-				+ "§eunter§b {buycraft_unban_%s2}§e kaufen.\n" //shop.ClashMC.de
+				+ "§eunter§b {buycraft_unban_%s2}§e kaufen.\n" //shop.EpicPvP.de
 				+ "§a▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n"
 				+ "§eFalls du Fragen zu deinem Ban hast,\n"
 				+ "§emelde dich bitte auf unserem Teamspeak 3 Server unter§7\n"
-				+ "§bts.ClashMC.de§7§e oder schreibe ein Support-Ticket\n"
-				+ "§eals Entbannungsantrag unter §bwww.ClashMC.de");
+				+ "§bts.EpicPvP.de§7§e oder schreibe ein Support-Ticket\n"
+				+ "§eals Entbannungsantrag unter §bwww.EpicPvP.de");
 																			//Ja/Nein
 		Main.getTranslationManager().registerFallback(LanguageType.ENGLISH, "server.banned.subtitle.temporary", "§cYou are temporary banned for %s0!");
 		Main.getTranslationManager().registerFallback(LanguageType.ENGLISH, "server.banned.actionbar.temporary", "§a§lYour ban reason: §c§l%s0");
@@ -61,13 +61,13 @@ public class BannedServerManager {
 		buycraftBanLevelMapping.put(4, 1224531);
 		/*
 Entsperrung Lvl. 1
-http://shop.clashMC.eu/checkout/packages?action=add&package=920583&ign=<PLAYERNAME>
+http://shop.EpicPvP.eu/checkout/packages?action=add&package=920583&ign=<PLAYERNAME>
 Entsperrung Lvl. 2
-http://shop.clashMC.eu/checkout/packages?action=add&package=1224528&ign=<PLAYERNAME>
+http://shop.EpicPvP.eu/checkout/packages?action=add&package=1224528&ign=<PLAYERNAME>
 Entsperrung Lvl. 3
-http://shop.clashMC.eu/checkout/packages?action=add&package=1224529&ign=<PLAYERNAME>
+http://shop.EpicPvP.eu/checkout/packages?action=add&package=1224529&ign=<PLAYERNAME>
 Entsperrung Lvl. 4
-http://shop.clashMC.eu/checkout/packages?action=add&package=1224531&ign=<PLAYERNAME>
+http://shop.EpicPvP.eu/checkout/packages?action=add&package=1224531&ign=<PLAYERNAME>
 		 */
 	}
 	/*
@@ -91,7 +91,7 @@ http://shop.clashMC.eu/checkout/packages?action=add&package=1224531&ign=<PLAYERN
 				styleCopy.setBold(true);
 				if(level > 0 && buycraftBanLevelMapping.containsKey(level)){
 					styleCopy.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("§aKlicke, um den Shop zu öffnen.")));
-					styleCopy.setClickEvent(new ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.OPEN_URL, "http://shop.clashMC.eu/checkout/packages?action=add&package="+buycraftBanLevelMapping.get(level)+"&ign="+player));
+					styleCopy.setClickEvent(new ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.OPEN_URL, "http://shop.EpicPvP.eu/checkout/packages?action=add&package="+buycraftBanLevelMapping.get(level)+"&ign="+player));
 				}else{
 					styleCopy.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("§cEs gibt keine Möglichkeit, einen Unban zu kaufen!")));
 				}
