@@ -46,7 +46,7 @@ public class GuiPlayerGildeOverview extends Gui {
 	private UUID ownGilde;
 
 	public GuiPlayerGildeOverview(Player player) {
-		super(5, "§aClanmanagement §7- §c§lBETA");
+		super(5, "§aClans §7- §c§lBETA");
 		this.player = player;
 		this.lplayer = Main.getDatenServer().getClient().getPlayerAndLoad(player.getName());
 		loadData();
