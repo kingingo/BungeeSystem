@@ -44,8 +44,8 @@ public class GuiGildeSection extends Gui {
 		inv.setItem(4, buildStats());
 		final LoadedPlayer lplayer = Main.getDatenServer().getClient().getPlayerAndLoad(getPlayer().getName());
 		if (section.getHandle().getOwnerId() == lplayer.getPlayerId())
-			inv.setItem(8, ItemBuilder.create(Material.STAINED_GLASS_PANE).durability(14).name("§7» §cBereich Deaktivieren").listener((Click c) -> {
-				GuiWaiting waiting = new GuiWaiting("§aDeaktivieren gild section", "§aPlease wait");
+			inv.setItem(8, ItemBuilder.create(Material.STAINED_GLASS_PANE).durability(14).name("§7» §cBereich deaktivieren").listener((Click c) -> {
+				GuiWaiting waiting = new GuiWaiting("§aDeaktiviere Clanbereich", "§aPlease wait");
 				waiting.setPlayer(getPlayer()).openGui();
 				ThreadFactory.getFactory().createThread(() -> {
 					if (lplayer.getPlayerId() != section.getHandle().getOwnerId()) {
@@ -176,7 +176,7 @@ public class GuiGildeSection extends Gui {
 							ThreadFactory.getFactory().createThread(() -> {
 								if (section.getMoney().getCurrentMoney() < number) {
 									waiting.waitForMinwait(1500);
-									new GuiStatusPrint(5, "§cAuf der Gilden-Bank ist nicht genug Geld!", ItemBuilder.create().material(Material.REDSTONE_BLOCK).name("§cAuf der Gilden-Bank ist nicht genug Geld!").build()) {
+									new GuiStatusPrint(5, "§cAuf der Clan-Bank ist nicht genug Geld!", ItemBuilder.create().material(Material.REDSTONE_BLOCK).name("§cAuf der Clan-Bank ist nicht genug Geld!").build()) {
 										@Override
 										public void onContinue() {
 											switchToGui(new GuiGildeSection(section)); //REBUILD THE GUI :)

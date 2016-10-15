@@ -50,9 +50,9 @@ public class GuiGildeKickPlayer extends Gui {
 
 				String sectionText = "";
 				if (sectionCount == 1) {
-					sectionText += " der Section ";
+					sectionText += " dem Bereich ";
 				} else {
-					sectionText += " den Sectionen ";
+					sectionText += " den Bereichen ";
 				}
 				for (int i = 0; i < modes.length; i++) {
 					if (modes[i] == 1) {
@@ -61,17 +61,17 @@ public class GuiGildeKickPlayer extends Gui {
 				}
 				sectionText = sectionText.replaceFirst(", ", "");
 
-				Main.getDatenServer().getClient().sendMessage(player.getPlayerId(), "§aDu wurdest aus " + sectionCount + " von der Gilde §e" + section.getHandle().getName() + "§a rausgeworfen.");
-				getPlayer().sendMessage("§aDu hast den Spieler §e" + player.getName() + " §aaus " + sectionCount + " §arausegeworfen.");
+				Main.getDatenServer().getClient().sendMessage(player.getPlayerId(), "§aDu wurdest aus " + sectionCount + " von dem Clan §e" + section.getHandle().getName() + "§a rausgeworfen.");
+				getPlayer().sendMessage("§aDu hast den Spieler §e" + player.getName() + " §aaus " + sectionCount + " §arausgeworfen.");
 			});
 		} else {
-			builder.id(351).durability(8).name("§cKick player");
+			builder.id(351).durability(8).name("§cKickeden Spieler");
 		}
 		inv.setItem(17, builder.build());
 	}
 
 	private void buildSection(GildeType type, int index) {
-		ItemBuilder builder = ItemBuilder.create(Material.ITEM_FRAME).name("§aKick player from " + type.getDisplayName());
+		ItemBuilder builder = ItemBuilder.create(Material.ITEM_FRAME).name("§aKicke Spieler von Clanbereich " + type.getDisplayName());
 		inv.setItem(index * 2, builder.build());
 
 		builder = ItemBuilder.create(160);
@@ -83,7 +83,7 @@ public class GuiGildeKickPlayer extends Gui {
 				buildContinueItem();
 			});
 		} else {
-			builder.name("§cDer Spieler ist kein Mitglied von " + type.getDisplayName());
+			builder.name("§cDer Spieler ist kein Mitglied des Clanbereiches " + type.getDisplayName());
 			builder.durability(15);
 			modes[index] = 0;
 		}

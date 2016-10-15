@@ -47,14 +47,14 @@ public abstract class GildeSearchMenue extends SearchMenue {
 
 	@Override
 	protected void updateInv() {
-		gui.setCenterItem(ItemBuilder.create(Material.GOLDEN_APPLE).durability(1).name("§eEnter the GildName").build());
+		gui.setCenterItem(ItemBuilder.create(Material.GOLDEN_APPLE).durability(1).name("§eClannamen eingeben").build());
 		gui.setColorPrefix("§a");
-		gui.setOutputItem(ItemBuilder.create(Material.LAVA_BUCKET).name("§cCancel").lore("§aClick to cancel").glow().build());
+		gui.setOutputItem(ItemBuilder.create(Material.LAVA_BUCKET).name("§cAbbrechen").lore("§aKlicke, um abzubrechen").glow().build());
 	}
 
 	@Override
 	protected Item createEntity(String name, int slot) {
-		return ItemBuilder.create().id(370).name("§aGilde: §6" + gilden.get(UUID.fromString(name))).lore("§aGilden UUID: §6" + name).build();
+		return ItemBuilder.create().id(370).name("§aClan: §6" + gilden.get(UUID.fromString(name))).lore("§aClan UUID: §6" + name).build();
 	}
 
 	@Override

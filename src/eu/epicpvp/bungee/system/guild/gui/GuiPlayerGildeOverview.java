@@ -32,10 +32,10 @@ public class GuiPlayerGildeOverview extends Gui {
 	private static Map<GildeType, Integer> itemMapping = new EnumMap<>(GildeType.class);
 
 	static {
-		itemMapping.put(GildeType.ARCADE, 345);
-		itemMapping.put(GildeType.PVP, 279);
-		itemMapping.put(GildeType.SKY, 3);
-		itemMapping.put(GildeType.VERSUS, 261);
+//		itemMapping.put(GildeType.ARCADE, 345);
+//		itemMapping.put(GildeType.PVP, 279);
+//		itemMapping.put(GildeType.SKY, 3);
+//		itemMapping.put(GildeType.VERSUS, 261);
 		itemMapping.put(GildeType.WARZ, 367);
 	}
 
@@ -46,7 +46,7 @@ public class GuiPlayerGildeOverview extends Gui {
 	private UUID ownGilde;
 
 	public GuiPlayerGildeOverview(Player player) {
-		super(5, "§aGilden Management");
+		super(5, "§aClanmanagement");
 		this.player = player;
 		this.lplayer = Main.getDatenServer().getClient().getPlayerAndLoad(player.getName());
 		loadData();
@@ -63,23 +63,23 @@ public class GuiPlayerGildeOverview extends Gui {
 		inv.setItem(0, ItemBuilder.create(Material.BARRIER).name("§cSchließen").listener((Click c) -> c.getPlayer().closeInventory()).build());
 		if (ownerState != -1)
 			if (ownerState == 1)
-				inv.setItem(8, ItemBuilder.create(Material.DIAMOND_PICKAXE).name("§aManage deine eigende Gilde").listener(new Runnable() {
+				inv.setItem(8, ItemBuilder.create(Material.DIAMOND_PICKAXE).name("§aManage deinen eigenen Clan").listener(new Runnable() {
 					@Override
 					public void run() {
 						if (ownGilde == null)
 							System.out.println("own null!");
 						Gilde gilde = Main.getGildeManager().getGilde(ownGilde);
 						if (gilde == null)
-							System.out.println("Null gilde");
+							System.out.println("Null clan");
 						new GuiGildeAdminOverview(player, gilde).setPlayer(player).openGui();
 					}
 				}).build());
 			else
-				inv.setItem(8, ItemBuilder.create(Material.NETHER_STAR).name("§aErstelle deine eigende Gilde").listener((Click c) -> createNewGilde(null)).build());
-		inv.setItem(19, buildSection(GildeType.ARCADE));
-		inv.setItem(30, buildSection(GildeType.PVP));
-		inv.setItem(32, buildSection(GildeType.SKY));
-		inv.setItem(25, buildSection(GildeType.VERSUS));
+				inv.setItem(8, ItemBuilder.create(Material.NETHER_STAR).name("§aErstelle deinen eigenden Clan").listener((Click c) -> createNewGilde(null)).build());
+//		inv.setItem(19, buildSection(GildeType.ARCADE));
+//		inv.setItem(30, buildSection(GildeType.PVP));
+//		inv.setItem(32, buildSection(GildeType.SKY));
+//		inv.setItem(25, buildSection(GildeType.VERSUS));
 		inv.setItem(13, buildSection(GildeType.WARZ));
 		inv.enableUpdate();
 	}
@@ -91,7 +91,7 @@ public class GuiPlayerGildeOverview extends Gui {
 			item.lore("§cLade Claninformationen...");
 		} else {
 			if (gilden.get(type) == null) {
-				item.lore("§aKlicke, um einer Gilde im Bereich " + type.getDisplayName() + " beizutreten.");
+				item.lore("§aKlicke, um einen Clan im Bereich " + type.getDisplayName() + " beizutreten.");
 				item.listener((c) -> {
 					GildeSearchMenue search = new GildeSearchMenue(c.getPlayer(), type) {
 						@Override
@@ -115,7 +115,7 @@ public class GuiPlayerGildeOverview extends Gui {
 								}
 								if (gilde.getSelection(type).getRequestedPlayer().contains(lplayer.getPlayerId())) {
 									waiting.waitForMinwait(1500);
-									new GuiStatusPrint(6, "§cDu hast in dieser Gilde bereits eine Mitgliedschaft angefordert!", ItemBuilder.create(Material.REDSTONE_BLOCK).name("§cDu hast in dieser Gilde bereits eine Mitgliedschaft angefordert!").build()) {
+									new GuiStatusPrint(6, "§cDu hast diesem Clan bereits eine Mitgliedschaft angefordert!", ItemBuilder.create(Material.REDSTONE_BLOCK).name("§cDu hast diesem Clan bereits eine Mitgliedschaft angefordert!").build()) {
 										@Override
 										public void onContinue() {
 											new GuiPlayerGildeOverview(getPlayer()).setPlayer(getPlayer()).openGui();
@@ -127,7 +127,7 @@ public class GuiPlayerGildeOverview extends Gui {
 								ThreadFactory.getFactory().createThread(() -> {
 									for (int players : gilde.getSelection(type).getPlayers()) {
 										if (gilde.getSelection(type).getPermission().hasPermission(players, GildePermissions.MEMBER_ACCEPT))
-											Main.getDatenServer().getClient().sendMessage(players, "§aDer Spieler §e" + player.getName() + "§a hat die Mitgliedschaft in dem Bereich §e" + type.getDisplayName() + " §afür die Gilde §e" + gilde.getName() + "§a angefragt.");
+											Main.getDatenServer().getClient().sendMessage(players, "§aDer Spieler §e" + player.getName() + "§a hat die Mitgliedschaft in dem Bereich §e" + type.getDisplayName() + " §afür den Clan §e" + gilde.getName() + "§a angefragt.");
 									}
 								}).start();
 
@@ -147,7 +147,7 @@ public class GuiPlayerGildeOverview extends Gui {
 			} else {
 				Gilde gilde = gilden.get(type);
 				item.lore("§aKlicke um in den Clanbereich");
-				item.lore("§ader Gilde " + gilde.getName() + " zu kommen.");
+				item.lore("§ades Clans " + gilde.getName() + " zu kommen.");
 				item.listener((c) -> {
 					switchToGui(SectionRegestry.getInstance().createGildeSection(gilde.getSelection(type)));
 				});
@@ -244,13 +244,13 @@ public class GuiPlayerGildeOverview extends Gui {
 	private void loadData(GildeType type) {
 		Main.getDatenServer().getClient().getGildePlayer(lplayer, type).getAsync(new Callback<UUID>() {
 			@Override
-			public void call(UUID obj, Throwable exception) {
+			public void call(UUID uuid, Throwable exception) {
 				if (exception != null)
 					exception.printStackTrace();
-				if (obj == null)
+				if (uuid == null)
 					gilden.put(type, null);
 				else {
-					Gilde gilde = Main.getGildeManager().getGilde(obj);
+					Gilde gilde = Main.getGildeManager().getGilde(uuid);
 					gilden.put(type, gilde);
 				}
 				//System.out.println("Having response: "+obj+" for "+type);

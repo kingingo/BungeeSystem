@@ -15,7 +15,7 @@ public class GuiGildeDeleteConfirm extends Gui {
 	private Gilde gilde;
 
 	public GuiGildeDeleteConfirm(LoadedPlayer lplayer, Gilde gilde) {
-		super(1, "§cLösche eine Gilde");
+		super(1, "§cLöschen deines Clans");
 		this.lplayer = lplayer;
 		this.gilde = gilde;
 	}
@@ -28,16 +28,16 @@ public class GuiGildeDeleteConfirm extends Gui {
 				getPlayer().closeInventory();
 			}
 		});
-		inv.setItem(4, ItemBuilder.create(Material.ANVIL).name("§c§lAchtung!").lore("§cDas löschen deiner Gilde kann nicht wieder").lore("§crückgäning gemacht werden.").build());
+		inv.setItem(4, ItemBuilder.create(Material.ANVIL).name("§c§lAchtung!").lore("§cDas Löschen deines Clans kann nicht wieder").lore("§crückgängig gemacht werden.").build());
 
 		inv.setItem(7, new ItemStack(ItemBuilder.create(159).name("§cAbbrechen").durability(14).build()) {
 			@Override
 			public void click(Click c) {
 				getPlayer().closeInventory();
-				getPlayer().sendMessage("§cAction canceled.");
+				getPlayer().sendMessage("§cAktion abgebrochen.");
 			}
 		});
-		inv.setItem(8, ItemBuilder.create(159).name("§a§mBestätigen").lore("§cBitte warte noch 5 sekunden befor du").lore("§cBestätigen kannst.").durability(11).build());
+		inv.setItem(8, ItemBuilder.create(159).name("§a§mBestätigen").lore("§cBitte warte noch 5 Sekunden bevor du").lore("§cbestätigen kannst.").durability(11).build());
 
 		fill(ItemBuilder.create(160).durability(7).name("§7").build(), 0, 9);
 	}
@@ -47,8 +47,8 @@ public class GuiGildeDeleteConfirm extends Gui {
 		BungeeCord.getInstance().getScheduler().runAsync(Main.getInstance(), new Runnable() {
 			public void run() {
 				int loop = 6;
-				while (loop-- > 0) {
-					inv.setItem(8, ItemBuilder.create(159).name("§a§mBestätigen").lore("§cBitte warte noch " + loop + " sekunden bevor du").lore("§cBestätigen kannst.").durability(11).build());
+				while (--loop > 0) {
+					inv.setItem(8, ItemBuilder.create(159).name("§a§mBestätigen").lore("§cBitte warte noch " + loop + " Sekunden bevor du").lore("§cbestätigen kannst.").durability(11).build());
 					try {
 						Thread.sleep(1000);
 					} catch (InterruptedException e) {

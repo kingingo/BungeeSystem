@@ -28,20 +28,20 @@ public class GuiGildeAdminOverview extends Gui {
 	private static HashMap<GildeType, Integer> itemMapping = new HashMap<>();
 
 	static {
-		itemMapping.put(GildeType.ARCADE, 345);
-		itemMapping.put(GildeType.PVP, 279);
-		itemMapping.put(GildeType.SKY, 3);
-		itemMapping.put(GildeType.VERSUS, 261);
+//		itemMapping.put(GildeType.ARCADE, 345);
+//		itemMapping.put(GildeType.PVP, 279);
+//		itemMapping.put(GildeType.SKY, 3);
+//		itemMapping.put(GildeType.VERSUS, 261);
 		itemMapping.put(GildeType.WARZ, 367);
 
 		Main.getTranslationManager().registerFallback(LanguageType.GERMAN, "inventory.item.close", "§cSchließen"); //
-		Main.getTranslationManager().registerFallback(LanguageType.GERMAN, "gilde.delete.item", "§cGilde löschen");
+		Main.getTranslationManager().registerFallback(LanguageType.GERMAN, "gilde.delete.item", "§cClan löschen");
 		Main.getTranslationManager().registerFallback(LanguageType.GERMAN, "gilde.delete.title", "§cBist du sicher?");
 		Main.getTranslationManager().registerFallback(LanguageType.GERMAN, "gilde.delete.message", "§cDu kannst diese Aktion nicht mehr rückgänig machen!");
-		Main.getTranslationManager().registerFallback(LanguageType.GERMAN, "gilde.delete.error.message", "§cBei dem Löschen deiner Gilde gab es einen Fehler!");
-		Main.getTranslationManager().registerFallback(LanguageType.GERMAN, "gilde.delete.success", "§aDeine Gilde wurde erfolgreich gelöscht!");
+		Main.getTranslationManager().registerFallback(LanguageType.GERMAN, "gilde.delete.error.message", "§cBei dem Löschen deines Clans gab es einen Fehler!");
+		Main.getTranslationManager().registerFallback(LanguageType.GERMAN, "gilde.delete.success", "§aDein Clan wurde erfolgreich gelöscht!");
 
-		Main.getTranslationManager().registerFallback(LanguageType.GERMAN, "waiting.title", "§aBitte warte einen moment");
+		Main.getTranslationManager().registerFallback(LanguageType.GERMAN, "waiting.title", "§aBitte warte einen Moment");
 		Main.getTranslationManager().registerFallback(LanguageType.GERMAN, "waiting.message", "§aAuftrag wird ausgeführt.");
 	}
 
@@ -82,7 +82,7 @@ public class GuiGildeAdminOverview extends Gui {
 											exception.printStackTrace();
 									} else if (obj.getAction() == Action.ERROR) {
 										player.sendMessage(Main.getTranslationManager().translate("gilde.delete.error.message", getPlayer()));
-										System.out.println("An error happend while deleting gilde " + gilde.getName() + " (" + obj.getMessage() + ")");
+										System.out.println("An error happend while deleting clan " + gilde.getName() + " (" + obj.getMessage() + ")");
 									} else {
 										player.sendMessage(Main.getTranslationManager().translate("gilde.delete.error.message", getPlayer()));
 									}
@@ -96,10 +96,10 @@ public class GuiGildeAdminOverview extends Gui {
 				question.setPlayer(player).openGui();
 			}
 		}).build());
-		inv.setItem(19, buildSection(GildeType.ARCADE));
-		inv.setItem(30, buildSection(GildeType.PVP));
-		inv.setItem(32, buildSection(GildeType.SKY));
-		inv.setItem(25, buildSection(GildeType.VERSUS));
+//		inv.setItem(19, buildSection(GildeType.ARCADE));
+//		inv.setItem(30, buildSection(GildeType.PVP));
+//		inv.setItem(32, buildSection(GildeType.SKY));
+//		inv.setItem(25, buildSection(GildeType.VERSUS));
 		inv.setItem(13, buildSection(GildeType.WARZ));
 		inv.enableUpdate();
 	}
@@ -159,7 +159,7 @@ public class GuiGildeAdminOverview extends Gui {
 					}).start();
 				});
 			} else {
-				item.id(289).name("§6Dieser Gildenbereich ist leider disabled.").lore("§aNur der Gilde-Owner kann Sectionen activieren.");
+				item.id(289).name("§6Dieser Clanbereich ist leider disabled.").lore("§aNur der Clan-Owner kann Sectionen activieren.");
 			}
 		}
 
