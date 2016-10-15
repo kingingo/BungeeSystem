@@ -24,7 +24,7 @@ public class GuiGildeKickPlayer extends Gui {
 
 	@Override
 	public void build() {
-		inv.setItem(0, ItemBuilder.create(Material.BARRIER).name("§cZurück").listener((Click c) -> switchToGui(new GuiGildeMemberAdminPannel(section, player))).build());
+		inv.setItem(0, ItemBuilder.create(Material.BARRIER).name("§cZurück").listener((Click c) -> switchToGui(new GuiGildeMemberAdminPanel(section, player))).build());
 		fill(ItemBuilder.create(160).durability(7).name("§7").build());
 		for (int i = 0; i < GildeType.getPossibleValues().length; i++)
 			buildSection(GildeType.getPossibleValues()[i], i);

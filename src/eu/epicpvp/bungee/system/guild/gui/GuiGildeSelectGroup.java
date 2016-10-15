@@ -7,14 +7,14 @@ import eu.epicpvp.bungee.system.item.ItemBuilder;
 import eu.epicpvp.datenclient.client.LoadedPlayer;
 import eu.epicpvp.datenclient.gilde.GildSection;
 
-public class GuiGildeSelectGoup extends GuiItemSelect {
+public class GuiGildeSelectGroup extends GuiItemSelect {
 
 	private GildSection section;
 	private LoadedPlayer player;
 
 	private String[] groups;
 
-	public GuiGildeSelectGoup(GildSection section, LoadedPlayer player) {
+	public GuiGildeSelectGroup(GildSection section, LoadedPlayer player) {
 		super("§a" + section.getType().getDisplayName() + " §6» §aMember §6» §aGroup");
 		this.section = section;
 		this.player = player;
@@ -35,7 +35,7 @@ public class GuiGildeSelectGoup extends GuiItemSelect {
 			new GuiStatusPrint(6, "§cDu kannst den Clanbesitzer nicht ändern", ItemBuilder.create(Material.REDSTONE).name("§cDu kannst den Clanbesitzer nicht ändern").build()) {
 				@Override
 				public void onContinue() {
-					new GuiGildeSelectGoup(section, player).setPlayer(getPlayer()).openGui();
+					new GuiGildeSelectGroup(section, player).setPlayer(getPlayer()).openGui();
 				}
 			};
 			return;
@@ -44,7 +44,7 @@ public class GuiGildeSelectGoup extends GuiItemSelect {
 			new GuiStatusPrint(6, "§cDu kannst den Clanbesitzer nicht heruntersetzen", ItemBuilder.create(Material.REDSTONE).name("§cDu kannst den Clanbesitzer nicht heruntersetzen").build()) {
 				@Override
 				public void onContinue() {
-					new GuiGildeSelectGoup(section, player).setPlayer(getPlayer()).openGui();
+					new GuiGildeSelectGroup(section, player).setPlayer(getPlayer()).openGui();
 				}
 			};
 			return;
@@ -56,6 +56,6 @@ public class GuiGildeSelectGoup extends GuiItemSelect {
 
 	@Override
 	public void cancel() {
-		switchToGui(new GuiGildeMemberAdminPannel(section, player));
+		switchToGui(new GuiGildeMemberAdminPanel(section, player));
 	}
 }

@@ -92,7 +92,7 @@ public class GuiGildePermissionGroupOverview extends Gui {
 							}.setPlayer(getPlayer()).openGui();
 							return;
 						}
-						new GuiStatusPrint(6, "§Gruppe erstellt.", ItemBuilder.create(Material.EMERALD).name("§Gruppe erstellt.").build()) {
+						new GuiStatusPrint(6, "§aGruppe erstellt.", ItemBuilder.create(Material.EMERALD).name("§aGruppe erstellt.").build()) {
 							@Override
 							public void onContinue() {
 								new GuiGildePermissionGroupOverview(permission).setPlayer(getPlayer()).openGui();
@@ -124,7 +124,7 @@ public class GuiGildePermissionGroupOverview extends Gui {
 
 			builder.name("§a" + group.getName()).lore("§aKlicke, um die Gruppe zu bearbeiten.");
 			builder.listener((c) -> {
-				GuiGildePermissionGroupOverview.this.switchToGui(new GuiGildePermissionGroupAdminPannel(group));
+				GuiGildePermissionGroupOverview.this.switchToGui(new GuiGildePermissionGroupAdminPanel(group));
 			});
 			groups[index++] = builder.build();
 		}

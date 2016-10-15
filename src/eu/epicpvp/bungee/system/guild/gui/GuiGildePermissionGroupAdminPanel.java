@@ -14,7 +14,7 @@ import eu.epicpvp.datenclient.gilde.GildPermissionGroup;
 import eu.epicpvp.datenserver.definitions.gilde.GildePermissions;
 import eu.epicpvp.datenserver.definitions.gilde.GildePermissions.DisplayItem;
 
-public class GuiGildePermissionGroupAdminPannel extends Gui {
+public class GuiGildePermissionGroupAdminPanel extends Gui {
 
 	private static class PermissionItem {
 
@@ -22,13 +22,13 @@ public class GuiGildePermissionGroupAdminPannel extends Gui {
 		private Item item;
 		private GildPermissionGroup handle;
 		private GildePermissions perm;
-		private GuiGildePermissionGroupAdminPannel inv;
+		private GuiGildePermissionGroupAdminPanel inv;
 
 		private static Item buildItem(DisplayItem item) {
 			return ItemBuilder.create(item.getId()).name(item.getName()).durability(item.getDurbility()).lore(item.getLore()).build();
 		}
 
-		public PermissionItem(GuiGildePermissionGroupAdminPannel inv, GildPermissionGroup handle, GildePermissions perm) {
+		public PermissionItem(GuiGildePermissionGroupAdminPanel inv, GildPermissionGroup handle, GildePermissions perm) {
 			item = buildItem(perm.getDisplayItem());
 			this.handle = handle;
 			this.perm = perm;
@@ -69,7 +69,7 @@ public class GuiGildePermissionGroupAdminPannel extends Gui {
 	private PermissionItem[] items;
 	private int pos = 0;
 
-	public GuiGildePermissionGroupAdminPannel(GildPermissionGroup group) {
+	public GuiGildePermissionGroupAdminPanel(GildPermissionGroup group) {
 		super(5, "§a" + group.getHandle().getHandle().getType().getDisplayName() + " §6» §aGroup §6» §a" + group.getName());
 		this.group = group;
 	}

@@ -83,7 +83,7 @@ public class GuiGildeMemberManager extends Gui {
 				if (permission.hasPermission(handlePlayer, GildePermissions.MEMBER_EDIT)) {
 					memberItemBuilder.lore("§aKlicke um ins Member-Menue zu kommen.");
 					memberItemBuilder.listener((c) -> {
-						switchToGui(new GuiGildeMemberAdminPannel(permission.getHandle(), player));
+						switchToGui(new GuiGildeMemberAdminPanel(permission.getHandle(), player));
 					});
 				}
 				playerItems[memberLoopIndex] = loadSkin(memberItemBuilder.build(), player.getName());

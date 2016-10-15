@@ -10,9 +10,8 @@ import eu.epicpvp.bungee.system.gui.Gui;
 import eu.epicpvp.bungee.system.gui.GuiStatusPrint;
 import eu.epicpvp.bungee.system.gui.GuiWaiting;
 import eu.epicpvp.bungee.system.guild.gui.GuiGildeAdminOverview;
-import eu.epicpvp.bungee.system.guild.gui.GuiGildeMemberInvatations;
+import eu.epicpvp.bungee.system.guild.gui.GuiGildeMemberInvitations;
 import eu.epicpvp.bungee.system.guild.gui.GuiGildeMemberManager;
-import eu.epicpvp.bungee.system.guild.gui.GuiGildeMoneyOverview;
 import eu.epicpvp.bungee.system.guild.gui.GuiGildePermissionGroupOverview;
 import eu.epicpvp.bungee.system.item.ItemBuilder;
 import eu.epicpvp.datenclient.client.LoadedPlayer;
@@ -65,7 +64,7 @@ public class GuiGildeSection extends Gui {
 				}).start();
 			}).build());
 		//TODO sort
-		inv.setItem(19, ItemBuilder.create(Material.GOLD_BLOCK).name("§7» §6Clan Bank").lore("§aMoney: §b" + section.getMoney().getCurrentMoney()).lore("§aKlicke hier für weitere Infos").listener((Click c) -> switchToGui(new GuiGildeMoneyOverview(section.getMoney()))).build());
+//		inv.setItem(19, ItemBuilder.create(Material.GOLD_BLOCK).name("§7» §6Clan Bank").lore("§aMoney: §b" + section.getMoney().getCurrentMoney()).lore("§aKlicke hier für weitere Infos").listener((Click c) -> switchToGui(new GuiGildeMoneyOverview(section.getMoney()))).build());
 		inv.setItem(21, ItemBuilder.create(Material.SKULL_ITEM).name("§7» §6Clan Mitglieder").lore("§aKlicke hier für weitere Infos").listener((Click c) -> switchToGui(new GuiGildeMemberManager(section.getPermission()))).build());
 		inv.setItem(23, ItemBuilder.create(Material.SKULL_ITEM).name("§7» §6Clan Gruppen").lore("§aKlicke hier für weitere Infos").listener((Click c) -> switchToGui(new GuiGildePermissionGroupOverview(section.getPermission()))).build());
 
@@ -210,7 +209,7 @@ public class GuiGildeSection extends Gui {
 //		}).build());
 
 		inv.setItem(39, ItemBuilder.create(Material.SKULL_ITEM).durability(3).name("§aMitgliedsanfragen (" + section.getRequestedPlayer().size() + ")").listener(() -> {
-			switchToGui(new GuiGildeMemberInvatations(section));
+			switchToGui(new GuiGildeMemberInvitations(section));
 		}).build());
 
 		inv.setItem(0, ItemBuilder.create(Material.BARRIER).name("§cSchließen").listener((Click c) -> c.getPlayer().closeInventory()).build());

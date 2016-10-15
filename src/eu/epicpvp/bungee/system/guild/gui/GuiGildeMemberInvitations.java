@@ -14,13 +14,13 @@ import eu.epicpvp.bungee.system.item.ItemBuilder;
 import eu.epicpvp.datenclient.client.LoadedPlayer;
 import eu.epicpvp.datenclient.gilde.GildSection;
 
-public class GuiGildeMemberInvatations extends Gui {
+public class GuiGildeMemberInvitations extends Gui {
 
 	private GildSection section;
 	private int side;
 
-	public GuiGildeMemberInvatations(GildSection section) {
-		super(6, "§a" + section.getType().getDisplayName() + " §6» §aRequests"); //TODO
+	public GuiGildeMemberInvitations(GildSection section) {
+		super(6, "§a" + section.getType().getDisplayName() + " §6» §aAnfragen"); //TODO
 		this.section = section;
 	}
 
@@ -54,7 +54,7 @@ public class GuiGildeMemberInvatations extends Gui {
 						new GuiStatusPrint(6, "§cDieser Spieler ist bereits in einem Clan!", ItemBuilder.create(Material.REDSTONE_BLOCK).name("§cDieser Spieler ist bereits in einem Clan!").build()) {
 							@Override
 							public void onContinue() {
-								new GuiGildeMemberInvatations(section).setPlayer(getPlayer()).openGui();
+								new GuiGildeMemberInvitations(section).setPlayer(getPlayer()).openGui();
 							}
 						}.setPlayer(getPlayer()).openGui();
 						;
@@ -67,7 +67,7 @@ public class GuiGildeMemberInvatations extends Gui {
 						getPlayer().sendMessage("§aDu hast die Anfrage von " + lp.getName() + " abgelehnt.");
 						section.removeRequest(lp);
 					}
-					new GuiGildeMemberInvatations(section).setPlayer(getPlayer()).openGui();
+					new GuiGildeMemberInvitations(section).setPlayer(getPlayer()).openGui();
 				}
 			}.setPlayer(getPlayer()).openGui();
 		});
