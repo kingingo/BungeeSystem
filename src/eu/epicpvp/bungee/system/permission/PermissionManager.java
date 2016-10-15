@@ -184,9 +184,11 @@ public class PermissionManager implements Listener {
 				String neededGroup = e.getBuffer().readString();
 				boolean hase = neededGroup == null;
 				for (Group g : new ArrayList<>(player.getGroups())) {
-					if (g.getName().equalsIgnoreCase(neededGroup))
+					if (g.getName().equalsIgnoreCase(neededGroup)){
 						hase = true;
-					player.removeGroup(g.getName());
+						player.removeGroup(g.getName());
+						break;
+					}
 				}
 				String group = e.getBuffer().readString();
 				System.out.println("Changing group from " + player.getPlayerId() + " to " + group);
