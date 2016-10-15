@@ -132,7 +132,7 @@ public class GuiPlayerGildeOverview extends Gui {
 								}).start();
 
 								waiting.waitForMinwait(1500);
-								new GuiStatusPrint(6, "§cAn error happed while requesting.", ItemBuilder.create(Material.EMERALD).name("§aMitglidschaft beantragt.").build()) {
+								new GuiStatusPrint(6, "§aMitglidschaft beantragt.", ItemBuilder.create(Material.EMERALD).name("§aMitglidschaft beantragt.").build()) {
 									@Override
 									public void onContinue() {
 										new GuiPlayerGildeOverview(getPlayer()).setPlayer(getPlayer()).openGui();

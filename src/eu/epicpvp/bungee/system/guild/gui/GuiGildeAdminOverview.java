@@ -34,15 +34,24 @@ public class GuiGildeAdminOverview extends Gui {
 //		itemMapping.put(GildeType.VERSUS, 261);
 		itemMapping.put(GildeType.WARZ, 367);
 
-		Main.getTranslationManager().registerFallback(LanguageType.GERMAN, "inventory.item.close", "§cSchließen"); //
+		Main.getTranslationManager().registerFallback(LanguageType.ENGLISH, "inventory.item.close", "§cClose");
+		Main.getTranslationManager().registerFallback(LanguageType.ENGLISH, "gilde.delete.item", "§cDelete clan");
+		Main.getTranslationManager().registerFallback(LanguageType.ENGLISH, "gilde.delete.title", "§cAre you sure?");
+		Main.getTranslationManager().registerFallback(LanguageType.ENGLISH, "gilde.delete.message", "§cYou cannot undo this action!");
+		Main.getTranslationManager().registerFallback(LanguageType.ENGLISH, "gilde.delete.error.message", "§cAn error occured while deleting the clan!");
+		Main.getTranslationManager().registerFallback(LanguageType.ENGLISH, "gilde.delete.success", "§aYour clan has been deleted successfully!");
+		Main.getTranslationManager().registerFallback(LanguageType.ENGLISH, "waiting.title", "§aPlease wait a moment");
+		Main.getTranslationManager().registerFallback(LanguageType.ENGLISH, "waiting.message", "§aprocessing...");
+
+		Main.getTranslationManager().registerFallback(LanguageType.GERMAN, "inventory.item.close", "§cSchließen");
 		Main.getTranslationManager().registerFallback(LanguageType.GERMAN, "gilde.delete.item", "§cClan löschen");
 		Main.getTranslationManager().registerFallback(LanguageType.GERMAN, "gilde.delete.title", "§cBist du sicher?");
-		Main.getTranslationManager().registerFallback(LanguageType.GERMAN, "gilde.delete.message", "§cDu kannst diese Aktion nicht mehr rückgänig machen!");
-		Main.getTranslationManager().registerFallback(LanguageType.GERMAN, "gilde.delete.error.message", "§cBei dem Löschen deines Clans gab es einen Fehler!");
+		Main.getTranslationManager().registerFallback(LanguageType.GERMAN, "gilde.delete.message", "§cDu kannst diese Aktion nicht mehr rückgängig machen!");
+		Main.getTranslationManager().registerFallback(LanguageType.GERMAN, "gilde.delete.error.message", "§cBeim Löschen deines Clans gab es einen Fehler!");
 		Main.getTranslationManager().registerFallback(LanguageType.GERMAN, "gilde.delete.success", "§aDein Clan wurde erfolgreich gelöscht!");
 
 		Main.getTranslationManager().registerFallback(LanguageType.GERMAN, "waiting.title", "§aBitte warte einen Moment");
-		Main.getTranslationManager().registerFallback(LanguageType.GERMAN, "waiting.message", "§aAuftrag wird ausgeführt.");
+		Main.getTranslationManager().registerFallback(LanguageType.GERMAN, "waiting.message", "§aBearbeite...");
 	}
 
 	private Player player;
@@ -50,7 +59,7 @@ public class GuiGildeAdminOverview extends Gui {
 	private Gilde gilde;
 
 	public GuiGildeAdminOverview(Player player, Gilde gilde) {
-		super(5, "§a" + gilde.getName() + " §7» §6Admin Pannel");
+		super(5, "§a" + gilde.getName() + " §7» §6Administration");
 		this.player = player;
 		this.lplayer = Main.getDatenServer().getClient().getPlayerAndLoad(player.getName());
 		this.gilde = gilde;

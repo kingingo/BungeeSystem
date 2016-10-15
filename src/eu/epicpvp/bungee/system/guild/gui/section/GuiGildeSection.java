@@ -5,9 +5,6 @@ import java.util.ArrayList;
 import dev.wolveringer.BungeeUtil.Material;
 import dev.wolveringer.BungeeUtil.item.Item;
 import dev.wolveringer.BungeeUtil.item.ItemStack.Click;
-import dev.wolveringer.api.gui.AnvilGui;
-import dev.wolveringer.api.gui.AnvilGuiListener;
-import eu.epicpvp.bungee.system.booster.GuiIntegerSelect;
 import eu.epicpvp.bungee.system.bs.Main;
 import eu.epicpvp.bungee.system.gui.Gui;
 import eu.epicpvp.bungee.system.gui.GuiStatusPrint;
@@ -18,13 +15,10 @@ import eu.epicpvp.bungee.system.guild.gui.GuiGildeMemberManager;
 import eu.epicpvp.bungee.system.guild.gui.GuiGildeMoneyOverview;
 import eu.epicpvp.bungee.system.guild.gui.GuiGildePermissionGroupOverview;
 import eu.epicpvp.bungee.system.item.ItemBuilder;
-import eu.epicpvp.dataserver.protocoll.packets.PacketInStatsEdit;
 import eu.epicpvp.datenclient.client.LoadedPlayer;
 import eu.epicpvp.datenclient.gilde.GildSection;
 import eu.epicpvp.datenserver.definitions.gamestats.Statistic;
-import eu.epicpvp.datenserver.definitions.gilde.GildePermissions;
 import eu.epicpvp.thread.ThreadFactory;
-import net.md_5.bungee.api.ChatColor;
 
 public class GuiGildeSection extends Gui {
 
@@ -75,145 +69,145 @@ public class GuiGildeSection extends Gui {
 		inv.setItem(21, ItemBuilder.create(Material.SKULL_ITEM).name("§7» §6Clan Mitglieder").lore("§aKlicke hier für weitere Infos").listener((Click c) -> switchToGui(new GuiGildeMemberManager(section.getPermission()))).build());
 		inv.setItem(23, ItemBuilder.create(Material.SKULL_ITEM).name("§7» §6Clan Gruppen").lore("§aKlicke hier für weitere Infos").listener((Click c) -> switchToGui(new GuiGildePermissionGroupOverview(section.getPermission()))).build());
 
-		inv.setItem(25, ItemBuilder.create(Material.GOLD_NUGGET).name("§7» §6Lade die Clan Bank auf").lore("§aKlicke hier um Geld aufzuladen").listener((c) -> {
-			if (!section.getPermission().hasPermission(lplayer, GildePermissions.BANK_DEPOSIT)) {
-				new GuiStatusPrint(5, "§cDu hast keine Berechtigung, Geld abzuheben.", ItemBuilder.create().material(Material.REDSTONE_BLOCK).name("§cDu hast keine Berechtigung, Geld abzuheben.").build()) {
-					@Override
-					public void onContinue() {
-						switchToGui(new GuiGildeSection(section)); //REBUILD THE GUI :)
-					}
-				}.setPlayer(getPlayer()).openGui();
-				return;
-			}
-			final int money = lplayer.getCoinsSync();
-			new GuiIntegerSelect(getPlayer(), "§aWähle einen Betrag", Math.min(100, money / 2)) {
-
-				@Override
-				public void numberEntered(int number) {
-					AnvilGui gui = new AnvilGui(getPlayer());
-					gui.addListener(new AnvilGuiListener() {
-						@Override
-						public void onMessageChange(AnvilGui guy, String newMessage) {
-							//Update output item ;)
-							Item item = new Item(Material.ENCHANTED_BOOK);
-							item.getItemMeta().setDisplayName("§aAbhebegrund: §e" + (newMessage.isEmpty() ? "§cNo reason" : newMessage));
-							guy.setOutputItem(item);
-						}
-
-						@Override
-						public void onConfirmInput(AnvilGui guy, String message) {
-							GuiWaiting waiting = new GuiWaiting("§aÜberweise Geld", "§aBitte warte");
-							waiting.setPlayer(getPlayer()).openGui();
-							ThreadFactory.getFactory().createThread(() -> {
-								section.getMoney().addMoney(number);
-								section.getMoney().log(lplayer.getPlayerId(), number, ChatColor.stripColor(message.isEmpty() ? "No reason" : message));
-								lplayer.changeCoins(PacketInStatsEdit.Action.REMOVE, number);
-								waiting.waitForMinwait(1500);
-								new GuiStatusPrint(5, "§aGeld überwiesen.", ItemBuilder.create().material(Material.EMERALD).name("§aGeld überwiesen.").build()) {
-									@Override
-									public void onContinue() {
-										switchToGui(new GuiGildeSection(section)); //REBUILD THE GUI :)
-									}
-								}.setPlayer(getPlayer()).openGui();
-							}).start();
-						}
-
-						@Override
-						public void onClose(AnvilGui guy) {
-							switchToGui(new GuiGildeSection(section)); //REBUILD THE GUI :)
-							getPlayer().sendMessage("§cAktion abgebrochen.");
-						}
-					});
-					gui.setColorPrefix("§a");
-					gui.open();
-					gui.setBackgroundMessage("Gib den Grund ein");
-				}
-
-				@Override
-				public boolean isNumberAllowed(int number) {
-					return number > 0 && money >= number;
-				}
-			}.setMode(2).open();
-		}).build());
-		inv.setItem(37, ItemBuilder.create(Material.DIAMOND).name("§7» §6Entnehme was von der Clan Bank").listener(() -> {
-			if (!section.getPermission().hasPermission(lplayer, GildePermissions.BANK_WITHDRAW)) {
-				new GuiStatusPrint(5, "§cDu hast keine Berechtigung etwas abzuheben!", ItemBuilder.create().material(Material.REDSTONE_BLOCK).name("§cDu hast keine Berechtigung etwas abzuheben!").build()) {
-					@Override
-					public void onContinue() {
-						switchToGui(new GuiGildeSection(section)); //REBUILD THE GUI :)
-					}
-				}.setPlayer(getPlayer()).openGui();
-				return;
-			}
-			final int money = section.getMoney().getCurrentMoney();
-			if (money < 10) {
-				new GuiStatusPrint(5, "§cDas Guthaben auf der Bank ist unter 10! Du kannst nichts abheben!", ItemBuilder.create().material(Material.REDSTONE_BLOCK).name("§cDas Guthaben auf der Bank ist unter 10! Du kannst nichts abheben!").build()) {
-					@Override
-					public void onContinue() {
-						switchToGui(new GuiGildeSection(section)); //REBUILD THE GUI :)
-					}
-				}.setPlayer(getPlayer()).openGui();
-				return;
-			}
-			new GuiIntegerSelect(getPlayer(), "§aWähle einen Betrag", Math.min(100, money / 2)) {
-
-				@Override
-				public void numberEntered(int number) {
-					AnvilGui gui = new AnvilGui(getPlayer());
-					gui.addListener(new AnvilGuiListener() {
-						@Override
-						public void onMessageChange(AnvilGui guy, String newMessage) {
-							//Update output item ;)
-							Item item = new Item(Material.ENCHANTED_BOOK);
-							item.getItemMeta().setDisplayName("§aAbhebegrund: §e" + (newMessage.isEmpty() ? "§cNo reason" : newMessage));
-							guy.setOutputItem(item);
-						}
-
-						@Override
-						public void onConfirmInput(AnvilGui guy, String message) {
-							GuiWaiting waiting = new GuiWaiting("§aÜberweise Geld", "§aBitte warte");
-							waiting.setPlayer(getPlayer()).openGui();
-							ThreadFactory.getFactory().createThread(() -> {
-								if (section.getMoney().getCurrentMoney() < number) {
-									waiting.waitForMinwait(1500);
-									new GuiStatusPrint(5, "§cAuf der Clan-Bank ist nicht genug Geld!", ItemBuilder.create().material(Material.REDSTONE_BLOCK).name("§cAuf der Clan-Bank ist nicht genug Geld!").build()) {
-										@Override
-										public void onContinue() {
-											switchToGui(new GuiGildeSection(section)); //REBUILD THE GUI :)
-										}
-									}.setPlayer(getPlayer()).openGui();
-									return;
-								}
-								section.getMoney().removeMoney(number);
-								section.getMoney().log(lplayer.getPlayerId(), -number, ChatColor.stripColor(message.isEmpty() ? "No reason" : message));
-								lplayer.changeCoins(PacketInStatsEdit.Action.ADD, number);
-								waiting.waitForMinwait(1500);
-								new GuiStatusPrint(5, "§aGeld überwiesen.", ItemBuilder.create().material(Material.EMERALD).name("§aGeld überwiesen.").build()) {
-									@Override
-									public void onContinue() {
-										switchToGui(new GuiGildeSection(section)); //REBUILD THE GUI :)
-									}
-								}.setPlayer(getPlayer()).openGui();
-							}).start();
-						}
-
-						@Override
-						public void onClose(AnvilGui guy) {
-							switchToGui(new GuiGildeSection(section)); //REBUILD THE GUI :)
-							getPlayer().sendMessage("§cAktion abgebrochen.");
-						}
-					});
-					gui.setColorPrefix("§a");
-					gui.open();
-					gui.setBackgroundMessage("Gebe den Grund ein");
-				}
-
-				@Override
-				public boolean isNumberAllowed(int number) {
-					return number > 0 && money >= number;
-				}
-			}.setMode(2).open();
-		}).build());
+//		inv.setItem(25, ItemBuilder.create(Material.GOLD_NUGGET).name("§7» §6Lade die Clan Bank auf").lore("§aKlicke hier um Geld aufzuladen").listener((c) -> {
+//			if (!section.getPermission().hasPermission(lplayer, GildePermissions.BANK_DEPOSIT)) {
+//				new GuiStatusPrint(5, "§cDu hast keine Berechtigung, Geld abzuheben.", ItemBuilder.create().material(Material.REDSTONE_BLOCK).name("§cDu hast keine Berechtigung, Geld abzuheben.").build()) {
+//					@Override
+//					public void onContinue() {
+//						switchToGui(new GuiGildeSection(section)); //REBUILD THE GUI :)
+//					}
+//				}.setPlayer(getPlayer()).openGui();
+//				return;
+//			}
+//			final int money = lplayer.getCoinsSync();
+//			new GuiIntegerSelect(getPlayer(), "§aWähle einen Betrag", Math.min(100, money / 2)) {
+//
+//				@Override
+//				public void numberEntered(int number) {
+//					AnvilGui gui = new AnvilGui(getPlayer());
+//					gui.addListener(new AnvilGuiListener() {
+//						@Override
+//						public void onMessageChange(AnvilGui guy, String newMessage) {
+//							//Update output item ;)
+//							Item item = new Item(Material.ENCHANTED_BOOK);
+//							item.getItemMeta().setDisplayName("§aAbhebegrund: §e" + (newMessage.isEmpty() ? "§cNo reason" : newMessage));
+//							guy.setOutputItem(item);
+//						}
+//
+//						@Override
+//						public void onConfirmInput(AnvilGui guy, String message) {
+//							GuiWaiting waiting = new GuiWaiting("§aÜberweise Geld", "§aBitte warte");
+//							waiting.setPlayer(getPlayer()).openGui();
+//							ThreadFactory.getFactory().createThread(() -> {
+//								section.getMoney().addMoney(number);
+//								section.getMoney().log(lplayer.getPlayerId(), number, ChatColor.stripColor(message.isEmpty() ? "No reason" : message));
+//								lplayer.changeCoins(PacketInStatsEdit.Action.REMOVE, number);
+//								waiting.waitForMinwait(1500);
+//								new GuiStatusPrint(5, "§aGeld überwiesen.", ItemBuilder.create().material(Material.EMERALD).name("§aGeld überwiesen.").build()) {
+//									@Override
+//									public void onContinue() {
+//										switchToGui(new GuiGildeSection(section)); //REBUILD THE GUI :)
+//									}
+//								}.setPlayer(getPlayer()).openGui();
+//							}).start();
+//						}
+//
+//						@Override
+//						public void onClose(AnvilGui guy) {
+//							switchToGui(new GuiGildeSection(section)); //REBUILD THE GUI :)
+//							getPlayer().sendMessage("§cAktion abgebrochen.");
+//						}
+//					});
+//					gui.setColorPrefix("§a");
+//					gui.open();
+//					gui.setBackgroundMessage("Gib den Grund ein");
+//				}
+//
+//				@Override
+//				public boolean isNumberAllowed(int number) {
+//					return number > 0 && money >= number;
+//				}
+//			}.setMode(2).open();
+//		}).build());
+//		inv.setItem(37, ItemBuilder.create(Material.DIAMOND).name("§7» §6Entnehme was von der Clan Bank").listener(() -> {
+//			if (!section.getPermission().hasPermission(lplayer, GildePermissions.BANK_WITHDRAW)) {
+//				new GuiStatusPrint(5, "§cDu hast keine Berechtigung etwas abzuheben!", ItemBuilder.create().material(Material.REDSTONE_BLOCK).name("§cDu hast keine Berechtigung etwas abzuheben!").build()) {
+//					@Override
+//					public void onContinue() {
+//						switchToGui(new GuiGildeSection(section)); //REBUILD THE GUI :)
+//					}
+//				}.setPlayer(getPlayer()).openGui();
+//				return;
+//			}
+//			final int money = section.getMoney().getCurrentMoney();
+//			if (money < 10) {
+//				new GuiStatusPrint(5, "§cDas Guthaben auf der Bank ist unter 10! Du kannst nichts abheben!", ItemBuilder.create().material(Material.REDSTONE_BLOCK).name("§cDas Guthaben auf der Bank ist unter 10! Du kannst nichts abheben!").build()) {
+//					@Override
+//					public void onContinue() {
+//						switchToGui(new GuiGildeSection(section)); //REBUILD THE GUI :)
+//					}
+//				}.setPlayer(getPlayer()).openGui();
+//				return;
+//			}
+//			new GuiIntegerSelect(getPlayer(), "§aWähle einen Betrag", Math.min(100, money / 2)) {
+//
+//				@Override
+//				public void numberEntered(int number) {
+//					AnvilGui gui = new AnvilGui(getPlayer());
+//					gui.addListener(new AnvilGuiListener() {
+//						@Override
+//						public void onMessageChange(AnvilGui guy, String newMessage) {
+//							//Update output item ;)
+//							Item item = new Item(Material.ENCHANTED_BOOK);
+//							item.getItemMeta().setDisplayName("§aAbhebegrund: §e" + (newMessage.isEmpty() ? "§cNo reason" : newMessage));
+//							guy.setOutputItem(item);
+//						}
+//
+//						@Override
+//						public void onConfirmInput(AnvilGui guy, String message) {
+//							GuiWaiting waiting = new GuiWaiting("§aÜberweise Geld", "§aBitte warte");
+//							waiting.setPlayer(getPlayer()).openGui();
+//							ThreadFactory.getFactory().createThread(() -> {
+//								if (section.getMoney().getCurrentMoney() < number) {
+//									waiting.waitForMinwait(1500);
+//									new GuiStatusPrint(5, "§cAuf der Clan-Bank ist nicht genug Geld!", ItemBuilder.create().material(Material.REDSTONE_BLOCK).name("§cAuf der Clan-Bank ist nicht genug Geld!").build()) {
+//										@Override
+//										public void onContinue() {
+//											switchToGui(new GuiGildeSection(section)); //REBUILD THE GUI :)
+//										}
+//									}.setPlayer(getPlayer()).openGui();
+//									return;
+//								}
+//								section.getMoney().removeMoney(number);
+//								section.getMoney().log(lplayer.getPlayerId(), -number, ChatColor.stripColor(message.isEmpty() ? "No reason" : message));
+//								lplayer.changeCoins(PacketInStatsEdit.Action.ADD, number);
+//								waiting.waitForMinwait(1500);
+//								new GuiStatusPrint(5, "§aGeld überwiesen.", ItemBuilder.create().material(Material.EMERALD).name("§aGeld überwiesen.").build()) {
+//									@Override
+//									public void onContinue() {
+//										switchToGui(new GuiGildeSection(section)); //REBUILD THE GUI :)
+//									}
+//								}.setPlayer(getPlayer()).openGui();
+//							}).start();
+//						}
+//
+//						@Override
+//						public void onClose(AnvilGui guy) {
+//							switchToGui(new GuiGildeSection(section)); //REBUILD THE GUI :)
+//							getPlayer().sendMessage("§cAktion abgebrochen.");
+//						}
+//					});
+//					gui.setColorPrefix("§a");
+//					gui.open();
+//					gui.setBackgroundMessage("Gebe den Grund ein");
+//				}
+//
+//				@Override
+//				public boolean isNumberAllowed(int number) {
+//					return number > 0 && money >= number;
+//				}
+//			}.setMode(2).open();
+//		}).build());
 
 		inv.setItem(39, ItemBuilder.create(Material.SKULL_ITEM).durability(3).name("§aMitgliedsanfragen (" + section.getRequestedPlayer().size() + ")").listener(() -> {
 			switchToGui(new GuiGildeMemberInvatations(section));
