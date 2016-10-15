@@ -14,10 +14,12 @@ import eu.epicpvp.bungee.system.guild.gui.GuiGildeMemberInvitations;
 import eu.epicpvp.bungee.system.guild.gui.GuiGildeMemberManager;
 import eu.epicpvp.bungee.system.guild.gui.GuiGildePermissionGroupOverview;
 import eu.epicpvp.bungee.system.item.ItemBuilder;
+import eu.epicpvp.bungee.system.item.ItemBuilder.ItemClickListener;
 import eu.epicpvp.datenclient.client.LoadedPlayer;
 import eu.epicpvp.datenclient.gilde.GildSection;
 import eu.epicpvp.datenserver.definitions.gamestats.Statistic;
 import eu.epicpvp.thread.ThreadFactory;
+import net.md_5.bungee.BungeeCord;
 
 public class GuiGildeSection extends Gui {
 
@@ -213,6 +215,19 @@ public class GuiGildeSection extends Gui {
 		}).build());
 
 		inv.setItem(0, ItemBuilder.create(Material.BARRIER).name("§cSchließen").listener((Click c) -> c.getPlayer().closeInventory()).build());
+
+		if (section.getHandle().getOwnerId() != lplayer.getPlayerId()){
+			inv.setItem(8, ItemBuilder.create(Material.REDSTONE).name("§cClan verlassen").listener( new ItemClickListener(){
+
+				@Override
+				public void click(Click c) {
+					section.kickPlayer(lplayer);
+					getPlayer().closeInventory();
+					getPlayer().sendMessage("§cDu hast den Clan verlassen!");
+				}
+				
+			}).build());
+		}
 		fill(ItemBuilder.create(160).durability(7).name("§7").build());
 	}
 
