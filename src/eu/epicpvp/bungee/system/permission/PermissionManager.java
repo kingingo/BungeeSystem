@@ -203,8 +203,7 @@ public class PermissionManager implements Listener {
 				System.out.println("Adding permission " + permission + ":" + type + " to " + player.getPlayerId());
 				player.addPermission(permission, type);
 			}
-		}
-		if (e.getChannel().equalsIgnoreCase("bpermission")) {
+		}else if (e.getChannel().equalsIgnoreCase("bpermission")) {
 			byte action = e.getBuffer().readByte();
 			if (action == 0) { //Remove cached player
 				int users;
