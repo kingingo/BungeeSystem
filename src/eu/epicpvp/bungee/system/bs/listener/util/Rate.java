@@ -1,7 +1,7 @@
 package eu.epicpvp.bungee.system.bs.listener.util;
 
-import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.TimeUnit;
 
 import lombok.Getter;
@@ -10,7 +10,7 @@ public class Rate {
 
 	@Getter
 	private final long maxTimeMillis;
-	private final Deque<Long> eventTimes = new ArrayDeque<>();
+	private final Deque<Long> eventTimes = new ConcurrentLinkedDeque<>();
 	@Getter
 	private final long resetTime;
 	private long lastResetTime = System.currentTimeMillis();
