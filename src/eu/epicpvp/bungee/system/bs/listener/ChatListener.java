@@ -164,7 +164,7 @@ public class ChatListener implements Listener {
 					}
 
 					if (player.equalsIgnoreCase(p.getName())) {
-						p.sendMessage("§cYou cant write with yourself.\n\n§cIf you want write with yourself then you must add yourself on Whatsapp.\n§cThis server doesn't support even talks.\n§cYours truly §aWolverinDEV");
+						p.sendMessage("§cYou can't write with yourself.\n§cIf you want write with yourself then you must add yourself on Whatsapp.");
 						return;
 					}
 

@@ -19,7 +19,6 @@ import eu.epicpvp.datenclient.client.LoadedPlayer;
 import eu.epicpvp.datenclient.gilde.GildSection;
 import eu.epicpvp.datenserver.definitions.gamestats.Statistic;
 import eu.epicpvp.thread.ThreadFactory;
-import net.md_5.bungee.BungeeCord;
 
 public class GuiGildeSection extends Gui {
 
@@ -225,7 +224,6 @@ public class GuiGildeSection extends Gui {
 					getPlayer().closeInventory();
 					getPlayer().sendMessage("§cDu hast den Clan verlassen!");
 				}
-				
 			}).build());
 		}
 		fill(ItemBuilder.create(160).durability(7).name("§7").build());

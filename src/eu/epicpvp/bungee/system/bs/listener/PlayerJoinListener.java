@@ -1,23 +1,27 @@
 package eu.epicpvp.bungee.system.bs.listener;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import dev.wolveringer.BungeeUtil.ClientVersion;
 import dev.wolveringer.BungeeUtil.ClientVersion.BigClientVersion;
 import eu.epicpvp.bungee.system.bs.Main;
 import eu.epicpvp.bungee.system.bs.information.InformationManager;
+import eu.epicpvp.bungee.system.bs.listener.util.IpData;
+import eu.epicpvp.bungee.system.bs.listener.util.Rate;
 import eu.epicpvp.bungee.system.bs.message.MessageManager;
 import eu.epicpvp.bungee.system.permission.PermissionManager;
 import eu.epicpvp.dataserver.protocoll.packets.PacketInChangePlayerSettings;
 import eu.epicpvp.dataserver.protocoll.packets.PacketOutPacketStatus;
-import eu.epicpvp.dataserver.protocoll.packets.PacketVersion;
 import eu.epicpvp.datenclient.client.LoadedPlayer;
 import eu.epicpvp.datenclient.client.PacketHandleErrorException;
-import eu.epicpvp.datenserver.definitions.arrays.CachedArrayList;
 import eu.epicpvp.datenserver.definitions.dataserver.player.LanguageType;
 import eu.epicpvp.datenserver.definitions.dataserver.player.Setting;
+import lombok.SneakyThrows;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.event.PreLoginEvent;
@@ -28,36 +32,42 @@ public class PlayerJoinListener implements Listener {
 
 	static {
 		if (Main.getTranslationManager() != null)
-			Main.getTranslationManager().translate("proxy.join.full", "§cThe server is full!\n§6If you want to join everytime then You can buy a rank in ouer shop.");
+			Main.getTranslationManager().translate("proxy.join.full", "§cThe server is full!\n§6If you want to join everytime, then buy a rank in our shop.");
 	}
 
-	private CachedArrayList<Object> connections = new CachedArrayList<>(1, TimeUnit.SECONDS);
+	private Rate overallConnectionRate = new Rate(5, TimeUnit.SECONDS, 7, TimeUnit.SECONDS);
+	private Cache<String, Boolean> joinAttempt =
+			CacheBuilder.newBuilder()
+					.expireAfterWrite(750, TimeUnit.MILLISECONDS)
+					.build();
+	private Cache<String, IpData> ipDatas =
+			CacheBuilder.newBuilder()
+					.expireAfterWrite(2, TimeUnit.HOURS)
+					.build();
 
 	@EventHandler
+	@SneakyThrows(ExecutionException.class)
 	public void onPreLogin(PreLoginEvent e) {
 		if (!Main.getDatenServer().isActive()) {
-			e.setCancelReason("§cCant connect to §eServer-Chef§c. Protocoll version: §a" + PacketVersion.PROTOCOLL_VERSION + "\nPlease try again in 10-30 seconds");
+			e.setCancelReason("§cCan't connect to §eserver-chef§c.\n§aPlease try again in 10-30 seconds.");
 			e.setCancelled(true);
 			return;
 		}
 		if (!Main.loaded) {
 			e.setCancelled(true);
-			e.setCancelReason("§cBungeecord isnt fully loaded");
-			return;
-		}
-		if (connections.size() >= 5) {
-			e.setCancelled(true);
-			e.setCancelReason("§cToo many people logging in.");
+			e.setCancelReason("§cStill setting up bungeecord\n§aPlease try again in 10-20 seconds.");
 			return;
 		}
 
-		ClientVersion version = ClientVersion.fromProtocoll(e.getConnection().getVersion());
+		int versionNumber = e.getConnection().getVersion();
+		ClientVersion version = ClientVersion.fromProtocoll(versionNumber);
 		String name = e.getConnection().getName();
-		if ((version.getBigVersion() != BigClientVersion.v1_8 && version.getBigVersion() != BigClientVersion.v1_9 && version != ClientVersion.v1_10_0)
-					|| version == ClientVersion.v1_9_1 || version == ClientVersion.v1_9_2 || version == ClientVersion.v1_9_3) {
+		String ip = e.getConnection().getAddress().getAddress().getHostAddress();
+		if (version == null || version == ClientVersion.v1_9_1 || version == ClientVersion.v1_9_2 || version == ClientVersion.v1_9_3
+					|| (version.getBigVersion() != BigClientVersion.v1_8 && version.getBigVersion() != BigClientVersion.v1_9 && version != ClientVersion.v1_10_0)) {
 			e.setCancelled(true);
-			e.setCancelReason("§cYour minecraft versions is not supported. Please use 1.8.X, 1.9.0, 1.9.4 or 1.10.X");
-			System.out.println("Player " + name + " try to connect with an outdated version (" + e.getConnection().getVersion() + ")");
+			e.setCancelReason("§cYour minecraft version is not supported. Please use 1.8.X, 1.9.0, 1.9.4 or 1.10.X");
+			System.out.println("Player " + name + " tried to connect with an unsupported version (" + versionNumber + ") with ip " + ip);
 			return;
 		}
 		if (name.length() < 3 || name.length() > 16) {
@@ -72,8 +82,47 @@ public class PlayerJoinListener implements Listener {
 				return;
 			}
 		}
-		connections.add(new Object());
 
+		//Antibots ip-based rate-Limit
+		IpData data = ipDatas.get(ip, () -> new IpData(ip));
+		Cache<String, Integer> nameJoinCounter = data.getNameJoinCounter();
+		String lowerCaseName = name.toLowerCase();
+		Integer joins = nameJoinCounter.getIfPresent(lowerCaseName);
+		Rate differentNameJoinRate = data.getDifferentNameJoinRate();
+		if (joins == null) {
+			nameJoinCounter.put(lowerCaseName, 1);
+			differentNameJoinRate.eventTriggered();
+		} else {
+			nameJoinCounter.put(lowerCaseName, joins + 1);
+		}
+		int differentNameJoinRateEventCount = differentNameJoinRate.getOccurredEventsInMaxTime();
+		if (differentNameJoinRateEventCount >= 6) {
+			e.setCancelled(true);
+			e.setCancelReason("§cSuspicious ip.\n§aBitte melde dich auf unserem Teamspeak, falls dies ein Fehler sein sollte.");
+			System.out.println("[AntiBot] " + ip + " tried to join with " + differentNameJoinRateEventCount + " different names in 2h, latest name: " + name);
+			return;
+		}
+//		Rate loginHubLeaveRate = data.getLoginHubLeaveRate();
+//		int occurredEventsInTime = loginHubLeaveRate.getOccurredEventsInTime(20, TimeUnit.SECONDS);
+//		if (occurredEventsInTime >= 4) {
+//			e.setCancelled(true);
+//			e.setCancelReason("§cSuspicious behaviour.\n§aBitte melde dich auf unserem Teamspeak, falls dies ein Fehler sein sollte.");
+//			System.out.println("[AntiBot] " + ip + " tried to rejoin after leaving loginhub " + occurredEventsInTime + " times in 20sec (kicks count twice), latest name: " + name);
+//		}
+//		loginHubLeaveRate.eventTriggered();
+
+		//Antibots overall rate-Limit
+		double averagePerSecond = overallConnectionRate.getAveragePerSecondOnMaxTime();
+		if (averagePerSecond >= 5) {
+			e.setCancelled(true);
+			e.setCancelReason("§cAktuell versuchen zu viele Spieler sich gleichzeitig anzumelden.\n§aVersuche es bitte in ein paar Sekunden erneut.");
+			System.out.println("[AntiBot] Cancelled login of " + ip + " / " + name + " because global rate limit being at " + averagePerSecond + " joins/sec in average over the last 5 sec");
+			return;
+		}
+		joinAttempt.put(name.toLowerCase(), Boolean.TRUE);
+		overallConnectionRate.eventTriggered();
+
+		//lets do stuff async
 		e.registerIntent(Main.getInstance());
 		try {
 			ProxyServer.getInstance().getScheduler().runAsync(Main.getInstance(), () -> {
@@ -89,7 +138,7 @@ public class PlayerJoinListener implements Listener {
 							Main.getDatenServer().getClient().clearCacheForPlayer(Main.getDatenServer().getClient().getPlayer(e.getConnection().getUniqueId()));
 
 					LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(name);
-					System.out.println("Connect: Real name: " + name + " Player: " + player.getName() + " UUID: " + player.getUUID());
+					System.out.println("Connect: Name: " + name + " Player: " + player.getName() + " PlayerID: " + player.getPlayerId());
 					if (Main.getDatenServer().getClient().getPlayer(name) != null)
 						Main.getDatenServer().getClient().clearCacheForPlayer(Main.getDatenServer().getClient().getPlayer(name));
 					/*//TODO cant get playerId before premium login
@@ -114,7 +163,6 @@ public class PlayerJoinListener implements Listener {
 						}
 					}
 
-					System.out.println("Player loaded");
 					try {
 						if (player.isPremiumSync()) {
 							e.getConnection().setUniqueId(player.getUUID());
@@ -130,7 +178,7 @@ public class PlayerJoinListener implements Listener {
 							System.out.println(er.getId() + ":" + er.getMessage());
 						ex.printStackTrace();
 						e.setCancelled(true);
-						e.setCancelReason("§cAn error happened while joining.\n§cWe cant check your premium state.\nTry again in 10-30 seconds");
+						e.setCancelReason("§cAn error happened while joining.\n§cWe couldn't check your premium state.\nTry again in 10-30 seconds");
 						return;
 					}
 
@@ -157,14 +205,14 @@ public class PlayerJoinListener implements Listener {
 						e.setCancelReason(message);
 						return;
 					}
-					player.setIp(e.getConnection().getAddress().getAddress().getHostAddress());
+					player.setIp(ip);
 				} catch (Throwable t) {
 					t.printStackTrace();
 					e.setCancelled(true);
 					if (t.getMessage() != null && t.getMessage().toLowerCase().contains("timeout")) {
-						e.setCancelReason("§cCant connect to §eServer-Chef§c. Protocoll version: §a" + PacketVersion.PROTOCOLL_VERSION + "\nPlease try again in 10-30 seconds");
+						e.setCancelReason("§cCan't connect to §eserver-chef§c.\nPlease try again in 10-30 seconds");
 					} else
-						e.setCancelReason("§cAn error happened while joining.\nTry again in 10-30 seconds");
+						e.setCancelReason("§cAn error happened while joining.\nTry again in 10-30 seconds.\n§7" + t.getClass().getSimpleName() + ": " + t.getMessage());
 				} finally {
 					e.completeIntent(Main.getInstance());
 				}
@@ -197,20 +245,41 @@ public class PlayerJoinListener implements Listener {
 		if (e.getPlayer().getPendingConnection().isOnlineMode())
 			MessageManager.getManager(lang).playTitles(e.getPlayer());
 	}
+//
+//	@EventHandler
+//	public void onKick(ServerKickEvent event) {
+//		if (event.getKickedFrom().getName().startsWith("login")) {
+//			IpData data = ipDatas.getIfPresent(event.getPlayer().getPendingConnection().getAddress().getAddress().getHostAddress());
+//			if (data != null) {
+//				data.getLoginHubLeaveRate().eventTriggered();
+//			}
+//		}
+//	}
+//
+//	@EventHandler
+//	public void onLeave(PlayerDisconnectEvent event) {
+//		ProxiedPlayer plr = event.getPlayer();
+//		if (joinAttempt.getIfPresent(plr.getName().toLowerCase()) == null && plr.getServer().getInfo().getName().startsWith("login")) {
+//			IpData data = ipDatas.getIfPresent(plr.getPendingConnection().getAddress().getAddress().getHostAddress());
+//			if (data != null) {
+//				data.getLoginHubLeaveRate().eventTriggered();
+//			}
+//		}
+//	}
 
 	public static String getDurationBreakdown(long millis) {
 		return getDurationBreakdown(millis, "now");
 	}
 
 	public static String getDurationBreakdown(long millis, String no) {
-		return getDurationBreakdown(millis, no, new HashMap<>());
+		return getDurationBreakdown(millis, no, new EnumMap<>(TimeUnit.class));
 	}
 
-	public static String getDurationBreakdown(long millis, String no, HashMap<TimeUnit, String> mapping) {
-		return getDurationBreakdown(millis, no, new HashMap<>(), mapping);
+	public static String getDurationBreakdown(long millis, String no, EnumMap<TimeUnit, String> mapping) {
+		return getDurationBreakdown(millis, no, new EnumMap<>(TimeUnit.class), mapping);
 	}
 
-	public static String getDurationBreakdown(long millis, String no, HashMap<TimeUnit, String> plural, HashMap<TimeUnit, String> mapping) {
+	public static String getDurationBreakdown(long millis, String no, EnumMap<TimeUnit, String> plural, EnumMap<TimeUnit, String> mapping) {
 		if (millis < 0) {
 			return "millis<0";
 		}

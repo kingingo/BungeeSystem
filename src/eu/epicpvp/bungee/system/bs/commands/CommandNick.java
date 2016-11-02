@@ -21,12 +21,12 @@ public class CommandNick extends Command {
 		if (args.length == 1 && args[0].equalsIgnoreCase("info")) {
 			LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(sender.getName());
 			sender.sendMessage("§aYour nickname is §e" + (player.getNickname() == null ? sender.getName() : player.getNickname()));
-			sender.sendMessage("§aYou current displayed group is §e" + (player.hasCostumGroup() ? player.getDisplayedGroup() : "your current group"));
+			sender.sendMessage("§aYou current displayed group is §e" + (player.hasDisplayedGroup() ? player.getDisplayedGroup() : "your current group"));
 			return;
 		} else if (args.length == 2 && args[0].equalsIgnoreCase("info")) {
 			LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(args[2]);
 			sender.sendMessage("§aThe player §e" + args[1] + " is nicked as §e" + (player.getNickname() == null ? sender.getName() : player.getNickname()));
-			sender.sendMessage("§aThe current displayed group is §e" + (player.hasCostumGroup() ? player.getDisplayedGroup() : "his current group"));
+			sender.sendMessage("§aThe current displayed group is §e" + (player.hasDisplayedGroup() ? player.getDisplayedGroup() : "his current group"));
 			return;
 		} else if (args.length == 2 && args[0].equalsIgnoreCase("set")) {
 			LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(sender.getName());

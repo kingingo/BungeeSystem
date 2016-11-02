@@ -2,7 +2,6 @@ package eu.epicpvp.bungee.system.bs.commands;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import dev.wolveringer.BungeeUtil.Player;
@@ -42,6 +41,7 @@ public class CommandEvent extends Command implements Listener, CachedArrayList.U
 			this.command = command;
 		}
 
+		@Override
 		public String getMessage() {
 			if (this.command.active) {
 				return "§e§lEvent §a§lactive! §e§lJoin now §c§l/event§e§l!";
@@ -68,6 +68,7 @@ public class CommandEvent extends Command implements Listener, CachedArrayList.U
 			return out;
 		}
 
+		@Override
 		public boolean isKeepChatVisiable() {
 			return true;
 		}
@@ -76,7 +77,7 @@ public class CommandEvent extends Command implements Listener, CachedArrayList.U
 	private ServerInfo server = null;
 	private boolean active = false;
 	private int time = 2000;
-	private CachedArrayList<UUID> connections = new CachedArrayList<>(2000, TimeUnit.MILLISECONDS);
+	private CachedArrayList<Object> connections = new CachedArrayList<>(2000, TimeUnit.MILLISECONDS);
 	private int connectionsLimit = 10;
 	private CachedArrayList<Player> invites = new CachedArrayList<>(1, TimeUnit.MINUTES);
 
@@ -87,6 +88,7 @@ public class CommandEvent extends Command implements Listener, CachedArrayList.U
 		this.invites.addUnloadListener(this);
 	}
 
+	@Override
 	public void execute(CommandSender sender, String[] args) {
 		ProxiedPlayer p = (ProxiedPlayer) sender;
 		if (args.length == 0) {
@@ -96,52 +98,52 @@ public class CommandEvent extends Command implements Listener, CachedArrayList.U
 					return;
 				}
 				if (this.connections.size() >= this.connectionsLimit) {
-					p.sendMessage(Main.getTranslationManager().translate("prefix", sender, new Object[0]) + Main.getTranslationManager().translate("command.event.wait", sender, new Object[0]));
+					p.sendMessage(Main.getTranslationManager().translate("prefix", sender) + Main.getTranslationManager().translate("command.event.wait", sender));
 					return;
 				}
-				if (this.invites.contains(sender)) {
+				if (this.invites.contains((Player) sender)) {
 					ChatManager.getInstance().removeChatBoxModifier((Player) p, "event");
-					this.invites.remove(sender);
+					this.invites.remove((Player) sender);
 				}
-				this.connections.add(UUID.randomUUID());
+				this.connections.add(new Object());
 				Main.getDatenServer().getClient().sendServerMessage(ClientType.BUNGEECORD, "eventServer", new DataBuffer().writeByte(3));
-				p.sendMessage(Main.getTranslationManager().translate("prefix", sender, new Object[0]) + Main.getTranslationManager().translate("command.event.joined", sender, new Object[0]));
+				p.sendMessage(Main.getTranslationManager().translate("prefix", sender) + Main.getTranslationManager().translate("command.event.joined", sender));
 				p.connect(this.server);
 			} else {
-				p.sendMessage(Main.getTranslationManager().translate("prefix", sender, new Object[0]) + Main.getTranslationManager().translate("command.event.novent", sender, new Object[0]));
+				p.sendMessage(Main.getTranslationManager().translate("prefix", sender) + Main.getTranslationManager().translate("command.event.novent", sender));
 			}
 		} else if ((args[0].equalsIgnoreCase("toggle")) && (PermissionManager.getManager().hasPermission(p, PermissionType.ALL_PERMISSION, true))) {
 			if (this.active) {
 				this.active = false;
-				p.sendMessage(Main.getTranslationManager().translate("prefix", sender, new Object[0]) + Main.getTranslationManager().translate("command.event.active.false", sender, new Object[0]));
+				p.sendMessage(Main.getTranslationManager().translate("prefix", sender) + Main.getTranslationManager().translate("command.event.active.false", sender));
 			} else {
 				this.active = true;
-				p.sendMessage(Main.getTranslationManager().translate("prefix", sender, new Object[0]) + Main.getTranslationManager().translate("command.event.active.true", sender, new Object[0]));
+				p.sendMessage(Main.getTranslationManager().translate("prefix", sender) + Main.getTranslationManager().translate("command.event.active.true", sender));
 			}
 			Main.getDatenServer().getClient().sendServerMessage(ClientType.BUNGEECORD, "eventServer", new DataBuffer().writeByte(1).writeBoolean(this.active));
 		} else if ((args[0].equalsIgnoreCase("set")) && (PermissionManager.getManager().hasPermission(p, PermissionType.ALL_PERMISSION, true))) {
 			if ((args.length == 2) && (BungeeCord.getInstance().getServerInfo(args[1]) != null)) {
 				this.server = BungeeCord.getInstance().getServerInfo(args[1]);
 				Main.getDatenServer().getClient().sendServerMessage(ClientType.BUNGEECORD, "eventServer", new DataBuffer().writeByte(0).writeString(BungeeCord.getInstance().getServerInfo(args[1]).getName()));
-				p.sendMessage(Main.getTranslationManager().translate("prefix", sender, new Object[0]) + Main.getTranslationManager().translate("command.event.set", sender, new Object[] { this.server.getName() }));
+				p.sendMessage(Main.getTranslationManager().translate("prefix", sender) + Main.getTranslationManager().translate("command.event.set", sender, this.server.getName()));
 				return;
 			}
 			this.server = p.getServer().getInfo();
 			Main.getDatenServer().getClient().sendServerMessage(ClientType.BUNGEECORD, "eventServer", new DataBuffer().writeByte(0).writeString(this.server.getName()));
-			p.sendMessage(Main.getTranslationManager().translate("prefix", sender, new Object[0]) + Main.getTranslationManager().translate("command.event.set", sender, new Object[] { this.server.getName() }));
+			p.sendMessage(Main.getTranslationManager().translate("prefix", sender) + Main.getTranslationManager().translate("command.event.set", sender, this.server.getName()));
 		} else if ((args[0].equalsIgnoreCase("setCLimit")) && (PermissionManager.getManager().hasPermission(p, PermissionType.ALL_PERMISSION, true))) {
 			if (args.length != 3) {
-				sender.sendMessage(Main.getTranslationManager().translate("prefix", sender, new Object[0]) + Main.getTranslationManager().translate("command.event.help.climit", sender, new Object[0]));
+				sender.sendMessage(Main.getTranslationManager().translate("prefix", sender) + Main.getTranslationManager().translate("command.event.help.climit", sender));
 				return;
 			}
 			this.connections = new CachedArrayList<>(this.time = Integer.parseInt(args[2]), TimeUnit.MILLISECONDS);
 			this.connectionsLimit = Integer.parseInt(args[1]);
 			Main.getDatenServer().getClient().sendServerMessage(ClientType.BUNGEECORD, "eventServer", new DataBuffer().writeByte(2).writeInt(this.connectionsLimit).writeInt(Integer.parseInt(args[2])));
-			sender.sendMessage(Main.getTranslationManager().translate("prefix", sender, new Object[0]) + Main.getTranslationManager().translate("command.event.climit.set", sender, new Object[] { Integer.valueOf(this.connectionsLimit), args[2] }));
+			sender.sendMessage(Main.getTranslationManager().translate("prefix", sender) + Main.getTranslationManager().translate("command.event.climit.set", sender, this.connectionsLimit, args[2]));
 		} else if ((args[0].equalsIgnoreCase("info")) && (PermissionManager.getManager().hasPermission(p, PermissionType.ALL_PERMISSION, true))) {
-			sender.sendMessage(Main.getTranslationManager().translate("prefix", sender, new Object[0]) + (this.active ? Main.getTranslationManager().translate("command.event.status.active", sender, new Object[0]) : Main.getTranslationManager().translate("command.event.status.disabled", sender, new Object[0])));
-			sender.sendMessage(Main.getTranslationManager().translate("prefix", sender, new Object[0]) + Main.getTranslationManager().translate("command.event.status.server", sender, new Object[] { "" + this.server.getName() }));
-			sender.sendMessage(Main.getTranslationManager().translate("prefix", sender, new Object[0]) + Main.getTranslationManager().translate("command.event.status.connectionLimit", sender, new Object[] { Integer.valueOf(this.connectionsLimit), Integer.valueOf(this.time) }));
+			sender.sendMessage(Main.getTranslationManager().translate("prefix", sender) + (this.active ? Main.getTranslationManager().translate("command.event.status.active", sender) : Main.getTranslationManager().translate("command.event.status.disabled", sender)));
+			sender.sendMessage(Main.getTranslationManager().translate("prefix", sender) + Main.getTranslationManager().translate("command.event.status.server", sender, this.server.getName()));
+			sender.sendMessage(Main.getTranslationManager().translate("prefix", sender) + Main.getTranslationManager().translate("command.event.status.connectionLimit", sender, this.connectionsLimit, this.time));
 		} else if ((args.length == 2) && (args[0].equalsIgnoreCase("invite"))) {
 			if (args[1].equalsIgnoreCase("accept")) {
 				BungeeCord.getInstance().getPluginManager().dispatchCommand(sender, "event");
@@ -156,12 +158,12 @@ public class CommandEvent extends Command implements Listener, CachedArrayList.U
 			}
 			p.sendMessage("§aDu hast alle Leute eingeladen!");
 		} else {
-			sender.sendMessage(Main.getTranslationManager().translate("prefix", sender, new Object[0]) + Main.getTranslationManager().translate("command.event.help.join", sender, new Object[0]));
-			sender.sendMessage(Main.getTranslationManager().translate("prefix", sender, new Object[0]) + Main.getTranslationManager().translate("command.event.help.invite", sender, new Object[0]).replaceAll("§m", ""));
-			sender.sendMessage(Main.getTranslationManager().translate("prefix", sender, new Object[0]) + Main.getTranslationManager().translate("command.event.help.toggle", sender, new Object[0]));
-			sender.sendMessage(Main.getTranslationManager().translate("prefix", sender, new Object[0]) + Main.getTranslationManager().translate("command.event.help.set", sender, new Object[0]));
-			sender.sendMessage(Main.getTranslationManager().translate("prefix", sender, new Object[0]) + Main.getTranslationManager().translate("command.event.help.climit", sender, new Object[0]));
-			sender.sendMessage(Main.getTranslationManager().translate("prefix", sender, new Object[0]) + Main.getTranslationManager().translate("command.event.help.info", sender, new Object[0]));
+			sender.sendMessage(Main.getTranslationManager().translate("prefix", sender) + Main.getTranslationManager().translate("command.event.help.join", sender));
+			sender.sendMessage(Main.getTranslationManager().translate("prefix", sender) + Main.getTranslationManager().translate("command.event.help.invite", sender, new Object[0]).replaceAll("§m", ""));
+			sender.sendMessage(Main.getTranslationManager().translate("prefix", sender) + Main.getTranslationManager().translate("command.event.help.toggle", sender));
+			sender.sendMessage(Main.getTranslationManager().translate("prefix", sender) + Main.getTranslationManager().translate("command.event.help.set", sender));
+			sender.sendMessage(Main.getTranslationManager().translate("prefix", sender) + Main.getTranslationManager().translate("command.event.help.climit", sender));
+			sender.sendMessage(Main.getTranslationManager().translate("prefix", sender) + Main.getTranslationManager().translate("command.event.help.info", sender));
 		}
 	}
 
@@ -178,7 +180,7 @@ public class CommandEvent extends Command implements Listener, CachedArrayList.U
 				this.connectionsLimit = e.getBuffer().readInt();
 				this.connections = new CachedArrayList(this.time = e.getBuffer().readInt(), TimeUnit.MILLISECONDS);
 			} else if (action == 3) {
-				this.connections.add(UUID.randomUUID());
+				this.connections.add(new Object());
 			} else if (action == 4) {
 				inviter = e.getBuffer().readString();
 				for (ProxiedPlayer p : BungeeCord.getInstance().getPlayers()) {
@@ -196,6 +198,7 @@ public class CommandEvent extends Command implements Listener, CachedArrayList.U
 		ChatManager.getInstance().addChatBoxModifier(player, new ChatBoxInvite(player, ChatManager.getInstance(), inviter));
 	}
 
+	@Override
 	public boolean canUnload(Player element) {
 		ChatManager.getInstance().removeChatBoxModifier(element, "event");
 		return true;
