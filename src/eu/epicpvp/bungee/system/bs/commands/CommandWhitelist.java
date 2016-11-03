@@ -44,7 +44,7 @@ public class CommandWhitelist extends Command implements Listener{
 				cs.sendMessage("§aWhitelist message: §r"+InformationManager.getManager().getInfo("whitelistMessage"));
 			}
 		}
-		if(args.length>2){
+		if(args.length>=2){
 			if(args[0].equalsIgnoreCase("message")){
 				cs.sendMessage("§cYou set the disconnect message");
 				InformationManager.getManager().setInfo("whitelistMessage", ChatColor.translateAlternateColorCodes('&', StringUtils.join(Arrays.copyOfRange(args, 1, args.length)," ")));
