@@ -158,17 +158,19 @@ public class Bootstrap {
 		if (PlayerJoinListener.isAttackMode()) {
 			if (s.startsWith("player settings for"))
 				return false;
-			if (s.startsWith("   uuid -> "))
+			if (s.startsWith("   uuid ->"))
 				return false;
-			if (s.startsWith("   name -> "))
+			if (s.startsWith("   name ->"))
 				return false;
-			if (s.startsWith("   nickname -> "))
+			if (s.startsWith("   nickname ->"))
 				return false;
 			if (s.contains("loaded -> playerid".toLowerCase()))
 				return false;
 			if (s.contains("   LANGUAGE ->".toLowerCase()))
 				return false;
 			if (s.contains("   PREMIUM_LOGIN ->".toLowerCase()))
+				return false;
+			if (s.contains("   LAST_PASSWORD_CHANGED ->".toLowerCase()))
 				return false;
 		}
 		return true;

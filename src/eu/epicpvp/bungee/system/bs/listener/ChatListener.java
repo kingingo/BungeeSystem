@@ -152,16 +152,16 @@ public class ChatListener implements Listener {
 						return;
 					}
 					boolean targetOnline = target.isOnlineSync();
-					if(target.hasNickname() && targetOnline && !PermissionManager.getManager().hasPermission(p, "sendmassege.to.unnicked"))
-						target = null;
-					if(target != null && !targetOnline){
-						List<String> players = new ArrayList<>(Main.getDatenServer().getPlayers());
-						for(String s : players)
-							if(Main.getDatenServer().getClient().getPlayerAndLoad(s).getNickname().equalsIgnoreCase(player)){
-								target = Main.getDatenServer().getClient().getPlayerAndLoad(s);
-								player = target.getName();
-							}
-					}
+//					if(target.hasNickname() && targetOnline && !PermissionManager.getManager().hasPermission(p, "sendmassege.to.unnicked"))
+//						target = null;
+//					if(target != null && !targetOnline){
+//						List<String> players = new ArrayList<>(Main.getDatenServer().getPlayers());
+//						for(String s : players)
+//							if(Main.getDatenServer().getClient().getPlayerAndLoad(s).getNickname().equalsIgnoreCase(player)){
+//								target = Main.getDatenServer().getClient().getPlayerAndLoad(s);
+//								player = target.getName();
+//							}
+//					}
 
 					if (player.equalsIgnoreCase(p.getName())) {
 						p.sendMessage("§cYou can't write with yourself.\n§cIf you want write with yourself then you must add yourself on Whatsapp.");

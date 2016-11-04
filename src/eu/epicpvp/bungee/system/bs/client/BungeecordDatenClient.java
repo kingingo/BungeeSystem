@@ -2,7 +2,9 @@ package eu.epicpvp.bungee.system.bs.client;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import eu.epicpvp.bungee.system.bs.Main;
 import eu.epicpvp.dataserver.protocoll.packets.PacketOutServerStatus;
@@ -11,6 +13,7 @@ import eu.epicpvp.datenclient.client.LoadedPlayer;
 import eu.epicpvp.datenclient.client.connection.Client;
 import eu.epicpvp.datenclient.client.debug.Debugger;
 import eu.epicpvp.datenserver.definitions.permissions.PermissionType;
+import lombok.Getter;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
@@ -20,6 +23,8 @@ public class BungeecordDatenClient {
 	private ClientWrapper wclient;
 	private int onlineCount = -2;
 	private List<String> players;
+	@Getter
+	private Set<String> playersSet = new HashSet<>();
 
 	private ScheduledTask infoUpdater;
 	private boolean active = false;
@@ -101,6 +106,10 @@ public class BungeecordDatenClient {
 							List<String> playerList = r.getPlayers();
 							if (playerList != null) {
 								players = playerList;
+								playersSet = new HashSet<>();
+								for (String name : playerList) {
+									playersSet.add(name.toLowerCase());
+								}
 							} else {
 								Debugger.debug("Got a strange null for the playerlist");
 							}
