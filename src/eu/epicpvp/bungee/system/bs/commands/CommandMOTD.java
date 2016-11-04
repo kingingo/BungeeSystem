@@ -42,6 +42,9 @@ public class CommandMOTD extends Command {
 				cs.sendMessage(ChatColor.translateAlternateColorCodes('&', InformationManager.getManager().getInfo("motd1")));
 				cs.sendMessage(ChatColor.translateAlternateColorCodes('&', InformationManager.getManager().getInfo("motd2")));
 			}
+		} else {
+			cs.sendMessage(ChatColor.translateAlternateColorCodes('&', InformationManager.getManager().getInfo("motd1")));
+			cs.sendMessage(ChatColor.translateAlternateColorCodes('&', InformationManager.getManager().getInfo("motd2")));
 		}
 	}
 
