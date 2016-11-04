@@ -155,6 +155,22 @@ public class Bootstrap {
 			return false;
 		if (s.startsWith("handeling "))
 			return false;
+		if (PlayerJoinListener.isAttackMode()) {
+			if (s.startsWith("player settings for"))
+				return false;
+			if (s.startsWith("   uuid -> "))
+				return false;
+			if (s.startsWith("   name -> "))
+				return false;
+			if (s.startsWith("   nickname -> "))
+				return false;
+			if (s.contains("loaded -> playerid".toLowerCase()))
+				return false;
+			if (s.contains("   LANGUAGE ->".toLowerCase()))
+				return false;
+			if (s.contains("   PREMIUM_LOGIN ->".toLowerCase()))
+				return false;
+		}
 		return true;
 	};
 

@@ -21,6 +21,7 @@ import eu.epicpvp.datenclient.client.LoadedPlayer;
 import eu.epicpvp.datenclient.client.PacketHandleErrorException;
 import eu.epicpvp.datenserver.definitions.dataserver.player.LanguageType;
 import eu.epicpvp.datenserver.definitions.dataserver.player.Setting;
+import lombok.Getter;
 import lombok.SneakyThrows;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.event.PostLoginEvent;
@@ -35,11 +36,11 @@ public class PlayerJoinListener implements Listener {
 			Main.getTranslationManager().translate("proxy.join.full", "§cThe server is full!\n§6If you want to join everytime, then buy a rank in our shop.");
 	}
 
-	private Rate overallConnectionRate = new Rate(5, TimeUnit.SECONDS, 7, TimeUnit.SECONDS);
-	private Cache<String, Boolean> joinAttempt =
-			CacheBuilder.newBuilder()
-					.expireAfterWrite(750, TimeUnit.MILLISECONDS)
-					.build();
+	@Getter
+	private static boolean attackMode = false;
+	private Rate attackRate = new Rate(30, TimeUnit.SECONDS);
+	private Rate allowRate = new Rate(1, TimeUnit.SECONDS);
+	private Rate overallConnectionRate = new Rate(2, TimeUnit.SECONDS, 7, TimeUnit.SECONDS);
 	private Cache<String, IpData> ipDatas =
 			CacheBuilder.newBuilder()
 					.expireAfterWrite(2, TimeUnit.HOURS)
@@ -55,7 +56,7 @@ public class PlayerJoinListener implements Listener {
 		}
 		if (!Main.loaded) {
 			e.setCancelled(true);
-			e.setCancelReason("§cStill setting up bungeecord\n§aPlease try again in 10-20 seconds.");
+			e.setCancelReason("§cStill setting up bungeecord.\n§aPlease try again in 10-20 seconds.");
 			return;
 		}
 
@@ -64,7 +65,7 @@ public class PlayerJoinListener implements Listener {
 		String name = e.getConnection().getName();
 		String ip = e.getConnection().getAddress().getAddress().getHostAddress();
 		if (version == null || version == ClientVersion.v1_9_1 || version == ClientVersion.v1_9_2 || version == ClientVersion.v1_9_3
-					|| (version.getBigVersion() != BigClientVersion.v1_8 && version.getBigVersion() != BigClientVersion.v1_9 && version != ClientVersion.v1_10_0)) {
+				|| (version.getBigVersion() != BigClientVersion.v1_8 && version.getBigVersion() != BigClientVersion.v1_9 && version != ClientVersion.v1_10_0)) {
 			e.setCancelled(true);
 			e.setCancelReason("§cYour minecraft version is not supported. Please use 1.8.X, 1.9.0, 1.9.4 or 1.10.X");
 			System.out.println("Player " + name + " tried to connect with an unsupported version (" + versionNumber + ") with ip " + ip);
@@ -95,11 +96,17 @@ public class PlayerJoinListener implements Listener {
 		} else {
 			nameJoinCounter.put(lowerCaseName, joins + 1);
 		}
-		int differentNameJoinRateEventCount = differentNameJoinRate.getOccurredEventsInMaxTime();
-		if (differentNameJoinRateEventCount >= 6) {
+		int differentNameJoins2H = differentNameJoinRate.getOccurredEventsInMaxTime();
+		int differentNameJoins1M = differentNameJoinRate.getOccurredEventsInTime(1, TimeUnit.MINUTES);
+		if (differentNameJoins2H >= 4) {
 			e.setCancelled(true);
 			e.setCancelReason("§cSuspicious ip.\n§aBitte melde dich auf unserem Teamspeak, falls dies ein Fehler sein sollte.");
-			System.out.println("[AntiBot] " + ip + " tried to join with " + differentNameJoinRateEventCount + " different names in 2h, latest name: " + name);
+			System.out.println("§4§l[AntiBot] " + (attackMode ? "§6[AttackMode] " : "") + "§7" + ip + " tried to join with " + differentNameJoins2H + " different names in 2h, latest name: " + name);
+			return;
+		} else if (attackRate.getOccurredEventsInMaxTime() != 0 && differentNameJoins1M >= 2) {
+			e.setCancelled(true);
+			e.setCancelReason("§cSuspicious ip.\n§c§lWichtig:\n§aBitte versuche dich über deine IP nur mit einem Namen innerhalb von 5 Minuten zu verbinden.\n§8Diese Restriktion ist nur während einer Joinbot-Attacke aktiv.");
+			System.out.println("§4§l[AntiBot] §6[AttackMode] §7" + ip + " tried to join with " + differentNameJoins1M + " different names in 1M, latest name: " + name);
 			return;
 		}
 //		Rate loginHubLeaveRate = data.getLoginHubLeaveRate();
@@ -113,14 +120,25 @@ public class PlayerJoinListener implements Listener {
 
 		//Antibots overall rate-Limit
 		double averagePerSecond = overallConnectionRate.getAveragePerSecondOnMaxTime();
-		if (averagePerSecond >= 5) {
+		overallConnectionRate.eventTriggered();
+		if (allowRate.getAveragePerSecondOnMaxTime() >= 2 && averagePerSecond >= 5) {
+			if (attackRate.getOccurredEventsInTime(20, TimeUnit.SECONDS) == 0) {
+				attackMode = true;
+				if (attackRate.getOccurredEventsInMaxTime() == 0) {
+					System.out.println("§4§l[AntiBot] §fAttack mode enabled");
+				}
+				attackRate.eventTriggered();
+			}
 			e.setCancelled(true);
 			e.setCancelReason("§cAktuell versuchen zu viele Spieler sich gleichzeitig anzumelden.\n§aVersuche es bitte in ein paar Sekunden erneut.");
-			System.out.println("[AntiBot] Cancelled login of " + ip + " / " + name + " because global rate limit being at " + averagePerSecond + " joins/sec in average over the last 5 sec");
+			System.out.println("§4§l[AntiBot] " + (attackMode ? "§6[AttackMode] " : "") + "§7Cancelled login of " + ip + " / " + name + " because global rate limit being at " + averagePerSecond + " joins/sec in average over the last 2 sec");
 			return;
 		}
-		joinAttempt.put(name.toLowerCase(), Boolean.TRUE);
-		overallConnectionRate.eventTriggered();
+		if (attackMode && attackRate.getOccurredEventsInMaxTime() == 0) {
+			attackMode = false;
+			System.out.println("§4§l[AntiBot] §fAttack mode disabled");
+		}
+		allowRate.eventTriggered();
 
 		//lets do stuff async
 		e.registerIntent(Main.getInstance());
@@ -167,11 +185,11 @@ public class PlayerJoinListener implements Listener {
 						if (player.isPremiumSync()) {
 							e.getConnection().setUniqueId(player.getUUID());
 							e.getConnection().setOnlineMode(true);
-							System.out.println("Player premium");
+//							System.out.println("Player premium");
 						} else {
 							e.getConnection().setUniqueId(player.getUUID());
 							e.getConnection().setOnlineMode(false);
-							System.out.println("Player cracked");
+//							System.out.println("Player cracked");
 						}
 					} catch (PacketHandleErrorException ex) {
 						for (PacketOutPacketStatus.Error er : ex.getErrors())
@@ -198,7 +216,7 @@ public class PlayerJoinListener implements Listener {
 					}
 					*/
 					if ("true".equalsIgnoreCase(InformationManager.getManager().getInfo("whitelistActive")) && !PermissionManager.getManager().hasPermission(player.getPlayerId(), "epicpvp.whitelist.bypass")) {
-						String message = InformationManager.getManager().getInfo("whitelistMessage"); //
+						String message = InformationManager.getManager().getInfo("whitelistMessage");
 						if (message == null)
 							message = "§cWhitelist is active!";
 						e.setCancelled(true);
@@ -245,6 +263,30 @@ public class PlayerJoinListener implements Listener {
 		if (e.getPlayer().getPendingConnection().isOnlineMode())
 			MessageManager.getManager(lang).playTitles(e.getPlayer());
 	}
+
+//	@EventHandler
+//	public void a(ServerMessageEvent e) {
+//		String inviter;
+//		if (e.getChannel().equalsIgnoreCase("antijoinbot")) {
+//			byte action = e.getBuffer().readByte();
+//			if (action == 0) {
+//				this.server = BungeeCord.getInstance().getServerInfo(e.getBuffer().readString());
+//			} else if (action == 1) {
+//				this.active = e.getBuffer().readBoolean();
+//			} else if (action == 2) {
+//				this.connectionsLimit = e.getBuffer().readInt();
+//				this.connections = new CachedArrayList(this.time = e.getBuffer().readInt(), TimeUnit.MILLISECONDS);
+//			} else if (action == 3) {
+//				this.connections.add(new Object());
+//			} else if (action == 4) {
+//				inviter = e.getBuffer().readString();
+//				for (ProxiedPlayer p : BungeeCord.getInstance().getPlayers()) {
+//					invite((Player) p, inviter);
+//				}
+//			}
+//		}
+//	}
+
 //
 //	@EventHandler
 //	public void onKick(ServerKickEvent event) {

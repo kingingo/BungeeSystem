@@ -30,14 +30,14 @@ public class CommandNick extends Command {
 			return;
 		} else if (args.length == 2 && args[0].equalsIgnoreCase("set")) {
 			LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(sender.getName());
-			player.setNicknameSync(args[1]);
+			player.setNicknameSync(args[1], "");
 			sender.sendMessage("§aYou are now known as §e" + args[1]);
 			Main.getDatenServer().getClient().sendServerMessage(ClientType.ALL, "nick", new DataBuffer().writeInt(0).writeInt(player.getPlayerId()));
 			updatePlayer(sender.getName());
 			return;
 		} else if (args.length == 3 && args[0].equalsIgnoreCase("set")) {
 			LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(args[1]);
-			player.setNicknameSync(args[2]);
+			player.setNicknameSync(args[2], "");
 			sender.sendMessage("§e" + args[1] + " §ais now known as §e" + args[2]);
 			Main.getDatenServer().getClient().sendServerMessage(ClientType.ALL, "nick", new DataBuffer().writeInt(0).writeInt(player.getPlayerId()));
 			updatePlayer(args[1]);
