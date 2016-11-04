@@ -32,13 +32,16 @@ import net.md_5.bungee.event.EventHandler;
 public class PlayerJoinListener implements Listener {
 
 	static {
-		if (Main.getTranslationManager() != null)
-			Main.getTranslationManager().translate("proxy.join.full", "§cThe server is full!\n§6If you want to join everytime, then buy a rank in our shop.");
+		if (Main.getTranslationManager() != null) {
+			Main.getTranslationManager().registerFallback(LanguageType.GERMAN, "proxy.join.full", "§cDer Server ist voll!\n§aWen du joinen möchtest, wenn der Server voll ist, kauf einen Rang in unserem Shop.");
+			Main.getTranslationManager().registerFallback(LanguageType.ENGLISH, "proxy.join.full", "§cThe server is full!\n§aIf you want to join if the server is full, buy a rank in our shop.");
+		}
 	}
 
 	@Getter
 	private static boolean attackMode = false;
-	private Rate attackRate = new Rate(30, TimeUnit.SECONDS);
+	private Rate attackDetectionRate = new Rate(30, TimeUnit.SECONDS);
+	private Rate filteredRate = new Rate(10, TimeUnit.SECONDS);
 	private Rate allowRate = new Rate(1, TimeUnit.SECONDS);
 	private Rate overallConnectionRate = new Rate(2, TimeUnit.SECONDS, 7, TimeUnit.SECONDS);
 	private Cache<String, IpData> ipDatas =
@@ -100,15 +103,21 @@ public class PlayerJoinListener implements Listener {
 		int differentNameJoins1M = differentNameJoinRate.getOccurredEventsInTime(1, TimeUnit.MINUTES);
 		if (differentNameJoins2H >= 4) {
 			e.setCancelled(true);
+			filteredRate.eventTriggered();
 			e.setCancelReason("§cSuspicious ip.\n§aBitte melde dich auf unserem Teamspeak, falls dies ein Fehler sein sollte.");
 			System.out.println("§4§l[AntiBot] " + (attackMode ? "§6[AttackMode] " : "") + "§7" + ip + " tried to join with " + differentNameJoins2H + " different names in 2h, latest name: " + name);
 			return;
-		} else if (attackRate.getOccurredEventsInMaxTime() != 0 && differentNameJoins1M >= 2) {
+		} else if (attackDetectionRate.getOccurredEventsInMaxTime() != 0 && differentNameJoins1M >= 2) {
 			e.setCancelled(true);
-			e.setCancelReason("§cSuspicious ip.\n§c§lWichtig:\n§aBitte versuche dich über deine IP nur mit einem Namen innerhalb von 5 Minuten zu verbinden.\n§8Diese Restriktion ist nur während einer Joinbot-Attacke aktiv.");
+			filteredRate.eventTriggered();
+			e.setCancelReason("§cSuspicious ip.\n§c§lWichtig:\n§aBitte versuche dich über deine IP nur mit einem Namen innerhalb von 5 Minuten zu verbinden.\n§aBitte melde dich auf unserem Teamspeak, falls dies ein Fehler sein sollte.\n§8Diese Restriktion ist nur während einer Joinbot-Attacke aktiv.");
 			System.out.println("§4§l[AntiBot] §6[AttackMode] §7" + ip + " tried to join with " + differentNameJoins1M + " different names in 1M, latest name: " + name);
 			return;
 		}
+		if (filteredRate.getOccurredEventsInMaxTime() > 5) {
+			enableAttackMode();
+		}
+
 //		Rate loginHubLeaveRate = data.getLoginHubLeaveRate();
 //		int occurredEventsInTime = loginHubLeaveRate.getOccurredEventsInTime(20, TimeUnit.SECONDS);
 //		if (occurredEventsInTime >= 4) {
@@ -121,22 +130,18 @@ public class PlayerJoinListener implements Listener {
 		//Antibots overall rate-Limit
 		double averagePerSecond = overallConnectionRate.getAveragePerSecondOnMaxTime();
 		overallConnectionRate.eventTriggered();
-		if (allowRate.getAveragePerSecondOnMaxTime() >= 2 && averagePerSecond >= 5) {
-			if (attackRate.getOccurredEventsInTime(20, TimeUnit.SECONDS) == 0) {
-				attackMode = true;
-				if (attackRate.getOccurredEventsInMaxTime() == 0) {
-					System.out.println("§4§l[AntiBot] §fAttack mode enabled");
-				}
-				attackRate.eventTriggered();
-			}
+		if (allowRate.getOccurredEventsInMaxTime() > 2 && averagePerSecond >= 5) {
+			enableAttackMode();
 			e.setCancelled(true);
 			e.setCancelReason("§cAktuell versuchen zu viele Spieler sich gleichzeitig anzumelden.\n§aVersuche es bitte in ein paar Sekunden erneut.");
 			System.out.println("§4§l[AntiBot] " + (attackMode ? "§6[AttackMode] " : "") + "§7Cancelled login of " + ip + " / " + name + " because global rate limit being at " + averagePerSecond + " joins/sec in average over the last 2 sec");
 			return;
 		}
-		if (attackMode && attackRate.getOccurredEventsInMaxTime() == 0) {
+		if (attackMode && attackDetectionRate.getOccurredEventsInMaxTime() == 0) {
 			attackMode = false;
+			System.out.println("------------------------------");
 			System.out.println("§4§l[AntiBot] §fAttack mode disabled");
+			System.out.println("------------------------------");
 		}
 		allowRate.eventTriggered();
 
@@ -241,6 +246,18 @@ public class PlayerJoinListener implements Listener {
 		} catch (Throwable t) {
 			e.completeIntent(Main.getInstance());
 			throw t;
+		}
+	}
+
+	public void enableAttackMode() {
+		if (attackDetectionRate.getOccurredEventsInTime(20, TimeUnit.SECONDS) == 0) {
+			attackMode = true;
+			if (attackDetectionRate.getOccurredEventsInMaxTime() == 0) {
+				System.out.println("-----------------------------");
+				System.out.println("§4§l[AntiBot] §fAttack mode enabled");
+				System.out.println("-----------------------------");
+			}
+			attackDetectionRate.eventTriggered();
 		}
 	}
 
