@@ -191,31 +191,31 @@ public class ChatListener implements Listener {
 		List<String> suggestions = e.getSuggestions();
 		suggestions.clear();
 		String nameStart = e.getCursor().substring(1, e.getCursor().length());
-		if (nameStart.length() < 2) {
+		if (nameStart.length() <= 2) {
 			return;
 		}
 		String nameStartLowerCase = nameStart.toLowerCase();
 
-		boolean unnickedNames = PermissionManager.getManager().hasPermission((ProxiedPlayer) e.getSender(), "tabcomplete.unnicked");
+//		boolean unnickedNames = PermissionManager.getManager().hasPermission((ProxiedPlayer) e.getSender(), "tabcomplete.unnicked");
 		List<String> players = new ArrayList<>(Main.getDatenServer().getPlayers());
 		for (String playerName : players) {
 			if (playerName == null) {
 				System.err.println("[ChatListener]: TabCompleteEvent playerName == NULL !?");
 				continue;
 			}
-			LoadedPlayer splayer = Main.getDatenServer().getClient().getPlayer(playerName);
+//			LoadedPlayer splayer = Main.getDatenServer().getClient().getPlayer(playerName);
 //			if (!splayer.isLoaded() && !splayer.isLoading()) { //Load by the report system
 //				ProxyServer.getInstance().getScheduler().runAsync(Main.getInstance(), splayer::loadPlayer);
 //				continue;
 //			}
-			if(!splayer.isLoaded())
-				continue;
+//			if(!splayer.isLoaded())
+//				continue;
 
-			boolean splayerNicknamed = splayer.hasNickname();
-			if (unnickedNames && splayerNicknamed) {
-				suggestIfFitting(suggestions, splayer.getName(), nameStartLowerCase);
-			}
-			suggestIfFitting(suggestions, splayer.getNickname(), nameStartLowerCase);
+//			boolean splayerNicknamed = splayer.hasNickname();
+//			if (unnickedNames && splayerNicknamed) {
+				suggestIfFitting(suggestions, playerName, nameStartLowerCase);
+//			}
+//			suggestIfFitting(suggestions, splayer.getNickname(), nameStartLowerCase);
 		}
 		Debugger.debug("Tab compĺete suggestions for '"+e.getCursor()+"' -> " + suggestions);
 	}
