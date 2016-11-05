@@ -20,17 +20,21 @@ public class CommandNick extends Command {
 			return;
 		if (args.length == 1 && args[0].equalsIgnoreCase("info")) {
 			LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(sender.getName());
-			sender.sendMessage("§aYour nickname is §e" + (player.getNickname() == null ? sender.getName() : player.getNickname()));
+			if (player.hasNickname() ) {
+				sender.sendMessage("§aYour nickname is §e" + player.getNickname());
+			} else {
+				sender.sendMessage("§aYou don't have a nickname currently");
+			}
 			sender.sendMessage("§aYou current displayed group is §e" + (player.hasDisplayedGroup() ? player.getDisplayedGroup() : "your current group"));
 			return;
 		} else if (args.length == 2 && args[0].equalsIgnoreCase("info")) {
 			LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(args[2]);
-			sender.sendMessage("§aThe player §e" + args[1] + " is nicked as §e" + (player.getNickname() == null ? sender.getName() : player.getNickname()));
+			sender.sendMessage("§aThe player §e" + args[1] + " is nicked as §e" + player.getFinalName());
 			sender.sendMessage("§aThe current displayed group is §e" + (player.hasDisplayedGroup() ? player.getDisplayedGroup() : "his current group"));
 			return;
 		} else if (args.length == 2 && args[0].equalsIgnoreCase("set")) {
 			LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(sender.getName());
-			player.setNicknameSync(args[1], "");
+			player.setNicknameSync(args[1], null);
 			sender.sendMessage("§aYou are now known as §e" + args[1]);
 			Main.getDatenServer().getClient().sendServerMessage(ClientType.ALL, "nick", new DataBuffer().writeInt(0).writeInt(player.getPlayerId()));
 			updatePlayer(sender.getName());

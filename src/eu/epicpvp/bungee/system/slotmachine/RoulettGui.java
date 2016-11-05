@@ -37,7 +37,7 @@ public class RoulettGui implements HistoryListener {
 	private int wheelIndex = 0;
 
 	private boolean wheelActive;
-	
+
 	private int[] puts = new int[3];
 
 	public RoulettGui() {
@@ -254,7 +254,7 @@ public class RoulettGui implements HistoryListener {
 				int index = 0;
 				for (int i : puts) {
 					if (i != 0)
-						RoulettHistory.getHistory().add(Main.getDatenServer().getClient().getPlayerAndLoad(player.getName()).getNickname(), index, i, i * (index == winIndex ? multiply[winIndex] : -1));
+						RoulettHistory.getHistory().add(Main.getDatenServer().getClient().getPlayerAndLoad(player.getName()).getFinalName(), index, i, i * (index == winIndex ? multiply[winIndex] : -1));
 					all += i;
 					index++;
 				}

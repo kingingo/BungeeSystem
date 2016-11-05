@@ -79,15 +79,15 @@ public class GuiViewOpenReports extends Gui implements Runnable {
 		setItemLater(4, ItemBuilder.create(Material.DIAMOND).name("§6Open reports: " + entities.length).build());
 		this.entites = entities;
 
-		HashMap<Integer, ArrayList<ReportEntity>> amauths = new InitHashMap<Integer, ArrayList<ReportEntity>>() {
+		HashMap<Integer, ArrayList<ReportEntity>> amounts = new InitHashMap<Integer, ArrayList<ReportEntity>>() {
 			@Override
 			public ArrayList<ReportEntity> defaultValue(Integer key) {
 				return new ArrayList<>();
 			}
 		};
 		for (ReportEntity e : entites)
-			amauths.get(e.getTarget()).add(e);
-		List<Entry<Integer, ArrayList<ReportEntity>>> reports = new ArrayList<>(amauths.entrySet());
+			amounts.get(e.getTarget()).add(e);
+		List<Entry<Integer, ArrayList<ReportEntity>>> reports = new ArrayList<>(amounts.entrySet());
 		minTimes = new HashMap<>();
 
 		//Calculate -> open until
@@ -129,7 +129,7 @@ public class GuiViewOpenReports extends Gui implements Runnable {
 		}
 		fill(fillItem, start + pos, inv.getSlots() - 10, true);
 
-		setItemLater(45, new ItemStack(ItemBuilder.create(Material.ARROW).name("§aVorherige seite").build()) {
+		setItemLater(45, new ItemStack(ItemBuilder.create(Material.ARROW).name("§aVorherige Seite").build()) {
 			@Override
 			public void click(Click c) {
 				if (side > 0) {
@@ -139,7 +139,7 @@ public class GuiViewOpenReports extends Gui implements Runnable {
 				}
 			}
 		});
-		setItemLater(53, new ItemStack(ItemBuilder.create(Material.ARROW).name("§aNächste seite").build()) {
+		setItemLater(53, new ItemStack(ItemBuilder.create(Material.ARROW).name("§aNächste Seite").build()) {
 			@Override
 			public void click(Click c) {
 				if (reportEntities.size() > (side + 1) * REPORTS_PER_SIDE) {

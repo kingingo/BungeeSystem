@@ -42,8 +42,8 @@ public class GuiViewPlayerReport extends Gui implements Runnable {
 			inv.setItem(4, loadSkin(ItemBuilder.create(Material.SKULL_ITEM).name("§6" + name).lore("§e").lore("§cOffline").build(), name));
 		}
 		builder.lore("§aAktuelle Bearbeiter:");
-		for (ReportWorker w : reports.get(0).getWorkers()) {
-			builder.lore(" §7- §e" + Main.getDatenServer().getClient().getPlayer(w.getPlayerId()).getName());
+		for (ReportWorker reportWorker : reports.get(0).getWorkers()) {
+			builder.lore(" §7- §e" + Main.getDatenServer().getClient().getPlayerAndLoad(reportWorker.getPlayerId()).getName());
 		}
 		inv.setItem(4, loadSkin(builder.build(), name));
 
@@ -60,7 +60,7 @@ public class GuiViewPlayerReport extends Gui implements Runnable {
 					e.getWorkers().add(new ReportWorker(e.getReportId(), own.getPlayerId(), System.currentTimeMillis(), -1));
 					Main.getDatenServer().getClient().sendMessage(e.getReporter(), "§aDein Spielerreport gegen §e" + name + " §awird von §e" + getPlayer().getName() + " §abearbeitet.");
 				}
-				Main.getDatenServer().getClient().broadcastMessage("report.alert", "§aDer Spieler §e" + c.getPlayer().getName() + " §ahat den report gegen §e" + name + " §aangenommen.");
+				Main.getDatenServer().getClient().broadcastMessage("report.alert", "§6Der Spieler §e" + c.getPlayer().getName() + " §6hat den Report gegen §e" + name + " §aangenommen§6.");
 				switchToGui(new GuiPlayerSupportTools(name, reports));
 			}).build());
 		}
@@ -92,8 +92,6 @@ public class GuiViewPlayerReport extends Gui implements Runnable {
 	}
 
 	private String online() {
-		String server;
-		boolean online = (server = Main.getDatenServer().getClient().getPlayerAndLoad(name).getServer().getSync()) != null;
-		return server;
+		return Main.getDatenServer().getClient().getPlayerAndLoad(name).getServer().getSync();
 	}
 }

@@ -1,6 +1,7 @@
 package eu.epicpvp.bungee.system.report.gui;
 
 import dev.wolveringer.BungeeUtil.Material;
+import dev.wolveringer.BungeeUtil.Player;
 import dev.wolveringer.BungeeUtil.item.ItemStack;
 import eu.epicpvp.bungee.system.bs.Main;
 import eu.epicpvp.bungee.system.gui.Gui;
@@ -31,10 +32,7 @@ public class GuiPlayerMenue extends Gui {
 								getPlayer().sendMessage("§cYou cant report yourself!");
 								return;
 							}
-							LoadedPlayer splayer = Main.getDatenServer().getClient().getPlayerAndLoad(name);
-							GuiSelectPlayerReportReson gui = new GuiSelectPlayerReportReson(name, splayer.hasNickname() ? PermissionManager.getManager().hasPermission(getPlayer(), "report.viewname") ? splayer.getName() : splayer.getNickname() : splayer.getName());
-							gui.setPlayer(getPlayer());
-							gui.openGui();
+							openSelectReportReasonGui(getPlayer(), name);
 						}
 
 						@Override
@@ -62,5 +60,12 @@ public class GuiPlayerMenue extends Gui {
 			}
 		});
 		fill(ItemBuilder.create(160).durability(7).name("§7").build(), 0, 8);
+	}
+
+	public static void openSelectReportReasonGui(Player player, String targetName) {
+		LoadedPlayer target = Main.getDatenServer().getClient().getPlayerAndLoad(targetName);
+		GuiSelectPlayerReportReson gui = new GuiSelectPlayerReportReson(targetName, PermissionManager.getManager().hasPermission(player, "report.viewname") ? target.getName() : target.getFinalName());
+		gui.setPlayer(player);
+		gui.openGui();
 	}
 }

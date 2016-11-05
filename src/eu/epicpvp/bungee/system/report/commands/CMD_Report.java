@@ -26,8 +26,6 @@ public class CMD_Report extends Command{
 			return;
 		}
 
-
-
 		if(args.length == 1 && args[0].equalsIgnoreCase("closeAll") && PermissionManager.getManager().hasPermission(cs, "report.closeall")){
 			cs.sendMessage("§aClosing....");
 			ThreadFactory.getFactory().createThread(new Runnable() {
@@ -54,7 +52,16 @@ public class CMD_Report extends Command{
 			}).start();
 			return;
 		}
+
 		Player p = (Player) cs;
+
+		if (args.length == 1) {
+			if (Main.getDatenServer().getPlayersSet().contains(args[0].toLowerCase())) {
+				GuiPlayerMenue.openSelectReportReasonGui(p, args[0]);
+				return;
+			}
+		}
+
 		//new PlayerSarchMenue(p).open();
 		GuiPlayerMenue menue = new GuiPlayerMenue();
 		menue.setPlayer(p);

@@ -16,7 +16,6 @@ import dev.wolveringer.BungeeUtil.packets.PacketPlayOutChat;
 import dev.wolveringer.chat.ChatComponentText;
 import dev.wolveringer.chat.ChatSerializer;
 import dev.wolveringer.chat.IChatBaseComponent;
-import eu.epicpvp.bungee.system.nick.NickHandler;
 import eu.epicpvp.datenserver.definitions.arrays.CachedArrayList;
 import eu.epicpvp.datenserver.definitions.hashmaps.InitHashMap;
 import eu.epicpvp.thread.ThreadFactory;
@@ -127,7 +126,7 @@ public class ChatManager implements PacketHandler, Listener {
 	private void sendMessage(Player player, IChatBaseComponent comp) {
 		PacketPlayOutChat packet = new PacketPlayOutChat(comp);
 		this.ignorePackets.add(System.identityHashCode(packet));
-		NickHandler.whitelist.add(System.identityHashCode(packet));
+//		NickHandler.whitelist.add(System.identityHashCode(packet));
 		player.sendPacket(packet);
 	}
 
