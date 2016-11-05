@@ -75,7 +75,6 @@ import eu.epicpvp.bungee.system.bs.commands.CommandServer;
 import eu.epicpvp.bungee.system.bs.commands.CommandSkin;
 import eu.epicpvp.bungee.system.bs.commands.CommandSky;
 import eu.epicpvp.bungee.system.bs.commands.CommandTBuild;
-import eu.epicpvp.bungee.system.bs.commands.CommandTeamspeak;
 import eu.epicpvp.bungee.system.bs.commands.CommandTempBan;
 import eu.epicpvp.bungee.system.bs.commands.CommandUnban;
 import eu.epicpvp.bungee.system.bs.commands.CommandVersus;
@@ -439,7 +438,7 @@ public class Bootstrap {
 		pluginManager.registerCommand(plugin, new CMD_BOOSTER());
 		pluginManager.registerCommand(plugin, new CommandRoulett());
 		pluginManager.registerCommand(plugin, new CommandNick());
-		pluginManager.registerCommand(plugin, new CommandTeamspeak());
+//		pluginManager.registerCommand(plugin, new CommandTeamspeak());
 		pluginManager.registerCommand(plugin, new CommandResourcepack());
 		pluginManager.registerCommand(plugin, new CommandMoney());
 		pluginManager.registerCommand(plugin, new CommandConsoleTeamMessage());
