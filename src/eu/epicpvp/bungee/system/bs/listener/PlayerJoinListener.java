@@ -23,6 +23,8 @@ import java.util.concurrent.TimeUnit;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import dev.wolveringer.BungeeUtil.ClientVersion;
 import dev.wolveringer.BungeeUtil.ClientVersion.BigClientVersion;
 import eu.epicpvp.bungee.system.bs.Main;
@@ -40,13 +42,17 @@ import eu.epicpvp.datenclient.client.PacketHandleErrorException;
 import eu.epicpvp.datenserver.definitions.dataserver.player.LanguageType;
 import eu.epicpvp.datenserver.definitions.dataserver.player.Setting;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.PendingConnection;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.connection.Server;
+import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.event.PreLoginEvent;
+import net.md_5.bungee.api.event.ServerKickEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
@@ -80,10 +86,15 @@ public class PlayerJoinListener implements Listener {
 	private Rate allowRate = new Rate(1, TimeUnit.SECONDS);
 	private Rate overallConnectionRate = new Rate(2, TimeUnit.SECONDS, 5500, TimeUnit.MILLISECONDS);
 	private Set<String> premiumNames = Collections.synchronizedSet(new HashSet<>());
-	private Cache<String, IpData> ipDatas =
+	private LoadingCache<String, IpData> ipDatas =
 			CacheBuilder.newBuilder()
 					.expireAfterAccess(2, TimeUnit.HOURS)
-					.build();
+					.build(new CacheLoader<String, IpData>() {
+						@Override
+						public IpData load(@NonNull String ip) throws Exception {
+							return new IpData(ip);
+						}
+					});
 	private Cache<String, Set<String>> nameIp =
 			CacheBuilder.newBuilder()
 					.expireAfterAccess(2, TimeUnit.HOURS)
@@ -174,7 +185,7 @@ public class PlayerJoinListener implements Listener {
 		}
 
 		// AntiBot ip-based rate-Limit
-		IpData data = ipDatas.get(ip, () -> new IpData(ip));
+		IpData data = ipDatas.getUnchecked(ip);
 		Cache<String, Integer> nameJoinCounter = data.getNameJoinCounter();
 		Integer joins = nameJoinCounter.getIfPresent(lowerCaseName);
 		Rate differentNameJoinRate = data.getDifferentNameJoinRate();
@@ -225,19 +236,19 @@ public class PlayerJoinListener implements Listener {
 					"§aVerwende keinen Proxy, VPN, oder andere Dienste, die deine Internetverbindung umleiten, um auf EpicPvP zu spielen.\n" +
 					"§aBitte melde dich bei unserem Teamspeak-Support, falls dies ein Fehler sein sollte.");
 			logAntiBot("player " + name + " tried to join with " + lastConnectedIpsForName.size() + " different ips in 1min, ips so far: " + lastConnectedIpsForName);
+			return;
 		}
 		if (filteredRate.getOccurredEventsInMaxTime() > 5) {
 			enableAttackMode();
 		}
 
-//		Rate loginHubLeaveRate = data.getLoginHubLeaveRate();
-//		int occurredEventsInTime = loginHubLeaveRate.getOccurredEventsInTime(20, TimeUnit.SECONDS);
-//		if (occurredEventsInTime >= 4) {
-//			event.setCancelled(true);
-//			event.setCancelReason("§cSuspicious behaviour.\n§aBitte melde dich auf unserem Teamspeak, falls dies ein Fehler sein sollte.");
-//			System.out.println("[AntiBot] " + ip + " tried to rejoin after leaving loginhub " + occurredEventsInTime + " times in 20sec (kicks count twice), latest name: " + name);
-//		}
-//		loginHubLeaveRate.eventTriggered();
+		if (attackMode && System.currentTimeMillis() - data.getLastLoginHubLeave() < TimeUnit.SECONDS.toMillis(25)) {
+			event.setCancelled(true);
+			event.setCancelReason("§c§lBitte warte 30 Sekunden, bevor du wieder versuchst, dich einzuloggen.\n" +
+					"§aSollte dieser Kick ein Fehler sein, so melde dich bitte im Teamspeak-Support.");
+			logAntiBot(ip + " tried to rejoin too fast after leaving loginhub, latest name: " + name);
+			return;
+		}
 
 		//Antibots overall rate-Limit
 		double averagePerSecond = overallConnectionRate.getAveragePerSecondOnMaxTime();
@@ -453,7 +464,12 @@ public class PlayerJoinListener implements Listener {
 			nameWhitelistFile.createNewFile();
 			Files.readAllLines(nameWhitelistFile.toPath())
 					.forEach(line -> {
-						nameWhitelist.add(line);
+						int pos = line.indexOf(':');
+						if (pos == -1) {
+							nameWhitelist.add(line);
+						} else {
+							nameWhitelist.add(line.substring(0, pos));
+						}
 					});
 //			System.out.println("Successfully reloaded name_whitelist.txt");
 		} catch (IOException e) {
@@ -550,27 +566,28 @@ public class PlayerJoinListener implements Listener {
 //		}
 //	}
 
-//
-//	@EventHandler
-//	public void onKick(ServerKickEvent event) {
-//		if (event.getKickedFrom().getName().startsWith("login")) {
-//			IpData data = ipDatas.getIfPresent(event.getPlayer().getPendingConnection().getAddress().getAddress().getHostAddress());
-//			if (data != null) {
-//				data.getLoginHubLeaveRate().eventTriggered();
-//			}
-//		}
-//	}
-//
-//	@EventHandler
-//	public void onLeave(PlayerDisconnectEvent event) {
-//		ProxiedPlayer plr = event.getPlayer();
-//		if (joinAttempt.getIfPresent(plr.getName().toLowerCase()) == null && plr.getServer().getInfo().getName().startsWith("login")) {
-//			IpData data = ipDatas.getIfPresent(plr.getPendingConnection().getAddress().getAddress().getHostAddress());
-//			if (data != null) {
-//				data.getLoginHubLeaveRate().eventTriggered();
-//			}
-//		}
-//	}
+
+	@EventHandler
+	public void onKick(ServerKickEvent event) {
+		if (event.getKickReason().contains("Die Zeit ist abgelaufen")) {
+			IpData data = ipDatas.getUnchecked(event.getPlayer().getPendingConnection().getAddress().getAddress().getHostAddress());
+			if (data != null) {
+				data.setLastLoginHubLeave(System.currentTimeMillis());
+			}
+		}
+	}
+
+	@EventHandler
+	public void onLeave(PlayerDisconnectEvent event) {
+		ProxiedPlayer player = event.getPlayer();
+		Server server = player.getServer();
+		if (server != null && server.getInfo().getName().startsWith("login")) {
+			IpData data = ipDatas.getUnchecked(player.getPendingConnection().getAddress().getAddress().getHostAddress());
+			if (data != null) {
+				data.setLastLoginHubLeave(System.currentTimeMillis());
+			}
+		}
+	}
 
 	public static String getDurationBreakdown(long millis) {
 		return getDurationBreakdown(millis, "now");
