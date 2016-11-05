@@ -43,6 +43,7 @@ import eu.epicpvp.bungee.system.ban.BannedServerManager;
 import eu.epicpvp.bungee.system.booster.BoosterManager;
 import eu.epicpvp.bungee.system.booster.CMD_BOOSTER;
 import eu.epicpvp.bungee.system.bs.client.BungeecordDatenClient;
+import eu.epicpvp.bungee.system.bs.commands.CommandAntibot;
 import eu.epicpvp.bungee.system.bs.commands.CommandBDebug;
 import eu.epicpvp.bungee.system.bs.commands.CommandBan;
 import eu.epicpvp.bungee.system.bs.commands.CommandBanInfo;
@@ -396,6 +397,7 @@ public class Bootstrap {
 		Main.getBoosterManager().init();
 
 		PluginManager pluginManager = BungeeCord.getInstance().getPluginManager();
+		pluginManager.registerCommand(plugin, new CommandAntibot());
 		pluginManager.registerCommand(plugin, new CommandBDebug("bdebug"));
 		pluginManager.registerCommand(plugin, new CommandCreative("creative"));
 		pluginManager.registerCommand(plugin, new CommandNews("news"));
