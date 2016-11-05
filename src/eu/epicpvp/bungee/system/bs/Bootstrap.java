@@ -155,6 +155,8 @@ public class Bootstrap {
 			return false;
 		if (s.startsWith("handeling "))
 			return false;
+		if (s.startsWith("tab compĺete suggestions for "))
+			return false;
 		if (PlayerJoinListener.isAttackMode()) {
 			if (s.startsWith("player settings for"))
 				return false;

@@ -200,7 +200,7 @@ public class ChatListener implements Listener {
 		List<String> players = new ArrayList<>(Main.getDatenServer().getPlayers());
 		for (String playerName : players) {
 			if (playerName == null) {
-				System.err.println("[ChatListener]: TabCompleteEvent playerName == NULL !?");
+//				System.err.println("[ChatListener]: TabCompleteEvent playerName == NULL !?");
 				continue;
 			}
 //			LoadedPlayer splayer = Main.getDatenServer().getClient().getPlayer(playerName);
