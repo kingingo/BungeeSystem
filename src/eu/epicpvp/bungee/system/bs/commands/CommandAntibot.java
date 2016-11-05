@@ -32,6 +32,13 @@ public class CommandAntibot extends Command {
 			} else if (args[0].equalsIgnoreCase("reloadfiles")) {
 				PlayerJoinListener.getInstance().reloadFiles();
 				sender.sendMessage("§cAntibot-Dateien neugeladen");
+			} else if (args[0].equalsIgnoreCase("vhostblockage")) {
+				PlayerJoinListener.vhostBlockage = !PlayerJoinListener.vhostBlockage;
+				if (PlayerJoinListener.vhostBlockage) {
+					sender.sendMessage("§6Antibot-vhostBlockage ist nun §aangeschaltet§6.");
+				} else {
+					sender.sendMessage("§6Antibot-vhostBlockage ist nun §causgeschaltet§6.");
+				}
 			}
 		}
 	}

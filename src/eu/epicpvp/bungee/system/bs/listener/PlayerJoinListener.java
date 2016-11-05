@@ -61,7 +61,7 @@ public class PlayerJoinListener implements Listener {
 
 	public PlayerJoinListener() {
 		instance = this;
-		ProxyServer.getInstance().getScheduler().schedule(Main.getInstance(), this::reloadFiles, 10 + new Random().nextInt(20), 30, TimeUnit.SECONDS);
+		ProxyServer.getInstance().getScheduler().schedule(Main.getInstance(), this::reloadFiles, 10 + new Random().nextInt(19), 30, TimeUnit.SECONDS);
 	}
 
 	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
@@ -72,6 +72,9 @@ public class PlayerJoinListener implements Listener {
 	@Getter
 	@Setter
 	private static boolean antibotLog = true;
+
+	public static boolean vhostBlockage = true;
+
 	private Rate attackDetectionRate = new Rate(30, TimeUnit.SECONDS);
 	private Rate filteredRate = new Rate(10, TimeUnit.SECONDS);
 	private Rate allowRate = new Rate(1, TimeUnit.SECONDS);
@@ -161,7 +164,7 @@ public class PlayerJoinListener implements Listener {
 		}
 
 		// player's who send that they typed in axnj9ef90out4.epicpvp.eu are blocked, because no player will ever do a cname lookup on play.epicpvp.eu
-		if (connection.getVirtualHost().getHostString().toLowerCase().contains("axnj9ef90out4")) {
+		if (vhostBlockage && connection.getVirtualHost().getHostString().toLowerCase().contains("axnj9ef90out4")) {
 			event.setCancelled(true);
 			event.setCancelReason("§cDein Joinversuch wurde blockiert.\n" +
 					"§cBitte nutze folgende IP um dich auf unser Netzwerk zu verbinden:\n" +
@@ -425,7 +428,7 @@ public class PlayerJoinListener implements Listener {
 		File folder = new File("/root/antibots");
 		folder.mkdir();
 		try {
-			System.out.println("Reloading ip_blacklist.txt...");
+//			System.out.println("Reloading ip_blacklist.txt...");
 			ipBlacklist.clear();
 			File ipBlacklistFile = new File(folder, "ip_blacklist.txt");
 			ipBlacklistFile.createNewFile();
@@ -438,13 +441,13 @@ public class PlayerJoinListener implements Listener {
 							ipBlacklist.put(line.substring(0, pos), line.substring(pos));
 						}
 					});
-			System.out.println("Successfully reloaded ip_blacklist.txt");
+//			System.out.println("Successfully reloaded ip_blacklist.txt");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 		try {
-			System.out.println("Reloading name_whitelist.txt...");
+//			System.out.println("Reloading name_whitelist.txt...");
 			nameWhitelist.clear();
 			File nameWhitelistFile = new File(folder, "name_whitelist.txt");
 			nameWhitelistFile.createNewFile();
@@ -452,13 +455,13 @@ public class PlayerJoinListener implements Listener {
 					.forEach(line -> {
 						nameWhitelist.add(line);
 					});
-			System.out.println("Successfully reloaded name_whitelist.txt");
+//			System.out.println("Successfully reloaded name_whitelist.txt");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 		try {
-			System.out.println("Reloading ip_whitelist.txt...");
+//			System.out.println("Reloading ip_whitelist.txt...");
 			ipWhitelist.clear();
 			File ipWhitelistFile = new File(folder, "ip_whitelist.txt");
 			ipWhitelistFile.createNewFile();
@@ -471,7 +474,7 @@ public class PlayerJoinListener implements Listener {
 							ipWhitelist.put(line.substring(0, pos), line.substring(pos));
 						}
 					});
-			System.out.println("Successfully reloaded ip_whitelist.txt");
+//			System.out.println("Successfully reloaded ip_whitelist.txt");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -479,7 +482,7 @@ public class PlayerJoinListener implements Listener {
 		Path automaticIpBlacklistPath = automaticIpBlacklistFile.toPath();
 		try {
 			automaticIpBlacklistFile.createNewFile();
-			System.out.println("Reloading automatic_ip_blacklist.txt...");
+//			System.out.println("Reloading automatic_ip_blacklist.txt...");
 			Files.readAllLines(automaticIpBlacklistPath)
 					.forEach(line -> {
 						int pos = line.indexOf(':');
@@ -495,7 +498,7 @@ public class PlayerJoinListener implements Listener {
 							}
 						}
 					});
-			System.out.println("Successfully reloaded automatic_ip_blacklist.txt");
+//			System.out.println("Successfully reloaded automatic_ip_blacklist.txt");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
