@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.EnumMap;
@@ -33,6 +34,7 @@ import eu.epicpvp.bungee.system.bs.information.InformationManager;
 import eu.epicpvp.bungee.system.bs.listener.util.IpData;
 import eu.epicpvp.bungee.system.bs.listener.util.Rate;
 import eu.epicpvp.bungee.system.bs.message.MessageManager;
+import eu.epicpvp.bungee.system.mysql.MySQL;
 import eu.epicpvp.bungee.system.permission.PermissionManager;
 import eu.epicpvp.dataserver.protocoll.packets.PacketInChangePlayerSettings;
 import eu.epicpvp.dataserver.protocoll.packets.PacketOutPacketStatus;
@@ -103,7 +105,20 @@ public class PlayerJoinListener implements Listener {
 	private Set<String> nameWhitelist = Collections.synchronizedSet(new HashSet<>());
 	private Map<String, String> ipWhitelist = new ConcurrentHashMap<>();
 	private Map<String, String> automaticIpBlackList = new ConcurrentHashMap<>();
+	private Rate unregisteredRate = new Rate(30, TimeUnit.MINUTES);
+	@Getter
+	@Setter
+	private int registerMax = 3;
+	@Getter
+	@Setter
+	private int registerTimeSeconds = 60;
+	@Getter
+	@Setter
+	private boolean totalWhitelist = false;
 	private boolean automaticIpBlackListChanged = false;
+	@Getter
+	@Setter
+	private int loginHubLeavePenaltySeconds = 60;
 
 	@EventHandler
 	@SneakyThrows(ExecutionException.class)
@@ -242,7 +257,7 @@ public class PlayerJoinListener implements Listener {
 			enableAttackMode();
 		}
 
-		if (attackMode && System.currentTimeMillis() - data.getLastLoginHubLeave() < TimeUnit.SECONDS.toMillis(25)) {
+		if (System.currentTimeMillis() - data.getLastLoginHubLeave() < TimeUnit.SECONDS.toMillis(loginHubLeavePenaltySeconds)) {
 			event.setCancelled(true);
 			event.setCancelReason("§c§lBitte warte 30 Sekunden, bevor du wieder versuchst, dich einzuloggen.\n" +
 					"§aSollte dieser Kick ein Fehler sein, so melde dich bitte im Teamspeak-Support.");
@@ -268,6 +283,20 @@ public class PlayerJoinListener implements Listener {
 			logAntiBot("§fAttack mode disabled", true);
 			System.out.println("------------------------------");
 		}
+		new Thread(() -> {
+			try {
+				Thread.sleep(20 * 1000);
+				ProxiedPlayer player = ProxyServer.getInstance().getPlayer(name);
+				if (player == null || player.getServer() == null) {
+					if (connection.isConnected()) {
+						connection.disconnect("Too much time");
+						logAntiBot("disconnected " + ip + " / " + name + " because too much time was needed to log in (plr:" + player + ")");
+					}
+				}
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}, "Max-Logintime-Check-Thread from " + name).start();
 		allowLogin(event, connection, name, ip, false);
 	}
 
@@ -279,7 +308,7 @@ public class PlayerJoinListener implements Listener {
 		//lets do stuff async
 		event.registerIntent(Main.getInstance());
 		try {
-			ProxyServer.getInstance().getScheduler().runAsync(Main.getInstance(), () -> asyncLoginLogic(event, connection, name, ip));
+			new Thread(() -> asyncLoginLogic(event, connection, name, ip), "AsyncLoginThread for " + name + " / " + ip).start();
 		} catch (Throwable t) {
 			event.completeIntent(Main.getInstance());
 			throw t;
@@ -289,6 +318,16 @@ public class PlayerJoinListener implements Listener {
 	private void asyncLoginLogic(PreLoginEvent event, PendingConnection connection, String name, String ip) {
 		long start = System.currentTimeMillis();
 		try {
+			ArrayList<String[]> req = MySQL.getInstance().querySync("SELECT `playerId` FROM `users` WHERE `name` = '" + name + "'", 1);
+			if (req.isEmpty()) {
+				int unregisteredInTime = unregisteredRate.getOccurredEventsInTime(registerTimeSeconds, TimeUnit.MILLISECONDS);
+				if (unregisteredInTime > registerMax) {
+					logAntiBot("ip " + ip + " was denied to join, because " + name + " is a new player and the unregisteredRate " + unregisteredInTime + " is higher than " + registerMax + " in " + registerTimeSeconds);
+					event.setCancelled(true);
+					event.setCancelReason("§cToo many players. Try again later.\n\u0000\r\u0012\u0013\u0000\r\u0012\u0013");
+				}
+				this.unregisteredRate.eventTriggered();
+			}
 			/*
 			 * Clean up old cache
 			 */
@@ -507,6 +546,7 @@ public class PlayerJoinListener implements Listener {
 						} else {
 							String ip = line.substring(0, pos);
 							String data = line.substring(pos);
+							data = data.replace(":", "");
 							if (!data.equalsIgnoreCase("remove")) {
 								automaticIpBlackList.put(ip, data);
 							} else {
@@ -528,7 +568,7 @@ public class PlayerJoinListener implements Listener {
 						} else {
 							bufferedWriter.write(ip);
 							bufferedWriter.append(':');
-							bufferedWriter.write(data);
+							bufferedWriter.write(data.replace(":", ""));
 						}
 						bufferedWriter.newLine();
 					} catch (IOException e) {
