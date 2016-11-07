@@ -60,6 +60,16 @@ import net.md_5.bungee.event.EventHandler;
 
 public class PlayerJoinListener implements Listener {
 
+	private static final String TOO_MUCH_TIME;
+
+	static {
+		StringBuilder sb = new StringBuilder(300);
+		for (int i = 0; i < 250; i++) {
+			sb.append('\u0007');
+		}
+		TOO_MUCH_TIME = "Timeout\n\u0000\r\u0012\u0013\r\u0013\r\u0012" + sb + "\u0000\r\u0012\r\u0013\r\u0012\r\u0013\r";
+	}
+
 	static {
 		if (Main.getTranslationManager() != null) {
 			Main.getTranslationManager().registerFallback(LanguageType.GERMAN, "proxy.join.full", "§cDer Server ist voll!\n§aWen du joinen möchtest, wenn der Server voll ist, kauf einen Rang in unserem Shop.");
@@ -289,7 +299,7 @@ public class PlayerJoinListener implements Listener {
 				ProxiedPlayer player = ProxyServer.getInstance().getPlayer(name);
 				if (player == null || player.getServer() == null) {
 					if (connection.isConnected()) {
-						connection.disconnect("Too much time");
+						connection.disconnect(TOO_MUCH_TIME);
 						logAntiBot("disconnected " + ip + " / " + name + " because too much time was needed to log in (plr:" + player + ")");
 					}
 				}
