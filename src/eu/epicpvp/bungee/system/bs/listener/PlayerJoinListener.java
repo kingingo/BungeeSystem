@@ -13,7 +13,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.EnumMap;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -107,7 +106,7 @@ public class PlayerJoinListener implements Listener {
 							return new IpData(ip);
 						}
 					});
-	private Cache<String, Set<String>> nameIp =
+	private Cache<String, Cache<String, Long>> nameIp =
 			CacheBuilder.newBuilder()
 					.expireAfterAccess(2, TimeUnit.HOURS)
 					.build();
@@ -238,23 +237,32 @@ public class PlayerJoinListener implements Listener {
 			}
 			return;
 		}
-		int differentNameJoins1M = differentNameJoinRate.getOccurredEventsInTime(1, TimeUnit.MINUTES);
-		if (attackDetectionRate.getOccurredEventsInMaxTime() != 0 && differentNameJoins1M >= 2) {
+		int differentNameJoins2M = differentNameJoinRate.getOccurredEventsInTime(2, TimeUnit.MINUTES);
+		if (attackDetectionRate.getOccurredEventsInMaxTime() != 0 && differentNameJoins2M > 1) {
 			event.setCancelled(true);
 			filteredRate.eventTriggered();
 			event.setCancelReason("§cEs wurden ungewöhnliche Aktivitäten deiner IP festgestellt.\n" +
 					"§c§lWichtig:\n" +
 					"§aVerwende keinen Proxy, VPN, oder andere Dienste, die deine Internetverbindung umleiten, um auf EpicPvP zu spielen.\n" +
 					"§aBitte versuche dich über deine IP nur mit einem Namen innerhalb von 5 Minuten zu verbinden.\n" +
-					"§aBitte melde dich bei unserem Teamspeak-Support, falls dies ein Fehler sein sollte.\n" +
-					"§8Diese Restriktion ist nur während einer Joinbot-Attacke aktiv.");
-			logAntiBot("ip " + ip + " tried to join with " + differentNameJoins1M + " different names in 1min, latest name: " + name);
+					"§aBitte melde dich bei unserem Teamspeak-Support, falls dies ein Fehler sein sollte.");
+			logAntiBot("ip " + ip + " tried to join with " + differentNameJoins2M + " different names in 2min, latest name: " + name);
 			return;
 		}
-		Set<String> lastConnectedIpsForName = nameIp.get(ip, LinkedHashSet::new);
-
-		lastConnectedIpsForName.add(ip);
-		if (lastConnectedIpsForName.size() > (attackMode ? 1 : 2)) {
+		Cache<String, Long> lastConnectedIpsForName = nameIp.get(ip, () -> {
+			return CacheBuilder.newBuilder()
+					.expireAfterAccess(20, TimeUnit.MINUTES)
+					.build();
+		});
+		long threshold = System.currentTimeMillis() - (attackMode ? 50 * 60 * 1000 : 20 * 60 * 1000);
+		int amount = 0;
+		for (Long millis : lastConnectedIpsForName.asMap().values()) {
+			if (millis >= threshold) {
+				amount++;
+			}
+		}
+		lastConnectedIpsForName.put(ip, System.currentTimeMillis());
+		if (amount > 1) {
 			event.setCancelled(true);
 			filteredRate.eventTriggered();
 			event.setCancelReason("§cEs wurden ungewöhnliche Aktivitäten festgestellt.\n" +
@@ -295,13 +303,17 @@ public class PlayerJoinListener implements Listener {
 		}
 		new Thread(() -> {
 			try {
-				Thread.sleep(20 * 1000);
+				Thread.sleep(12 * 1000);
 				ProxiedPlayer player = ProxyServer.getInstance().getPlayer(name);
-				if (player == null || player.getServer() == null) {
+				if (player == null) {
 					if (connection.isConnected()) {
 						connection.disconnect(TOO_MUCH_TIME);
-						logAntiBot("disconnected " + ip + " / " + name + " because too much time was needed to log in (plr:" + player + ")");
+						logAntiBot("disconnected " + ip + " / " + name + " because too much time was needed to log in (plr is null)");
 					}
+				} else if (player.getServer() == null) {
+					connection.disconnect(TOO_MUCH_TIME);
+					player.disconnect(TOO_MUCH_TIME);
+					logAntiBot("disconnected " + ip + " / " + name + " because too much time was needed to log in (plr: " + player + ")");
 				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -615,7 +627,6 @@ public class PlayerJoinListener implements Listener {
 //			}
 //		}
 //	}
-
 
 	@EventHandler
 	public void onKick(ServerKickEvent event) {
