@@ -92,7 +92,13 @@ public class ServerListener implements Listener {
 				}
 				Queue<String> joinQueue;
 				if (event.getPlayer().getPendingConnection().isOnlineMode() || LoginManager.getManager().isLoggedIn(event.getPlayer())) {
-					LoadedPlayer player = Main.getDatenServer().getClient().getPlayerAndLoad(event.getPlayer().getUniqueId());
+					LoadedPlayer player;
+					try {
+						player = Main.getDatenServer().getClient().getPlayerAndLoad(event.getPlayer().getUniqueId());
+					} catch (Exception ex) {
+						ex.printStackTrace();
+						player = Main.getDatenServer().getClient().getPlayerAndLoad(event.getPlayer().getName());
+					}
 					MessageManager.getManager(player.getLanguageSync());
 					if (PermissionManager.getManager().hasPermission(event.getPlayer(), PermissionType.PREMIUM_LOBBY, false))
 						joinQueue = ServerManager.getManager().buildPremiumQueue();
