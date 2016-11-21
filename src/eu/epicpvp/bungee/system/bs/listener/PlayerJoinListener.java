@@ -149,9 +149,9 @@ public class PlayerJoinListener implements Listener {
 		String name = connection.getName();
 		String ip = connection.getAddress().getAddress().getHostAddress();
 		if (version == null || version == ClientVersion.v1_9_1 || version == ClientVersion.v1_9_2 || version == ClientVersion.v1_9_3
-				|| (version.getBigVersion() != BigClientVersion.v1_8 && version.getBigVersion() != BigClientVersion.v1_9 && version != ClientVersion.v1_10)) {
+				|| (version.getBigVersion() != BigClientVersion.v1_8 && version.getBigVersion() != BigClientVersion.v1_9 && version != ClientVersion.v1_10 && version != ClientVersion.v1_11)) {
 			event.setCancelled(true);
-			event.setCancelReason("§cYour minecraft version is not supported. Please use 1.8.X, 1.9.0, 1.9.4 or 1.10.X");
+			event.setCancelReason("§cYour minecraft version is not supported. Please use 1.8.X, 1.9.0, 1.9.4, 1.10.X or 1.11");
 			System.out.println("Player " + name + " tried to connect with an unsupported version (" + versionNumber + ") with ip " + ip);
 			return;
 		}
