@@ -15,15 +15,15 @@ public class PacketPlayOutResourcepack extends Packet implements PacketPlayOut{
 	private String hash;
 
 	@Override
-	public void read(PacketDataSerializer s) {
-		url = s.readString(-1);
-		hash = s.readString(-1);
+	public void read(PacketDataSerializer serializer) {
+		url = serializer.readString(-1);
+		hash = serializer.readString(-1);
 	}
 
 	@Override
-	public void write(PacketDataSerializer s) {
-		s.writeString(url);
-		s.writeString(hash);
+	public void write(PacketDataSerializer serializer) {
+		serializer.writeString(url);
+		serializer.writeString(hash);
 	}
 
 }

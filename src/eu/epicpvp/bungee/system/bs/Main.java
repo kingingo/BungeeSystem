@@ -15,6 +15,7 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.plugin.Plugin;
 
 public class Main extends Plugin {
+
 	@Getter
 	private static boolean restarting = false;
 	public static boolean loaded = false;
@@ -40,7 +41,24 @@ public class Main extends Plugin {
 
 	protected String serverId;
 
-	public static final net.md_5.bungee.api.chat.BaseComponent[] PASSWORD_CHANGE_MESSAGE = new ComponentBuilder("").append("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n\n").color(ChatColor.GRAY).bold(true).append("      Bitte ändere dein Passwort aus Sicherheitsgründen alle 6 Monate.\n").color(ChatColor.RED).bold(false).append("              Mit diesem Befehl kannst du dies tun:\n        ").color(ChatColor.RED).append("/pwchange <altes Passwort> <neues Passwort>").color(ChatColor.YELLOW).underlined(true).event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Klicke, um den Befehl zu kopieren.").color(ChatColor.RED).create())).event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/pwchange ")).append("\n\n Die Sicherheit deines Accounts liegt uns am Herzen.\n" + " Diese Nachricht verschwindet, sobald du dein Passwort\n geändert hast.\n", ComponentBuilder.FormatRetention.NONE).color(ChatColor.GRAY).append("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬").color(ChatColor.GRAY).bold(true).create();
+	//@formatter:off
+	public static final net.md_5.bungee.api.chat.BaseComponent[] PASSWORD_CHANGE_MESSAGE = new ComponentBuilder("")
+			.append("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n\n")
+				.color(ChatColor.GRAY).bold(true)
+			.append("      Bitte ändere dein Passwort aus Sicherheitsgründen alle 6 Monate.\n")
+				.color(ChatColor.RED).bold(false)
+			.append("              Mit diesem Befehl kannst du dies tun:\n        ")
+				.color(ChatColor.RED)
+			.append("/pwchange <altes Passwort> <neues Passwort>")
+				.color(ChatColor.YELLOW).underlined(true)
+				.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Klicke, um den Befehl zu kopieren.").color(ChatColor.RED).create()))
+				.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/pwchange "))
+			.append("\n\n Die Sicherheit deines Accounts liegt uns am Herzen.\n" + " Diese Nachricht verschwindet, sobald du dein Passwort\n geändert hast.\n", ComponentBuilder.FormatRetention.NONE)
+				.color(ChatColor.GRAY)
+			.append("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬")
+				.color(ChatColor.GRAY).bold(true)
+			.create();
+	//@formatter:on
 
 	@Override
 	public void onEnable() {

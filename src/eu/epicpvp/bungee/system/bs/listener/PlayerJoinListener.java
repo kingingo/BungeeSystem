@@ -127,7 +127,7 @@ public class PlayerJoinListener implements Listener {
 	private boolean automaticIpBlackListChanged = false;
 	@Getter
 	@Setter
-	private int loginHubLeavePenaltySeconds = 60;
+	private int loginHubLeavePenaltySeconds = 30;
 
 	@EventHandler
 	@SneakyThrows(ExecutionException.class)
@@ -145,11 +145,11 @@ public class PlayerJoinListener implements Listener {
 
 		PendingConnection connection = event.getConnection();
 		int versionNumber = connection.getVersion();
-		ClientVersion version = ClientVersion.fromProtocoll(versionNumber);
+		ClientVersion version = ClientVersion.fromProtocolVersion(versionNumber);
 		String name = connection.getName();
 		String ip = connection.getAddress().getAddress().getHostAddress();
 		if (version == null || version == ClientVersion.v1_9_1 || version == ClientVersion.v1_9_2 || version == ClientVersion.v1_9_3
-				|| (version.getBigVersion() != BigClientVersion.v1_8 && version.getBigVersion() != BigClientVersion.v1_9 && version != ClientVersion.v1_10_0)) {
+				|| (version.getBigVersion() != BigClientVersion.v1_8 && version.getBigVersion() != BigClientVersion.v1_9 && version != ClientVersion.v1_10)) {
 			event.setCancelled(true);
 			event.setCancelReason("§cYour minecraft version is not supported. Please use 1.8.X, 1.9.0, 1.9.4 or 1.10.X");
 			System.out.println("Player " + name + " tried to connect with an unsupported version (" + versionNumber + ") with ip " + ip);
@@ -224,8 +224,8 @@ public class PlayerJoinListener implements Listener {
 			event.setCancelled(true);
 			filteredRate.eventTriggered();
 			event.setCancelReason("§cEs wurden ungewöhnliche Aktivitäten deiner IP festgestellt.\n" +
-					"§c§lExtrem WICHTIG:\n" +
-					"§f§lNicht mit einem anderen Namen verbinden!§7 (sonst kann deine IP gesperrt werden)\n\n" +
+					"§c§l§nExtrem WICHTIG:\n" +
+					"§f§l§nNicht mit einem anderen Namen verbinden!§f (sonst wird deine IP gesperrt)\n\n" +
 					"§aVerwende keinen Proxy, VPN, oder andere Dienste, die deine Internetverbindung umleiten, um auf EpicPvP zu spielen.\n" +
 					"§aBitte melde dich bei unserem Teamspeak-Support, falls dies ein Fehler sein sollte.");
 			if (differentNameJoins2H < 5) {
@@ -277,7 +277,7 @@ public class PlayerJoinListener implements Listener {
 
 		if (System.currentTimeMillis() - data.getLastLoginHubLeave() < TimeUnit.SECONDS.toMillis(loginHubLeavePenaltySeconds)) {
 			event.setCancelled(true);
-			event.setCancelReason("§c§lBitte warte 30 Sekunden, bevor du wieder versuchst, dich einzuloggen.\n" +
+			event.setCancelReason("§c§lBitte warte " + loginHubLeavePenaltySeconds + " Sekunden, bevor du wieder versuchst, dich einzuloggen.\n" +
 					"§aSollte dieser Kick ein Fehler sein, so melde dich bitte im Teamspeak-Support.");
 			logAntiBot(ip + " tried to rejoin too fast after leaving loginhub, latest name: " + name);
 			return;

@@ -31,8 +31,11 @@ public class CommandPerformance extends Command implements Listener {
 		int count = 0;
 
 		for (ProxiedPlayer player : BungeeCord.getInstance().getPlayers()) {
-			ping += player.getPing();
-			count++;
+			int pp = player.getPing();
+			if (pp >= 0 && pp < 30_000) {
+				ping += pp;
+				count++;
+			}
 		}
 
 		if (count == 0) {

@@ -24,18 +24,18 @@ public class PacketPlayInResourcepackStatus extends Packet implements PacketPlay
 	private Action action;
 
 	@Override
-	public void read(PacketDataSerializer s) {
+	public void read(PacketDataSerializer serializer) {
 		if (getVersion().getBigVersion() == ClientVersion.BigClientVersion.v1_8) {
-			hash = s.readString(-1);
+			hash = serializer.readString(-1);
 		}
-		action = Action.values()[s.readVarInt()];
+		action = Action.values()[serializer.readVarInt()];
 	}
 
 	@Override
-	public void write(PacketDataSerializer s) {
+	public void write(PacketDataSerializer serializer) {
 		if (getVersion().getBigVersion() == ClientVersion.BigClientVersion.v1_8) {
-			s.writeString(hash);
+			serializer.writeString(hash);
 		}
-		s.writeVarInt(action.ordinal());
+		serializer.writeVarInt(action.ordinal());
 	}
 }

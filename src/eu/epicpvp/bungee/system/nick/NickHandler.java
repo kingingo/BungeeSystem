@@ -358,10 +358,10 @@ public class NickHandler implements PacketHandler<Packet>, Listener {
 		} else if (e.getPacket() instanceof PacketPlayOutPlayerInfo) {
 			//if(((PacketPlayOutPlayerInfo)e.getPacket()).getAction() == EnumPlayerInfoAction.ADD_PLAYER || ((PacketPlayOutPlayerInfo)e.getPacket()).getAction() == EnumPlayerInfoAction.UPDATE_DISPLAY_NAME)
 			for (PlayerInfoData i : ((PacketPlayOutPlayerInfo) e.getPacket()).getData()) {
-				if (i.getName() != null)
-					i.setName(replaceNames(i.getName(), PermissionManager.getManager().hasPermission(e.getPlayer(), "tab.nick.see")));
-				if (i.getGameprofile() != null && i.getGameprofile().getName() != null) {
-					i.getGameprofile().setName(replaceNames(i.getGameprofile().getName(), PermissionManager.getManager().hasPermission(e.getPlayer(), "nametag.nick.see"), 16));
+				if (i.getDisplayName() != null)
+					i.setDisplayName(replaceNames(i.getDisplayName(), PermissionManager.getManager().hasPermission(e.getPlayer(), "tab.nick.see")));
+				if (i.getGameProfile() != null && i.getGameProfile().getName() != null) {
+					i.getGameProfile().setName(replaceNames(i.getGameProfile().getName(), PermissionManager.getManager().hasPermission(e.getPlayer(), "nametag.nick.see"), 16));
 				}
 			}
 		} else if (e.getPacket() instanceof PacketPlayOutScoreboardTeam) {
@@ -389,7 +389,7 @@ public class NickHandler implements PacketHandler<Packet>, Listener {
 		} else if (e.getPacket() instanceof PacketPlayOutScoreboardScore) {
 			PacketPlayOutScoreboardScore score = (PacketPlayOutScoreboardScore) e.getPacket();
 			if (score.getScoreName() != null) {
-				score.setObjektiveName(replaceNames(score.getObjektiveName(), PermissionManager.getManager().hasPermission(e.getPlayer(), "scoreboard.nick.see"), 40));
+				score.setObjectiveName(replaceNames(score.getObjectiveName(), PermissionManager.getManager().hasPermission(e.getPlayer(), "scoreboard.nick.see"), 40));
 			}
 		} else if (e.getPacket() instanceof PacketPlayOutTitle) {
 			PacketPlayOutTitle title = (PacketPlayOutTitle) e.getPacket();

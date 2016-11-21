@@ -21,7 +21,7 @@ public class TabListener implements PacketHandler<Packet>{
 
 	public void handle0(PacketHandleEvent<PacketPlayOutPlayerInfo> e) {
 			for(PlayerInfoData data : e.getPacket().getData()){
-				IChatBaseComponent base = data.getName();
+				IChatBaseComponent base = data.getDisplayName();
 				if(base != null){
 					base.addSibling(new ChatMessage(" §7[§aX§7]"));
 				}
