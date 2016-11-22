@@ -8,11 +8,11 @@ import dev.wolveringer.BungeeUtil.packets.PacketPlayInChat;
 public class BannedServerListener implements PacketHandler<Packet>{
 
 	@Override
-	public void handle(PacketHandleEvent<Packet> paramPacketHandleEvent) {
-		if(paramPacketHandleEvent.getPacket() instanceof PacketPlayInChat){
-			if(BannedServerManager.getInstance().isBanned(paramPacketHandleEvent.getPlayer())){
-				paramPacketHandleEvent.setCancelled(true);
-				paramPacketHandleEvent.getPlayer().sendMessage("§cYou dont have permission to chat.");
+	public void handle(PacketHandleEvent<Packet> event) {
+		if(event.getPacket() instanceof PacketPlayInChat){
+			if(BannedServerManager.getInstance().isBanned(event.getPlayer())){
+				event.setCancelled(true);
+				event.getPlayer().sendMessage("§cYou dont have permission to chat.");
 			}
 		}
 	}

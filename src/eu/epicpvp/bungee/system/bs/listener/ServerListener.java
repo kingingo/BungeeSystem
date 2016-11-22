@@ -83,9 +83,15 @@ public class ServerListener implements Listener {
 						if (banEntity.isActive()) {
 							long ipBanEnd = banEntity.getDate() + TimeUnit.DAYS.toMillis(7);//7 * 24 * 60 * 60 * 1000;
 							if (banEntity.getUsernames().stream().anyMatch(name::equalsIgnoreCase) || (banEntity.getIp().equalsIgnoreCase(ip) && System.currentTimeMillis() <= ipBanEnd)) {
-								BannedServerManager.getInstance().joinServer((Player) event.getPlayer(), banEntity);
-								event.setCancelled(true);
-								return;
+								new Thread(() -> {
+									try {
+										Thread.sleep(2000);
+									} catch (InterruptedException ignored) {
+									}
+									BannedServerManager.getInstance().joinServer((Player) event.getPlayer(), banEntity);
+								}).start();
+//								event.setCancelled(true);
+//								return;
 							}
 						}
 					}
